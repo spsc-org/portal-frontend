@@ -1,49 +1,50 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo } from 'react'
 import { apiFetch, setUnauthorizedHandler } from '../lib/api.js'
+import { useMe, setMe } from '../hooks/useMe.js'
 
 const AuthContext = createContext(null)
 
 // status: 'loading' (перевіряємо сесію при старті) | 'authenticated' | 'guest'
+// user/loading — зі спільного стору useMe() (src/hooks/useMe.js): він сам
+// вантажить /api/me одразу при імпорті, тож AuthProvider тут НЕ робить
+// власний дублюючий запит — лише читає той самий кеш, яким користуються
+// Sidebar/SidebarUserMenu/інші споживачі useMe().
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [status, setStatus] = useState('loading')
+  const { data: user, loading } = useMe()
+  const status = loading ? 'loading' : user ? 'authenticated' : 'guest'
 
   useEffect(() => {
-    setUnauthorizedHandler(() => {
-      setUser(null)
-      setStatus('guest')
-    })
-
-    apiFetch('/api/me')
-      .then((payload) => {
-        setUser(payload?.data ?? null)
-        setStatus('authenticated')
-      })
-      .catch(() => {
-        setUser(null)
-        setStatus('guest')
-      })
-
+    setUnauthorizedHandler(() => setMe(null))
     return () => setUnauthorizedHandler(null)
   }, [])
 
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (email, password, remember = false) => {
     const payload = await apiFetch('/api/auth/login', {
       method: 'POST',
-      body: { email, password },
+      body: { email, password, remember },
     })
 
-    setUser(payload?.data ?? null)
-    setStatus('authenticated')
+    setMe(payload?.data ?? null)
+  }, [])
+
+  const register = useCallback(async (fields) => {
+    const payload = await apiFetch('/api/auth/register', {
+      method: 'POST',
+      body: fields,
+    })
+
+    setMe(payload?.data ?? null)
   }, [])
 
   const logout = useCallback(async () => {
     await apiFetch('/api/auth/logout', { method: 'POST' })
-    setUser(null)
-    setStatus('guest')
+    setMe(null)
   }, [])
 
-  const value = useMemo(() => ({ user, status, login, logout }), [user, status, login, logout])
+  const value = useMemo(
+    () => ({ user, status, login, register, logout }),
+    [user, status, login, register, logout],
+  )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
