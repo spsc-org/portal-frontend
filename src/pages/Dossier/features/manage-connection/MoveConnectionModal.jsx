@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
 import ProfilesMasterList from "../../widgets/ProfilesMasterList/ProfilesMasterList.jsx";
 import ProfileDetailPane from "../../widgets/ProfileDetailPane/ProfileDetailPane.jsx";
@@ -46,7 +46,7 @@ const MoveConnectionModal = ({open, currentProfileId, isPending, onClose, onConf
                     activeId={selectedTargetId}
                     onSelect={setSelectedTargetId}
                 />
-                <ProfileDetailPane profileId={selectedTargetId} canManage={false}/>
+                <ProfileDetailPane key={selectedTargetId ?? "none"} profileId={selectedTargetId} canManage={false}/>
             </DialogBody>
             <DialogFooter className="gap-2">
                 <Button variant="text" color="red" onClick={onClose} disabled={isPending}>

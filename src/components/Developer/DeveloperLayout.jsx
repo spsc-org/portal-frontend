@@ -1,4 +1,3 @@
-import React from "react";
 import FullHeightSecondaryNavLayout from "../SecondaryNav/FullHeightSecondaryNavLayout.jsx";
 import {DEVELOPER_NAVIGATION} from "./navigation.js";
 

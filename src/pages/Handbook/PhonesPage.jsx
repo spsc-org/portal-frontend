@@ -1,28 +1,22 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {usePage} from "@inertiajs/react";
-import HandbookLayout from "./shared/ui/HandbookLayout.jsx";
-import PhoneFilters from "./widgets/PhoneFilters/PhoneFilters.jsx";
-import PhoneList from "./widgets/PhoneList/PhoneList.jsx";
-import PhoneDetailPanel from "./widgets/PhoneDetailPanel/PhoneDetailPanel.jsx";
-import CreatePhoneModal from "./features/create-phone/CreatePhoneModal.jsx";
-import EditPhoneModal from "./features/edit-phone/EditPhoneModal.jsx";
-import ImportPhoneModal from "./features/import-phone/ImportPhoneModal.jsx";
-import {
-    useCommitPhoneImportMutation,
-    useInfinitePhonesQuery,
-    usePhoneOptionsQuery,
-    usePreviewPhoneImportMutation,
-    useTogglePhoneFavoriteMutation,
-} from "./entities/phone/queries.js";
-import {phoneImportTemplateUrl} from "./entities/phone/importApi.js";
-import {canImportPhones, canReadPhones} from "./shared/lib/permissions.js";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/index.js";
+import { PhonesViewModel } from "./viewmodel/PhoneViewModels.js";
+import { PHONE_COMMANDS } from "./model/handbookCommands.js";
+import { phoneImportTemplateUrl } from "./model/phoneApi.js";
+import HandbookLayout from "./view/HandbookLayout.jsx";
+import PhoneFilters from "./view/PhoneFilters.jsx";
+import PhoneList from "./view/PhoneList.jsx";
+import PhoneDetailPanel from "./view/PhoneDetailPanel.jsx";
+import PhoneFormModal from "./view/PhoneFormModal.jsx";
+import ImportModal from "./view/ImportModal.jsx";
+import LoadMore from "./view/LoadMore.jsx";
+import PageHeader from "../../layouts/app/PageHeader.jsx";
+import { HeaderButton } from "../../layouts/app/HeaderButtons.jsx";
 
-// Рядки превʼю тепер — уже ЗГРУПОВАНІ записи-суб'єкти (кілька Excel-рядків
-// з однаковим Ім'я+Підрозділ схлопнулись в один запис із кількома
-// номерами) — див. PhoneImportService::groupRowsIntoEntries().
+// Рядки превʼю — уже ЗГРУПОВАНІ записи-суб'єкти (PhoneImportService::groupRowsIntoEntries()).
 const IMPORT_COLUMNS = [
-    {key: "name", label: "Ім'я"},
-    {key: "department", label: "Підрозділ"},
+    { key: "name", label: "Ім'я" },
+    { key: "department", label: "Підрозділ" },
     {
         key: "phones",
         label: "Номери",
@@ -37,69 +31,13 @@ const IMPORT_COLUMNS = [
             </div>
         ),
     },
-    {key: "note", label: "Примітка до особи"},
+    { key: "note", label: "Примітка до особи" },
 ];
 
-// Пошук/фільтри — у localStorage, щоб не скидались при кожному новому візиті
-// сторінки (пряма вимога користувача).
-const FILTERS_STORAGE_KEY = "handbook-phones-filters";
+const PhonesView = observer(({ vm }) => {
+    const { filters } = vm;
 
-const loadStoredFilters = () => {
-    try {
-        const stored = localStorage.getItem(FILTERS_STORAGE_KEY);
-        return stored ? JSON.parse(stored) : {};
-    } catch {
-        return {};
-    }
-};
-
-const PhonesPage = () => {
-    const {auth} = usePage().props;
-    const [q, setQ] = useState(() => loadStoredFilters().q);
-    const [department, setDepartment] = useState(() => {
-        const stored = loadStoredFilters().department;
-        return Array.isArray(stored) ? stored : [];
-    });
-    const [status, setStatus] = useState(() => loadStoredFilters().status || "active");
-    const [sort, setSort] = useState(() => loadStoredFilters().sort || "name");
-    const [direction, setDirection] = useState(() => loadStoredFilters().direction || "asc");
-    const [onlyFavorite, setOnlyFavorite] = useState(() => loadStoredFilters().onlyFavorite || false);
-    const [onlyConfirmed, setOnlyConfirmed] = useState(() => loadStoredFilters().onlyConfirmed || false);
-    const [selectedId, setSelectedId] = useState(null);
-    const [openCreate, setOpenCreate] = useState(false);
-    const [openImport, setOpenImport] = useState(false);
-    const [editingEntry, setEditingEntry] = useState(null);
-    const previewImportMutation = usePreviewPhoneImportMutation();
-    const commitImportMutation = useCommitPhoneImportMutation();
-
-    const {data: optionsData} = usePhoneOptionsQuery();
-    const statusOptions = optionsData?.statuses || [];
-    const departmentOptions = optionsData?.departments || [];
-    const sortOptions = (optionsData?.sorts || []).map((option) => ({value: option.value, label: option.label}));
-
-    const {data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage} = useInfinitePhonesQuery({
-        q, department: department.length ? department : undefined,
-        status, sort, direction, onlyFavorite, onlyConfirmed,
-    });
-    const entries = useMemo(() => (data?.pages || []).flatMap((page) => page?.data || []), [data]);
-
-    useEffect(() => {
-        localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify({q, department, status, sort, direction, onlyFavorite, onlyConfirmed}));
-    }, [q, department, status, sort, direction, onlyFavorite, onlyConfirmed]);
-
-    const toggleFavoriteMutation = useTogglePhoneFavoriteMutation();
-
-    const handleClear = () => {
-        setQ(undefined);
-        setDepartment([]);
-        setStatus("active");
-        setSort("name");
-        setDirection("asc");
-        setOnlyFavorite(false);
-        setOnlyConfirmed(false);
-    };
-
-    if (!canReadPhones(auth)) {
+    if (!vm.canRead) {
         return (
             <HandbookLayout active="phones">
                 <div className="flex min-h-[50vh] items-center justify-center text-slate-400 dark:text-slate-600">
@@ -111,78 +49,64 @@ const PhonesPage = () => {
 
     return (
         <HandbookLayout data-i-doc="page:handbook-phones" active="phones">
+            <PageHeader
+                title="Телефони"
+                actions={
+                    <>
+                        {vm.canImport && <HeaderButton tone="default" icon="fa-regular fa-file-arrow-up" title="Імпортувати з Excel" onClick={vm.openImport}>Імпорт</HeaderButton>}
+                        <HeaderButton icon="fa-regular fa-plus" onClick={vm.openCreate}>Додати</HeaderButton>
+                    </>
+                }
+            />
             <div className="flex items-start gap-4">
                 <div className="min-w-0 flex-1">
                     <PhoneFilters
-                        q={q} onChangeQ={setQ}
-                        department={department} onChangeDepartment={setDepartment} departmentOptions={departmentOptions}
-                        status={status} onChangeStatus={setStatus} statusOptions={statusOptions}
-                        sort={sort} onChangeSort={setSort} sortOptions={sortOptions}
-                        direction={direction} onToggleDirection={() => setDirection((prev) => (prev === "asc" ? "desc" : "asc"))}
-                        onlyFavorite={onlyFavorite} onToggleOnlyFavorite={setOnlyFavorite}
-                        onlyConfirmed={onlyConfirmed} onToggleOnlyConfirmed={setOnlyConfirmed}
-                        onClear={handleClear}
-                        canCreate onCreate={() => setOpenCreate(true)}
-                        canImport={canImportPhones(auth)} onImport={() => setOpenImport(true)}
+                        q={filters.q} onChangeQ={(v) => vm.setFilter("q", v)}
+                        department={filters.department} onChangeDepartment={(v) => vm.setFilter("department", v)} departmentOptions={vm.departmentOptions}
+                        status={filters.status} onChangeStatus={(v) => vm.setFilter("status", v)} statusOptions={vm.statusOptions}
+                        sort={filters.sort} onChangeSort={(v) => vm.setFilter("sort", v)} sortOptions={vm.sortOptions}
+                        direction={filters.direction} onToggleDirection={vm.toggleDirection}
+                        onlyFavorite={filters.onlyFavorite} onToggleOnlyFavorite={(v) => vm.setFilter("onlyFavorite", v)}
+                        onlyConfirmed={filters.onlyConfirmed} onToggleOnlyConfirmed={(v) => vm.setFilter("onlyConfirmed", v)}
+                        onClear={vm.clearFilters}
                     />
                     <PhoneList
-                        entries={entries}
-                        loading={isLoading}
-                        selectedId={selectedId}
-                        onSelect={setSelectedId}
-                        onEdit={setEditingEntry}
-                        onToggleFavorite={(id) => toggleFavoriteMutation.mutate(id)}
-                        auth={auth}
-                        showStatusBadge={status !== "active"}
+                        entries={vm.entries}
+                        loading={vm.listQuery.isLoading}
+                        selectedId={vm.selectedId}
+                        onSelect={vm.select}
+                        onEdit={vm.edit}
+                        onToggleFavorite={vm.toggleFavorite}
+                        auth={vm.auth}
+                        showStatusBadge={filters.status !== "active"}
                     />
-                    {hasNextPage &&
-                        <div className="mt-3 flex justify-center">
-                            <button type="button" onClick={() => fetchNextPage()} disabled={isFetchingNextPage}
-                                    className="rounded-lg border border-slate-200 px-4 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-white dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
-                                {isFetchingNextPage ? "Завантаження…" : "Показати ще"}
-                            </button>
-                        </div>
-                    }
+                    <LoadMore query={vm.listQuery}/>
                 </div>
-                {selectedId &&
-                    <PhoneDetailPanel
-                        entryId={selectedId}
-                        onClose={() => setSelectedId(null)}
-                        onDeleted={() => setSelectedId(null)}
-                    />
+                {vm.selectedId &&
+                    <PhoneDetailPanel key={vm.selectedId} entryId={vm.selectedId} onClose={vm.closeDetail} onDeleted={vm.closeDetail}/>
                 }
             </div>
 
-            {openCreate &&
-                <CreatePhoneModal
-                    open={openCreate}
-                    onClose={() => setOpenCreate(false)}
-                    onCreated={(id) => setSelectedId(id)}
-                />
-            }
-
-            {editingEntry &&
-                <EditPhoneModal
-                    open={Boolean(editingEntry)}
-                    onClose={() => setEditingEntry(null)}
-                    entry={editingEntry}
-                />
-            }
-
-            {openImport &&
-                <ImportPhoneModal
-                    open={openImport}
-                    onClose={() => setOpenImport(false)}
+            {vm.createOpen && <PhoneFormModal onClose={vm.closeCreate} onCreated={vm.select}/>}
+            {vm.editingEntry && <PhoneFormModal key={vm.editingEntry.id} entry={vm.editingEntry} onClose={vm.closeEdit}/>}
+            {vm.importOpen &&
+                <ImportModal
+                    iDoc="modal:handbook-phone-import"
+                    onClose={vm.closeImport}
                     title="Імпорт телефонів"
                     templateUrl={phoneImportTemplateUrl}
                     columns={IMPORT_COLUMNS}
-                    previewMutation={previewImportMutation}
-                    commitMutation={commitImportMutation}
-                    onImported={(entries) => entries?.length && setSelectedId(entries[0].id)}
+                    previewSpec={PHONE_COMMANDS.previewImport}
+                    commitSpec={PHONE_COMMANDS.commitImport}
+                    onImported={(entries) => entries?.length && vm.select(entries[0].id)}
                 />
             }
         </HandbookLayout>
     );
-};
+});
 
-export default PhonesPage;
+/** Маршрут /handbook-phones (pageAccess). */
+export default function PhonesPage() {
+    const vm = useViewModel((deps) => new PhonesViewModel(deps));
+    return <PhonesView vm={vm} />;
+}

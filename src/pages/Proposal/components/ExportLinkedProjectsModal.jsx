@@ -1,4 +1,6 @@
-import React, {useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
+import { ExportLinkedProjectsViewModel } from "../viewmodel/ProposalViewModels.js";
 import {
     Button,
     Dialog,
@@ -7,23 +9,17 @@ import {
     DialogHeader,
     Switch,
     Textarea,
-    Tooltip,
     Typography
 } from "@material-tailwind/react";
-import LoadingButton from "../../../Components/Buttons/LoadingButton.jsx";
-import AdvancedSelect from "../../../Components/fields/AdvancedSelect.jsx";
-import {downloadFile, MAPPED_RESTRICTIONS, RESTRICTIONS} from "../../../utils.js";
-import {useMutation} from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import CustomToast from "../../../Components/CustomToast.jsx";
-import {usePage} from "@inertiajs/react";
+import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
+import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
+import {MAPPED_RESTRICTIONS, RESTRICTIONS} from "../../../lib/utils.js";
 
 
 const DEFAULT_SKIP_IDENTIFIER_CODES = ['doc:passport', 'doc:f_passport', 'doc:d_passport', 'doc:s_passport', 'doc:residence'];
 const DEFAULT_SKIP_ATTRIBUTE_CODES = ['birthplace', 'residence', 'regplace', 'occupation', 'partner_sanctions'];
 
 const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [], attributeTypes = [], ...dialogProps}) => {
-    const {auth} = usePage().props;
 
     const DEFAULT_RESTRICT_PROHIBITION = RESTRICTIONS.filter(r=> r === "11" || r === "12").map((r)=> ({value: r, label: r}));
     const DEFAULT_RESTRICT_COMPLETE = RESTRICTIONS.filter(r=> r === "2" || r === "3" || r === "9").map((r)=> ({value: r, label: r}));
@@ -34,7 +30,7 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
         .filter(i => DEFAULT_SKIP_ATTRIBUTE_CODES.includes(i.code))
         .map(i => ({value: i.id, label: i.caption}));
 
-    const [form, setForm] = useState({
+    const vm = useViewModel((deps) => new ExportLinkedProjectsViewModel({ ...deps, defaults: {
         changeQuotes: true,
         moveVesselToRestriction: true,
         restrictionsSeparateProcessingNum24: true,
@@ -47,95 +43,13 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
         skipAttributeTypes: defaultSkipAttributeTypes,
         useReasoningMacro: false,
         reasoningMacro: '[reasoning]',
-    });
-
-    const {mutate: getFile, isPending: getFilePending} = useMutation({
-        mutationFn: async ({actionId, typeId, id, form}) => {
-            const formParams = {
-                changeQuotes: form.changeQuotes,
-                moveVesselToRestriction: form.moveVesselToRestriction,
-                restrictionsSeparateProcessingNum24: form.restrictionsSeparateProcessingNum24,
-                moveAddressesToAdditionalInfo: form.moveAddressesToAdditionalInfo,
-                onlyReadyProjects: form.onlyReadyProjects,
-                shouldValidateIdentifier: form.shouldValidateIdentifier,
-                restrictionsFullProhibition: form.restrictionsFullProhibition.map(item => item.value),
-                restrictionsCompleteTermination: form.restrictionsCompleteTermination.map(item => item.value),
-                skipIdentifierTypes: form.skipIdentifierTypes.map(item => item.value),
-                skipAttributeTypes: form.skipAttributeTypes.map(item => item.value),
-                useReasoningMacro: form.useReasoningMacro,
-                reasoningMacro: form.reasoningMacro,
-            }
-            const response = await axios.get(`/api/proposal/${id}/export`, {
-                params: {
-                    actionTypeId: actionId,
-                    subjectTypeId: typeId,
-                    ...formParams
-                },
-                headers: {
-                    "userId": auth?.user?.id, 'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache',
-                    'Expires': '0',
-                }, responseType: 'blob',
-            });
-            const contentDisposition = response.headers["content-disposition"];
-            const utf8FilenameRegex = /filename\*=UTF-8''([\w%\-\.]+)(?:; ?|$)/i;
-            const asciiFilenameRegex = /^filename=(["']?)(.*?[^\\])\1(?:; ?|$)/i;
-            let filename = "";
-
-            if (utf8FilenameRegex.test(contentDisposition)) {
-                filename = decodeURIComponent(utf8FilenameRegex.exec(contentDisposition)[1]);
-            } else {
-                const filenameStart = contentDisposition.toLowerCase().indexOf('filename=');
-                if (filenameStart >= 0) {
-                    const partialDisposition = contentDisposition.slice(filenameStart);
-                    const matches = asciiFilenameRegex.exec(partialDisposition);
-                    if (matches != null && matches[2]) {
-                        filename = matches[2];
-                    }
-                }
-            }
-            downloadFile(response.data, filename);
-        },
-        onError: error => {
-            const contentType = error.response.headers['content-type'];
-            if (contentType && contentType.includes('application/json')) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    try {
-                        const errorData = JSON.parse(reader.result);
-                        if (errorData?.message) {
-                            const msg = `${errorData?.message} ${errorData?.error}`;
-                            toast.custom((t) => <CustomToast t={t} message={msg}/>)
-                        } else {
-                            toast.custom((t) => <CustomToast t={t} message={"Виникла помилка завантаження."}/>)
-                        }
-                    } catch (e) {
-                        console.error("Failed to parse error JSON");
-                    }
-                };
-                reader.readAsText(error.response.data);
-            }
-        }
-    });
-
-
-    const handleExport = () => {
-        if (getFilePending) {
-            return;
-        }
-        console.log(dialogProps);
-        getFile({form, ...dialogProps})
-    }
-
-
-    const toggleSwitch = ({target}) => {
-        setForm(prevState => ({...prevState, [target.name]: target.checked}));
-    }
-
-    const handleChangeOptions = (key = '') => (newSelectedIds) => {
-        setForm(prevState =>
-            ({...prevState, [key]: newSelectedIds}));
-    };
+    } }));
+    const form = vm.form;
+    const setForm = vm.setForm;
+    const getFilePending = vm.isPending;
+    const handleExport = () => vm.exportFile(dialogProps);
+    const toggleSwitch = ({target}) => setForm(prev => ({...prev, [target.name]: target.checked}));
+    const handleChangeOptions = (key = '') => (selected) => setForm(prev => ({...prev, [key]: selected}));
 
     return (
         <Dialog open={open} handler={onClose} size="md">
@@ -284,4 +198,4 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
     );
 };
 
-export default ExportLinkedProjectsModal;
+export default observer(ExportLinkedProjectsModal);

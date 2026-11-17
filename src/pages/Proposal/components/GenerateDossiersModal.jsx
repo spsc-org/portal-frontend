@@ -1,4 +1,6 @@
-import React, {useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
+import { GenerateDossiersViewModel } from "../viewmodel/ProposalViewModels.js";
 import {
     Button,
     Dialog,
@@ -9,74 +11,14 @@ import {
     Switch,
     Typography
 } from "@material-tailwind/react";
-import LoadingButton from "../../../Components/Buttons/LoadingButton.jsx";
-import {useMutation} from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import {usePage} from "@inertiajs/react";
+import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 
 const GenerateDossiersModal = ({open = false, onClose, ...dialogProps}) => {
-    const {auth, token} = usePage().props;
-
-    const [form, setForm] = useState({
-        includePhoto: true,
-        photoMode: 'first',
-        includeNotes: false,
-        outputFormat: 'docx',
-    });
-
-    const {mutate: generate, isPending} = useMutation({
-        mutationFn: async ({actionId, typeId, id, form}) => {
-            const response = await axios.post(`/api/proposal/${id}/generate-dossiers`, {
-                actionTypeId: actionId,
-                subjectTypeId: typeId,
-                includePhoto: form.includePhoto,
-                includeNotes: form.includeNotes,
-                outputFormat: form.outputFormat,
-                photoMode: form.photoMode,
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    "X-CSRF-Token": token,
-                    "userId": auth?.user?.id,
-                }
-            });
-            return response.data;
-        },
-        onSuccess: (data) => {
-            const filePath = data?.data?.filePath;
-            if (!filePath) {
-                return;
-            }
-            const filename = filePath.split(/[\\/]/).pop();
-            const url = `/api/project/download-dossier/${filename}`;
-            if (filename.endsWith('.html')) {
-                window.open(url, '_blank');
-            } else {
-                window.location.href = url;
-            }
-            toast.success(data?.message ?? 'Досьє згенеровано');
-            onClose();
-        },
-        onError: (error) => {
-            const message = error?.response?.data?.message ?? 'Виникла помилка генерації досьє';
-            toast.error(message);
-        }
-    });
-
-    const handleGenerate = () => {
-        if (isPending) {
-            return;
-        }
-        generate({...dialogProps, form});
-    }
-
-    const toggleSwitch = ({target}) => {
-        setForm(prevState => ({...prevState, [target.name]: target.checked}));
-    }
-
-    const setOption = (key, value) => () => {
-        setForm(prevState => ({...prevState, [key]: value}));
-    }
+    const vm = useViewModel((deps) => new GenerateDossiersViewModel(deps));
+    const { form, isPending } = vm;
+    const handleGenerate = () => vm.generate(dialogProps, onClose);
+    const toggleSwitch = ({target}) => vm.setForm(prev => ({...prev, [target.name]: target.checked}));
+    const setOption = (key, value) => () => vm.setForm(prev => ({...prev, [key]: value}));
 
     return (
         <Dialog data-i-doc="modal:proposal-view-generate-dossiers" open={open} handler={onClose} size="sm">
@@ -148,4 +90,4 @@ const GenerateDossiersModal = ({open = false, onClose, ...dialogProps}) => {
     );
 };
 
-export default GenerateDossiersModal;
+export default observer(GenerateDossiersModal);

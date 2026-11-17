@@ -1,14 +1,11 @@
-import React from "react";
-import StaffLayout from "./shared/ui/StaffLayout.jsx";
-import StaffAttendanceIndex from "../StaffAttendance/Index.jsx";
+import StaffLayout from "./shared/ui/StaffLayout.jsx"
+import StaffAttendanceIndex from "../StaffAttendance/Index.jsx"
 
-// Тонка сторінка-композиція: сама відвідуваність (StaffAttendance/Index.jsx)
-// лишається незмінною, окремим модулем — тут лише підключення спільної
-// оболонки /staff (бокове підменю). Перший пункт підменю.
+// Відвідуваність (StaffAttendance) — окремий модуль; тут лише оболонка /staff.
 const AttendancePage = () => (
-    <StaffLayout active="attendance">
-        <StaffAttendanceIndex/>
-    </StaffLayout>
-);
+  <StaffLayout active="attendance">
+    <StaffAttendanceIndex />
+  </StaffLayout>
+)
 
-export default AttendancePage;
+export default AttendancePage

@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from "react";
-import { useProjectOptionsQuery } from "../../../entities/project/queries.js";
-import { useRewriteRestrictionsMutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useMemo, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import BulkFormShell from "./BulkFormShell.jsx";
-import MultiSelect from "@/Components/fields/MultiSelect.jsx";
+import MultiSelect from "../../../../../components/fields/MultiSelect.jsx";
 
 // bulkTab3 — "Оновити обмежувальні заходи": ПОВНА заміна набору заходів
 // (не додавання, як у bulkTab2) — 25-й захід цією операцією теж не
@@ -10,7 +11,7 @@ import MultiSelect from "@/Components/fields/MultiSelect.jsx";
 // без цього NsdcRestrictions::getExtendedDict() віддає рядки в довільному
 // порядку БД, а не в логічному "1, 1-1, 2, 3...25" порядку.
 const RewriteRestrictionsForm = ({ projectIds, userId, onDone }) => {
-    const { data } = useProjectOptionsQuery(["restriction"], userId);
+    const data = useVM().cartModal.options;
     const restrictions = useMemo(() => {
         return Object.values(data?.restriction ?? {})
             .filter((r) => r.code !== "25")
@@ -24,7 +25,7 @@ const RewriteRestrictionsForm = ({ projectIds, userId, onDone }) => {
         [restrictions, codes],
     );
     const [reason, setReason] = useState("");
-    const mutation = useRewriteRestrictionsMutation();
+    const mutation = useVM().cartModal.cmd.rewriteRestrictions;
 
     const handleSubmit = () => {
         mutation.mutate([projectIds, codes, reason, userId], { onSuccess: (result) => onDone(result) });
@@ -44,7 +45,7 @@ const RewriteRestrictionsForm = ({ projectIds, userId, onDone }) => {
             onSubmit={handleSubmit}
             isPending={mutation.isPending}
             isError={mutation.isError}
-            errorMessage={getErrorMessage(mutation.error, "Не вдалося виконати операцію")}
+            errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
         >
             <MultiSelect
                 label="Сформуйте новий перелік обмежень"
@@ -58,4 +59,4 @@ const RewriteRestrictionsForm = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default RewriteRestrictionsForm;
+export default observer(RewriteRestrictionsForm);

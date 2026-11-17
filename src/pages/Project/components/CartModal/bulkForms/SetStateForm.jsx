@@ -1,17 +1,18 @@
-import React, { useMemo, useState } from "react";
-import { useProjectOptionsQuery } from "../../../entities/project/queries.js";
-import { useSetStateMutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useMemo, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import BulkFormShell from "./BulkFormShell.jsx";
 import { SelectField } from "./fields.jsx";
 
 // bulkTab9 — "Встановити стан".
 const SetStateForm = ({ projectIds, userId, onDone }) => {
-    const { data } = useProjectOptionsQuery(["state"], userId);
+    const data = useVM().cartModal.options;
     const states = useMemo(() => Object.values(data?.state ?? {}), [data]);
 
     const [stateId, setStateId] = useState("");
     const [reason, setReason] = useState("");
-    const mutation = useSetStateMutation();
+    const mutation = useVM().cartModal.cmd.setState;
 
     const handleSubmit = () => {
         mutation.mutate([projectIds, stateId, reason, userId], { onSuccess: (result) => onDone(result) });
@@ -26,7 +27,7 @@ const SetStateForm = ({ projectIds, userId, onDone }) => {
             onSubmit={handleSubmit}
             isPending={mutation.isPending}
             isError={mutation.isError}
-            errorMessage={getErrorMessage(mutation.error, "Не вдалося виконати операцію")}
+            errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
             disabled={!stateId}
         >
             <SelectField label="Оберіть стан" value={stateId} onChange={setStateId} options={states} />
@@ -34,4 +35,4 @@ const SetStateForm = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default SetStateForm;
+export default observer(SetStateForm);

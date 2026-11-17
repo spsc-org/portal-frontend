@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {Button, Spinner} from "@material-tailwind/react";
 
 /**

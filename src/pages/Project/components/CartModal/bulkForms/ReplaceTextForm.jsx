@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { useReplaceReasoningTextMutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import BulkFormShell from "./BulkFormShell.jsx";
 
 // bulkTab6 — "Замінити текст обґрунтування": пошук/заміна підрядка в тексті
@@ -9,7 +11,7 @@ const ReplaceTextForm = ({ projectIds, userId, onDone }) => {
     const [search, setSearch] = useState("");
     const [replace, setReplace] = useState("");
     const [reason, setReason] = useState("");
-    const mutation = useReplaceReasoningTextMutation();
+    const mutation = useVM().cartModal.cmd.replaceReasoningText;
 
     const handleSubmit = () => {
         mutation.mutate([projectIds, search, replace, reason, userId], { onSuccess: (result) => onDone(result) });
@@ -24,7 +26,7 @@ const ReplaceTextForm = ({ projectIds, userId, onDone }) => {
             onSubmit={handleSubmit}
             isPending={mutation.isPending}
             isError={mutation.isError}
-            errorMessage={getErrorMessage(mutation.error, "Не вдалося виконати операцію")}
+            errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
             disabled={!search}
         >
             <div className="flex flex-col gap-3">
@@ -51,4 +53,4 @@ const ReplaceTextForm = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default ReplaceTextForm;
+export default observer(ReplaceTextForm);

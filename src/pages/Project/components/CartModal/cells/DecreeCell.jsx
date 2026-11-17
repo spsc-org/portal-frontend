@@ -1,4 +1,3 @@
-import React from "react";
 
 // Порт TableManager.js:#renderCellDecree() + core.js:formatDateExpiredAt().
 // Легасі-кошик (cartManager.js) фактично викликає цю функцію НЕПРАВИЛЬНО —
@@ -24,13 +23,16 @@ const DecreeCell = ({ decreeCode, expiredAt, decree }) => {
 
     const isActive = decree ? decree.isActive : true;
 
+    // Дата закінчення дії санкцій (дата указу + термін), а не дата самого указу.
+    // decree.expiredAt рахує makePrecomputedData; project.expiredAt — запасний варіант для
+    // проєктів, чий precomputedData ще не перераховано.
+    const expiry = decree?.expiredAt ?? expiredAt;
     let dateNode = null;
-    if (decree?.date) {
-        dateNode = <span className="text-xs text-gray-500">{decree.date.substring(0, 10)}</span>;
-    } else if (expiredAt) {
+    if (expiry) {
+        const decreeDate = decree?.dateLocal ? `, указ від ${decree.dateLocal}` : "";
         dateNode = (
-            <span className="text-xs" title="Термін закінчення дії">
-                {formatDateExpiredAt(expiredAt)}
+            <span className="text-xs" title={`Термін закінчення дії${decreeDate}`}>
+                до {formatDateExpiredAt(expiry)}
             </span>
         );
     }

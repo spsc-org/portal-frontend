@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { TicketsButtonViewModel } from "../../viewmodel/DossierViewModels.js";
+
 import {Tooltip} from "@material-tailwind/react";
-import {useTicketsQuery} from "../../entities/dossierTicket/queries.js";
 import {isOpen} from "../../entities/dossierTicket/model.js";
-import {hasDraft} from "../../entities/dossierTicket/draftStorage.js";
 import SingleTicketModal from "./SingleTicketModal.jsx";
 import CreateTicketModal from "./CreateTicketModal.jsx";
 
@@ -11,18 +12,11 @@ import CreateTicketModal from "./CreateTicketModal.jsx";
 // не єдина модалка зі списком усіх (плутала перегляд готового тікета з чорновиком
 // нового). Окрема іконка "+" (або "чернетка", якщо є незбережений драфт) — CreateTicketModal.
 const TicketsButton = ({entityType, entityId, entityLabel, canManage, className = ""}) => {
-    const {data: tickets} = useTicketsQuery(entityType, entityId);
-    const [openTicketId, setOpenTicketId] = useState(null);
-    const [creating, setCreating] = useState(false);
-    const [draftPending, setDraftPending] = useState(() => hasDraft(entityType, entityId));
-
-    useEffect(() => {
-        if (!creating) {
-            setDraftPending(hasDraft(entityType, entityId));
-        }
-    }, [creating, entityType, entityId]);
-
-    const list = tickets ?? [];
+    const vm = useViewModel((deps) => new TicketsButtonViewModel({ ...deps, entityType, entityId }));
+    const { openTicketId, creating, draftPending } = vm;
+    const setOpenTicketId = vm.setOpenTicketId;
+    const setCreating = vm.setCreating;
+    const list = vm.tickets;
 
     return (
         <div data-i-doc="component:dossier-tickets-button" className={`inline-flex items-center gap-1 ${className}`}>
@@ -70,16 +64,16 @@ const TicketsButton = ({entityType, entityId, entityLabel, canManage, className 
                     canManage={canManage}
                 />
             )}
-            <CreateTicketModal
+            {creating && <CreateTicketModal
                 open={creating}
                 onClose={() => setCreating(false)}
                 entityType={entityType}
                 entityId={entityId}
                 entityLabel={entityLabel}
                 onCreated={(ticket) => setOpenTicketId(ticket.id)}
-            />
+            />}
         </div>
     );
 };
 
-export default TicketsButton;
+export default observer(TicketsButton);

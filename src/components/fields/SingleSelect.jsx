@@ -1,6 +1,5 @@
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
-import React from "react";
 
 /**
  * isCreatable=true -> дозволяє створити нову опцію (react-select/creatable),

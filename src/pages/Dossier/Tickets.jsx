@@ -1,11 +1,9 @@
-import React, {useMemo, useState} from "react";
-import {usePage} from "@inertiajs/react";
-import {useQuery} from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { TicketsPageViewModel } from "./viewmodel/DossierViewModels.js";
+import { usePageTitle } from "../../shared/hooks/usePageTitle.js";
 import {Spinner} from "@material-tailwind/react";
-import MultiSelectChip from "../../Components/fields/MultiSelectChip.jsx";
-import {fetchAllTickets} from "./entities/dossierTicket/api.js";
-import {useTicketOptionsQuery} from "./entities/dossierTicket/queries.js";
-import {canChangeLink, canViewProfiles} from "./shared/lib/permissions.js";
+import MultiSelectChip from "../../components/fields/MultiSelectChip.jsx";
 import TicketListRow from "./widgets/TicketsModal/TicketListRow.jsx";
 import TicketDetailPanel from "./widgets/TicketsModal/TicketDetailPanel.jsx";
 
@@ -21,39 +19,20 @@ const DEFAULT_FILTERS = {states: [], entityType: null, authorIds: []};
 // (TaskViewPanel) — TicketDetailPanel, перевикористовує спільний MetaRow з Components/.
 // Ізольований модуль: не показує й не редагує App\Models\ProjectTicket.
 const Tickets = () => {
-    const {auth} = usePage().props;
-    const canManage = canChangeLink(auth);
-    const {data: options} = useTicketOptionsQuery();
+    const vm = useViewModel((deps) => new TicketsPageViewModel({ ...deps, initialFilters: DEFAULT_FILTERS }));
+    usePageTitle("Тікети досьє");
+    const { canView, canManage } = vm.rights;
+    const options = vm.options;
     const stateOptions = options?.states ?? [];
     const entityTypeOptions = options?.entityTypes ?? [];
     const authorOptions = options?.authors ?? [];
+    const { filters, page, selectedId, hasActive, tickets, meta, selectedTicket, isFetching } = vm;
+    const setFilters = vm.setFilters;
+    const setPage = vm.setPage;
+    const setSelectedId = vm.setSelectedId;
+    const clearFilters = vm.clearFilters;
 
-    const [filters, setFilters] = useState(DEFAULT_FILTERS);
-    const [page, setPage] = useState(1);
-    const [selectedId, setSelectedId] = useState(null);
-
-    const hasActive = Boolean(filters.states.length || filters.entityType || filters.authorIds.length);
-    const clearFilters = () => {
-        setFilters(DEFAULT_FILTERS);
-        setPage(1);
-    };
-
-    const {data, isFetching} = useQuery({
-        queryKey: ["dossier-tickets-all", filters, page],
-        queryFn: () => fetchAllTickets({
-            state: filters.states,
-            entityType: filters.entityType,
-            authorIds: filters.authorIds,
-            page,
-            perPage: 50,
-        }),
-    });
-
-    const tickets = data?.data ?? [];
-    const meta = data?.meta;
-    const selectedTicket = useMemo(() => tickets.find((t) => t.id === selectedId) ?? null, [tickets, selectedId]);
-
-    if (!canViewProfiles(auth)) {
+    if (!canView) {
         return (
             <div className="flex h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
                 <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
@@ -68,10 +47,7 @@ const Tickets = () => {
         <div data-i-doc="page:dossier-tickets" className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             <div className="max-w-[1200px] mx-auto px-4 py-6">
                 {/* Sticky-панель фільтрів — той самий принцип, що й TaskFilters на /task */}
-                <div className="sticky top-0 z-20 -mx-1 mb-3 flex flex-wrap items-center gap-1.5 bg-gray-100/90 px-1 py-2 backdrop-blur dark:bg-gray-900/90">
-                    <h1 className="text-base font-bold flex items-center gap-2 mr-1">
-                        <i className="fa-solid fa-ticket"></i>Тікети досьє
-                    </h1>
+                <div className="sticky top-[50px] z-20 -mx-1 mb-3 flex flex-wrap items-center gap-1.5 bg-gray-100/90 px-1 py-2 backdrop-blur dark:bg-gray-900/90">
                     <MultiSelectChip
                         label="Стан"
                         icon="fa-regular fa-circle-half-stroke"
@@ -195,6 +171,7 @@ const Tickets = () => {
                     <TicketDetailPanel
                         ticket={selectedTicket}
                         canManage={canManage}
+                        onChanged={vm.invalidateAll}
                         onClose={() => setSelectedId(null)}
                     />
                 </div>
@@ -203,4 +180,4 @@ const Tickets = () => {
     );
 };
 
-export default Tickets;
+export default observer(Tickets);

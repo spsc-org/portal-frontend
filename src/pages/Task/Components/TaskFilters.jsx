@@ -1,9 +1,8 @@
-import React from "react";
 import {Button, Menu, MenuHandler, MenuItem, MenuList} from "@material-tailwind/react";
-import SearchInput from "../../../Components/fields/SearchInput.jsx";
-import MultiSelectChip from "../../../Components/fields/MultiSelectChip.jsx";
-import ChipToggle, {chipToggleClassName} from "../../../Components/fields/ChipToggle.jsx";
-import ChipResetButton from "../../../Components/fields/ChipResetButton.jsx";
+import SearchInput from "../../../components/fields/SearchInput.jsx";
+import MultiSelectChip from "../../../components/fields/MultiSelectChip.jsx";
+import ChipToggle, {chipToggleClassName} from "../../../components/fields/ChipToggle.jsx";
+import ChipResetButton from "../../../components/fields/ChipResetButton.jsx";
 
 const optionCaption = (option) => option?.caption || option?.name || option?.label || "";
 
@@ -27,7 +26,7 @@ const TaskFilters = ({
 
     return (
         // Стікі-панель: непрозорий фон (не /90) — інакше в dark просвічує світлий контент
-        <div data-i-doc="view:task-filters" className="sticky top-0 z-20 -mx-1 mb-3 flex flex-wrap items-center gap-1.5 border-b border-slate-200 bg-white px-1 py-2 dark:border-slate-700 dark:bg-neutral-900">
+        <div data-i-doc="view:task-filters" className="sticky top-[50px] z-20 -mx-1 mb-3 flex flex-wrap items-center gap-1.5 border-b border-slate-200 bg-white px-1 py-2 dark:border-slate-700 dark:bg-neutral-900">
             <div className="w-56">
                 <SearchInput
                     size="xs"

@@ -1,7 +1,9 @@
-import React from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { DossierOptionsViewModel } from "../../viewmodel/DossierViewModels.js";
+
 import {sourceType} from "../../shared/config/sourceTypes.js";
 import {connectionStatus, isSanctionExpired} from "../../entities/dossierConnection/model.js";
-import {useDossierOptionsQuery} from "../../entities/dossier/queries.js";
 
 const MODEL_CLASS_PROJECT = 1;
 
@@ -22,7 +24,7 @@ const ConnectionListItem = ({connection, isActive, onClick}) => {
     // Стан проєкту (project.stateId, лише для звʼязків-проєктів) — важливо бачити одразу
     // в Реєстрі звʼязків, без відкриття Картки звʼязку: "Готово"/"Недоцільно"/"Ні" тощо
     // прямо впливають на те, чи варто довіряти цьому звʼязку.
-    const {data: options} = useDossierOptionsQuery();
+    const options = useViewModel((deps) => new DossierOptionsViewModel(deps)).options;
     const projectState = connection.model_class === MODEL_CLASS_PROJECT && summary?.state_id != null
         ? options?.projectState?.find((item) => item.id === summary.state_id)
         : null;
@@ -100,4 +102,4 @@ const ConnectionListItem = ({connection, isActive, onClick}) => {
     );
 };
 
-export default ConnectionListItem;
+export default observer(ConnectionListItem);

@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {Spinner} from "@material-tailwind/react";
-import SingleSelect from "../../../../Components/fields/SingleSelect.jsx";
-import MetaRow from "../../../../Components/MetaRow.jsx";
+import SingleSelect from "../../../../components/fields/SingleSelect.jsx";
+import MetaRow from "../../../../components/MetaRow.jsx";
 
 const optionCaption = (option) => option?.caption || option?.name || option?.label || "";
 

@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable react-refresh/only-export-components -- реєстр презентерів комірок (об'єкт колонка → компонент) */
 import DecreeBadge from "../atoms/DecreeBadge.jsx";
 import ExpiryDateBadge from "../atoms/ExpiryDateBadge.jsx";
 

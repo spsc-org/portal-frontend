@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { observer } from 'mobx-react-lite';
+import { useViewModel } from '../../../../shared/mvvm/useViewModel.js';
+import { StatisticsViewModel } from '../../viewmodel/AttendanceModalViewModels.js';
 import PropTypes from 'prop-types';
-import { Dialog, DialogHeader, Typography } from "@material-tailwind/react";
-import { format } from 'date-fns';
-import { useStaffStatistics } from '../../hooks/index.js';
+import { Dialog, DialogHeader } from "@material-tailwind/react";
 
-const StatisticsModal = ({ isOpen, onClose }) => {
-    const [statisticsDate, setStatisticsDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-
-    const { data: statisticsResponse, isFetching: isStatisticsLoading } = useStaffStatistics(statisticsDate, isOpen);
-
-    const statistics = statisticsResponse?.data || {};
-    const statisticsDate_obj = statisticsResponse?.date;
-    const isToday = statisticsDate_obj === format(new Date(), 'yyyy-MM-dd');
+const StatisticsModalInner = observer(({ isOpen, onClose }) => {
+    const vm = useViewModel((deps) => new StatisticsViewModel(deps));
+    const statisticsDate = vm.date;
+    const setStatisticsDate = vm.setDate;
+    const statisticsResponse = vm.response;
+    const isStatisticsLoading = vm.isLoading;
+    const statistics = vm.statistics;
+    const isToday = vm.isToday;
 
     return (
         <Dialog data-i-doc="modal:staff-attendance-statistics" open={isOpen} handler={onClose} size="xl">
@@ -172,7 +172,10 @@ const StatisticsModal = ({ isOpen, onClose }) => {
             </div>
         </Dialog>
     );
-};
+});
+
+/** Монтується лише відкритою: дата й запит живуть, поки модалка відкрита. */
+const StatisticsModal = (props) => (props.isOpen ? <StatisticsModalInner {...props} /> : null);
 
 StatisticsModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,

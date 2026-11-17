@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { OrphansViewModel } from "../../viewmodel/DossierViewModels.js";
+
 import {Spinner} from "@material-tailwind/react";
-import SearchInput from "../../../../Components/fields/SearchInput.jsx";
-import MultiSelectChip from "../../../../Components/fields/MultiSelectChip.jsx";
-import ConfirmModal from "../../../../Components/Modal/ConfirmModal.jsx";
+import SearchInput from "../../../../components/fields/SearchInput.jsx";
+import MultiSelectChip from "../../../../components/fields/MultiSelectChip.jsx";
+import ConfirmModal from "../../../../components/Modal/ConfirmModal.jsx";
 import SectionLabel from "../../shared/ui/SectionLabel.jsx";
 import ModeratorBlock from "../../shared/ui/ModeratorBlock.jsx";
-import {useInfiniteOrphanProjectsQuery} from "../../entities/orphanProject/queries.js";
-import {useDossierOptionsQuery} from "../../entities/dossier/queries.js";
-import {useOrphanMutations} from "../../features/manage-orphans/useOrphanMutations.js";
 import OrphanRow from "./OrphanRow.jsx";
 
 const byIds = (options, ids) => options.filter((option) => ids.includes(option.id));
@@ -31,35 +31,22 @@ const readPageSizePreference = () => {
 // режимі. Незалежна від лівого Реєстру досьє — той лишається звичайним пошуком-довідником
 // (id підходящого досьє переписується вручну сюди, жодного програмного звʼязку між панелями).
 const OrphansPanel = ({canManage, onClose}) => {
-    const [q, setQ] = useState("");
-    const [subjectTypeIds, setSubjectTypeIds] = useState([]);
-    const [stateIds, setStateIds] = useState([]);
-    const [pageSize, setPageSize] = useState(readPageSizePreference);
-    useEffect(() => {
-        try {
-            localStorage.setItem(PAGE_SIZE_STORAGE_KEY, String(pageSize));
-        } catch {
-            // localStorage може бути недоступним (приватний режим) — ігноруємо
-        }
-    }, [pageSize]);
-
-    // Довідники — той самий GET /api/dossier/options, що й Реєстр досьє (staleTime: Infinity) —
-    // жодних окремих ендпоінтів під фільтри цієї панелі.
-    const {data: options} = useDossierOptionsQuery();
+    const vm = useViewModel((deps) => new OrphansViewModel({ ...deps, readPageSize: readPageSizePreference }));
+    const { q, subjectTypeIds, stateIds, pageSize, showBulkConfirm, orphans, total, options } = vm;
+    const setQ = vm.setQ;
+    const setSubjectTypeIds = vm.setSubjectTypeIds;
+    const setStateIds = vm.setStateIds;
+    const setPageSize = vm.setPageSize;
+    const setShowBulkConfirm = vm.setShowBulkConfirm;
     const subjectTypeOptions = options?.subjectTypes ?? [];
     const stateOptions = options?.projectState ?? [];
-
-    const {data, isFetching, hasNextPage, fetchNextPage, isFetchingNextPage} = useInfiniteOrphanProjectsQuery({
-        q,
-        subjectTypeIds,
-        stateIds,
-        limit: pageSize,
-    });
-    const {linkMutation, createMutation, bulkCreateMutation} = useOrphanMutations();
-    const [showBulkConfirm, setShowBulkConfirm] = useState(false);
-
-    const orphans = (data?.pages ?? []).flatMap((page) => page.data ?? []);
-    const total = data?.pages?.[0]?.meta?.total ?? 0;
+    const { isFetching, hasNextPage, isFetchingNextPage } = vm.listQuery;
+    const fetchNextPage = () => vm.listQuery.fetchNextPage();
+    const { link: linkMutation, create: createMutation } = vm.cmd;
+    const bulkCreateMutation = {
+        mutate: (ids, opts) => vm.bulkCreate(ids).then(() => opts?.onSuccess?.()),
+        isPending: vm.cmd.bulkCreate.isPending,
+    };
 
     return (
         <div data-i-doc="view:sanction-profiles-orphans-panel" className="h-full flex flex-col overflow-hidden bg-white dark:bg-gray-900">
@@ -191,4 +178,4 @@ const OrphansPanel = ({canManage, onClose}) => {
     );
 };
 
-export default OrphansPanel;
+export default observer(OrphansPanel);

@@ -1,12 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
 import { Dialog, DialogHeader, DialogBody, DialogFooter, Button, Select, Option, Input, Textarea, Checkbox } from "@material-tailwind/react";
-import toast from 'react-hot-toast';
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { usePage } from '@inertiajs/react';
-import { differenceInCalendarDays, parseISO, isValid } from 'date-fns';
-import CustomToast from "@/Components/CustomToast.jsx";
-import { VALIDATION_MESSAGES } from '../../constants/attendanceConfig.js';
 import StatusToggle from '../StatusToggle.jsx';
 
 // Українська плюралізація: 1 день, 2-4 дні, 5+ днів (11-14 — завжди днів)
@@ -19,114 +13,21 @@ const formatDaysLabel = (n) => {
     return 'днів';
 };
 
-const AddEditAbsenceModal = ({
-    isOpen,
-    onClose,
-    editingAbsence,
-    data,
-    setData,
-    reset,
-    options,
-    onOpenDelete
-}) => {
-    const { token } = usePage().props;
-    const queryClient = useQueryClient();
-    const [isOpenEnded, setIsOpenEnded] = useState(!data.end_date);
-    const [documents, setDocuments] = useState([]);
-
-    // Кількість календарних днів включно з першим і останнім; null — коли рахувати нема з чого
-    const dayCount = useMemo(() => {
-        if (isOpenEnded || !data.start_date || !data.end_date) {
-            return null;
-        }
-        const start = parseISO(data.start_date);
-        const end = parseISO(data.end_date);
-        if (!isValid(start) || !isValid(end)) {
-            return null;
-        }
-        return differenceInCalendarDays(end, start) + 1;
-    }, [data.start_date, data.end_date, isOpenEnded]);
-
-    useEffect(() => {
-        if (isOpen && editingAbsence?.id) {
-            setDocuments(editingAbsence.documents || []);
-            setIsOpenEnded(!editingAbsence.end_date);
-        } else {
-            setDocuments([]);
-        }
-        if (isOpen && !editingAbsence) {
-            setData('status', 'approved');
-            setData('type', 'remote');
-            setIsOpenEnded(false);
-        }
-    }, [isOpen, editingAbsence]);
-
-    const submitMutation = useMutation({
-        mutationFn: async (payload) => {
-            const url = editingAbsence ? `/staff/${editingAbsence.id}` : '/staff';
-            const method = editingAbsence ? 'PATCH' : 'POST';
-            const response = await axios({
-                method,
-                url,
-                data: payload,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': token,
-                }
-            });
-            return response.data;
-        },
-        onSuccess: () => {
-            toast.success(editingAbsence ? 'Заявку успішно оновлено' : 'Заявку успішно створено');
-        },
-        onError: ({ response }) => {
-            const message = response?.data?.message || 'Помилка при збереженні заявки';
-            toast.custom((t) => <CustomToast t={t} title="Помилка збереження заявки" message={message}/>);
-        },
-        onSettled: (data, error) => {
-            if (!error) {
-                onClose();
-                reset();
-                queryClient.invalidateQueries({ queryKey: ['staff-calendar'] });
-            }
-        },
-    });
+/** vm — AttendanceViewModel (форма заявки живе у VM сторінки). */
+const AddEditAbsenceModal = ({ vm }) => {
+    const isOpen = vm.isCreateModalOpen;
+    const onClose = vm.closeForm;
+    const editingAbsence = vm.editingAbsence;
+    const data = vm.form;
+    const setData = vm.setData;
+    const options = vm.options;
+    const onOpenDelete = vm.openDeleteFromForm;
+    const { isOpenEnded, setIsOpenEnded, dayCount } = vm;
+    const submitMutation = vm.cmd.saveAbsence;
 
     const submitRequest = (e) => {
         e.preventDefault();
-
-        if (!data.user_id) {
-            toast.custom((t) => <CustomToast t={t} title="Помилка" message={VALIDATION_MESSAGES.SELECT_EMPLOYEE} />);
-            return;
-        }
-
-        if (!data.type) {
-            toast.custom((t) => <CustomToast t={t} title="Помилка" message={VALIDATION_MESSAGES.SELECT_TYPE} />);
-            return;
-        }
-
-        if (!data.start_date) {
-            toast.custom((t) => <CustomToast t={t} title="Помилка" message={VALIDATION_MESSAGES.SPECIFY_START_DATE} />);
-            return;
-        }
-
-        if (!isOpenEnded && !data.end_date) {
-            toast.custom((t) => <CustomToast t={t} title="Помилка" message={VALIDATION_MESSAGES.SPECIFY_END_DATE} />);
-            return;
-        }
-
-        if (!isOpenEnded && new Date(data.start_date) > new Date(data.end_date)) {
-            toast.custom((t) => <CustomToast t={t} title="Помилка" message={VALIDATION_MESSAGES.INVALID_DATE_RANGE} />);
-            return;
-        }
-
-        const payload = {
-            ...data,
-            user_id: parseInt(data.user_id, 10),
-            end_date: isOpenEnded ? null : data.end_date,
-            travel_days: parseInt(data.travel_days, 10) || 0
-        };
-        submitMutation.mutate(payload);
+        vm.submitForm();
     };
 
     return (
@@ -260,37 +161,7 @@ const AddEditAbsenceModal = ({
 };
 
 AddEditAbsenceModal.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    editingAbsence: PropTypes.shape({
-        id: PropTypes.number,
-        user_id: PropTypes.number,
-        type_slug: PropTypes.string,
-        status_slug: PropTypes.string,
-        start_date: PropTypes.string,
-        end_date: PropTypes.string,
-        reason: PropTypes.string,
-        travel_days: PropTypes.number,
-        documents: PropTypes.array,
-    }),
-    data: PropTypes.shape({
-        id: PropTypes.string,
-        user_id: PropTypes.string,
-        type: PropTypes.string,
-        status: PropTypes.string,
-        start_date: PropTypes.string,
-        end_date: PropTypes.string,
-        reason: PropTypes.string,
-        travel_days: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    }).isRequired,
-    setData: PropTypes.func.isRequired,
-    reset: PropTypes.func.isRequired,
-    options: PropTypes.shape({
-        users: PropTypes.array,
-        absence_types: PropTypes.array,
-        statuses: PropTypes.array,
-    }).isRequired,
-    onOpenDelete: PropTypes.func.isRequired,
+    vm: PropTypes.object.isRequired,
 };
 
-export default AddEditAbsenceModal;
+export default observer(AddEditAbsenceModal);

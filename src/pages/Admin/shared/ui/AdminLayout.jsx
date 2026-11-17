@@ -1,8 +1,8 @@
-import React from "react";
-import SecondaryNavLayout from "../../../../Components/SecondaryNav/SecondaryNavLayout.jsx";
-import {filterAccessibleNavItems} from "../../../../Components/SecondaryNav/filterAccessibleNavItems.js";
+import {observer} from "mobx-react-lite";
+import SecondaryNavLayout from "../../../../components/SecondaryNav/SecondaryNavLayout.jsx";
+import {filterAccessibleNavItems} from "../../../../components/SecondaryNav/filterAccessibleNavItems.js";
 import {ADMIN_NAVIGATION} from "../config/navigation.js";
-import {useMe} from "../../../../hooks/useMe.js";
+import {useSession} from "../../../../stores/storeHooks.js";
 
 // Тонка обгортка над спільним SecondaryNavLayout — той самий принцип, що й
 // HandbookLayout.jsx/StaffLayout.jsx. Користувачі/Групи/Нотифікації —
@@ -13,8 +13,8 @@ import {useMe} from "../../../../hooks/useMe.js";
 // споживачу нічого прокидувати не треба) — якщо після фільтрації лишається
 // ≤1 пункт, SecondaryNavLayout сам ховає панель повністю.
 const AdminLayout = ({active, children, "data-i-doc": dataIDoc}) => {
-    const me = useMe();
-    const accessiblePages = me.data?.access?.pages ?? [];
+    const {me} = useSession();
+    const accessiblePages = me?.access?.pages ?? [];
 
     return (
         <SecondaryNavLayout data-i-doc={dataIDoc} title="Адміністрування" items={filterAccessibleNavItems(ADMIN_NAVIGATION, accessiblePages)} active={active}>
@@ -23,4 +23,4 @@ const AdminLayout = ({active, children, "data-i-doc": dataIDoc}) => {
     );
 };
 
-export default AdminLayout;
+export default observer(AdminLayout);

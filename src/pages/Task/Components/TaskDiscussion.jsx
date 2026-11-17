@@ -1,67 +1,28 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
+import { TaskDiscussionViewModel } from "../viewmodel/TaskViewModels.js";
 import {IconButton, Spinner} from "@material-tailwind/react";
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useRef} from "react";
 import {format} from "date-fns";
-import toast from "react-hot-toast";
 
 // Обговорення задачі (чат учасників): власник + пов'язані особи можуть
 // писати незалежно від того, чи власник у списку учасників. М'яке
 // автооновлення списку кожні 20с (без Reverb — окрема майбутня задача).
 // Винесено з TaskViewPanel.jsx.
-const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth, token}) => {
-    const queryClient = useQueryClient();
-
-    const {data: commentsResponse} = useQuery({
-        queryKey: ['task-comments', taskId],
-        queryFn: async () => {
-            const response = await axios.get(`/api/task/${taskId}/comments`, {
-                headers: {"userId": auth?.user?.id}
-            });
-            return response.data;
-        },
-        enabled: Boolean(taskId),
-        refetchInterval: 20000,
-    });
-    const comments = commentsResponse?.data || [];
-
-    // Писати можуть власник задачі (завжди, незалежно від участі) та учасники
-    const canComment = useMemo(() => {
-        const currentUserId = auth?.user?.id;
-        if (createdUserId === currentUserId) return true;
-        return assignedUsers.some(user => user.id === currentUserId);
-    }, [createdUserId, assignedUsers, auth]);
-
-    const [commentDraft, setCommentDraft] = useState("");
+const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth}) => {
+    const vm = useViewModel((deps) => new TaskDiscussionViewModel({ ...deps, taskId }));
+    const comments = vm.comments;
+    const canComment = vm.canComment(createdUserId, assignedUsers);
+    const commentDraft = vm.commentDraft;
+    const setCommentDraft = vm.setCommentDraft;
+    const sendComment = vm.send;
+    const addCommentMutation = vm.addCmd;
     const commentsEndRef = useRef(null);
 
-    // Автоскрол стрічки обговорення до останнього повідомлення
+    // Автоскрол стрічки обговорення до останнього повідомлення (DOM — у View).
     useEffect(() => {
         commentsEndRef.current?.scrollIntoView({block: "nearest"});
     }, [comments.length]);
-
-    const addCommentMutation = useMutation({
-        mutationFn: async (body) => {
-            const response = await axios.post(`/api/task/${taskId}/comments`, {body}, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    "X-CSRF-Token": token,
-                    "userId": auth?.user?.id,
-                }
-            });
-            return response.data;
-        },
-        onSuccess: () => {
-            setCommentDraft("");
-            queryClient.invalidateQueries({queryKey: ['task-comments', taskId]});
-        },
-        onError: ({response}) => toast.error(response?.data?.message || "Не вдалося надіслати повідомлення"),
-    });
-
-    const sendComment = () => {
-        const body = commentDraft.trim();
-        if (!body || addCommentMutation.isPending) return;
-        addCommentMutation.mutate(body);
-    };
 
     return (
         <div className="mt-4 border-t border-slate-200 pt-3 dark:border-slate-700">
@@ -138,4 +99,4 @@ const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth, token}
     );
 };
 
-export default TaskDiscussion;
+export default observer(TaskDiscussion);

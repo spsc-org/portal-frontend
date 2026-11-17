@@ -1,14 +1,13 @@
-import React, {useState} from "react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { DuplicatesViewModel } from "../../viewmodel/DossierViewModels.js";
+import {useState} from "react";
 import {Spinner} from "@material-tailwind/react";
 import {MODEL_CLASS_OPTIONS} from "../../shared/config/sourceTypes.js";
 import {subjectType} from "../../shared/config/subjectTypes.js";
-import {useDuplicatesSearch} from "./useDuplicatesSearch.js";
-import {linkConnection} from "../../entities/dossierConnection/api.js";
+
 import {profileTitle} from "../../entities/dossier/model.js";
 import {criteriaChipClasses, criteriaList} from "../../entities/dossierConnection/model.js";
-import {sanctionProfileKeys} from "../../shared/lib/queryKeys.js";
 
 const scoreColorClasses = (score) => {
     if (score >= 0.95) return "text-green-600 dark:text-green-400";
@@ -23,29 +22,16 @@ const DuplicatesPanel = ({onClose, canLink}) => {
     const [modelId, setModelId] = useState("");
     // Заморожене джерело останнього пошуку: "Прив'язати" використовує саме його,
     // щоб редагування полів після пошуку не прив'язало інше джерело.
-    const [searchedSource, setSearchedSource] = useState(null);
-    const duplicatesSearch = useDuplicatesSearch();
-    const queryClient = useQueryClient();
-
-    const linkMutation = useMutation({
-        mutationFn: ({profileId}) =>
-            linkConnection(profileId, {modelClass: searchedSource.modelClass, modelId: searchedSource.modelId}),
-        onSuccess: (_, {profileId}) => {
-            toast.success("Джерело прив'язано до профілю-кандидата");
-            queryClient.invalidateQueries({queryKey: ["sanction-profiles"]});
-            queryClient.invalidateQueries({queryKey: sanctionProfileKeys.detail(profileId)});
-        },
-        onError: () => toast.error("Не вдалося прив'язати джерело"),
-    });
+    const vm = useViewModel((deps) => new DuplicatesViewModel(deps));
+    const duplicatesSearch = vm.searchCmd;
+    const linkMutation = vm.linkCmd;
 
     const handleSearch = () => {
         if (!modelId) return;
-        const source = {modelClass: Number(modelClass), modelId: Number(modelId)};
-        setSearchedSource(source);
-        duplicatesSearch.mutate(source);
+        vm.search({modelClass: Number(modelClass), modelId: Number(modelId)});
     };
 
-    const candidates = duplicatesSearch.data ?? [];
+    const candidates = vm.candidates;
 
     return (
         <div data-i-doc="component:sanction-profiles-duplicates-panel" className="mt-4 bg-white border border-indigo-200 rounded-[14px] shadow-sm overflow-hidden dark:bg-gray-900 dark:border-indigo-800">
@@ -153,4 +139,4 @@ const DuplicatesPanel = ({onClose, canLink}) => {
     );
 };
 
-export default DuplicatesPanel;
+export default observer(DuplicatesPanel);

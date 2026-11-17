@@ -1,4 +1,3 @@
-import React from "react";
 import {Field, LinkValue, ListField, splitAliases} from "./fieldPrimitives.jsx";
 
 // reg_id тут — "сирий" комбінований рядок на кшталт "(IMO): 123 (MMSI): 456" (те саме

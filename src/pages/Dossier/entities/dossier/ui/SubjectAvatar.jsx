@@ -1,4 +1,3 @@
-import React from "react";
 import {subjectType} from "../../../shared/config/subjectTypes.js";
 
 const SIZE_CLASSES = {

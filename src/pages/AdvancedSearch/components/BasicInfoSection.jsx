@@ -1,15 +1,16 @@
-import React from 'react';
 import {Tooltip} from "@material-tailwind/react";
 
-const BasicInfoSection = ({record, type, dataset, group, typeId, datasetId}) => {
+// Хелпери розмітки — на рівні модуля (не створюються заново в кожному рендері).
+// Helper для елемента інформації
+const InfoItem = ({label, children, className = ""}) => (
+    <div className={`flex items-center gap-1.5 ${className}`}>
+        <span className="font-semibold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wide">{label}:</span>
+        <span className="text-gray-900 dark:text-slate-200 text-sm font-medium">{children}</span>
+    </div>
+);
 
-    // Helper для елемента інформації
-    const InfoItem = ({label, children, className = ""}) => (
-        <div className={`flex items-center gap-1.5 ${className}`}>
-            <span className="font-semibold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wide">{label}:</span>
-            <span className="text-gray-900 dark:text-slate-200 text-sm font-medium">{children}</span>
-        </div>
-    );
+
+const BasicInfoSection = ({record, type, dataset, group, typeId, datasetId}) => {
 
     return (
         <div className="bg-gray-50 dark:bg-slate-700/50 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600 flex flex-wrap gap-x-6 gap-y-2 items-center">

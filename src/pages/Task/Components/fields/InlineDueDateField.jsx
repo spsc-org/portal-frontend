@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {Spinner} from "@material-tailwind/react";
 import {format, isPast, isToday} from "date-fns";
-import DatePicker from "../../../../Components/fields/DatePicker.jsx";
-import MetaRow from "../../../../Components/MetaRow.jsx";
+import DatePicker from "../../../../components/fields/DatePicker.jsx";
+import MetaRow from "../../../../components/MetaRow.jsx";
 
 /**
  * Клікабельний термін задачі: значення (+ підсвітка прострочення) + олівець

@@ -1,4 +1,3 @@
-import React from "react";
 import {sourceType} from "../../shared/config/sourceTypes.js";
 import {
     canDelete,

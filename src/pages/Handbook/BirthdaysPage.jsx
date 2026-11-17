@@ -1,59 +1,26 @@
-import React, {useMemo, useState} from "react";
-import {usePage} from "@inertiajs/react";
-import HandbookLayout from "./shared/ui/HandbookLayout.jsx";
-import BirthdayFilters from "./widgets/BirthdayFilters/BirthdayFilters.jsx";
-import BirthdayList from "./widgets/BirthdayList/BirthdayList.jsx";
-import BirthdayDetailPanel from "./widgets/BirthdayDetailPanel/BirthdayDetailPanel.jsx";
-import CreateBirthdayModal from "./features/create-birthday/CreateBirthdayModal.jsx";
-import ImportModal from "./shared/ui/ImportModal.jsx";
-import {
-    useBirthdayOptionsQuery,
-    useCommitBirthdayImportMutation,
-    useDeleteBirthdayMutation,
-    useInfiniteBirthdaysQuery,
-    usePreviewBirthdayImportMutation,
-} from "./entities/birthday/queries.js";
-import {birthdayImportTemplateUrl} from "./entities/birthday/importApi.js";
-import {canImportBirthdays, canReadBirthdays} from "./shared/lib/permissions.js";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/index.js";
+import { BirthdaysViewModel } from "./viewmodel/BirthdayViewModels.js";
+import { BIRTHDAY_COMMANDS } from "./model/handbookCommands.js";
+import { birthdayImportTemplateUrl } from "./model/birthdayApi.js";
+import HandbookLayout from "./view/HandbookLayout.jsx";
+import BirthdayFilters from "./view/BirthdayFilters.jsx";
+import BirthdayList from "./view/BirthdayList.jsx";
+import BirthdayDetailPanel from "./view/BirthdayDetailPanel.jsx";
+import BirthdayFormModal from "./view/BirthdayFormModal.jsx";
+import ImportModal from "./view/ImportModal.jsx";
+import LoadMore from "./view/LoadMore.jsx";
+import PageHeader from "../../layouts/app/PageHeader.jsx";
+import { HeaderButton } from "../../layouts/app/HeaderButtons.jsx";
 
 const IMPORT_COLUMNS = [
-    {key: "name", label: "Ім'я"},
-    {key: "date_of_birth", label: "Дата народження"},
-    {key: "note", label: "Примітка"},
+    { key: "name", label: "Ім'я" },
+    { key: "date_of_birth", label: "Дата народження" },
+    { key: "note", label: "Примітка" },
 ];
 
-const BirthdaysPage = () => {
-    const {auth} = usePage().props;
-    const [q, setQ] = useState(undefined);
-    const [scope, setScope] = useState("all");
-    const [month, setMonth] = useState(undefined);
-    const [selectedId, setSelectedId] = useState(null);
-    const [openCreate, setOpenCreate] = useState(false);
-    const [openImport, setOpenImport] = useState(false);
-    const previewImportMutation = usePreviewBirthdayImportMutation();
-    const commitImportMutation = useCommitBirthdayImportMutation();
-
-    const {data: optionsData} = useBirthdayOptionsQuery();
-    const scopeOptions = (optionsData?.scopes || []).filter((option) => option.value !== "all");
-
-    const {data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage} = useInfiniteBirthdaysQuery({
-        q, month, scope: scope === "all" ? undefined : scope,
-    });
-    const entries = useMemo(() => (data?.pages || []).flatMap((page) => page?.data || []), [data]);
-
-    const deleteMutation = useDeleteBirthdayMutation();
-
-    const handleClear = () => {
-        setQ(undefined);
-        setScope("all");
-        setMonth(undefined);
-    };
-
-    const handleDelete = (id) => {
-        deleteMutation.mutate(id, {onSuccess: () => setSelectedId((prev) => (prev === id ? null : prev))});
-    };
-
-    if (!canReadBirthdays(auth)) {
+const BirthdaysView = observer(({ vm }) => {
+    if (!vm.canRead) {
         return (
             <HandbookLayout active="birthdays">
                 <div className="flex min-h-[50vh] items-center justify-center text-slate-400 dark:text-slate-600">
@@ -65,65 +32,56 @@ const BirthdaysPage = () => {
 
     return (
         <HandbookLayout data-i-doc="page:handbook-birthdays" active="birthdays">
+            <PageHeader
+                title="Дні народження"
+                actions={
+                    <>
+                        {vm.canImport && <HeaderButton tone="default" icon="fa-regular fa-file-arrow-up" title="Імпортувати з Excel" onClick={vm.openImport}>Імпорт</HeaderButton>}
+                        <HeaderButton icon="fa-regular fa-plus" onClick={vm.openCreate}>Додати</HeaderButton>
+                    </>
+                }
+            />
             <div className="flex items-start gap-4">
                 <div className="min-w-0 flex-1">
                     <BirthdayFilters
-                        q={q} onChangeQ={setQ}
-                        scope={scope} onChangeScope={setScope} scopeOptions={scopeOptions}
-                        month={month} onChangeMonth={setMonth}
-                        onClear={handleClear}
-                        canCreate onCreate={() => setOpenCreate(true)}
-                        canImport={canImportBirthdays(auth)} onImport={() => setOpenImport(true)}
+                        q={vm.q} onChangeQ={vm.setQ}
+                        scope={vm.scopeFilter} onChangeScope={vm.setScope} scopeOptions={vm.scopeOptions}
+                        month={vm.month} onChangeMonth={vm.setMonth}
+                        onClear={vm.clearFilters}
                     />
                     <BirthdayList
-                        entries={entries}
-                        loading={isLoading}
-                        selectedId={selectedId}
-                        onSelect={setSelectedId}
-                        onDelete={handleDelete}
-                        auth={auth}
+                        entries={vm.entries}
+                        loading={vm.listQuery.isLoading}
+                        selectedId={vm.selectedId}
+                        onSelect={vm.select}
+                        onDelete={vm.remove}
+                        auth={vm.auth}
                     />
-                    {hasNextPage &&
-                        <div className="mt-3 flex justify-center">
-                            <button type="button" onClick={() => fetchNextPage()} disabled={isFetchingNextPage}
-                                    className="rounded-lg border border-slate-200 px-4 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-white dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
-                                {isFetchingNextPage ? "Завантаження…" : "Показати ще"}
-                            </button>
-                        </div>
-                    }
+                    <LoadMore query={vm.listQuery}/>
                 </div>
-                {selectedId &&
-                    <BirthdayDetailPanel
-                        entryId={selectedId}
-                        onClose={() => setSelectedId(null)}
-                        onDeleted={() => setSelectedId(null)}
-                    />
+                {vm.selectedId &&
+                    <BirthdayDetailPanel key={vm.selectedId} entryId={vm.selectedId} onClose={vm.closeDetail} onDeleted={vm.closeDetail}/>
                 }
             </div>
 
-            {openCreate &&
-                <CreateBirthdayModal
-                    open={openCreate}
-                    onClose={() => setOpenCreate(false)}
-                    onCreated={(id) => setSelectedId(id)}
-                    auth={auth}
-                />
-            }
-
-            {openImport &&
+            {vm.createOpen && <BirthdayFormModal onClose={vm.closeCreate} onCreated={vm.select}/>}
+            {vm.importOpen &&
                 <ImportModal
-                    open={openImport}
-                    onClose={() => setOpenImport(false)}
+                    onClose={vm.closeImport}
                     title="Імпорт днів народження"
                     templateUrl={birthdayImportTemplateUrl}
                     columns={IMPORT_COLUMNS}
-                    previewMutation={previewImportMutation}
-                    commitMutation={commitImportMutation}
-                    onImported={(entries) => entries?.length && setSelectedId(entries[0].id)}
+                    previewSpec={BIRTHDAY_COMMANDS.previewImport}
+                    commitSpec={BIRTHDAY_COMMANDS.commitImport}
+                    onImported={(entries) => entries?.length && vm.select(entries[0].id)}
                 />
             }
         </HandbookLayout>
     );
-};
+});
 
-export default BirthdaysPage;
+/** Маршрут /handbook-birthdays (pageAccess). */
+export default function BirthdaysPage() {
+    const vm = useViewModel((deps) => new BirthdaysViewModel(deps));
+    return <BirthdaysView vm={vm} />;
+}

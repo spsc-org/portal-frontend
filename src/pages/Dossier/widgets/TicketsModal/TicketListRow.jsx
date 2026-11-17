@@ -1,4 +1,3 @@
-import React from "react";
 import {isOpen} from "../../entities/dossierTicket/model.js";
 
 // Компактний рядок тікета для лівого списку дашборду /dossier/tickets (за макетом

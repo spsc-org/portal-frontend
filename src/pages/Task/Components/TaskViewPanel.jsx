@@ -1,34 +1,17 @@
-import {usePage} from "@inertiajs/react";
-import {keepPreviousData, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
+import { confirmToast } from "../../../components/confirmToast.jsx";
+import { TaskDetailsViewModel } from "../viewmodel/TaskViewModels.js";
 import {Chip, IconButton, Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip} from "@material-tailwind/react";
-import React, {useMemo, useState} from "react";
 import {format} from "date-fns";
-import toast from "react-hot-toast";
-import AttachmentsGallery from "../../../Components/AttachmentsGallery.jsx";
+import AttachmentsGallery from "../../../components/AttachmentsGallery.jsx";
 import {allowedStatusIds, getPriorityStyle, getStatusStyle, getTypeStyle} from "../utils.jsx";
-import {
-    getErrorMessage,
-    useAttachTaskFiles,
-    useAttachTaskResultFiles,
-    useDeleteTaskAttachment,
-    useTaskOptions,
-    useToggleFavoriteTask,
-    useUpdateTaskAssignees,
-    useUpdateTaskDescription,
-    useUpdateTaskDueDate,
-    useUpdateTaskPriority,
-    useUpdateTaskProject,
-    useUpdateTaskResult,
-    useUpdateTaskTags,
-    useUpdateTaskTitle,
-    useUpdateTaskType,
-} from "../queries.jsx";
 import MergeTaskModal from "./Modals/MergeTaskModal.jsx";
 import CreateTaskModal from "./Modals/CreateTaskModal.jsx";
 import ProjectsSetModal from "./Modals/ProjectsSetModal.jsx";
 import TaskAuditModal from "./Modals/TaskAuditModal.jsx";
 import TaskDiscussion from "./TaskDiscussion.jsx";
-import MetaRow from "../../../Components/MetaRow.jsx";
+import MetaRow from "../../../components/MetaRow.jsx";
 import TagsEditor from "./TagsEditor.jsx";
 import AssigneesEditor from "./AssigneesEditor.jsx";
 import InlineSelectField from "./fields/InlineSelectField.jsx";
@@ -36,210 +19,54 @@ import InlineTitleField from "./fields/InlineTitleField.jsx";
 import InlineDescriptionField from "./fields/InlineDescriptionField.jsx";
 import InlineDueDateField from "./fields/InlineDueDateField.jsx";
 
-const optionCaption = (option) => option?.caption || option?.name || option?.label || "";
-
-const TOAST_STYLE = {
-    style: {
-        background: 'dark:dark:bg-slate-800',
-        color: 'text-slate-400',
-    },
-};
-
 // Панель швидкого перегляду задачі праворуч від таблиці (master-detail):
 // одинарний клік по рядку підвантажує дані сюди, таблиця лишається клікабельною.
 // Модалки злиття, набору проєктів і блок обговорення — окремі компоненти
 // (Modals/MergeTaskModal.jsx, Modals/ProjectsSetModal.jsx, TaskDiscussion.jsx).
 // Поля картки (назва/опис/тип/пріоритет/проєкт/термін/теги/учасники) —
-// спільні Inline*Field/TagsEditor/AssigneesEditor + мутації з queries.jsx,
+// спільні Inline*Field/TagsEditor/AssigneesEditor + команди model/taskCommands.js,
 // перевикористані так само в CreateTaskModal (чернетка при створенні) —
 // однаковий вигляд і поведінка в обох місцях.
+/** Монтується з key={id}: VM (запит картки, команди полів) — на одну задачу. */
 const TaskViewPanel = ({selectedId: id, onClose}) => {
-    const {auth, token} = usePage().props;
-    // Словники — з /api/task/options (сторінка без Inertia-даних)
-    const {data: taskOptions} = useTaskOptions(auth);
-    const {projects = [], statuses = [], types = [], priorities = [], users = [], tags: availableTags = []} = taskOptions || {};
-    const queryClient = useQueryClient();
-    const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
-    const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
-    const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
-    const [isCloneModalOpen, setIsCloneModalOpen] = useState(false);
-
-    const {data, isLoading, isFetching} = useQuery({
-        queryKey: ['task-show', id],
-        queryFn: async () => {
-            const response = await axios.get(`/api/task/${id}`, {
-                headers: {"userId": auth?.user?.id}
-            });
-            // Бекенд гасить пов'язані нотифікації саме в цьому виклику
-            // (TaskService::getById -> NotificationService::markReadForEntity)
-            // і сам штовхає новий стан бейджа в сокет — сайдбару (Blade/vanilla
-            // JS, поза React-деревом) нічого смикати вручну не треба.
-            return response.data;
-        },
-        enabled: Boolean(id),
-        placeholderData: keepPreviousData,
-    });
-
-    const task = data?.data;
-    const allAttachments = data?.attachments || [];
-    const attachments = useMemo(() => allAttachments.filter(a => !a.isResult), [allAttachments]);
-    const resultAttachments = useMemo(() => allAttachments.filter(a => a.isResult), [allAttachments]);
-
-    // Обране (зірочка): перший клік — додає, другий — знімає
-    const toggleFavoriteMutation = useToggleFavoriteTask();
-    const handleToggleFavorite = () => {
-        if (!id) return;
-        toggleFavoriteMutation.mutate({id, auth, token});
-    };
-
-    const canReadAudit = Boolean(auth?.user?.permissions?.pages?.task?.readAudit);
-    const canEdit = useMemo(() => {
-        if (!task || task.deleted_at) return false;
-        const permission = auth?.user?.permissions?.pages?.task?.update;
-        // "individual" — власник АБО учасник (синхронно з бекендом authorizeTaskModification)
-        if (permission === 'individual') {
-            const userId = auth?.user?.id;
-            return task.createdUserId === userId
-                || (task.assignedUsers || task.assigned_users || []).some(user => user.id === userId);
-        }
-        return permission === true;
-    }, [task, auth]);
-
-    const projectName = useMemo(
-        () => optionCaption(projects.find(p => p.id === task?.projectId)),
-        [projects, task?.projectId]
-    );
-
-    const updateTitleMutation = useUpdateTaskTitle(id, auth, token);
-    const updateDescriptionMutation = useUpdateTaskDescription(id, auth, token);
-    const updateResultMutation = useUpdateTaskResult(id, auth, token);
-    const updateTypeMutation = useUpdateTaskType(id, auth, token);
-    const updatePriorityMutation = useUpdateTaskPriority(id, auth, token);
-    const updateProjectMutation = useUpdateTaskProject(id, auth, token);
-    const updateDueDateMutation = useUpdateTaskDueDate(id, auth, token);
-    const updateTagsMutation = useUpdateTaskTags(id, auth, token);
-    const updateAssigneesMutation = useUpdateTaskAssignees(id, auth, token);
-    const attachFilesMutation = useAttachTaskFiles(id, auth, token);
-    const attachResultFilesMutation = useAttachTaskResultFiles(id, auth, token);
-    const deleteAttachmentMutation = useDeleteTaskAttachment(id, auth, token);
-
-    // Всіма тегами керує власник задачі або той, хто має повне право update;
-    // учасник знімає лише власноруч додані (pivot.addedByUserId)
-    const canManageAllTags = useMemo(() => {
-        if (!task || task.deleted_at) return false;
-        const permission = auth?.user?.permissions?.pages?.task?.update;
-        if (permission === true) return true;
-        return permission === 'individual' && task.createdUserId === auth?.user?.id;
-    }, [task, auth]);
-
-    const canRemoveTag = (tag) => canManageAllTags
-        || (canEdit && tag.pivot?.addedByUserId === auth?.user?.id);
-
-    const handleAddTag = (selected) => {
-        const option = selected?.[selected.length - 1];
-        if (!option) return;
-        const current = (task?.tags || []).map(t => t.id);
-        const addition = option.__isNew__ ? option.value : (option.id ?? option.value);
-        if (!option.__isNew__ && current.includes(addition)) return;
-        updateTagsMutation.mutate([...current, addition]);
-    };
-
-    const handleRemoveTag = (tagId) => {
-        updateTagsMutation.mutate((task?.tags || []).filter(t => t.id !== tagId).map(t => t.id));
-    };
-
-    const tagOptions = useMemo(
-        () => availableTags.filter(tag => !(task?.tags || []).some(t => t.id === tag.id)),
-        [availableTags, task?.tags]
-    );
-
-    // Набір проєктів задачі (taskLink) — лише перегляд тут; редагування в ProjectsSetModal
-    const linkedProjects = data?.linkedProjects || [];
-    const linkedProjectIds = useMemo(() => linkedProjects.map(project => project.id), [linkedProjects]);
-
-    // Бекенд (getById) віддає ключ camelCase "assignedUsers"; snake_case
-    // лишено як fallback для сторінок, що ще не мігрували на цей ендпоінт
-    const assignedUsers = task?.assignedUsers || task?.assigned_users || [];
-
-    const handleAddAssignee = (selected) => {
-        const option = selected?.[selected.length - 1];
-        if (!option) return;
-        const current = assignedUsers.map(u => u.id);
-        if (current.includes(option.id)) return;
-        updateAssigneesMutation.mutate([...current, option.id]);
-    };
-
-    const handleRemoveAssignee = (userId) => {
-        updateAssigneesMutation.mutate(assignedUsers.filter(u => u.id !== userId).map(u => u.id));
-    };
-
-    const assigneeOptions = useMemo(
-        () => users.filter(user => !assignedUsers.some(u => u.id === user.id)),
-        [users, assignedUsers]
-    );
-
-    // Зміна стану (чип у хедері картки): PATCH /api/task/{id}/status —
-    // окремо від решти полів через залежність від TaskLifecycle-переходів
-    const updateStatusMutation = useMutation({
-        mutationFn: async (statusId) => {
-            const response = await axios.patch(`/api/task/${id}/status`, {statusId}, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    "X-CSRF-Token": token,
-                    "userId": auth?.user?.id,
-                }
-            });
-            return response.data;
-        },
-        onSuccess: () => {
-            toast.success("Стан змінено", TOAST_STYLE);
-            queryClient.invalidateQueries({queryKey: ['task-show', id]});
-            queryClient.invalidateQueries({queryKey: ['tasks']});
-        },
-        onError: (error) => toast.error(getErrorMessage(error, "Не вдалося змінити стан")),
-    });
-
-    const handleChangeStatus = (statusId) => {
-        if (statusId === task?.statusId) return;
-        updateStatusMutation.mutate(statusId);
-    };
-
-    const handleCopyLink = () => {
-        const url = `${window.location.origin}${window.location.pathname}?view=${id}`;
-        navigator.clipboard?.writeText(url)
-            .then(() => toast.success("Посилання скопійовано"))
-            .catch(() => toast.error("Не вдалося скопіювати посилання"));
-    };
-
-    const handleUpdateAttachmentList = (newAttachments = []) => {
-        if (!newAttachments.length) return;
-        attachFilesMutation.mutate(newAttachments);
-    };
-
-    const handleUpdateResultAttachmentList = (newAttachments = []) => {
-        if (!newAttachments.length) return;
-        attachResultFilesMutation.mutate(newAttachments);
-    };
-
-    // Підтвердження перед видаленням (той самий патерн, що й для відновлення
-    // задачі); onDelete у AttachmentsGallery очікує "каррі"-функцію
+    const vm = useViewModel((deps) => new TaskDetailsViewModel({ ...deps, taskId: id }));
+    const auth = vm.auth;
+    const token = undefined;
+    const { projects, statuses, types, priorities, users } = vm;
+    const { data, task, isLoading, isFetching, attachments, resultAttachments, canEdit, canReadAudit } = vm;
+    const { projectName, linkedProjects, linkedProjectIds, assignedUsers, tagOptions, assigneeOptions } = vm;
+    const { isProjectsModalOpen, isMergeModalOpen, isAuditModalOpen, isCloneModalOpen } = vm;
+    const setIsProjectsModalOpen = vm.setProjectsModalOpen;
+    const setIsMergeModalOpen = vm.setMergeModalOpen;
+    const setIsAuditModalOpen = vm.setAuditModalOpen;
+    const setIsCloneModalOpen = vm.setCloneModalOpen;
+    const canRemoveTag = (tag) => vm.canRemoveTag(tag);
+    const handleAddTag = vm.addTag;
+    const handleRemoveTag = vm.removeTag;
+    const handleAddAssignee = vm.addAssignee;
+    const handleRemoveAssignee = vm.removeAssignee;
+    const handleToggleFavorite = vm.toggleFavorite;
+    const handleChangeStatus = vm.changeStatus;
+    const handleCopyLink = vm.copyLink;
+    const handleUpdateAttachmentList = vm.attach;
+    const handleUpdateResultAttachmentList = vm.attachResult;
     const handleDeleteAttachment = (attachment) => (event) => {
         event.preventDefault();
-        if (!attachment) return;
-        toast((t) => (
-                <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-3xl w-full pointer-events-auto flex items-center gap-x-1 flex-row`}>
-                    <p className="text-sm font-medium text-gray-900">Видалити файл?</p>
-                    <div className="flex flex-row gap-x-1">
-                        <button className="rounded px-3 py-1.5 text-sm" onClick={() => toast.dismiss(t.id)}>Скасувати</button>
-                        <button className="rounded bg-red-500 px-3 py-1.5 text-sm text-white" onClick={() => {
-                            toast.dismiss(t.id);
-                            deleteAttachmentMutation.mutate(attachment);
-                        }}>Видалити</button>
-                    </div>
-                </div>
-            ),
-            {duration: 10000, position: 'top-center', ...TOAST_STYLE});
+        if (attachment) confirmToast("Видалити файл?", () => vm.deleteAttachment(attachment));
     };
+    const toggleFavoriteMutation = vm.cmd.toggleFavorite;
+    const updateTitleMutation = vm.cmd.updateTitle;
+    const updateDescriptionMutation = vm.cmd.updateDescription;
+    const updateResultMutation = vm.cmd.updateResult;
+    const updateTypeMutation = vm.cmd.updateType;
+    const updatePriorityMutation = vm.cmd.updatePriority;
+    const updateProjectMutation = vm.cmd.updateProject;
+    const updateDueDateMutation = vm.cmd.updateDueDate;
+    const updateTagsMutation = vm.cmd.updateTags;
+    const updateAssigneesMutation = vm.cmd.updateAssignees;
+    const attachFilesMutation = vm.cmd.attachFiles;
+    const attachResultFilesMutation = vm.cmd.attachResultFiles;
+    const updateStatusMutation = vm.cmd.changeStatus;
 
     return (
         <aside data-i-doc="view:task-view-panel"
@@ -549,4 +376,4 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
     );
 };
 
-export default TaskViewPanel;
+export default observer(TaskViewPanel);

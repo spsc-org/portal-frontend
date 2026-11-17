@@ -1,12 +1,12 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {Spinner} from "@material-tailwind/react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
 import toast from "react-hot-toast";
-import SearchInput from "../../../../Components/fields/SearchInput.jsx";
-import MultiSelectChip from "../../../../Components/fields/MultiSelectChip.jsx";
-import {useInfiniteProfilesQuery, useDossierOptionsQuery} from "../../entities/dossier/queries.js";
-import {refreshProfileStatus} from "../../entities/dossier/api.js";
-import {profileState, profileTitle} from "../../entities/dossier/model.js";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { ProfilesListViewModel } from "../../viewmodel/DossierViewModels.js";
+import {useEffect} from "react";
+import {Spinner} from "@material-tailwind/react";
+import SearchInput from "../../../../components/fields/SearchInput.jsx";
+import MultiSelectChip from "../../../../components/fields/MultiSelectChip.jsx";
+import {profileTitle} from "../../entities/dossier/model.js";
 import {TYPE_FILTERS} from "../../shared/config/subjectTypes.js";
 import {MODEL_CLASS_OPTIONS} from "../../shared/config/sourceTypes.js";
 import SubjectAvatar from "../../entities/dossier/ui/SubjectAvatar.jsx";
@@ -102,75 +102,25 @@ const ProfilesMasterList = ({
     activeId,
     onSelect,
 }) => {
-    const [isCompact, setIsCompact] = useState(readCompactPreference);
-    useEffect(() => {
-        try {
-            localStorage.setItem(COMPACT_STORAGE_KEY, String(isCompact));
-        } catch {
-            // localStorage може бути недоступним (приватний режим) — ігноруємо
-        }
-    }, [isCompact]);
-
-    const [pageSize, setPageSize] = useState(readPageSizePreference);
-    useEffect(() => {
-        try {
-            localStorage.setItem(PAGE_SIZE_STORAGE_KEY, String(pageSize));
-        } catch {
-            // localStorage може бути недоступним (приватний режим) — ігноруємо
-        }
-    }, [pageSize]);
-
-    const {data: options} = useDossierOptionsQuery();
+    const vm = useViewModel((deps) => new ProfilesListViewModel({
+        ...deps,
+        filters,
+        readCompact: readCompactPreference,
+        readPageSize: readPageSizePreference,
+    }));
+    const { isCompact, pageSize, refreshingId, total } = vm;
+    const setIsCompact = vm.setIsCompact;
+    const setPageSize = vm.setPageSize;
+    const options = vm.options;
     const UA_STATUS_OPTIONS = options?.uaSanctionsStatuses ?? [];
     const MATCHED_PASS_OPTIONS = options?.matchedPasses ?? [];
     const ORIGIN_OPTIONS = options?.connectionOrigins ?? [];
-
-    // Примусове оновлення стану підсанкційності прямо з рядка (compact-бейдж) —
-    // та сама мутація/ендпоінт, що й кнопка в Картці досьє.
-    const queryClient = useQueryClient();
-    const [refreshingId, setRefreshingId] = useState(null);
-    const refreshStatusMutation = useMutation({
-        mutationFn: (profileId) => refreshProfileStatus(profileId),
-        onMutate: (profileId) => setRefreshingId(profileId),
-        onSuccess: () => {
-            toast.success("Стан підсанкційності перераховано");
-            queryClient.invalidateQueries({queryKey: ["sanction-profiles"]});
-        },
-        onError: (error) => toast.error(error?.response?.data?.message ?? "Не вдалося оновити стан підсанкційності"),
-        onSettled: () => setRefreshingId(null),
-    });
-
-    const {data, isFetching, hasNextPage, fetchNextPage, isFetchingNextPage} = useInfiniteProfilesQuery({
-        q: filters.q,
-        subjectTypeIds: filters.typeFilter,
-        modelClassIds: filters.modelClassFilter,
-        // needs_review-фільтр тимчасово вимкнено (2026-07-28, працює некоректно) — не
-        // передаємо filters.reviewOnly, навіть якщо в localStorage лишилось true зі старої
-        // сесії. Кнопка "Необхідно підтвердити" заблокована нижче (ToggleChip disabled).
-        needsReview: undefined,
-        conflictOnly: filters.conflictOnly || undefined,
-        uaSanctionsStatuses: filters.uaSanctionsStatusFilter,
-        uaSanctionsDaysRemainingMax: filters.expiringWithinDays ?? undefined,
-        hasAvatar: filters.hasAvatar,
-        connectionsCountMin: filters.connectionsCountMin,
-        connectionsCountMax: filters.connectionsCountMax,
-        matchedPasses: filters.matchedPassFilter,
-        origins: filters.originFilter,
-        ticketStatus: filters.ticketStatusFilter ?? undefined,
-        sort: filters.sort,
-        direction: filters.direction,
-        limit: pageSize,
-    });
-
-    // Усі фільтри тепер застосовуються сервером в обох гілках (paginate/search) —
-    // тут лишається лише клієнтське виключення поточного профілю (напр. з автокомпліту
-    // вибору повʼязаного профілю, де сам профіль не має пропонуватись).
-    const profiles = useMemo(() => {
-        const loaded = (data?.pages ?? []).flatMap((page) => page.data ?? []);
-        return excludeId ? loaded.filter((profile) => profile.id !== excludeId) : loaded;
-    }, [data, excludeId]);
-
-    const total = data?.pages?.[0]?.meta?.total ?? 0;
+    const refreshStatusMutation = { mutate: vm.refreshStatus, isPending: vm.refreshCmd.isPending };
+    const { isFetching, hasNextPage, isFetchingNextPage } = vm.listQuery;
+    const fetchNextPage = () => vm.listQuery.fetchNextPage();
+    const profiles = vm.profiles(excludeId);
+    // Фільтри — проп (сторінка або модалка переносу): синхронізуємо у VM.
+    useEffect(() => vm.setFilters(filters), [vm, filters]);
 
     return (
         <section data-i-doc="view:sanction-profiles-master-list" className="flex-none w-[30%] bg-white border-r border-gray-200 flex flex-col min-w-0 dark:bg-gray-900 dark:border-gray-700">
@@ -349,7 +299,6 @@ const ProfilesMasterList = ({
                 )}
                 {profiles.map((profile) => {
                     const isActive = profile.id === activeId;
-                    const state = profileState(profile);
                     const needsReview = (profile.needs_review_connections_count ?? 0) > 0;
                     const hasConflict = (profile.conflicting_connections_count ?? 0) > 0;
                     return (
@@ -455,4 +404,4 @@ const ProfilesMasterList = ({
     );
 };
 
-export default ProfilesMasterList;
+export default observer(ProfilesMasterList);

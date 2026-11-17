@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { debounce } from "lodash";
 
 const AdvancedSearchInput = ({
@@ -51,7 +51,7 @@ const AdvancedSearchInput = ({
 
     const baseClasses = `w-full bg-white disabled:bg-gray-200 dark:disabled:bg-gray-950 placeholder:text-slate-400 leading-5 text-slate-700 text-${size} border rounded-sm px-3 py-2 transition duration-150 ease-in-out focus:outline-none pr-10 dark:bg-gray-900 dark:text-gray-300`;
 
-    const stateClasses = Boolean(error)
+    const stateClasses = error
         ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
         : 'border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:hover:border-gray-500 dark:focus:border-blue-500';
 

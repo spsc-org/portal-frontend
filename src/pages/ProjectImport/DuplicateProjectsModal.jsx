@@ -1,67 +1,24 @@
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
-import React, {useMemo, useState} from "react";
-import Table from "@/Components/Table/Table.jsx";
-import {useQuery} from "@tanstack/react-query";
-import {usePage} from "@inertiajs/react";
+import {useMemo} from "react";
+import { observer } from "mobx-react-lite";
+import Table from "../../components/Table/Table.jsx";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { useStores } from "../../stores/storeHooks.js";
+import { DuplicateProjectsViewModel } from "./viewmodel/ProjectImportViewModel.js";
 import {createColumnHelper} from "@tanstack/react-table";
 
 const columnHelper = createColumnHelper();
 
-const DuplicateProjectsModal = ({open, onClose, ...props}) => {
-    const {
-        auth,
-        users = [],
-        itemType = [],
-        projectActionType = [],
-        projectState = []
-    } = usePage().props;
-
-    const TABS = useMemo(() => {
-        return [
-            {value: "nameUk", label: "Назва українською"},
-            {value: "nameRu", label: "Назва російською",},
-            {value: "nameEn", label: "Назва іноземною"},
-            {value: "drsId", label: "Код в ДРС"},
-            {value: "tax", label: "Tax"},
-            {value: "reg", label: "Reg"},
-            {value: "doc", label: "Doc"},
-            {value: "imo", label: "IMO"},
-            {value: "mmsi", label: "MMSI"}
-        ].filter(item => Boolean(props?.[item.value]))
-    }, [props])
-
-    const [tab, setTab] = useState(TABS[0].value);
-
-    const [params, setParams] = useState({
-        limit: 10,
-        page: 0,
-    });
-
-    const {data: projects, isLoading} = useQuery({
-        queryKey: ["projects-calcSearch", params, tab],
-        queryFn: async () => {
-            if (!Boolean(props?.[tab])) {
-                return;
-            }
-            const response = await axios.get(`/api/project/data`, {
-                params: {
-                    ...params,
-                    filters: JSON.stringify({"fId": Boolean(props?.[tab]) ? props[tab]?.join(",") : undefined})
-                },
-                headers: {'Content-Type': 'application/json', "userId": auth?.user?.id}
-            });
-            return response?.data;
-        },
-        enabled: Boolean(props?.[tab].length)
-    });
-
-    const handleLimit = (value) => {
-        setParams(prevState => ({...prevState, page: 0, limit: value}));
-    }
-
-    const handlePage = (pageNumber) => {
-        setParams(prevState => ({...prevState, page: pageNumber - 1}));
-    }
+/** props — знайдені id за полями збігу ({ nameUk: [...], imo: [...] }); dictionaries — options сторінки. */
+const DuplicateProjectsModal = ({open, onClose, dictionaries = {}, ...props}) => {
+    const auth = useStores().session.auth;
+    const { itemType = [], projectActionType = [], projectState = [] } = dictionaries;
+    const vm = useViewModel((deps) => new DuplicateProjectsViewModel({ ...deps, duplicates: props }));
+    const TABS = vm.tabs;
+    const { tab, params, projects, isLoading } = vm;
+    const setTab = vm.setTab;
+    const handleLimit = vm.setLimit;
+    const handlePage = vm.setPage;
 
     const highlightText = (text, highlights = []) => {
         if (!text) return null;
@@ -279,7 +236,7 @@ const DuplicateProjectsModal = ({open, onClose, ...props}) => {
             footer: info => info.column.id,
             cell: info => {
                 try {
-                    const parsed =  Boolean(info.getValue()) ? JSON.parse(info.getValue()) : null;
+                    const parsed =  info.getValue() ? JSON.parse(info.getValue()) : null;
                     return (parsed?.proposals || []).map((item, index) => {
                         const color = item?.stateId === 5
                             ? "text-green-500"
@@ -330,7 +287,7 @@ const DuplicateProjectsModal = ({open, onClose, ...props}) => {
                                     ${tab === value
                                         ? "bg-white/25 text-white dark:bg-gray-900/25 dark:text-gray-900"
                                         : "bg-gray-900 text-white dark:bg-gray-200 dark:text-gray-900"}`}>
-                                    {Boolean(props?.[value]?.length) ? props?.[value]?.length : 0}
+                                    {props?.[value]?.length ? props?.[value]?.length : 0}
                                 </div>
                             </div>
                         </button>
@@ -359,4 +316,4 @@ const DuplicateProjectsModal = ({open, onClose, ...props}) => {
     );
 };
 
-export default DuplicateProjectsModal;
+export default observer(DuplicateProjectsModal);

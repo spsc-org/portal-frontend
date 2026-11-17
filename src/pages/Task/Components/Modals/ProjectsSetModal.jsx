@@ -1,15 +1,8 @@
-import {keepPreviousData, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { ProjectsSetViewModel } from "../../viewmodel/TaskViewModels.js";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
-import React, {useEffect, useMemo, useState} from "react";
-import toast from "react-hot-toast";
 import SingleSelect from "../../../../Components/fields/SingleSelect.jsx";
-
-const TOAST_STYLE = {
-    style: {
-        background: 'dark:dark:bg-slate-800',
-        color: 'text-slate-400',
-    },
-};
 
 // Модалка кураторства набору проєктів задачі (taskLink): таблиця з
 // пошуком по доданих, видалення рядків, додавання через фільтр-движок
@@ -18,94 +11,16 @@ const TOAST_STYLE = {
 // Винесено з TaskViewPanel.jsx — самодостатня модалка, монтується лише
 // поки відкрита; чернетка (draft) ініціалізується з initialProjects при
 // монтуванні (== відкритті).
-const ProjectsSetModal = ({onClose, taskId, initialProjects, auth, token}) => {
-    const queryClient = useQueryClient();
-    const [draft, setDraft] = useState(initialProjects);
-    const [projectsSearch, setProjectsSearch] = useState("");
-    const emptyPickerFilters = {fText: "", fDocument: "", fType: null, fAction: null, fProposal: null};
-    const [pickerFilters, setPickerFilters] = useState(emptyPickerFilters);
-    const [appliedPickerFilters, setAppliedPickerFilters] = useState(emptyPickerFilters);
-
-    const draftIds = useMemo(() => draft.map(project => project.id), [draft]);
-
-    const updateLinkedProjectsMutation = useMutation({
-        mutationFn: async (projectIds) => {
-            const response = await axios.patch(`/api/task/${taskId}/projects`, {projectIds}, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    "X-CSRF-Token": token,
-                    "userId": auth?.user?.id,
-                }
-            });
-            return response.data;
-        },
-        onSuccess: () => {
-            toast.success("Набір проєктів оновлено", TOAST_STYLE);
-            queryClient.invalidateQueries({queryKey: ['task-show', taskId]});
-        },
-        onError: ({response}) => toast.error(response?.data?.message || "Не вдалося оновити набір проєктів"),
-    });
-
-    const saveDraft = () => {
-        updateLinkedProjectsMutation.mutate(draftIds, {onSuccess: onClose});
-    };
-
-    // Дебаунс критеріїв пошуку (текстові поля не смикають бекенд на кожну літеру)
-    useEffect(() => {
-        const timer = setTimeout(() => setAppliedPickerFilters(pickerFilters), 350);
-        return () => clearTimeout(timer);
-    }, [pickerFilters]);
-
-    // Словники фільтрів пікера — з options-ендпоінта проєктів
-    const {data: pickerVoc} = useQuery({
-        queryKey: ['project-picker-voc'],
-        queryFn: async () => {
-            const response = await axios.get('/api/project/options', {
-                params: {only: 'subjectType,action,proposal'},
-                headers: {"userId": auth?.user?.id},
-            });
-            return response.data?.data;
-        },
-        staleTime: Infinity,
-    });
-    const pickerVocOptions = useMemo(() => ({
-        subjectType: Object.values(pickerVoc?.subjectType || {}),
-        action: Object.values(pickerVoc?.action || {}),
-        proposal: Object.values(pickerVoc?.proposal || {}),
-    }), [pickerVoc]);
-
-    const hasPickerCriteria = Boolean(
-        appliedPickerFilters.fText.trim() || appliedPickerFilters.fDocument.trim()
-        || appliedPickerFilters.fType || appliedPickerFilters.fAction || appliedPickerFilters.fProposal
-    );
-
-    // Пошук проєктів (перші 50 збігів, той самий фільтр-движок, що /project)
-    const {data: pickerResponse, isFetching: isPickerLoading} = useQuery({
-        queryKey: ['project-picker', appliedPickerFilters],
-        queryFn: async () => {
-            const response = await axios.get('/api/project/picker', {
-                params: {
-                    fText: appliedPickerFilters.fText.trim() || undefined,
-                    fDocument: appliedPickerFilters.fDocument.trim() || undefined,
-                    fType: appliedPickerFilters.fType ? [appliedPickerFilters.fType.id] : undefined,
-                    fAction: appliedPickerFilters.fAction ? [appliedPickerFilters.fAction.id] : undefined,
-                    fProposal: appliedPickerFilters.fProposal ? [appliedPickerFilters.fProposal.id] : undefined,
-                },
-                headers: {"userId": auth?.user?.id},
-            });
-            return response.data?.data;
-        },
-        enabled: hasPickerCriteria,
-        placeholderData: keepPreviousData,
-    });
-    const pickerItems = pickerResponse?.items || [];
-    const pickerTotal = pickerResponse?.total || 0;
-
-    const addPickedProject = (item) => {
-        setDraft(prev => prev.some(project => project.id === item.id)
-            ? prev
-            : [...prev, {id: item.id, name: item.name}]);
-    };
+const ProjectsSetModal = ({onClose, taskId, initialProjects}) => {
+    const vm = useViewModel((deps) => new ProjectsSetViewModel({ ...deps, taskId, initialProjects }));
+    const { draft, projectsSearch, pickerFilters, hasPickerCriteria, pickerItems, pickerTotal, isPickerLoading } = vm;
+    const setDraft = vm.setDraft;
+    const setProjectsSearch = vm.setProjectsSearch;
+    const setPickerFilters = vm.setPickerFilters;
+    const pickerVocOptions = vm.vocOptions;
+    const updateLinkedProjectsMutation = vm.saveCmd;
+    const saveDraft = () => vm.save(onClose);
+    const addPickedProject = vm.addPicked;
 
     return (
         <Dialog data-i-doc="modal:task-view-panel-projects-set" open handler={onClose} size="md">
@@ -233,4 +148,4 @@ const ProjectsSetModal = ({onClose, taskId, initialProjects, auth, token}) => {
     );
 };
 
-export default ProjectsSetModal;
+export default observer(ProjectsSetModal);

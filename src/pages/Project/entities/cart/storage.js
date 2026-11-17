@@ -1,5 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
-
 // Той самий ключ і той самий формат (плаский JSON-масив числових ID), що й
 // у легасі CartManager (resources/js/pages/project/cartManager.js, storageKey
 // = "cartItems"). Це навмисно "спільний міст" між старою сторінкою й новим
@@ -39,41 +37,4 @@ export const removeCartId = (id) => {
 
 export const clearCartIds = () => {
     setCartIds([]);
-};
-
-// Реактивний хук: React-компоненти цього острівця підписуються на зміни
-// кошика (свої власні дії — видалення рядка, очищення — і зовнішні, якщо
-// легасі-сторінка колись теж стане слати цю подію).
-export const useCartIds = () => {
-    const [ids, setIds] = useState(() => getCartIds());
-
-    const refresh = useCallback(() => setIds(getCartIds()), []);
-
-    useEffect(() => {
-        const handler = (event) => setIds(event.detail ?? getCartIds());
-        window.addEventListener("project-cart-changed", handler);
-        // storage-подія спрацьовує лише в ІНШИХ вкладках/фреймах (не в тій,
-        // де відбулась зміна) — корисно, якщо легасі-сторінка й React-острівець
-        // колись опиняться в різних document-контекстах.
-        window.addEventListener("storage", refresh);
-        return () => {
-            window.removeEventListener("project-cart-changed", handler);
-            window.removeEventListener("storage", refresh);
-        };
-    }, [refresh]);
-
-    // remove/clear самі НЕ викликають setIds — removeCartId()/clearCartIds()
-    // вже йдуть через setCartIds(), яка синхронно диспатчить
-    // "project-cart-changed", а хендлер вище (той самий рендер) сам
-    // оновлює ids. Подвійний виклик тут раніше різав два setIds підряд на
-    // ОДНУ дію: перший — з дедуплікованого event.detail, другий — з "сирого"
-    // (недедублікованого) значення, яке повертає removeCartId(); коли б у
-    // cartItems опинився дублікат id, другий виклик перезаписував би вже
-    // задедуплікований стан назад недедублікованим.
-    return {
-        ids,
-        refresh,
-        remove: (id) => removeCartId(id),
-        clear: () => clearCartIds(),
-    };
 };

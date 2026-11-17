@@ -1,3 +1,4 @@
+import axios from "axios";
 // Глобальні (системні) правила обґрунтування — /api/reason-rules/admin
 // (user_id IS NULL; персональні правила користувачів тут не показуються).
 export const fetchReasonRules = async () => {

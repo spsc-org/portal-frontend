@@ -1,20 +1,19 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {usePage} from "@inertiajs/react";
-import AdvancedSelectWithDefaults from "@/Components/fields/AdvancedSelectWithDefaults.jsx";
+import {useMemo} from 'react';
+import { observer } from "mobx-react-lite";
+import AdvancedSelectWithDefaults from "../../components/fields/AdvancedSelectWithDefaults.jsx";
 import {createColumnHelper} from "@tanstack/react-table";
-import Table, {loadColumnSizes} from "@/Components/Table/Table.jsx";
+import Table, {loadColumnSizes} from "../../components/Table/Table.jsx";
 import {Button, Tooltip} from "@material-tailwind/react";
-import {keepPreviousData, useQuery} from "@tanstack/react-query";
-import {fetchSearchData} from "./utils/utils.js";
-import Page from "@/Components/Page.jsx";
-import {DictionaryProvider} from "@/ReactPages/Dictionary/DictionaryContext.jsx";
-import AdvancedSearchInput from "@/Components/fields/AdvancedSearchInput.jsx";
-import {useDialog} from "@/hooks/useDialog.js";
+import Page from "../../components/Page.jsx";
+import AdvancedSearchInput from "../../components/fields/AdvancedSearchInput.jsx";
 import DetailsDialog from "./components/DetailsDialog.jsx";
 import highlightText from "./components/highlightText.jsx";
-import {BasketProvider, useBasket} from "./context/BasketContext.jsx";
+import {useBasket} from "./context/BasketContext.jsx";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { ViewModelProvider } from "../../shared/mvvm/ViewModelContext.jsx";
+import { AdvancedSearchViewModel } from "./viewmodel/AdvancedSearchViewModel.js";
 import BasketDialog from "./components/BasketDialog.jsx";
-import CollapsibleSection from "@/Components/CollapsibleSection.jsx";
+import CollapsibleSection from "../../components/CollapsibleSection.jsx";
 
 // Імпорт презентерів комірок
 import Dataset1CellPresenters from "./components/cellPresenters/1.jsx";
@@ -22,6 +21,7 @@ import Dataset3CellPresenters from "./components/cellPresenters/3.jsx";
 import NsdcCellPresenters from "./components/cellPresenters/nsdc.jsx";
 import ForeignCellPresenters from "./components/cellPresenters/foreign.jsx";
 import DefaultCellPresenters from "./components/cellPresenters/default.jsx";
+import PageHeader from "../../layouts/app/PageHeader.jsx";
 
 // Реєстр презентерів комірок
 const cellPresenters = {
@@ -44,20 +44,10 @@ const cellPresenters = {
     25: NsdcCellPresenters,
 };
 
-const initialState = {
-    search: '',
-    searchMethods: [],
-    groups: [],
-    types: [],
-    item_states: [],
-    page: 0,
-    limit: 50,
-}
-
 const columnHelper = createColumnHelper();
 
 // Компонент кнопки додавання до кошика
-const AddToBasketButton = ({record}) => {
+const AddToBasketButton = observer(({record}) => {
     const {isInBasket, toggleItem} = useBasket();
     const isAdded = isInBasket(record.datasetId, record.id);
 
@@ -74,10 +64,10 @@ const AddToBasketButton = ({record}) => {
             </Button>
         </Tooltip>
     );
-};
+});
 
 // Компонент кнопки кошика в шапці
-const BasketHeaderButton = ({onClick}) => {
+const BasketHeaderButton = observer(({onClick}) => {
     const {items} = useBasket();
 
     return (
@@ -98,56 +88,12 @@ const BasketHeaderButton = ({onClick}) => {
             </Tooltip>
         </div>
     );
-};
+});
 
-const IndexContent = () => {
-    const {auth} = usePage().props;
-    const [filters, setFilters] = useState(initialState);
-    const [sorting, setSorting] = useState([]);
-    const [basketDialogOpen, setBasketDialogOpen] = useState(false);
-
-    const {
-        open: detailsDialogOpen,
-        handleOpen: handleOpenDetailsDialog,
-        handleClose: handleCloseDetailsDialog,
-        dialogProps: detailsDialogProps
-    } = useDialog();
-
-    // Завантаження доступних методів пошуку та датасетів
-    const {data: searchOptions = {}} = useQuery({
-        queryKey: ['searchOptions'],
-        queryFn: async () => {
-            try {
-                const response = await axios.get("api/consolidated-data/options");
-                const data = response.data.data || {};
-                return {
-                    searchMethods: data.search_methods || [],
-                    datasets: data.datasets || [],
-                    groups: data.groups || [],
-                    types: data.types || [],
-                    item_states: data.item_states || []
-                };
-            } catch (error) {
-                console.error('Error fetching search options:', error);
-                return {searchMethods: [], datasets: [], types: [], item_states: []};
-            }
-        },
-        staleTime: Infinity,
-    });
-
-    // Основний запит для отримання даних
-    const {data: searchResults, isFetching: isSearchFetching} = useQuery({
-        queryKey: ['consolidated-search', filters],
-        queryFn: () => fetchSearchData({...filters, userId: auth?.user?.id}),
-        placeholderData: keepPreviousData,
-        enabled: !!filters.search,
-    });
-
-    // Підготовка даних для таблиці
-    const getTableData = () => {
-        return searchResults?.data || [];
-    };
-
+const IndexContent = observer(({ vm }) => {
+    const { filters, searchOptions } = vm;
+    const handleOpenDetailsDialog = ({ record }) => vm.openDetails(record);
+    const getTableData = () => vm.rows;
     // Функція для рендерингу комірки з підтримкою кастомних презентерів
     // Ця функція буде передана в BasketDialog
     const renderCell = (columnId, row, value, customFilters = null) => {
@@ -316,106 +262,20 @@ const IndexContent = () => {
         }),
     ], [filters.search, searchOptions.types, searchOptions.datasets, searchOptions.item_states]);
 
-    const hasNonEmptyFilter = () => {
-        const {search, groups = [], searchMethods = [], types = [], item_states = []} = filters;
-        return (
-            search?.trim() !== "" ||
-            groups.length > 0 ||
-            types.length > 0 ||
-            item_states.length > 0 ||
-            (searchMethods.length > 0 && searchMethods[0]?.id !== 1)
-        );
-    };
-
-    // Встановлення Basic методу за замовчуванням
-    useEffect(() => {
-        if (searchOptions.searchMethods && searchOptions.searchMethods.length > 0 && filters.searchMethods.length === 0) {
-            const basicMethod = searchOptions.searchMethods.find(method => method.id === 1);
-            if (basicMethod) {
-                setFilters(prev => ({...prev, searchMethods: [basicMethod]}));
-            }
-        }
-    }, [searchOptions.searchMethods]);
-
-    // Збереження/завантаження фільтрів
-    useEffect(() => {
-        const storedFilters = localStorage.getItem(`${location.pathname}-filters`);
-        if (storedFilters) {
-            try {
-                setFilters({...initialState, ...JSON.parse(storedFilters)});
-            } catch (error) {
-                console.error('Error parsing stored filters:', error);
-            }
-        }
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem(`${location.pathname}-filters`, JSON.stringify(filters));
-    }, [filters]);
-
-    const handlePageChange = (pageNumber) => {
-        setFilters(prevState => ({...prevState, page: pageNumber - 1}));
-    }
-
-    const handleLimit = (value) => {
-        setFilters(prevState => ({...prevState, page: 0, limit: value}));
-    }
-
-    const handleChangeOptions = (key = '') => (newSelectedIds) => {
-        setFilters(prevState => ({...prevState, page: 0, [key]: newSelectedIds || []}));
-    };
-
-    const handleChangeInput = (event) => {
-        setFilters(prevState => ({...prevState, search: event.target.value}));
-    }
-
-    const handleSortModel = (model) => {
-        setSorting(model);
-        const sortModel = model();
-        if (sortModel.length > 0) {
-            setFilters(prevState => ({
-                ...prevState,
-                sort: sortModel[0].id,
-                direction: Boolean(sortModel[0].desc) ? "desc" : "asc"
-            }));
-        }
-    };
-
-    const handleClearFilters = () => {
-        const basicMethod = searchOptions.searchMethods?.find(method => method.id === 1);
-        setFilters({
-            search: '',
-            searchMethods: basicMethod ? [basicMethod] : [],
-            groups: [],
-            types: [],
-            item_states: [],
-            page: 0,
-            limit: filters.limit
-        });
-    }
-
+    const hasNonEmptyFilter = () => vm.hasActiveFilters;
+    const handleChangeOptions = vm.changeOptions;
+    const handleChangeInput = vm.changeSearch;
+    const handleClearFilters = vm.clearFilters;
+    const handleSortModel = vm.table.applySorting;
     const handleRowClick = (row) => {
-        // Перевіряємо, чи виділено якийсь текст
-        if (window.getSelection().toString().length > 0) {
-            return; // Якщо текст виділено, не відкриваємо діалог
-        }
-
-        const datasetId = row.original.datasetId;
-        const dataset = searchOptions.datasets?.find(d => d.id === datasetId);
-        const datasetName = dataset?.caption || `Dataset #${datasetId}`;
-
-        const rec = {
-            ...row.original.original_data,
-            dataset_id: datasetId,
-            dataset_name: datasetName,
-            typeId: row.original.typeId,
-            actions: row.original.actions || [],
-        };
-        handleOpenDetailsDialog({ record: rec });
+        // Виділений текст — не відкриваємо діалог (користувач копіює значення).
+        if (window.getSelection().toString().length > 0) return;
+        vm.openDetailsFor(row);
     };
 
     return (
         <Page>
+            <PageHeader title="Розширений пошук" actions={<BasketHeaderButton onClick={vm.openBasket} />} />
             <div data-i-doc="page:advanced-search" className="mt-2 mx-2">
                 <CollapsibleSection
                     title="Фільтри"
@@ -483,7 +343,6 @@ const IndexContent = () => {
                                     Скинути
                                 </Button>
                             </Tooltip>
-                            <BasketHeaderButton onClick={() => setBasketDialogOpen(true)} />
                         </div>
                     </div>
                 </CollapsibleSection>
@@ -492,16 +351,10 @@ const IndexContent = () => {
             <div className="mt-6 mx-2 mb-10">
                 <Table
                     textSize="xs"
-                    loading={isSearchFetching}
+                    loading={vm.isFetching}
                     canChangeResize
                     canChangeVisibility
-                    pagination={{
-                        onLimitChange: handleLimit,
-                        onPageChange: handlePageChange,
-                        currentPage: searchResults?.page || 0,
-                        pageSize: searchResults?.limit || filters.limit,
-                        totalCount: searchResults?.total || 0,
-                    }}
+                    pagination={vm.pagination}
                     data={getTableData()}
                     columns={columns}
                     onSort={handleSortModel}
@@ -509,33 +362,32 @@ const IndexContent = () => {
                 />
             </div>
 
-            {detailsDialogOpen &&
-                <DetailsDialog open={detailsDialogOpen}
-                               record={detailsDialogProps?.record}
-                               onClose={handleCloseDetailsDialog}
+            {vm.detailsRecord &&
+                <DetailsDialog open
+                               record={vm.detailsRecord}
+                               onClose={vm.closeDetails}
                 />
             }
 
-            {basketDialogOpen &&
+            {vm.isBasketOpen &&
                 <BasketDialog
-                    open={basketDialogOpen}
-                    onClose={() => setBasketDialogOpen(false)}
+                    open={vm.isBasketOpen}
+                    onClose={vm.closeBasket}
                     renderCell={renderCell} // Передаємо функцію рендерингу
                 />
             }
         </Page>
     );
-};
+});
 
-// Обгортка з провайдерами
+/** Маршрут /search (pageAccess + Gate search.read). */
 const Index = () => {
+    const vm = useViewModel((deps) => new AdvancedSearchViewModel(deps));
     return (
-        <DictionaryProvider>
-            <BasketProvider>
-                <IndexContent />
-            </BasketProvider>
-        </DictionaryProvider>
+        <ViewModelProvider value={vm}>
+            <IndexContent vm={vm}/>
+        </ViewModelProvider>
     );
 };
 
-export default Index;
+export default observer(Index);

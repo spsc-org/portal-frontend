@@ -1,5 +1,5 @@
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
-import React, {useRef, useState} from "react";
+import {useRef, useState} from "react";
 import LoadingButton from "../Buttons/LoadingButton.jsx";
 
 const ImportFile = ({
@@ -62,7 +62,7 @@ const ImportFile = ({
                     <span>Закрити</span>
                 </Button>
                 <LoadingButton isLoading={isLoading} color="green" onClick={onSubmit}
-                        disabled={!Boolean(file) || isLoading}>
+                        disabled={!file || isLoading}>
                     {submitText}
                 </LoadingButton>
             </DialogFooter>

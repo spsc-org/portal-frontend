@@ -1,4 +1,3 @@
-import React from 'react';
 
 const ExpiryDateBadge = ({ date, highlightText, filters, label = "До:" }) => {
     if (!date) return null;

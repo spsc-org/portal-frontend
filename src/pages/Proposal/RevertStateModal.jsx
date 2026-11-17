@@ -1,67 +1,21 @@
-import {usePage} from "@inertiajs/react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import React, {useMemo, useState} from "react";
-import toast from "react-hot-toast";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { RevertStateViewModel } from "./viewmodel/ProposalViewModels.js";
+import { useProposalProps } from "./viewmodel/useProposalProps.js";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
-import SingleSelect from "../../Components/fields/SingleSelect.jsx";
-import LoadingButton from "../../Components/Buttons/LoadingButton.jsx";
+import SingleSelect from "../../components/fields/SingleSelect.jsx";
+import LoadingButton from "../../components/Buttons/LoadingButton.jsx";
 
 
 const RevertStateModal = ({open = false, selectedId: id, onClose}) => {
-    const {auth, token, proposalState = []} = usePage().props;
-    const queryClient = useQueryClient();
-    const [errors, setErrors] = useState(null);
-    const [form, setForm] = useState({
-        state: null
-    });
-
-    const revertState = useMutation({
-        mutationFn: async (body) => {
-            const response = await axios.patch(`/api/proposal/new/${id}/revert-state`,
-                body,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        "X-CSRF-Token": token,
-                        "userId": auth.user.id,
-                    }
-                }
-            );
-            return response.data;
-        },
-        onSuccess: async () => {
-            toast.success("Стан змінено успішно", {
-                style: {
-                    background: 'dark:dark:bg-slate-800',
-                    color: 'text-slate-400',
-                },
-            });
-            revertState.reset();
-            setForm({
-                state: null
-            });
-            onClose();
-        },
-        onError: error => {
-            if (error?.response?.status === 422) {
-                setErrors(error?.response?.data?.unvalidFields);
-            }
-        },
-        onSettled: (data, error) => {
-            if (!error && data?.success) {
-                queryClient.invalidateQueries(['proposal-show', id]);
-                queryClient.invalidateQueries(['proposal']);
-            }
-        },
-    })
-
-    const onSubmit = () => {
-        revertState.mutate({stateId: form.state?.id});
-    }
-
-    const options = useMemo(() => {
-        return proposalState.filter(item => !item.isFixed)
-    }, [proposalState])
+    const props = useProposalProps();
+    const vm = useViewModel((deps) => new RevertStateViewModel({ ...deps, id, props }));
+    const { form, errors, options } = vm;
+    const setForm = vm.setForm;
+    const revertState = vm.revertCmd;
+    const onSubmit = async () => {
+        if (await vm.submit()) onClose();
+    };
 
     return (
         <Dialog open={open} handler={onClose} size="xs">
@@ -95,4 +49,4 @@ const RevertStateModal = ({open = false, selectedId: id, onClose}) => {
     );
 };
 
-export default RevertStateModal;
+export default observer(RevertStateModal);

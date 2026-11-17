@@ -1,4 +1,3 @@
-import React from "react";
 
 // Атомарна кнопка напряму сортування — окремо від SortFieldMenu (вибір поля), той самий
 // розподіл "2 кнопки", що й у TaskFilters.jsx (Task-модуль).

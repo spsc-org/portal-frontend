@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {Spinner} from "@material-tailwind/react";
-import MultiSelect from "../../../Components/fields/MultiSelect.jsx";
+import MultiSelect from "../../../components/fields/MultiSelect.jsx";
 import {TagPill} from "../utils.jsx";
 
 /**

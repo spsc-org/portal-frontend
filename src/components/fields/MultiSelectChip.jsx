@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import {useMemo, useState} from "react";
 import {Menu, MenuHandler, MenuList} from "@material-tailwind/react";
 
 const optionCaption = (option) => option?.caption || option?.name || option?.label || "";

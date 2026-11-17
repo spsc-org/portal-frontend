@@ -1,6 +1,10 @@
-import {Link, usePage} from "@inertiajs/react";
-import {useMutation, useQuery} from "@tanstack/react-query";
-import React, {Fragment, useEffect, useMemo, useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
+import { ViewModelProvider } from "../../../shared/mvvm/ViewModelContext.jsx";
+import { ProposalViewViewModel } from "../viewmodel/ProposalViewModels.js";
+import {Link} from "react-router";
+import {useEffect, useMemo, useState} from "react";
+import {useParams} from "react-router";
 import {
     Badge,
     Button,
@@ -22,18 +26,14 @@ import {
     Tooltip,
     Typography
 } from "@material-tailwind/react";
-import AppChip from "@/Components/AppChip";
+import AppChip from "../../../components/AppChip.jsx";
 import {closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors,} from '@dnd-kit/core';
 import {arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy} from '@dnd-kit/sortable';
-import toast from "react-hot-toast";
-import {compareDesc, format, parseISO} from "date-fns";
-import {useDialog} from "../../../hooks/useDialog.js";
+import {format} from "date-fns";
 import UpdateProposalModal from "../UpdateProposalModal.jsx";
-import ProjectDetails from "../../Project/ProjectDetails.jsx";
-import ProjectModal from "../../Project/ProjectModal.jsx";
+import ProjectDetails from "../../../widgets/project/ProjectDetails.jsx";
 import {VList} from "virtua";
-import Page from "../../../Components/Page.jsx";
-import {DictionaryProvider} from "../../Dictionary/DictionaryContext.jsx";
+import Page from "../../../components/Page.jsx";
 import RevertStateModal from "../RevertStateModal.jsx";
 import {getStateStyle, PROPOSAL_STATE_COLORS} from "../constants.js";
 import ExportLinkedProjectsModal from "../components/ExportLinkedProjectsModal.jsx";
@@ -42,319 +42,69 @@ import AttachDecreeModal from "../components/AttachDecreeModal.jsx";
 import SortableItem from "../components/SortableItem.jsx";
 import ProjectItem from "../components/ProjectItem.jsx";
 import CompleteModal from "../components/CompleteModal.jsx";
+import PageHeader from "../../../layouts/app/PageHeader.jsx";
+import { HeaderButton } from "../../../layouts/app/HeaderButtons.jsx";
 
-const ProposalView = () => {
-  const {
-    id,
-    auth,
-    token,
-    // projects = null,
-    projectState = [],
-    proposalState = [],
-    decrees = [],
-    issuers = [],
-    users = [],
-    identifierTypes = [],
-   attributeTypes = [],
-  } = usePage().props;
+const ProposalViewContent = observer(({ vm }) => {
+  const { id, auth, projectState = [], proposalState = [], decrees = [], issuers = [], users = [], identifierTypes = [], attributeTypes = [] } = vm.props;
+  // Модалки: назва → props (VM); [open, handleOpen(props), handleClose, props].
+  const dialog = (name) => [Boolean(vm.dialogs[name]), (props) => vm.openDialog(name, props), () => vm.closeDialog(name), vm.dialogs[name]];
+  const [open, handleOpen, handleClose, dialogProps] = dialog("complete");
+  const [openExport, handleOpenExport, handleCloseExport, exportDialogProps] = dialog("export");
+  const [openGenerateDossiers, handleOpenGenerateDossiers, handleCloseGenerateDossiers, generateDossiersDialogProps] = dialog("generateDossiers");
+  const [openDecreeAttach, handleOpenAttachDecree, handleCloseAttachDecree, attachDecreeProps] = dialog("attachDecree");
+  const [openViewProject, handleViewOpen, handleViewClose, viewProps] = dialog("viewProject");
+  const [editOpen, handleEditOpen, handleEditClose, editDialogProps] = dialog("edit");
+  const [revertStateOpen, handleRevertStateOpen, handleRevertStateClose, revertStateDialogProps] = dialog("revertState");
 
-  const {open, handleOpen, handleClose, dialogProps} = useDialog();
+  // Мінімізований вигляд — лише для визначених користувачів (як в Inertia-версії).
+  const canShowMinify = () => [5, 29, 30, 31, 35].includes(auth?.user?.id);
 
+  const proposal = vm.proposal;
+  const isLinkedProjectsLoading = vm.isLinkedProjectsLoading;
+  const isFixed = vm.isFixed;
+  const { sortType, headers, activeTab, currentItems, allItems, nonReadyItems, countStates, countReady, countNonReady } = vm;
+  const setActiveTab = vm.setActiveTab;
+  const updateOrder = vm.orderCmd;
 
-  const canShowMinify = () => {
-    switch (auth.user.id) {
-      case 5:
-      case 29:
-      case 30:
-      case 31:
-      case 35:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  const {
-    open: openExport,
-    handleOpen: handleOpenExport,
-    handleClose: handleCloseExport,
-    dialogProps: exportDialogProps
-  } = useDialog();
-  const {
-    open: openGenerateDossiers,
-    handleOpen: handleOpenGenerateDossiers,
-    handleClose: handleCloseGenerateDossiers,
-    dialogProps: generateDossiersDialogProps
-  } = useDialog();
-  const {
-    open: openDecreeAttach,
-    handleOpen: handleOpenAttachDecree,
-    handleClose: handleCloseAttachDecree,
-    dialogProps: attachDecreeProps
-  } = useDialog();
-
-
-  const {
-    open: openViewProject,
-    handleOpen: handleViewOpen,
-    handleClose: handleViewClose,
-    dialogProps: viewProps
-  } = useDialog();
-  const {
-    open: openEditProject,
-    handleOpen: handleProjectEditOpen,
-    handleClose: handleProjectEditClose,
-    dialogProps: editProps
-  } = useDialog();
-  const {
-    open: editOpen,
-    handleOpen: handleEditOpen,
-    handleClose: handleEditClose,
-    dialogProps: editDialogProps
-  } = useDialog();
-  const {
-    open: revertStateOpen,
-    handleOpen: handleRevertStateOpen,
-    handleClose: handleRevertStateClose,
-    dialogProps: revertStateDialogProps
-  } = useDialog();
-
-  const {data = {data: null}} = useQuery({
-    queryKey: ['proposal-show', id],
-    queryFn: async () => {
-      const response = await axios.get(`/api/proposal/new/${id}`, {
-        headers: {"userId": auth?.user?.id}
-      });
-      return response.data;
-    }
-  });
-
-  const {data: projects, isFetching: isLinkedProjectsLoading} = useQuery({
-    queryKey: ['proposal-show-lined-projects', id],
-    queryFn: async () => {
-      const response = await axios.get(`/api/proposal/new/${id}/linked-projects`, {
-        headers: {"userId": auth?.user?.id}
-      });
-      return response.data?.data;
-    }
-  });
-
-  const proposal = /** @type {any} */ (data?.data);
-  const isFixed = data?.data?.stateId
-    ? proposalState.find(ps => ps.id === data.data.stateId)?.isFixed
-    : false;
-
-  const [sortType, setSortType] = useState(null);
+  // Висота вікна — для віртуалізованого списку (DOM — у View).
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
-
   useEffect(() => {
-    const handleResize = () => {
-      setWindowHeight(window.innerHeight);
-    };
-
+    const handleResize = () => setWindowHeight(window.innerHeight);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-
-  const updateOrder = useMutation({
-    mutationFn: async (body) => {
-      const response = await axios.post(`/api/proposal/new/${id}/updateOrder`,
-        body,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            "X-CSRF-Token": token,
-            "userId": auth.user.id,
-          }
-        }
-      );
-      return response.data;
-    },
-    onSuccess: async () => {
-      toast.success("Порядок змінено успішно", {
-        style: {
-          background: 'dark:dark:bg-slate-800',
-          color: 'text-slate-400',
-        },
-      });
-      updateOrder.reset();
-    },
-    onError: async () => toast.error('Помилка зміна порядку'),
-  })
-  const headers = useMemo(() => {
-    if (projects?.data || projects?.labels) {
-      return Object.entries(projects?.labels)
-        .flatMap(([outerKey, innerObj]) => Object.entries(innerObj)
-          .filter(([_, value]) => value[0] > 0 || value[1] > 0)
-          .map(([innerKey, value]) => ({
-            content: value[2],
-            label: `${outerKey}.${innerKey}`,
-            value: `${outerKey}-${innerKey}`,
-            count: `${value[0] || 0}/${value[1] || 0}`,
-            subjectTypeId: outerKey,
-            actionTypeId: innerKey,
-          })));
-    } else {
-      return [];
-    }
-  }, [projects]);
-  const [activeTab, setActiveTab] = useState(headers.length > 0 ? headers[0]?.value : null);
-
-  useEffect(() => {
-    if (headers.length > 0 && !activeTab) {
-      setActiveTab(headers[0]?.value);
-    }
-  }, [headers, activeTab]);
-  const [items, setItems] = useState({});
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 10,
-      }
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+    useSensor(PointerSensor, {activationConstraint: {distance: 10}}),
+    useSensor(KeyboardSensor, {coordinateGetter: sortableKeyboardCoordinates})
   );
-
-  const currentItems = useMemo(() => {
-    if (!activeTab) return [];
-    const [outerKey, innerKey] = activeTab.split('-');
-    return items[activeTab] || projects?.data?.[outerKey]?.[innerKey]?.filter(project => project.stateId === 2 || project.stateId === 7) || [];
-  }, [projects?.data, activeTab, items]);
-
-  const allItems = useMemo(() => {
-    if (!projects?.data) return [];
-    return Object.values(projects.data)
-      .flatMap(group =>
-        Object.values(group)
-          .flatMap(arr => arr)
-      )
-      .filter(item => item.stateId === 2 || item.stateId === 7);
-  }, [projects?.data])
-
-
-  const nonReadyItems = useMemo(() => {
-    if (!activeTab) return [];
-    const [outerKey, innerKey] = activeTab.split('-');
-
-    return projects?.data?.[outerKey]?.[innerKey]?.filter(project => project.stateId !== 2 && project.stateId !== 7) || []
-  }, [projects?.data, activeTab]);
-
-
-  const countStates = useMemo(() => {
-    return projectState.reduce((acc, curr) => {
-      const count = currentItems.filter(item => item?.stateId === curr.id).length;
-      return [...acc, {id: curr.id, caption: curr.caption, count}];
-    }, []);
-  }, [currentItems]);
-
-  const countReady = useMemo(() => {
-    if (countStates.length === 0) return 0;
-    return countStates.filter(s => s.id === 2 || s.id === 7)
-      .reduce((acc, curr) => {
-        return acc + curr.count;
-      }, 0)
-  }, [countStates])
-
-  const countNonReady = useMemo(() => {
-    if (countStates.length === 0) return 0;
-    return nonReadyItems.length
-  }, [nonReadyItems])
-
   const handleDragEnd = (event) => {
     const {active, over} = event;
     if (active.id !== over.id) {
       const oldIndex = currentItems.findIndex(item => item.id === active.id);
       const newIndex = currentItems.findIndex(item => item.id === over.id);
-
-      const newItems = arrayMove(currentItems, oldIndex, newIndex);
-      setItems({
-        ...items,
-        [activeTab]: newItems
-      });
+      vm.setTabItems(arrayMove(currentItems, oldIndex, newIndex));
     }
   };
-
-  const handleSort = (type = null) => () => {
-    let result;
-    switch (type) {
-      case "alphabetical":
-        result = currentItems.sort((a, b) => a.nameUk.localeCompare(b.nameUk));
-        break
-      case "countries":
-        result = currentItems.sort((a, b) => {
-          const countryA = JSON.parse(a?.precomputedData)?.countries?.[0]?.name || "";
-          const countryB = JSON.parse(b?.precomputedData)?.countries?.[0]?.name || "";
-          return countryB.localeCompare(countryA);
-        });
-        break;
-      case "newFirst":
-        result = currentItems.sort((a, b) => compareDesc(parseISO(a.createdAt), parseISO(b.createdAt)));
-        break
-      default:
-        result = currentItems.sort((a, b) => a.order - b.order);
-    }
-    setSortType(type)
-    return setItems({
-      ...items,
-      [activeTab]: result
-    });
-  }
-
-
-  const onSubmit = () => {
-    if (updateOrder.isPending) {
-      return;
-    }
-    const request = Object.entries(items[activeTab] || currentItems)
-      .filter(([_, project]) => project.stateId === 2 || project.stateId === 7)
-      .map(([order, project]) => ([project.id, Number(order) + 1]));
-    updateOrder.mutateAsync(request)
-      .then(response => {
-        setItems({
-          ...items,
-          [activeTab]: response?.data
-        });
-      })
-      .catch(() => {
-        setItems({
-          ...items,
-          [activeTab]: currentItems
-        });
-      })
-  }
-
-  const handleExport = (value) => (e) => {
+  const handleSort = (type = null) => () => vm.sort(type);
+  const onSubmit = vm.saveOrder;
+  const handleExport = (value) => () => {
     const [actionId, typeId] = value.split('-');
-    handleOpenExport({actionId, typeId, id})
-  }
-
-  const handleGenerateDossiers = (value) => (e) => {
+    handleOpenExport({actionId, typeId, id});
+  };
+  const handleGenerateDossiers = (value) => () => {
     const [actionId, typeId] = value.split('-');
-    handleOpenGenerateDossiers({actionId, typeId, id})
-  }
-
-  const handleComplete = () => {
-    handleOpen({
-      outgoingDate: proposal?.outgoingDate,
-      outgoingNumber: proposal?.outgoingNumber,
-      projectIds: allItems
-    })
-  }
-
-  const handleEdit = () => {
-    handleEditOpen({
-      selectedId: proposal.id,
-    })
-  }
-
-  const scrollToSection = (id) => {
-    const section = document.getElementById(id);
-    if (section) {
-      section.scrollIntoView({behavior: 'smooth'});
-    }
+    handleOpenGenerateDossiers({actionId, typeId, id});
+  };
+  const handleComplete = () => handleOpen({
+    outgoingDate: proposal?.outgoingDate,
+    outgoingNumber: proposal?.outgoingNumber,
+    projectIds: allItems,
+  });
+  const handleEdit = () => handleEditOpen({selectedId: proposal.id});
+  const scrollToSection = (sectionId) => {
+    document.getElementById(sectionId)?.scrollIntoView({behavior: 'smooth'});
   };
 
   const proposalStateCaption = proposal?.stateId
@@ -395,11 +145,11 @@ const ProposalView = () => {
   }
 
   return (
-    <DictionaryProvider>
       <Page>
-        <div data-i-doc="page:proposal-view"
-          className="flex items-center gap-3 py-[12px] px-[20px] bg-white dark:bg-[rgb(22,27,39)] border-b border border-gray-200 dark:border-[rgba(255,255,255,0.07)]">
-          <div className="inline-flex flex-1 gap-x-1">
+        <PageHeader
+          documentTitle={proposal?.caption ? `Подання: ${proposal.caption}` : "Подання"}
+          title={
+          <span className="inline-flex min-w-0 items-center gap-x-1.5">
             {isFixed && (
               <Tooltip content="Зафіксований">
                             <span style={{color: "#4f8ef7", display: "flex", alignItems: "center"}}>
@@ -407,9 +157,7 @@ const ProposalView = () => {
                             </span>
               </Tooltip>
             )}
-            <span className="text-gray-900 dark:!text-[#e8eaf0]" style={{fontWeight: 700, fontSize: 16}}>
-                        {proposal?.caption || "Звантаження..."}
-                    </span>
+            <span className="truncate">{proposal?.caption || "Завантаження..."}</span>
             {proposalBadgeStyle && proposalStateCaption && (
               <AppChip
                 value={proposalStateCaption}
@@ -419,37 +167,36 @@ const ProposalView = () => {
                 className="rounded-full text-[10.5px] font-semibold tracking-[0.3px] py-1 px-[9px]"
               />
             )}
+          </span>
+          }
+          actions={
+          <>
               {canShowMinify() && (
-                  <Link href={`/proposal/${id}/minify`}>
-                      <Button color="blue" variant="text" size="sm">
-                          <i className="fa-solid fa-clipboard-list"></i>
-                          <span style={{textTransform: "none"}}>Спрощений вид</span>
-                      </Button>
-                  </Link>
-
+                  <HeaderButton tone="default" icon="fa-solid fa-clipboard-list" to={`/proposal/${id}/minify`}>
+                      Спрощений вид
+                  </HeaderButton>
               )}
-          </div>
 
           {/*Action buttons — md+*/}
           <div className="hidden md:flex flex-wrap gap-x-1">
-            {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !Boolean(proposal?.deletedAt) && !Boolean(isFixed) && (
+            {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !proposal?.deletedAt && !isFixed && (
               <Button color="blue" size="sm" onClick={handleComplete}>
                 <i className="fa-solid fa-check"></i> <span style={{textTransform: "none"}}>Зафіксувати стан</span>
               </Button>
             )}
-            {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !Boolean(proposal?.deletedAt) && (
+            {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !proposal?.deletedAt && (
               <Button color="yellow" variant="filled" size="sm" onClick={handleEdit}>
                 <i className="fa-regular fa-pen-to-square"></i> <span
                 style={{textTransform: "none"}}>Внести зміни</span>
               </Button>
             )}
-            {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !Boolean(proposal?.deletedAt) && Boolean(isFixed) && (
+            {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !proposal?.deletedAt && Boolean(isFixed) && (
               <Button color="blue" size="sm" onClick={handleAttachDecree}>
                 <i className="fa-solid fa-file-signature"></i> <span style={{textTransform: "none"}}>Додати указ</span>
               </Button>
             )}
 
-            {Boolean(auth?.user?.permissions?.pages?.proposal?.revertState) && (proposal?.stateId !== 1 && proposal?.stateId !== 2) && !Boolean(proposal?.deletedAt) && (
+            {Boolean(auth?.user?.permissions?.pages?.proposal?.revertState) && (proposal?.stateId !== 1 && proposal?.stateId !== 2) && !proposal?.deletedAt && (
               <Button color="blue" size="sm" onClick={() => handleRevertStateOpen({selectedId: proposal?.id})}>
                 <i className="fa-solid fa-unlock"></i>
                 <span style={{textTransform: "none"}}>Зняти фіксацію</span>
@@ -468,29 +215,29 @@ const ProposalView = () => {
               <MenuList>
                 {canShowMinify() && (
                   <MenuItem>
-                      <Link href={`/proposal/${id}/minify`}>
+                      <Link to={`/proposal/${id}/minify`}>
                         <span className="flex items-center gap-2">
                           <i className="fa-solid fa-clipboard-list w-4"></i> Спрощений вид
                         </span>
                       </Link>
                   </MenuItem>
                 )}
-                {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !Boolean(proposal?.deletedAt) && !Boolean(isFixed) && (
+                {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !proposal?.deletedAt && !isFixed && (
                   <MenuItem onClick={handleComplete} className="flex items-center gap-2">
                     <i className="fa-solid fa-check w-4"></i> Зафіксувати стан
                   </MenuItem>
                 )}
-                {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !Boolean(proposal?.deletedAt) && Boolean(isFixed) && (
+                {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !proposal?.deletedAt && Boolean(isFixed) && (
                   <MenuItem onClick={handleAttachDecree} className="flex items-center gap-2">
                     <i className="fa-solid fa-file-signature w-4"></i> Додати указ
                   </MenuItem>
                 )}
-                {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !Boolean(proposal?.deletedAt) && (
+                {Boolean(auth?.user?.permissions?.pages?.proposal?.update) && !proposal?.deletedAt && (
                   <MenuItem onClick={handleEdit} className="flex items-center gap-2">
                     <i className="fa-regular fa-pen-to-square w-4"></i> Редагувати інформацію
                   </MenuItem>
                 )}
-                {Boolean(auth?.user?.permissions?.pages?.proposal?.revertState) && (proposal?.stateId !== 1 && proposal?.stateId !== 2) && !Boolean(proposal?.deletedAt) && (
+                {Boolean(auth?.user?.permissions?.pages?.proposal?.revertState) && (proposal?.stateId !== 1 && proposal?.stateId !== 2) && !proposal?.deletedAt && (
                   <MenuItem onClick={() => handleRevertStateOpen({selectedId: proposal?.id})}
                             className="flex items-center gap-2">
                     <i className="fa-solid fa-unlock w-4"></i> Зняти фіксацію
@@ -499,8 +246,10 @@ const ProposalView = () => {
               </MenuList>
             </Menu>
           </div>
-
-        </div>
+          </>
+          }
+        />
+        <span data-i-doc="page:proposal-view" hidden />
 
         <div className="grid md:grid-cols-[2fr_0.4fr] sm:grid-cols-1 grid-rows-1 gap-0">
           <div className="flex-grow flex-shrink flex-auto order-0 self-auto ">
@@ -510,7 +259,7 @@ const ProposalView = () => {
                   <Spinner size="xl"/>
                 </div>
                 :
-                Boolean(activeTab) ?
+                activeTab ?
                   <Tabs value={activeTab}>
                     <TabsHeader
                       className="pb-2 overflow-x-auto !flex-nowrap m-0 gap-3  px-2 rounded-none bg-white dark:bg-[rgb(22,27,39)] border border-gray-200 dark:border-[rgba(255,255,255,0.07)]"
@@ -534,7 +283,7 @@ const ProposalView = () => {
                         return (
                           <TabPanel className="p-0" key={tab.value} value={tab.value}>
                             {
-                              Boolean(isFixed) ?
+                              isFixed ?
                                 <div className="p-2">
                                   <div
                                     className="mb-1 flex-1 w-full flex justify-end gap-x-2">
@@ -610,7 +359,7 @@ const ProposalView = () => {
                                     className="flex px-1 py-2 items-center gap-5 mb-2 border-b border-gray-200 dark:border-[rgba(255,255,255,0.07)]">
                                     <Popover placement="bottom-start">
                                       <Badge content={countNonReady}
-                                             invisible={!Boolean(countNonReady)}>
+                                             invisible={!countNonReady}>
                                         <PopoverHandler>
                                           <Button size="sm">
                                             Кількість: {countReady} <i
@@ -778,11 +527,11 @@ const ProposalView = () => {
             }
 
             {
-              !Boolean(headers.length) && !isLinkedProjectsLoading &&
+              !headers.length && !isLinkedProjectsLoading &&
               <div className="text-center dark:text-neutral-200 space-x-1">
                 <span>Список порожній.</span>
                 {
-                  !Boolean(proposal?.deletedAt) &&
+                  !proposal?.deletedAt &&
                   <a href="/project" className="underline text-blue-600">Додати
                     проєкти</a>
                 }
@@ -875,12 +624,6 @@ const ProposalView = () => {
           </div>
         </div>
         {
-          openEditProject && <ProjectModal
-            open={openEditProject}
-            {...editProps} onClose={handleProjectEditClose}
-          />
-        }
-        {
           editOpen && <UpdateProposalModal open={editOpen} {...editDialogProps} onClose={handleEditClose}/>
         }
         {
@@ -921,9 +664,24 @@ const ProposalView = () => {
           <RevertStateModal open={revertStateOpen} onClose={handleRevertStateClose} {...revertStateDialogProps}/>
         }
       </Page>
-    </DictionaryProvider>
+  );
+});
+
+/** Маршрут /proposal/:id (pageAccess). Props — /api/spa/pages/proposal-view/{id}/options. */
+const ProposalView = () => {
+  const { id } = useParams();
+  const vm = useViewModel((deps) => new ProposalViewViewModel({ ...deps, id }));
+  return (
+    <ViewModelProvider value={vm}>
+      <ProposalViewContent vm={vm}/>
+    </ViewModelProvider>
   );
 };
 
-// noinspection JSUnusedGlobalSymbols
-export default ProposalView;
+/** Новий VM на кожне подання (перехід /proposal/1 → /proposal/2). */
+const ProposalViewRoute = () => {
+  const { id } = useParams();
+  return <ProposalView key={id}/>;
+};
+
+export default ProposalViewRoute;

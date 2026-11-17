@@ -1,4 +1,3 @@
-import React from "react";
 
 const numberInputClasses = "w-14 h-[30px] px-2 border border-gray-300 rounded-md text-[12px] text-center dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 focus:border-blue-500";
 

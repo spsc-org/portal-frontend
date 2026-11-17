@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Dialog, DialogHeader } from "@material-tailwind/react";
 import DocumentManager from '../DocumentManager.jsx';
@@ -14,7 +13,7 @@ const DocumentsModal = ({ isOpen, onClose, absence }) => {
             </DialogHeader>
             {absence && (
                 <div className="p-4">
-                    <DocumentManager absenceId={absence.id} documents={absence.documents || []} />
+                    <DocumentManager key={absence.id} absenceId={absence.id} documents={absence.documents || []} />
                 </div>
             )}
         </Dialog>

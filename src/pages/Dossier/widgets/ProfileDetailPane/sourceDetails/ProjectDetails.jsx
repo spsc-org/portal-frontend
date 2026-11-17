@@ -1,4 +1,3 @@
-import React from "react";
 import {Field, ListField} from "./fieldPrimitives.jsx";
 import DictValue from "../../../shared/ui/DictValue.jsx";
 

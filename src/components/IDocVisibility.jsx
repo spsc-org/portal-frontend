@@ -1,15 +1,16 @@
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { useMe } from "../hooks/useMe.js";
+import { observer } from "mobx-react-lite";
+import { useStores } from "../stores/storeHooks.js";
 
 /**
  * Монтується один раз у app.jsx (поруч з CreateIssueGlobalModal, у
  * #global-modals — присутній і на Inertia-, і на legacy Blade-сторінках).
  * Нічого не рендерить сам — лише тримає клас `.i-doc-visible` на <body> в
- * синхроні з налаштуванням users.settings.ui.showIDocLabels. Сама
+ * синхроні з cookie `showIDocLabels` (UiStore). Сама
  * візуалізація (кольорові смужки над [data-i-doc]-елементами) — чистий
  * CSS (resources/css/app.css), вмикається/вимикається цим класом.
- * Вимкнено — компонент не робить нічого, окрім підписки на useMe().
+ * Вимкнено — компонент не робить нічого, окрім підписки на ui.showIDocLabels (cookie).
  *
  * Клік по смужці — єдина інтерактивна частина, тому єдина, де потрібен
  * JS: пряме додавання своїх кнопок/обробників у 96 позначених місцях
@@ -20,8 +21,8 @@ import { useMe } from "../hooks/useMe.js";
  * контент під нею.
  */
 const IDocVisibility = () => {
-    const me = useMe();
-    const visible = Boolean(me.data?.settings?.ui?.showIDocLabels);
+    const { ui } = useStores();
+    const visible = ui.showIDocLabels;
 
     useEffect(() => {
         document.body.classList.toggle("i-doc-visible", visible);
@@ -73,4 +74,4 @@ const IDocVisibility = () => {
     return null;
 };
 
-export default IDocVisibility;
+export default observer(IDocVisibility);

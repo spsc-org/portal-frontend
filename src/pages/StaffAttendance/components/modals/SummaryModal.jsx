@@ -1,92 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { observer } from 'mobx-react-lite';
+import { useViewModel } from '../../../../shared/mvvm/useViewModel.js';
+import { SummaryViewModel } from '../../viewmodel/AttendanceModalViewModels.js';
 import PropTypes from 'prop-types';
 import { Dialog, DialogHeader, Button } from '@material-tailwind/react';
-import AdvancedSelectWithDefaults from '@/Components/fields/AdvancedSelectWithDefaults.jsx';
-import { useStaffOptions, useStaffSummary } from '../../hooks/index.js';
+import AdvancedSelectWithDefaults from '../../../../components/fields/AdvancedSelectWithDefaults.jsx';
 
-const SummaryModal = ({
-    isOpen,
-    onClose,
-    initialFilters = {
-        startDate: '',
-        endDate: '',
-        users: [],
-        types: [],
-    },
-    absenceTypes = [],
-}) => {
-    const [localFilters, setLocalFilters] = useState({
-        startDate: initialFilters?.startDate || '',
-        endDate: initialFilters?.endDate || '',
-        users: initialFilters?.users || [],
-        types: initialFilters?.types || [],
-        statuses: initialFilters?.statuses || ['approved'],
-    });
-
-    const { data: optionsResponse } = useStaffOptions();
-    const { data: summaryResponse, isFetching: isSummaryLoading } = useStaffSummary(localFilters, isOpen);
-
-    const users = optionsResponse?.data?.users || [];
-    const allAbsenceTypes = optionsResponse?.data?.absence_types || [];
-    const summaryData = summaryResponse?.data || {};
-
-    // Reset local filters when modal opens
-    useEffect(() => {
-        if (isOpen) {
-            setLocalFilters({
-                startDate: initialFilters?.startDate || '',
-                endDate: initialFilters?.endDate || '',
-                users: initialFilters?.users || [],
-                types: initialFilters?.types || [],
-                statuses: initialFilters?.statuses || ['approved'],
-            });
-        }
-    }, [isOpen]);
-
-    const handleDateChange = (field, value) => {
-        setLocalFilters(prev => ({
-            ...prev,
-            [field]: value,
-        }));
-    };
-
-    const handleUsersChange = (selectedUsers) => {
-        setLocalFilters(prev => ({
-            ...prev,
-            users: selectedUsers ? selectedUsers.map(u => u.id) : [],
-        }));
-    };
-
-    const handleTypesChange = (selectedTypes) => {
-        setLocalFilters(prev => ({
-            ...prev,
-            types: selectedTypes ? selectedTypes.map(t => t.value) : [],
-        }));
-    };
-
-    const handleStatusesChange = (selectedStatuses) => {
-        setLocalFilters(prev => ({
-            ...prev,
-            statuses: selectedStatuses ? selectedStatuses.map(s => s.value) : [],
-        }));
-    };
-
-    const handlePrint = () => {
-        const params = new URLSearchParams({
-            start_date: localFilters.startDate,
-            end_date: localFilters.endDate,
-        });
-        localFilters.types.forEach(t => params.append('types[]', t));
-        localFilters.users.forEach(u => params.append('users[]', u));
-        localFilters.statuses.forEach(s => params.append('statuses[]', s));
-
-        window.open(`/staff/summary-print?${params.toString()}`, '_blank');
-    };
+const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
+    const vm = useViewModel((deps) => new SummaryViewModel({ ...deps, initialFilters }));
+    const localFilters = vm.filters;
+    const isSummaryLoading = vm.isLoading;
+    const users = vm.users;
+    const allAbsenceTypes = vm.allAbsenceTypes;
+    const summaryData = vm.summary;
+    const optionsResponse = vm.optionsQuery.data;
+    const handleDateChange = vm.setDate;
+    const handleUsersChange = vm.setUsers;
+    const handleTypesChange = vm.setTypes;
+    const handleStatusesChange = vm.setStatuses;
+    const handlePrint = vm.print;
 
     const rows = summaryData.rows || [];
     const columns = summaryData.columns || [];
     const totals = summaryData.totals || {};
-    const grandTotal = summaryData.grand_total || 0;
 
     return (
         <Dialog data-i-doc="modal:staff-attendance-summary" open={isOpen} handler={onClose} size="xl">
@@ -264,7 +199,10 @@ const SummaryModal = ({
             </div>
         </Dialog>
     );
-};
+});
+
+/** Монтується лише відкритою: локальні фільтри стартують з фільтрів сторінки. */
+const SummaryModal = (props) => (props.isOpen ? <SummaryModalInner {...props} /> : null);
 
 SummaryModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,

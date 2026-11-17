@@ -1,4 +1,3 @@
-import React from "react";
 import SecondaryNavPanel from "./SecondaryNavPanel.jsx";
 
 // Спільна оболонка для будь-якого простору сторінок з другим боковим меню

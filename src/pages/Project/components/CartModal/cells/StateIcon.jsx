@@ -1,4 +1,3 @@
-import React from "react";
 
 // Порт TableManager.js:#renderCellState() — легасі шукає в
 // myApp.globals.voc.state (плаский масив) через .find(); тут той самий

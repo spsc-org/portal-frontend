@@ -1,7 +1,8 @@
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { DossierAuditViewModel } from "../../viewmodel/DossierViewModels.js";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Spinner} from "@material-tailwind/react";
-import {useQuery} from "@tanstack/react-query";
-import React, {useState} from "react";
-import {fetchProfileAuditHistory} from "../../entities/dossier/api.js";
+import {useState} from "react";
 
 // Історія змін досьє (повні знімки профілю зі звʼязками й тікетами + diff) — той самий
 // UI-патерн, що й TaskAuditModal (Task/Components/Modals/TaskAuditModal.jsx), адаптований
@@ -137,15 +138,10 @@ const AuditEntry = ({entry, users}) => {
 };
 
 const DossierAuditModal = ({profileId, users = [], onClose}) => {
-    const [page, setPage] = useState(1);
-
-    const {data, isFetching, isError} = useQuery({
-        queryKey: ["dossier-audit", profileId, page],
-        queryFn: () => fetchProfileAuditHistory(profileId, page, 50),
-        enabled: Boolean(profileId),
-        retry: false,
-    });
-
+    const vm = useViewModel((deps) => new DossierAuditViewModel({ ...deps, profileId }));
+    const page = vm.page;
+    const setPage = vm.setPage;
+    const { data, isFetching, isError } = vm.query;
     const history = data?.data ?? [];
     const total = data?.meta?.total ?? 0;
     const pages = data?.meta?.pages ?? 1;
@@ -213,4 +209,4 @@ const DossierAuditModal = ({profileId, users = [], onClose}) => {
     );
 };
 
-export default DossierAuditModal;
+export default observer(DossierAuditModal);

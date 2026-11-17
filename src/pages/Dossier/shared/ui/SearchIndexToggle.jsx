@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 
 // Згорнутий/розгорнутий блок сирого search_index (профілю або зв'язку) — щоб бачити,
 // який саме текст брав участь у FULLTEXT-матчингу, поруч із matched_criteria.

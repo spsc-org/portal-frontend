@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Button, Typography } from '@material-tailwind/react'
-import { useAuth } from '../../context/AuthContext.jsx'
+import { useSession } from '../../stores/storeHooks.js'
 import { apiFetch, ApiError } from '../../lib/api.js'
 import AuthLayout from './AuthLayout.jsx'
 import { StatusAlert } from './FormAlert.jsx'
 
 // Еквівалент resources/views/auth/verify-email.blade.php
 export default function VerifyEmail() {
-  const { logout } = useAuth()
+  const { logout } = useSession()
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(null)
   const [submitting, setSubmitting] = useState(false)

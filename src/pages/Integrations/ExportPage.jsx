@@ -1,26 +1,19 @@
-import React from "react";
-import { usePage } from "@inertiajs/react";
-import IntegrationsLayout from "./shared/ui/IntegrationsLayout.jsx";
-import { canReadIntegrationsExport } from "./shared/lib/permissions.js";
-import ExportSection from "./components/ExportSection.jsx";
-const ExportPage = () => {
-    const { auth } = usePage().props;
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/index.js";
+import { usePageTitle } from "../../shared/hooks/usePageTitle.js";
+import { ExportViewModel } from "./viewmodel/IntegrationsViewModels.js";
+import IntegrationsLayout from "./view/IntegrationsLayout.jsx";
+import ExportSection from "./view/ExportSection.jsx";
 
-    if (!canReadIntegrationsExport(auth)) {
-        return (
-            <IntegrationsLayout active="export">
-                <div className="flex min-h-[50vh] items-center justify-center text-slate-400 dark:text-slate-600">
-                    <i className="fa-solid fa-lock mr-2"></i>Немає доступу до цього розділу.
-                </div>
-            </IntegrationsLayout>
-        );
-    }
+const ExportView = observer(({ vm }) => (
+    <IntegrationsLayout data-i-doc="page:integrations-export" active="export" canRead={vm.canRead}>
+        <ExportSection vm={vm}/>
+    </IntegrationsLayout>
+));
 
-    return (
-        <IntegrationsLayout data-i-doc="page:integrations-export" active="export">
-            <ExportSection />
-        </IntegrationsLayout>
-    );
-};
-
-export default ExportPage;
+/** Маршрут /integrations-export (pageAccess). */
+export default function ExportPage() {
+    const vm = useViewModel((deps) => new ExportViewModel(deps));
+    usePageTitle("Експорт");
+    return <ExportView vm={vm} />;
+}

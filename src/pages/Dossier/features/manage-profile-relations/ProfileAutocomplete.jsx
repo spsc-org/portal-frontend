@@ -1,23 +1,23 @@
-import React, {useEffect, useRef, useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { ProfileAutocompleteViewModel } from "../../viewmodel/DossierViewModels.js";
+import {useEffect, useMemo, useState} from "react";
 import {debounce} from "lodash";
-import {useQuery} from "@tanstack/react-query";
-import {fetchProfiles} from "../../entities/dossier/api.js";
+
 import {profileTitle} from "../../entities/dossier/model.js";
 
 // Пошук профілю за іменем (FULLTEXT, переюз GET /sanctions/profiles?q=) для
 // вибору "іншого" профілю при додаванні profile-to-profile звʼязку.
 const ProfileAutocomplete = ({selected, onSelect, excludeId}) => {
-    const [term, setTerm] = useState("");
+    const vm = useViewModel((deps) => new ProfileAutocompleteViewModel(deps));
+    const term = vm.term;
+    const setTerm = vm.setTerm;
     const [isOpen, setIsOpen] = useState(false);
 
-    const debouncedSetTerm = useRef(debounce(setTerm, 300)).current;
+    const debouncedSetTerm = useMemo(() => debounce(setTerm, 300), [setTerm]);
     useEffect(() => () => debouncedSetTerm.cancel(), [debouncedSetTerm]);
 
-    const {data, isFetching} = useQuery({
-        queryKey: ["sanction-profiles-autocomplete", term],
-        queryFn: () => fetchProfiles({q: term, limit: 10}),
-        enabled: term.length >= 2,
-    });
+    const { data, isFetching } = vm.query;
 
     const candidates = (data?.data ?? []).filter((profile) => profile.id !== excludeId);
 
@@ -76,4 +76,4 @@ const ProfileAutocomplete = ({selected, onSelect, excludeId}) => {
     );
 };
 
-export default ProfileAutocomplete;
+export default observer(ProfileAutocomplete);

@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useProjectOptionsQuery } from "../../../entities/project/queries.js";
-import { useTaskOptionsForCartQuery, useCreateTaskWithProjectsMutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useMemo, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import { SelectField } from "./fields.jsx";
 
 const inputClass = "w-full text-sm border border-gray-300 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -12,10 +13,10 @@ const labelClass = "mb-1 block text-sm font-medium text-gray-700 dark:text-gray-
 // "Пріоритет"/"Проєкт" з домену Task (entities/cart/api.js:fetchTaskOptionsForCart,
 // точнісінько як initCreateTaskSelects() у легасі cartManager.js).
 const CreateTaskForm = ({ projectIds, userId, onDone }) => {
-    const { data: projectVoc } = useProjectOptionsQuery(["user"], userId);
+    const projectVoc = useVM().cartModal.options;
     const users = useMemo(() => Object.values(projectVoc?.user ?? {}), [projectVoc]);
 
-    const { data: taskVoc } = useTaskOptionsForCartQuery(userId, true);
+    const taskVoc = useVM().cartModal.taskOptions;
     const priorities = useMemo(() => taskVoc?.priorities ?? [], [taskVoc]);
     const tasksProjects = useMemo(
         () => (taskVoc?.projects ?? []).map((p) => ({ id: p.id, caption: p.name })),
@@ -30,22 +31,12 @@ const CreateTaskForm = ({ projectIds, userId, onDone }) => {
     const [description, setDescription] = useState("");
     const [assignedUserId, setAssignedUserId] = useState("");
     const [projectId, setProjectId] = useState("");
-    const [priorityId, setPriorityId] = useState(defaultPriorityId);
+    // Поки користувач не вибрав сам — "Середній" зі словника (/api/task/options приходить асинхронно), як legacy initCreateTaskSelects()
+    const [priorityChoice, setPriorityId] = useState("");
+    const priorityId = priorityChoice || defaultPriorityId;
     const [dueDate, setDueDate] = useState("");
 
-    // defaultPriorityId приходить асинхронно (доп. запит /api/task/options) —
-    // useState(defaultPriorityId) бере лише снепшот на момент першого рендеру
-    // (тоді словник ще порожній), тож без цього ефекту "Середній" ніколи не
-    // з'явиться в селекті сам собою, як це робить легасі initCreateTaskSelects().
-    // Спрацьовує лише якщо priorityId ще не встановлено — щоб не затирати
-    // власний вибір користувача, якщо словник довантажиться пізніше.
-    useEffect(() => {
-        if (!priorityId && defaultPriorityId) {
-            setPriorityId(defaultPriorityId);
-        }
-    }, [defaultPriorityId, priorityId]);
-
-    const mutation = useCreateTaskWithProjectsMutation();
+    const mutation = useVM().cartModal.cmd.createTaskWithProjects;
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -85,7 +76,7 @@ const CreateTaskForm = ({ projectIds, userId, onDone }) => {
             </div>
 
             {mutation.isError && (
-                <p className="text-sm text-red-600 dark:text-red-400">{getErrorMessage(mutation.error, "Не вдалося створити задачу")}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">{cartErrorMessage(mutation.error, "Не вдалося створити задачу")}</p>
             )}
 
             <button
@@ -100,4 +91,4 @@ const CreateTaskForm = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default CreateTaskForm;
+export default observer(CreateTaskForm);

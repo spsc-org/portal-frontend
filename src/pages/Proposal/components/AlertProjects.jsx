@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Button, List, ListItem, Typography} from "@material-tailwind/react";
+import {Button, List, ListItem} from "@material-tailwind/react";
 
 export default function AlertProjects({ ignoreAttachAlert }) {
     const [showAll, setShowAll] = useState(false);

@@ -1,18 +1,12 @@
-import React, { useMemo, useState } from "react";
-import { usePage } from "@inertiajs/react";
-import { Card, IconButton, Spinner, Tooltip, Typography } from "@material-tailwind/react";
+import { useMemo, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { Card, IconButton, Spinner, Tooltip } from "@material-tailwind/react";
 import toast from "react-hot-toast";
-import Page from "@/Components/Page.jsx";
-import { DictionaryProvider } from "@/ReactPages/Dictionary/DictionaryContext.jsx";
-import ConfirmModal from "../../Components/Modal/ConfirmModal.jsx";
-import {
-    getErrorMessage,
-    useCountryOptionsQuery,
-    useCreateReasonRuleMutation,
-    useDeleteReasonRuleMutation,
-    useReasonRulesQuery,
-    useUpdateReasonRuleMutation,
-} from "./entities/reasonRules/queries.js";
+import Page from "../../components/Page.jsx";
+import ConfirmModal from "../../components/Modal/ConfirmModal.jsx";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { usePageTitle } from "../../shared/hooks/usePageTitle.js";
+import { ReasonRulesViewModel, reasonRuleErrorMessage as getErrorMessage } from "./viewmodel/ReasonRulesViewModel.js";
 
 const CATEGORY_OPTIONS = [
     { value: "warning", label: "Увага" },
@@ -22,13 +16,10 @@ const CATEGORY_OPTIONS = [
 
 const countryName = (c) => c.caption || c.name_uk || c.name_en || "Unnamed";
 const ReasonRulesPage = () => {
-    const { auth } = usePage().props;
-    const { data: rules = [], isLoading } = useReasonRulesQuery();
-    const { data: countries = [] } = useCountryOptionsQuery(auth?.user?.id);
-
-    const createMutation = useCreateReasonRuleMutation();
-    const updateMutation = useUpdateReasonRuleMutation();
-    const deleteMutation = useDeleteReasonRuleMutation();
+    const vm = useViewModel((deps) => new ReasonRulesViewModel(deps));
+    usePageTitle("Системні правила обґрунтувань", { documentTitle: "Правила обґрунтувань" });
+    const { rules, isLoading, countries } = vm;
+    const { create: createMutation, update: updateMutation, remove: deleteMutation } = vm.cmd;
 
     const [showInactive, setShowInactive] = useState(false);
     const [phrase, setPhrase] = useState("");
@@ -89,13 +80,9 @@ const ReasonRulesPage = () => {
     };
 
     return (
-        <DictionaryProvider>
+        <>
             <Page>
                 <div data-i-doc="page:project-reason-rules" className="mx-auto mt-6 max-w-5xl px-4">
-                    <h1 className="mb-6 text-2xl font-bold text-gray-800 dark:text-slate-100">
-                        Системні правила обґрунтувань
-                    </h1>
-
                     <div className="mb-6 rounded-lg bg-white p-6 shadow-md dark:bg-slate-800">
                         <p className="mb-1 text-sm text-gray-600 dark:text-slate-400">
                             Глобальні правила застосовуються до всіх користувачів під час перевірки
@@ -296,8 +283,8 @@ const ReasonRulesPage = () => {
                     message={deleteTarget ? `Правило «${deleteTarget.phrase}» буде видалено безповоротно.` : ""}
                 />
             </Page>
-        </DictionaryProvider>
+        </>
     );
 };
 
-export default ReasonRulesPage;
+export default observer(ReasonRulesPage);

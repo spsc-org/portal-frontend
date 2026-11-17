@@ -1,6 +1,12 @@
-import React from 'react';
-import { Typography, Button } from "@material-tailwind/react";
+import PageHeader from "../../../layouts/app/PageHeader.jsx";
+import { HeaderButton } from "../../../layouts/app/HeaderButtons.jsx";
 
+const VIEW_MODES = [
+    { id: "calendar", icon: "fa-solid fa-calendar", label: "Сітка" },
+    { id: "table", icon: "fa-solid fa-list", label: "Таблиця" },
+];
+
+/** Назва й дії обліку персоналу — у глобальному Header (PageHeader). */
 const AttendanceHeader = ({
     onOpenCreate,
     onOpenStatistics,
@@ -9,51 +15,36 @@ const AttendanceHeader = ({
     viewMode,
     onViewModeChange
 }) => (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <div>
-            <Typography variant="h4" className="text-slate-800 dark:text-slate-100 font-black tracking-tight">
-                Облік перебування персоналу
-            </Typography>
-        </div>
-        <div className="flex gap-2">
-            <div className="flex w-fit">
-                <Button
-                    type="button"
-                    variant={viewMode === 'calendar' ? "filled" : "outlined"}
-                    color={viewMode === 'calendar' ? "blue" : "blue-gray"}
-                    onClick={() => onViewModeChange('calendar')}
-                    size="sm"
-                    className="rounded-l-lg rounded-r-none px-3 py-2 flex items-center gap-2"
-                >
-                    <i className="fa-solid fa-calendar text-xs"></i>
-                    <span className="text-xs">Сітка</span>
-                </Button>
-                <Button
-                    type="button"
-                    variant={viewMode === 'table' ? "filled" : "outlined"}
-                    color={viewMode === 'table' ? "blue" : "blue-gray"}
-                    onClick={() => onViewModeChange('table')}
-                    size="sm"
-                    className="rounded-r-lg rounded-l-none px-3 py-2 flex items-center gap-2"
-                >
-                    <i className="fa-solid fa-list text-xs"></i>
-                    <span className="text-xs">Таблиця</span>
-                </Button>
-            </div>
-            <Button color="teal" size="sm" className="flex items-center gap-2 shadow-teal-200" onClick={onOpenVacationSchedule}>
-                <i className="fa-solid fa-calendar-days text-xs"></i> Графік відпусток
-            </Button>
-            <Button color="amber" size="sm" className="flex items-center gap-2 shadow-amber-200" onClick={onOpenSummary}>
-                <i className="fa-solid fa-table-list text-xs"></i> Зведена таблиця
-            </Button>
-            <Button color="gray" size="sm" className="flex items-center gap-2 shadow-gray-200" onClick={onOpenStatistics}>
-                <i className="fa-solid fa-chart-bar text-xs"></i> Стройовка
-            </Button>
-            <Button color="blue" size="sm" className="flex items-center gap-2 shadow-blue-200" onClick={onOpenCreate}>
-                <i className="fa-solid fa-plus text-xs"></i> Створити заявку
-            </Button>
-        </div>
-    </div>
+    <PageHeader
+        title="Облік перебування персоналу"
+        documentTitle="Облік персоналу"
+        actions={
+            <>
+                <div className="flex overflow-hidden rounded-lg border border-gray-200 dark:border-neutral-700" role="group" aria-label="Вигляд">
+                    {VIEW_MODES.map((mode) => (
+                        <button
+                            key={mode.id}
+                            type="button"
+                            onClick={() => onViewModeChange(mode.id)}
+                            aria-pressed={viewMode === mode.id}
+                            className={`flex h-8 items-center gap-1.5 px-3 text-xs transition-colors ${
+                                viewMode === mode.id
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600 dark:bg-neutral-800 dark:text-gray-300 dark:hover:bg-neutral-700"
+                            }`}
+                        >
+                            <i className={`${mode.icon} text-xs`} />
+                            {mode.label}
+                        </button>
+                    ))}
+                </div>
+                <HeaderButton tone="default" icon="fa-solid fa-calendar-days" onClick={onOpenVacationSchedule}>Графік відпусток</HeaderButton>
+                <HeaderButton tone="default" icon="fa-solid fa-table-list" onClick={onOpenSummary}>Зведена таблиця</HeaderButton>
+                <HeaderButton tone="default" icon="fa-solid fa-chart-bar" onClick={onOpenStatistics}>Стройовка</HeaderButton>
+                <HeaderButton icon="fa-solid fa-plus" onClick={onOpenCreate}>Створити заявку</HeaderButton>
+            </>
+        }
+    />
 );
 
 export default AttendanceHeader;

@@ -1,5 +1,4 @@
-import React from 'react';
-import { Typography, Chip } from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react";
 
 // Кольори та іконки для типів рішень РНБО
 const ACTION_TYPE_CONFIG = {
@@ -24,7 +23,9 @@ const formatDate = (dateStr) => {
         // Handle YYYY-MM-DD format
         const [y, m, d] = dateStr.split('-');
         if (y && m && d) return `${d}.${m}.${y}`;
-    } catch {}
+    } catch {
+        // некоректна дата — показуємо як є
+    }
     return dateStr;
 };
 

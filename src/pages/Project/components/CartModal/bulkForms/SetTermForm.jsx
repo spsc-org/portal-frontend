@@ -1,17 +1,18 @@
-import React, { useMemo, useState } from "react";
-import { useProjectOptionsQuery } from "../../../entities/project/queries.js";
-import { useRewriteTermMutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useMemo, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import BulkFormShell from "./BulkFormShell.jsx";
 import { SelectField } from "./fields.jsx";
 
 // bulkTab5 — "Встановити новий термін".
 const SetTermForm = ({ projectIds, userId, onDone }) => {
-    const { data } = useProjectOptionsQuery(["term"], userId);
+    const data = useVM().cartModal.options;
     const terms = useMemo(() => Object.values(data?.term ?? {}), [data]);
 
     const [termId, setTermId] = useState("");
     const [reason, setReason] = useState("");
-    const mutation = useRewriteTermMutation();
+    const mutation = useVM().cartModal.cmd.rewriteTerm;
 
     const handleSubmit = () => {
         mutation.mutate([projectIds, termId, reason, userId], { onSuccess: (result) => onDone(result) });
@@ -26,7 +27,7 @@ const SetTermForm = ({ projectIds, userId, onDone }) => {
             onSubmit={handleSubmit}
             isPending={mutation.isPending}
             isError={mutation.isError}
-            errorMessage={getErrorMessage(mutation.error, "Не вдалося виконати операцію")}
+            errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
             disabled={!termId}
         >
             <SelectField label="Оберіть новий термін" value={termId} onChange={setTermId} options={terms} />
@@ -34,4 +35,4 @@ const SetTermForm = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default SetTermForm;
+export default observer(SetTermForm);

@@ -1,4 +1,3 @@
-import React from 'react';
 
 // svg — ISO 3166-1 alpha-2 код (lowercase), null якщо немає файлу
 const DATASET_META = {

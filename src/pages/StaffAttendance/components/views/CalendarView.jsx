@@ -1,20 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
-import { Card, Typography } from "@material-tailwind/react";
+import { Card } from "@material-tailwind/react";
 import { format, isSameDay, getDay, parseISO, differenceInDays, isFirstDayOfMonth } from 'date-fns';
 import { uk } from 'date-fns/locale';
-import toast from 'react-hot-toast';
-import { useUpdateUserZpMutation } from '../../hooks/index.js';
 import { CALENDAR_DIMENSIONS } from '../../constants/attendanceConfig.js';
 import HoverTooltip from "../HoverTooltip.jsx";
 
-const CalendarView = React.memo(({ days, calendarData, isLoading, getTypeColor, onCellClick, onEdit, onDelete, onManageDocuments, dateInterval, token, queryClient, workingDays, absenceTypes }) => {
+// observer (замість React.memo): zpValue читає оптимістичний стан ЗП з VM.
+const CalendarView = observer(({ days, calendarData, isLoading, getTypeColor, onCellClick, onEdit, onDelete, onManageDocuments, dateInterval, workingDays, absenceTypes, zpValue, onToggleZp }) => {
     const today = new Date();
     const { CELL_WIDTH, EMPLOYEE_NAME_COLUMN_WIDTH } = CALENDAR_DIMENSIONS;
     const [hoveredCell, setHoveredCell] = useState(null);
-    // userZpStates - локальний кеш статусу ЗП для оптимістичного оновлення UI
-    const [userZpStates, setUserZpStates] = useState({});
-    const updateUserZpMutation = useUpdateUserZpMutation();
     const scrollContainerRef = useRef(null);
 
     // При завантаженні сторінки та зміні діапазону центруємо видиму область
@@ -71,33 +68,8 @@ const CalendarView = React.memo(({ days, calendarData, isLoading, getTypeColor, 
                                 <td className="sticky left-0 z-20 bg-white dark:bg-slate-900 group-hover:bg-blue-50 dark:group-hover:bg-slate-800 p-1 border border-slate-200 dark:border-slate-800 flex items-center gap-1 text-[10px] h-7 transition-colors">
                                     <input
                                         type="checkbox"
-                                        checked={userZpStates[row.employee_id] !== undefined ? userZpStates[row.employee_id] : (row.zp || false)}
-                                        onChange={(e) => {
-                                            // Отримуємо нове значення безпосередньо з события
-                                            const newZpValue = e.target.checked;
-                                            // Зберігаємо попереднє значення для відкату при помилці
-                                            const previousValue = userZpStates[row.employee_id] !== undefined
-                                                ? userZpStates[row.employee_id]
-                                                : (row.zp || false);
-
-                                            // Оновлюємо UI оптимістично
-                                            setUserZpStates(prev => ({ ...prev, [row.employee_id]: newZpValue }));
-
-                                            updateUserZpMutation.mutate(
-                                                { userId: row.employee_id, zpValue: newZpValue },
-                                                {
-                                                    onSuccess: () => {
-                                                        toast.success(`${row.full_name} - ЗП ${newZpValue ? 'включено' : 'вимкнено'}`);
-                                                    },
-                                                    onError: (error) => {
-                                                        // Відкатуємо до попереднього значення при помилці (запобігає race condition)
-                                                        setUserZpStates(prev => ({ ...prev, [row.employee_id]: previousValue }));
-                                                        const message = error.response?.data?.message || 'Помилка при оновленні ЗП';
-                                                        toast.error(`${row.full_name}: ${message}`);
-                                                    }
-                                                }
-                                            );
-                                        }}
+                                        checked={zpValue(row)}
+                                        onChange={(e) => onToggleZp(row, e.target.checked)}
                                         className="w-3 h-3 cursor-pointer"
                                         title="ЗП"
                                     />
@@ -256,8 +228,8 @@ CalendarView.propTypes = {
     onEdit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onManageDocuments: PropTypes.func.isRequired,
-    token: PropTypes.string,
-    queryClient: PropTypes.object,
+    zpValue: PropTypes.func.isRequired,
+    onToggleZp: PropTypes.func.isRequired,
     workingDays: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 

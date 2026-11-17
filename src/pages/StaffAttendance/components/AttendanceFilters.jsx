@@ -1,11 +1,10 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, Typography, IconButton, Popover, PopoverHandler, PopoverContent, Button } from "@material-tailwind/react";
-import { format, addMonths, subMonths, isFirstDayOfMonth } from 'date-fns';
+import { format, addMonths, subMonths } from 'date-fns';
 import { uk } from 'date-fns/locale';
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
-import AdvancedSelectWithDefaults from "@/Components/fields/AdvancedSelectWithDefaults.jsx";
+import AdvancedSelectWithDefaults from "../../../components/fields/AdvancedSelectWithDefaults.jsx";
 import { RANGE_TYPES } from '../constants/attendanceConfig.js';
 
 const AttendanceFilters = ({ dateInterval, rangeType, setRangeType, filters, setFilters, setCurrentDate, currentDate, options }) => {

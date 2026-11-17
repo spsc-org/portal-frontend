@@ -1,5 +1,30 @@
-import React from 'react';
 import {Chip, Typography} from "@material-tailwind/react";
+
+// Хелпери розмітки — на рівні модуля (не створюються заново в кожному рендері).
+// Helper для відображення секції
+const Section = ({title, children, className = ""}) => (
+    <div className={`mb-4 ${className}`}>
+        <Typography variant="h6" color="blue-gray" className="dark:text-slate-200 mb-2 text-sm font-bold uppercase tracking-wider border-b dark:border-slate-600 pb-1">
+            {title}
+        </Typography>
+        {children}
+    </div>
+);
+
+
+// Helper для рядка даних
+const InfoRow = ({label, value, children}) => {
+    if (!value && !children) return null;
+    return (
+        <div className="flex flex-col sm:flex-row sm:gap-2 mb-1">
+            <span className="text-gray-600 dark:text-slate-400 font-medium min-w-[120px] text-sm">{label}:</span>
+            <span className="text-gray-900 dark:text-slate-200 text-sm break-words flex items-center gap-2">
+                {children || value}
+            </span>
+        </div>
+    );
+};
+
 
 const Dataset1Presenter = ({record}) => {
     if (!record) return null;
@@ -23,29 +48,6 @@ const Dataset1Presenter = ({record}) => {
             data = {};
         }
     }
-
-    // Helper для відображення секції
-    const Section = ({title, children, className = ""}) => (
-        <div className={`mb-4 ${className}`}>
-            <Typography variant="h6" color="blue-gray" className="dark:text-slate-200 mb-2 text-sm font-bold uppercase tracking-wider border-b dark:border-slate-600 pb-1">
-                {title}
-            </Typography>
-            {children}
-        </div>
-    );
-
-    // Helper для рядка даних
-    const InfoRow = ({label, value, children}) => {
-        if (!value && !children) return null;
-        return (
-            <div className="flex flex-col sm:flex-row sm:gap-2 mb-1">
-                <span className="text-gray-600 dark:text-slate-400 font-medium min-w-[120px] text-sm">{label}:</span>
-                <span className="text-gray-900 dark:text-slate-200 text-sm break-words flex items-center gap-2">
-                    {children || value}
-                </span>
-            </div>
-        );
-    };
 
     return (
         <div className="flex flex-col gap-4 p-2">

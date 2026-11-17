@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { TicketBodyViewModel } from "../../viewmodel/DossierViewModels.js";
+
 import {Spinner} from "@material-tailwind/react";
-import {useMutation} from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import MetaRow from "../../../../Components/MetaRow.jsx";
-import {addTicketLink, removeTicketLink, resolveTicket} from "../../entities/dossierTicket/api.js";
+import MetaRow from "../../../../components/MetaRow.jsx";
 import {entityLabel, entityUrl, isOpen, stateMeta} from "../../entities/dossierTicket/model.js";
 import AddLinkFields from "./AddLinkFields.jsx";
 
@@ -13,32 +13,15 @@ const formatDate = (value) => (value ? new Date(value).toLocaleString("uk-UA") :
 // Dialog/aside, щоб той самий блок переюзали і SingleTicketModal (картка/звʼязок на
 // /dossier), і TicketDetailPanel (дашборд /dossier/tickets). `onChanged` — колбек
 // інвалідації кешу, різний у викликачів (entity-scoped список vs дашборд-список).
+/** Монтується з key={ticket.id} (VM дій — на один тікет). */
 const TicketBody = ({ticket, canManage, onChanged}) => {
-    const [resolving, setResolving] = useState(false);
-    const [resolutionNote, setResolutionNote] = useState("");
-
-    const resolveMutation = useMutation({
-        mutationFn: (note) => resolveTicket(ticket.id, note),
-        onSuccess: () => {
-            toast.success("Тікет вирішено");
-            setResolving(false);
-            setResolutionNote("");
-            onChanged?.();
-        },
-        onError: () => toast.error("Не вдалося вирішити тікет"),
-    });
-
-    const addLinkMutation = useMutation({
-        mutationFn: (link) => addTicketLink(ticket.id, link),
-        onSuccess: onChanged,
-        onError: () => toast.error("Не вдалося додати привʼязку — перевірте id"),
-    });
-
-    const removeLinkMutation = useMutation({
-        mutationFn: (link) => removeTicketLink(ticket.id, link),
-        onSuccess: onChanged,
-        onError: () => toast.error("Не вдалося прибрати привʼязку"),
-    });
+    const vm = useViewModel((deps) => new TicketBodyViewModel({ ...deps, ticketId: ticket.id, onChanged }));
+    const { resolving, resolutionNote } = vm;
+    const setResolving = vm.setResolving;
+    const setResolutionNote = vm.setResolutionNote;
+    const resolveMutation = { mutate: vm.resolve, isPending: vm.cmd.resolve.isPending };
+    const addLinkMutation = { mutate: vm.addLink, isPending: vm.cmd.addLink.isPending };
+    const removeLinkMutation = { mutate: vm.removeLink, isPending: vm.cmd.removeLink.isPending };
 
     const status = stateMeta(ticket.state);
     const links = ticket.links ?? [];
@@ -167,4 +150,4 @@ const TicketBody = ({ticket, canManage, onChanged}) => {
     );
 };
 
-export default TicketBody;
+export default observer(TicketBody);

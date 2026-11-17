@@ -1,20 +1,33 @@
-import React from "react";
-import SecondaryNavLayout from "../../../../Components/SecondaryNav/SecondaryNavLayout.jsx";
-import {STAFF_NAVIGATION} from "../config/navigation.js";
-import {useStaffOptions} from "../lib/queries.js";
+import { observer } from "mobx-react-lite"
+import SecondaryNavLayout from "../../../../components/SecondaryNav/SecondaryNavLayout.jsx"
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js"
+import { makeViewModel } from "../../../../shared/mvvm/makeViewModel.js"
+import { STAFF_NAVIGATION } from "../config/navigation.js"
+import { staffOptionsQuery } from "../../model/staffCommands.js"
 
-// Тонка обгортка над спільним SecondaryNavLayout — Staff-специфічне тут лише
-// список пунктів меню (STAFF_NAVIGATION) і довантаження спільних довідників
-// розділу (useStaffOptions(), той самий queryKey, що й у StaffAttendance/Index.jsx
-// — React Query бере з одного кешу, повторного запиту немає).
-const StaffLayout = ({active, children, "data-i-doc": dataIDoc}) => {
-    useStaffOptions();
+// Спільні довідники простору /staff підвантажуються оболонкою (той самий
+// queryKey, що й у StaffAttendance — один кеш, без повторного запиту).
+class StaffLayoutViewModel {
+  constructor({ scope }) {
+    this.scope = scope
+    makeViewModel(this)
+    this.optionsQuery = scope.query(staffOptionsQuery)
+  }
+}
 
-    return (
-        <SecondaryNavLayout data-i-doc={dataIDoc} title="Персонал" items={STAFF_NAVIGATION} active={active}>
-            {children}
-        </SecondaryNavLayout>
-    );
-};
+const StaffLayout = ({ active, children, "data-i-doc": dataIDoc }) => {
+  useViewModel((deps) => new StaffLayoutViewModel(deps))
 
-export default StaffLayout;
+  return (
+    <SecondaryNavLayout
+      data-i-doc={dataIDoc}
+      title="Персонал"
+      items={STAFF_NAVIGATION}
+      active={active}
+    >
+      {children}
+    </SecondaryNavLayout>
+  )
+}
+
+export default observer(StaffLayout)

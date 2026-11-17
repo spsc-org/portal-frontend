@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {Chip, Spinner} from "@material-tailwind/react";
-import MultiSelect from "../../../Components/fields/MultiSelect.jsx";
+import MultiSelect from "../../../components/fields/MultiSelect.jsx";
 
 /**
  * Редактор пов'язаних осіб задачі (0..N): переюзабельний між TaskViewPanel

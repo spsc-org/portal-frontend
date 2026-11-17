@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { Button, Checkbox } from '@material-tailwind/react'
-import { useAuth } from '../../context/AuthContext.jsx'
+import { useSession } from '../../stores/storeHooks.js'
 import { ApiError } from '../../lib/api.js'
 import AuthLayout from './AuthLayout.jsx'
 import FormField from './FormField.jsx'
@@ -10,7 +10,7 @@ import { fieldError } from './formErrors.js'
 
 // Еквівалент resources/views/auth/login.blade.php
 export default function Login() {
-  const { login } = useAuth()
+  const { login } = useSession()
   const navigate = useNavigate()
   const location = useLocation()
 

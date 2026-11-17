@@ -1,4 +1,3 @@
-import React from 'react';
 
 const highlightText = (text, query) => {
     const textAsString = String(text || '');

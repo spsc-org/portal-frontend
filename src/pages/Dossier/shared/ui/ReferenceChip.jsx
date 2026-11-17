@@ -1,4 +1,3 @@
-import React from "react";
 import toast from "react-hot-toast";
 
 // Чип внутрішнього референсу (Досьє #id, ДРС drs_id тощо) — іконка + дрібний підпис

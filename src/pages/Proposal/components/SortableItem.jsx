@@ -1,8 +1,8 @@
 import {useSortable} from "@dnd-kit/sortable";
 import {CSS} from '@dnd-kit/utilities';
-import AppChip from "@/Components/AppChip";
+import AppChip from "../../../components/AppChip";
 import {Tooltip} from "@material-tailwind/react";
-import React, {useMemo} from "react";
+import {useMemo} from "react";
 import {format} from "date-fns";
 
 const SortableItem = ({
@@ -102,7 +102,7 @@ const SortableItem = ({
 
             {/* Shuffle icon */}
             <div className="flex items-center w-4 shrink-0">
-                {!Boolean(order) &&
+                {!order &&
                     <Tooltip content="Відсортовано за замовченням">
                         <i className="fa-duotone fa-regular fa-shuffle text-gray-400"></i>
                     </Tooltip>}
@@ -171,8 +171,8 @@ const SortableItem = ({
 
                 {/* Decree row */}
                 <p className="text-sm text-gray-700 font-semibold dark:text-[#8b91a3] flex items-center gap-1">
-                    <i className={`fa-solid fa-file-contract ${Boolean(decreeId) ? 'text-green-400' : 'text-gray-300'}`}></i>
-                    {Boolean(decreeId) ? decrees.find(d => d.id === decreeId)?.name :
+                    <i className={`fa-solid fa-file-contract ${decreeId ? 'text-green-400' : 'text-gray-300'}`}></i>
+                    {decreeId ? decrees.find(d => d.id === decreeId)?.name :
                         <span className="italic">Указ відсутній</span>
                     }
                 </p>

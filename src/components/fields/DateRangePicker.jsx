@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from "react";
+import {useState} from "react";
 import {DayPicker, getDefaultClassNames, UI} from "react-day-picker";
 import "react-day-picker/style.css";
 import {uk} from "react-day-picker/locale";
 import {addMonths, format} from "date-fns";
 import {Button, Popover, PopoverContent, PopoverHandler} from "@material-tailwind/react";
-import Input from "@/Components/fields/Input.jsx";
+import Input from "./Input.jsx";
 
+const dateKey = (value) => (value ? new Date(value).getTime() : "");
 
 const DateRangePicker = ({
                              label = '',
@@ -21,14 +22,14 @@ const DateRangePicker = ({
     const nextMonth = addMonths(today, 0);
     const [month, setMonth] = useState(nextMonth);
 
-    useEffect(() => {
-        if ((from === undefined || to === undefined) && (range.from !== undefined || range.to !== undefined)) {
-            setRange({from: from, to: to});
-        }
-        if ((from || to) && (range.from === undefined || range.to === undefined)) {
-            setRange({from: from, to: to});
-        }
-    }, [from, to, range.from, range.to]);
+    // Синхронізація з пропсами під час рендеру (замість setState в ефекті): лише коли змінились
+    // самі дати — порівнюємо за значенням, бо батьки часто передають нові об'єкти Date.
+    const propsKey = ;
+    const [syncedKey, setSyncedKey] = useState(propsKey);
+    if (syncedKey !== propsKey) {
+        setSyncedKey(propsKey);
+        setRange({from: from, to: to});
+    }
 
     const formatRange = (from, to) => {
         if (!from) return "";

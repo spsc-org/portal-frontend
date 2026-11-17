@@ -1,4 +1,4 @@
-import React from "react";
+/* eslint-disable react-refresh/only-export-components -- примітиви полів деталей джерела (компоненти + хелпери форматування) */
 
 const labelClasses = "font-medium text-xs mb-1 text-gray-500 dark:text-gray-400";
 const valueBoxClasses = "p-2 bg-gray-50 dark:bg-gray-800 rounded text-gray-800 dark:text-gray-100 text-sm";

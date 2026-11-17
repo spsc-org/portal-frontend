@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from "react";
-import { useProjectOptionsQuery } from "../../../entities/project/queries.js";
-import { useLinkProjectsToProposalsMutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useMemo, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import BulkFormShell from "./BulkFormShell.jsx";
-import MultiSelect from "@/Components/fields/MultiSelect.jsx";
+import MultiSelect from "../../../../../components/fields/MultiSelect.jsx";
 
 // bulkTab1 — "Додати подання". Легасі фільтрує подання за стан (stateId 1
 // або 2 — "Проєкт"/"Готово", лише ті, що відкриті для внесення змін),
@@ -12,7 +13,7 @@ import MultiSelect from "@/Components/fields/MultiSelect.jsx";
 // не з голими id, тож id-масив (потрібен для payload) і "поточний вибір"
 // (для value проп) тримаємо окремо й синхронізуємо через useMemo.
 const AddProposalForm = ({ projectIds, userId, onDone }) => {
-    const { data } = useProjectOptionsQuery(["proposal"], userId);
+    const data = useVM().cartModal.options;
     const proposals = useMemo(
         () => Object.values(data?.proposal ?? {}).filter((p) => p.stateId === 1 || p.stateId === 2),
         [data],
@@ -24,7 +25,7 @@ const AddProposalForm = ({ projectIds, userId, onDone }) => {
         [proposals, proposalIds],
     );
     const [reason, setReason] = useState("");
-    const mutation = useLinkProjectsToProposalsMutation();
+    const mutation = useVM().cartModal.cmd.linkProjectsToProposals;
 
     const handleSubmit = () => {
         mutation.mutate(
@@ -47,7 +48,7 @@ const AddProposalForm = ({ projectIds, userId, onDone }) => {
             onSubmit={handleSubmit}
             isPending={mutation.isPending}
             isError={mutation.isError}
-            errorMessage={getErrorMessage(mutation.error, "Не вдалося виконати операцію")}
+            errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
             disabled={proposalIds.length === 0}
         >
             <MultiSelect
@@ -62,4 +63,4 @@ const AddProposalForm = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default AddProposalForm;
+export default observer(AddProposalForm);

@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 
 // Спільна "рамка" для всіх 12 bulk-форм (bulkTab1..12 у легасі-модалці):
 // поле "reason" (не в усіх форм — addDocument його не має, див. cartManager.js

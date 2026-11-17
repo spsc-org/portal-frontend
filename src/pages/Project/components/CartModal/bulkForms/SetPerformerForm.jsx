@@ -1,17 +1,18 @@
-import React, { useMemo, useState } from "react";
-import { useProjectOptionsQuery } from "../../../entities/project/queries.js";
-import { useSetPerformerMutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useMemo, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import BulkFormShell from "./BulkFormShell.jsx";
 import { SelectField } from "./fields.jsx";
 
 // bulkTab8 — "Призначити виконавця".
 const SetPerformerForm = ({ projectIds, userId, onDone }) => {
-    const { data } = useProjectOptionsQuery(["user"], userId);
+    const data = useVM().cartModal.options;
     const users = useMemo(() => Object.values(data?.user ?? {}), [data]);
 
     const [performerId, setPerformerId] = useState("");
     const [reason, setReason] = useState("");
-    const mutation = useSetPerformerMutation();
+    const mutation = useVM().cartModal.cmd.setPerformer;
 
     const handleSubmit = () => {
         mutation.mutate([projectIds, performerId, reason, userId], { onSuccess: (result) => onDone(result) });
@@ -26,7 +27,7 @@ const SetPerformerForm = ({ projectIds, userId, onDone }) => {
             onSubmit={handleSubmit}
             isPending={mutation.isPending}
             isError={mutation.isError}
-            errorMessage={getErrorMessage(mutation.error, "Не вдалося виконати операцію")}
+            errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
             disabled={!performerId}
         >
             <SelectField label="Оберіть виконавця" value={performerId} onChange={setPerformerId} options={users} />
@@ -34,4 +35,4 @@ const SetPerformerForm = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default SetPerformerForm;
+export default observer(SetPerformerForm);

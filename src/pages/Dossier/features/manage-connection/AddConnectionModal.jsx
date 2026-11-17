@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from "react";
-import {useQuery} from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { SourceSearchViewModel } from "../../viewmodel/DossierViewModels.js";
+import {useEffect, useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Spinner, Typography} from "@material-tailwind/react";
 import {MODEL_CLASS_OPTIONS} from "../../shared/config/sourceTypes.js";
-import {searchSources} from "../../entities/dossierConnection/api.js";
-import {sanctionConnectionKeys} from "../../shared/lib/queryKeys.js";
+
 import ConnectionSourceDetails from "../../widgets/ProfileDetailPane/ConnectionSourceDetails.jsx";
 // Ручне створення звʼязку профіль↔джерело (POST .../connections, той самий link(),
 // що й "Прив'язати" в DuplicatesPanel — тут без пошуку дублікатів-профілів, напряму):
@@ -12,22 +13,23 @@ import ConnectionSourceDetails from "../../widgets/ProfileDetailPane/ConnectionS
 // кандидата зі списку → живий preview обраного (ConnectionSourceDetails, той самий
 // компонент, що й у Картці звʼязку), перш ніж підтвердити привʼязку.
 const AddConnectionModal = ({open, isPending, onClose, onConfirm}) => {
-    const [modelClass, setModelClass] = useState(String(MODEL_CLASS_OPTIONS[0].id));
+    const vm = useViewModel((deps) => new SourceSearchViewModel({ ...deps, initialModelClass: String(MODEL_CLASS_OPTIONS[0].id) }));
+    const modelClass = vm.modelClass;
+    const setModelClass = vm.setModelClass;
     const [query, setQuery] = useState("");
-    const [debouncedQuery, setDebouncedQuery] = useState("");
+    const debouncedQuery = vm.debouncedQuery;
+    const setDebouncedQuery = vm.setDebouncedQuery;
     const [selected, setSelected] = useState(null);
 
+    // Дебаунс введення 300 мс (таймер — у View).
     useEffect(() => {
-        const timer = setTimeout(() => setDebouncedQuery(query.trim()), 300);
+        const timer = setTimeout(() => vm.setDebouncedQuery(query.trim()), 300);
         return () => clearTimeout(timer);
-    }, [query]);
+    }, [vm, query]);
 
     const searchEnabled = debouncedQuery.length >= 2;
-    const {data: results = [], isFetching} = useQuery({
-        queryKey: sanctionConnectionKeys.sourceSearch(modelClass, debouncedQuery),
-        queryFn: () => searchSources(Number(modelClass), debouncedQuery),
-        enabled: searchEnabled,
-    });
+    const results = vm.results;
+    const isFetching = vm.isFetching;
 
     const handleClose = () => {
         setModelClass(String(MODEL_CLASS_OPTIONS[0].id));
@@ -131,4 +133,4 @@ const AddConnectionModal = ({open, isPending, onClose, onConfirm}) => {
     );
 };
 
-export default AddConnectionModal;
+export default observer(AddConnectionModal);

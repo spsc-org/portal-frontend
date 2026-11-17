@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
-import { useCartCollectionQuery } from "../../entities/cart/queries.js";
-import { useProjectOptionsQuery } from "../../entities/project/queries.js";
+import { useMemo, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../shared/mvvm/index.js";
 import ActionTypeIcon from "./cells/ActionTypeIcon.jsx";
 import SubjectTypeIcon from "./cells/SubjectTypeIcon.jsx";
 import StateIcon from "./cells/StateIcon.jsx";
@@ -25,11 +25,11 @@ const parsePrecomputedData = (raw) => {
     }
 };
 
-const SelectedProjectsTab = ({ cart, userId }) => {
+const SelectedProjectsTab = ({ cart }) => {
     const [search, setSearch] = useState("");
 
-    const { data: collection = [], isLoading } = useCartCollectionQuery(cart.ids, userId);
-    const { data: vocabularies } = useProjectOptionsQuery(["state", "user"], userId);
+    const { collection, isCollectionLoading: isLoading } = useVM().cartModal;
+    const vocabularies = useVM().cartModal.options;
     const states = vocabularies?.state ?? [];
     const users = vocabularies?.user ?? [];
     const userCaption = (id) => users.find((u) => String(u.id) === String(id))?.caption ?? "";
@@ -133,4 +133,4 @@ const SelectedProjectsTab = ({ cart, userId }) => {
     );
 };
 
-export default SelectedProjectsTab;
+export default observer(SelectedProjectsTab);

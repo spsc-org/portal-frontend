@@ -1,6 +1,8 @@
-import React, {useState} from "react";
-import {usePage} from "@inertiajs/react";
-import {useQuery} from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { DossierOptionsViewModel, SourceDetailsViewModel } from "../../viewmodel/DossierViewModels.js";
+import { useStores } from "../../../../stores/storeHooks.js";
+import {useState} from "react";
 import ReferenceChip from "../../shared/ui/ReferenceChip.jsx";
 import ModeratorBlock from "../../shared/ui/ModeratorBlock.jsx";
 import TicketsBlock from "../../shared/ui/TicketsBlock.jsx";
@@ -8,8 +10,6 @@ import TicketsButton from "../TicketsModal/TicketsButton.jsx";
 import {ENTITY_ORPHAN} from "../../entities/dossierTicket/model.js";
 import ProjectDetails from "../ProfileDetailPane/sourceDetails/ProjectDetails.jsx";
 import {fetchProjectDetails} from "../../entities/dossierConnection/api.js";
-import {useDossierOptionsQuery} from "../../entities/dossier/queries.js";
-import {sanctionConnectionKeys} from "../../shared/lib/queryKeys.js";
 
 const MODEL_CLASS_PROJECT = 1;
 
@@ -22,16 +22,16 @@ const projectTitle = (project) => project.nameUk?.trim() || project.nameRu?.trim
 // підходящого досьє немає. Деталі фетчаться лише при розгортанні (enabled: expanded).
 const OrphanRow = ({project, canManage, onLink, onCreate, isLinking, isCreating}) => {
     const [profileId, setProfileId] = useState("");
-    const [expanded, setExpanded] = useState(false);
-    const {auth} = usePage().props;
-    const userId = auth?.user?.id;
-    const {data: options} = useDossierOptionsQuery();
-
-    const {data: details, isPending, isError} = useQuery({
-        queryKey: sanctionConnectionKeys.sourceDetails(MODEL_CLASS_PROJECT, project.id),
-        queryFn: () => fetchProjectDetails(project.id, userId),
-        enabled: expanded,
-    });
+    const userId = useStores().session.userId;
+    const options = useViewModel((deps) => new DossierOptionsViewModel(deps)).options;
+    // Деталі проєкту — лише після розгортання рядка.
+    const vm = useViewModel((deps) => new SourceDetailsViewModel({
+        ...deps, modelClass: MODEL_CLASS_PROJECT, modelId: project.id,
+        fetcher: (id) => fetchProjectDetails(id, userId), enabled: false,
+    }));
+    const expanded = vm.enabled;
+    const setExpanded = (value) => vm.setEnabled(typeof value === "function" ? value(vm.enabled) : value);
+    const { data: details, isPending, isError } = vm.query;
 
     const canLink = profileId !== "" && Number(profileId) > 0;
 
@@ -114,4 +114,4 @@ const OrphanRow = ({project, canManage, onLink, onCreate, isLinking, isCreating}
     );
 };
 
-export default OrphanRow;
+export default observer(OrphanRow);

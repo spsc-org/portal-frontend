@@ -30,7 +30,7 @@ const TableValidationV2 = ({data = [], headers = [], validation = null, warnings
             <div className="inline-flex gap-x-2 items-center ">
                 <Typography variant="h6">
                     {
-                        Boolean(validation) ?
+                        validation ?
                             <>
                                 <i className="fa-regular fa-triangle-exclamation text-red-500 mr-1"></i>
                                 <span className="dark:text-slate-200">Неможливо додати через помилки валідації! Виправте файл та завантажте знову.</span>

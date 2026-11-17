@@ -1,8 +1,8 @@
-import React from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { TicketsButtonViewModel } from "../../viewmodel/DossierViewModels.js";
+
 import {Dialog, DialogBody, DialogFooter, DialogHeader, Button, Typography, Spinner} from "@material-tailwind/react";
-import {useQueryClient} from "@tanstack/react-query";
-import {useTicketsQuery} from "../../entities/dossierTicket/queries.js";
-import {dossierTicketKeys} from "../../shared/lib/queryKeys.js";
 import TicketBody from "./TicketBody.jsx";
 
 // Один тікет — одна модалка (навмисно НЕ список: попередня версія показувала всі
@@ -10,13 +10,11 @@ import TicketBody from "./TicketBody.jsx";
 // "готовий тікет" із чорновиком нового). Кожна іконка в TicketsButton відкриває свій
 // SingleTicketModal із конкретним ticketId.
 const SingleTicketModal = ({open, onClose, ticketId, entityType, entityId, canManage}) => {
-    const queryClient = useQueryClient();
-    // Той самий queryKey, що й TicketsButton (список сутності) — тікет уже в кеші,
-    // повторний фетч на відкриття не потрібен.
-    const {data: tickets, isFetching} = useTicketsQuery(entityType, entityId, {enabled: open});
+    const vm = useViewModel((deps) => new TicketsButtonViewModel({ ...deps, entityType, entityId }));
+    const tickets = vm.tickets;
+    const isFetching = vm.isFetching;
     const ticket = (tickets ?? []).find((t) => t.id === ticketId) ?? null;
-
-    const invalidate = () => queryClient.invalidateQueries({queryKey: dossierTicketKeys.list(entityType, entityId)});
+    const invalidate = vm.invalidate;
 
     return (
         <Dialog data-i-doc="modal:dossier-single-ticket"
@@ -37,7 +35,7 @@ const SingleTicketModal = ({open, onClose, ticketId, entityType, entityId, canMa
                 {!isFetching && !ticket && (
                     <div className="py-10 text-center text-sm text-gray-400">Тікет не знайдено</div>
                 )}
-                {ticket && <TicketBody ticket={ticket} canManage={canManage} onChanged={invalidate}/>}
+                {ticket && <TicketBody key={ticket.id} ticket={ticket} canManage={canManage} onChanged={invalidate}/>}
             </DialogBody>
             <DialogFooter>
                 <Button variant="text" color="gray" onClick={onClose}>
@@ -48,4 +46,4 @@ const SingleTicketModal = ({open, onClose, ticketId, entityType, entityId, canMa
     );
 };
 
-export default SingleTicketModal;
+export default observer(SingleTicketModal);

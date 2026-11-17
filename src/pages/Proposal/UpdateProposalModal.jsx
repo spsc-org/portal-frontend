@@ -1,138 +1,28 @@
-import {usePage} from "@inertiajs/react";
-import React, {useEffect, useMemo, useState} from "react";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { ProposalFormViewModel } from "./viewmodel/ProposalViewModels.js";
+import { useProposalProps } from "./viewmodel/useProposalProps.js";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Spinner, Typography} from "@material-tailwind/react";
-import Input from "../../Components/fields/Input.jsx";
-import DatePicker from "../../Components/fields/DatePicker.jsx";
-import SingleSelect from "../../Components/fields/SingleSelect.jsx";
-import {format} from "date-fns";
-import LoadingButton from "../../Components/Buttons/LoadingButton.jsx";
+import Input from "../../components/fields/Input.jsx";
+import DatePicker from "../../components/fields/DatePicker.jsx";
+import SingleSelect from "../../components/fields/SingleSelect.jsx";
+import LoadingButton from "../../components/Buttons/LoadingButton.jsx";
 
 
-const initialState = {
-    issuerId: '',
-    stateId: '',
-    caption: '',
-    description: '',
-    outgoingDate: undefined,
-    outgoingNumber: '',
-    createdUserId: '',
-    comments: '',
-}
 
 const UpdateProposalModal = ({selectedId: id, open, onClose}) => {
-    const {auth, token, issuers = [], proposalState = [], decrees = []} = usePage().props;
-    const queryClient = useQueryClient();
-    const [form, setForm] = useState(initialState);
-    const [errors, setErrors] = useState(null);
-
-    const {data, isLoading} = useQuery({
-        queryKey: ['proposal-update', id],
-        queryFn: async () => {
-            const response = await axios.get(`/api/proposal/new/${id}`, {
-                headers: {"userId": auth?.user?.id}
-            });
-            return response.data;
-        }
-    })
-
-    const states = useMemo(() => {
-        if (!data?.data?.stateId) {
-            return proposalState;
-        } else {
-            const isCurrFixed = proposalState.find(item => item.id === data.data.stateId)?.isFixed;
-            return isCurrFixed ? proposalState.filter(item => item.isFixed) : proposalState.filter(item => !item.isFixed);
-        }
-    }, [data?.data?.stateId, proposalState]);
-
-
-    const update = useMutation({
-        mutationFn: async (body) => {
-            const response = await axios.patch(`/api/proposal/new/${id}/update`,
-                body,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        "X-CSRF-Token": token,
-                        "userId": auth.user.id,
-                    }
-                }
-            );
-            return response.data;
-        },
-        onSuccess: async () => {
-            toast.success("Оновлено успішно", {
-                style: {
-                    background: 'dark:dark:bg-slate-800',
-                    color: 'text-slate-400',
-                },
-            });
-            update.reset();
-            setForm(initialState);
-            onClose();
-        },
-        onError: ({response}) => {
-            if (response.status === 422) {
-                setErrors(response?.data?.unvalidFields);
-            }
-        },
-        onSettled: (data, error) => {
-            if (!error && data?.success) {
-                queryClient.invalidateQueries(['proposal-show', id]);
-                queryClient.invalidateQueries(['proposal']);
-            }
-        },
-    })
-
-    const onSubmit = () => {
-        update.mutate({
-            ...form,
-            stateId: form.stateId?.id,
-            issuerId: form?.issuerId?.id,
-        });
-    }
-
-    useEffect(() => {
-        if (data?.data) {
-            const result = {
-                caption: data.data.caption,
-                description: data.data.description,
-                outgoingNumber: data.data.outgoingNumber,
-                comments: data.data.comments,
-                issuerId: issuers.find(i => i.id === data.data.issuerId),
-                stateId: proposalState.find(s => s.id === data.data.stateId),
-                outgoingDate: data.data.outgoingDate ? format(data.data.outgoingDate, "yyyy-MM-dd") : ""
-            };
-
-            setForm(prevForm => {
-                const isChanged = Object.keys(result).some(
-                    key => JSON.stringify(prevForm[key]) !== JSON.stringify(result[key])
-                );
-                return isChanged ? result : prevForm;
-            });
-        }
-    }, [data?.data, issuers, proposalState]);
-
-    const handleChangeSelect = (key = '') => (selected) => {
-        setErrors(prev => ({...prev, [key]: ""}))
-        setForm(prevState => ({...prevState, [key]: selected}));
-    }
-
-    const handleChangeDate = (date) => {
-        if (date) {
-            const str = format(date, "yyyy-MM-dd") || "";
-            setForm(prevState => ({...prevState, outgoingDate: str}));
-            setErrors({...errors, outgoingDate: ''});
-        } else {
-            setForm(prevState => ({...prevState, outgoingDate: undefined}));
-        }
-    }
-
-    const handleInput = ({target: {name, value}}) => {
-        setErrors(prev => ({...prev, [name]: ""}));
-        setForm(prevState => ({...prevState, [name]: value}));
-    }
+    const props = useProposalProps();
+    const { issuers = [] } = props;
+    const vm = useViewModel((deps) => new ProposalFormViewModel({ ...deps, id, props }));
+    const { form, errors } = vm;
+    const { isLoading, states } = vm;
+    const handleChangeDate = vm.changeDate;
+    const handleInput = vm.changeInput;
+    const handleChangeSelect = vm.changeSelect;
+    const onSubmit = async () => {
+        if (await vm.submit()) onClose();
+    };
+    const update = vm.saveCmd;
 
     return (
         <Dialog open={open} handler={onClose} size="md">
@@ -196,4 +86,4 @@ const UpdateProposalModal = ({selectedId: id, open, onClose}) => {
     );
 };
 
-export default UpdateProposalModal;
+export default observer(UpdateProposalModal);

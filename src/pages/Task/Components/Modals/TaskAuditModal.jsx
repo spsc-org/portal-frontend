@@ -1,6 +1,8 @@
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { TaskAuditViewModel } from "../../viewmodel/TaskViewModels.js";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Spinner} from "@material-tailwind/react";
-import {useQuery} from "@tanstack/react-query";
-import React, {useState} from "react";
+import {useState} from "react";
 
 // Історія змін задачі (повні знімки + diff) — той самий UI-патерн, що
 // вкладка «Історія» в InventoryDetailsModal, але окремою модалкою з картки.
@@ -178,25 +180,10 @@ const AuditEntry = ({entry, users}) => {
     );
 };
 
-const TaskAuditModal = ({taskId, auth, users = [], onClose}) => {
-    const [page, setPage] = useState(1);
-
-    const {data, isFetching, isError} = useQuery({
-        queryKey: ['task-audit', taskId, page],
-        queryFn: async () => {
-            const res = await axios.get(`/api/task/${taskId}/audit`, {
-                headers: {userId: auth?.user?.id},
-                params: {page, limit: 50},
-            });
-            return res.data;
-        },
-        enabled: Boolean(taskId),
-        retry: false,
-    });
-
-    const history = data?.data ?? [];
-    const total = data?.total ?? 0;
-    const pages = data?.pages ?? 1;
+const TaskAuditModal = ({taskId, users = [], onClose}) => {
+    const vm = useViewModel((deps) => new TaskAuditViewModel({ ...deps, taskId }));
+    const { page, history, total, pages, isFetching, isError } = vm;
+    const setPage = vm.setPage;
 
     return (
         <Dialog open handler={onClose} size="md">
@@ -261,4 +248,4 @@ const TaskAuditModal = ({taskId, auth, users = [], onClose}) => {
     );
 };
 
-export default TaskAuditModal;
+export default observer(TaskAuditModal);

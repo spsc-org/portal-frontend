@@ -6,8 +6,8 @@ import {
     DialogHeader,
     Typography,
 } from "@material-tailwind/react";
-import {useQuery} from "@tanstack/react-query";
-import axios from "axios";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../shared/mvvm/viewModelHooks.js";
 import {useState} from "react";
 import Dataset1Presenter from "./datasetPresenters/1.jsx";
 import DefaultDatasetPresenter from "./datasetPresenters/default.jsx";
@@ -23,22 +23,9 @@ const datasetPresenters = {
 
 const DetailsDialog = ({open, onClose, record}) => {
     const [activeTab, setActiveTab] = useState('details');
-    const [isJsonExpanded, setIsJsonExpanded] = useState(false);
 
-    // Завантаження довідників для відображення іконок та кодів
-    const {data: options = {}} = useQuery({
-        queryKey: ['searchOptions'],
-        queryFn: async () => {
-            try {
-                const response = await axios.get("api/consolidated-data/options");
-                return response.data.data || {};
-            } catch (error) {
-                console.error('Error fetching options:', error);
-                return {};
-            }
-        },
-        staleTime: Infinity,
-    });
+    // Довідники (іконки типів, датасети, групи) — з VM сторінки.
+    const options = useVM().searchOptions;
 
     if (!record) {
         return null;
@@ -155,4 +142,4 @@ const DetailsDialog = ({open, onClose, record}) => {
     );
 };
 
-export default DetailsDialog;
+export default observer(DetailsDialog);

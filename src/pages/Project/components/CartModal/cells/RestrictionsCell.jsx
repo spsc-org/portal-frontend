@@ -1,4 +1,3 @@
-import React from "react";
 
 // Порт TableManager.js:#renderCellRestrictions() — та сама логіка
 // (лічильник, кольори по code, санкція 6 з r6Text-прев'ю), але як JSX:

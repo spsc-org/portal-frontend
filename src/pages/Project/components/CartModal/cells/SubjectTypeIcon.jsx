@@ -1,4 +1,3 @@
-import React from "react";
 
 // Порт TableManager.js:#renderCellSubjectType() — той самий набір іконок.
 const ICONS = {

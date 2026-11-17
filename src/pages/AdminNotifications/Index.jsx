@@ -1,49 +1,71 @@
-
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { observer } from "mobx-react-lite";
 import toast from "react-hot-toast";
-import AdminLayout from "@/ReactPages/Admin/shared/ui/AdminLayout.jsx";
-import NotificationCategoryTable from "@/Components/NotificationCategoryTable.jsx";
+import { apiFetch } from "../../lib/api.js";
+import { makeViewModel, useViewModel } from "../../shared/mvvm/index.js";
+import { usePageTitle } from "../../shared/hooks/usePageTitle.js";
+import AdminLayout from "../Admin/shared/ui/AdminLayout.jsx";
+import NotificationCategoryTable from "../../components/NotificationCategoryTable.jsx";
 
-// Глобальна (не per-user) матриця "категорія → канали" — та сама таблиця,
-// що й на /settings (NotificationCategoryTable), але лише на читання:
-// це системний дефолт (InAppNotificationCategory::channelDefaults()), а не
-// персональні переваги конкретного користувача. Керування (увімк./вимк.
-// категорії/каналу глобально) — наступний крок, поки що заготовка-перегляд.
-const Index = () => {
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
+// ---- Model ---------------------------------------------------------------
 
-    useEffect(() => {
-        axios.get("/api/admin-notifications/categories")
-            .then((res) => setCategories(res.data?.data?.categories ?? []))
-            .catch((error) => {
-                toast.error(error?.response?.data?.message ?? "Не вдалося завантажити категорії нотифікацій");
-            })
-            .finally(() => setLoading(false));
-    }, []);
+const fetchNotificationCategories = () =>
+    apiFetch("/api/admin-notifications/categories").then((payload) => payload?.data?.categories ?? []);
 
-    return (
-        <AdminLayout data-i-doc="page:admin-notifications" active="notifications">
-            <div className="mx-2 mt-5 max-w-2xl">
-                <div className="mb-3">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                        Категорії нотифікацій
-                    </p>
-                    <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                        Глобальний перелік категорій і каналів, якими система їх підтримує —
-                        лише перегляд. Персональні переваги користувачів — на сторінці
-                        «Налаштування» кожного користувача.
-                    </p>
-                </div>
-                {loading ? (
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Завантаження…</p>
-                ) : (
-                    <NotificationCategoryTable categories={categories} readOnly />
-                )}
+// ---- ViewModel -----------------------------------------------------------
+
+/**
+ * Глобальна (не per-user) матриця "категорія → канали" — лише перегляд
+ * системного дефолту (InAppNotificationCategory::channelDefaults()).
+ */
+class AdminNotificationsViewModel {
+    constructor({ scope }) {
+        this.scope = scope;
+        makeViewModel(this);
+
+        this.categoriesQuery = scope.query({
+            queryKey: ["admin-notifications", "categories"],
+            queryFn: fetchNotificationCategories,
+            onError: (error) => toast.error(error?.payload?.message ?? "Не вдалося завантажити категорії нотифікацій"),
+        });
+    }
+
+    get categories() {
+        return this.categoriesQuery.data ?? [];
+    }
+
+    get isLoading() {
+        return this.categoriesQuery.isLoading;
+    }
+}
+
+// ---- View ----------------------------------------------------------------
+
+const AdminNotificationsView = observer(({ vm }) => (
+    <AdminLayout data-i-doc="page:admin-notifications" active="notifications">
+        <div className="mx-2 mt-5 max-w-2xl">
+            <div className="mb-3">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                    Категорії нотифікацій
+                </p>
+                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                    Глобальний перелік категорій і каналів, якими система їх підтримує —
+                    лише перегляд. Персональні переваги користувачів — на сторінці
+                    «Налаштування» кожного користувача.
+                </p>
             </div>
-        </AdminLayout>
-    );
-};
+            {vm.isLoading ? (
+                <p className="text-xs text-slate-500 dark:text-slate-400">Завантаження…</p>
+            ) : (
+                <NotificationCategoryTable categories={vm.categories} readOnly />
+            )}
+        </div>
+    </AdminLayout>
+));
 
-export default Index;
+/** Маршрут /admin-notifications. Сторінка мала — M/VM/V в одному модулі. */
+export default function AdminNotificationsPage() {
+    const vm = useViewModel((deps) => new AdminNotificationsViewModel(deps));
+    usePageTitle("Нотифікації", { documentTitle: "Нотифікації — адміністрування" });
+
+    return <AdminNotificationsView vm={vm} />;
+}

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {ENTITY_CONNECTION, ENTITY_ORPHAN, ENTITY_PROFILE} from "../../entities/dossierTicket/model.js";
 
 // Три малих поля "знайти id → одразу додати" — Enter в полі викликає onAdd({type,id})

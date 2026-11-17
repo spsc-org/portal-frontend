@@ -1,16 +1,13 @@
-import React, {useEffect, useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { ProfileDetailViewModel } from "../../viewmodel/DossierViewModels.js";
+import {useEffect} from "react";
 import {Spinner, Tab, TabPanel, Tabs, TabsBody, TabsHeader} from "@material-tailwind/react";
-import toast from "react-hot-toast";
-import ConfirmModal from "../../../../Components/Modal/ConfirmModal.jsx";
-import {useProfileQuery, useDossierOptionsQuery} from "../../entities/dossier/queries.js";
+import ConfirmModal from "../../../../components/Modal/ConfirmModal.jsx";
 import {pluralConnections, profileTitle} from "../../entities/dossier/model.js";
 import SubjectAvatar from "../../entities/dossier/ui/SubjectAvatar.jsx";
 import {summarizeReviewReasons, isProfileRelation, groupConnectionsBySource} from "../../entities/dossierConnection/model.js";
-import {
-    useConnectionMutations
-} from "../../features/manage-connection/useConnectionMutations.js";
 import AddConnectionModal from "../../features/manage-connection/AddConnectionModal.jsx";
-import {useProfileMutations} from "../../features/manage-profile/useProfileMutations.js";
 import DuplicatesPanel from "../../features/search-duplicates/DuplicatesPanel.jsx";
 import ConnectionCard from "./ConnectionCard.jsx";
 import ConnectionCardGroup from "./ConnectionCardGroup.jsx";
@@ -35,98 +32,34 @@ const metaChip = "text-[11px] font-medium font-mono text-slate-600 bg-slate-100 
 
 // Ключ localStorage per-профіль — при зміні досьє (інший profileId) вибір звʼязку
 // природно "скидається", бо ключ інший; персиста жодного ручного reset-ефекту не треба.
-const connectionStorageKey = (profileId) => `dossier-lastConnection-${profileId}`;
 
 // Права панель деталей профілю (за макетом): хедер з чипами id/subject_type_id/drs_id,
 // банер needs_review, панель кандидатів-дублікатів, картки підключень.
+/** Монтується з key={profileId}: VM картки — на один профіль. */
 const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit, currentUserId, onProfileDeleted, onSelectProfile}) => {
-    const {data: profile, isFetching, isError} = useProfileQuery(profileId);
-    const {data: options} = useDossierOptionsQuery();
-
-    // Збережене (URL ?view= або localStorage) досьє могло бути видалене з того часу —
-    // самозагоєння: скидаємо вибір замість зависання на помилці завантаження.
+    const vm = useViewModel((deps) => new ProfileDetailViewModel({ ...deps, profileId, isProfileRelation }));
+    const { profile, isFetching, isError, options } = vm;
+    // Профіль зник (видалено/немає доступу) — повідомляємо сторінку.
     useEffect(() => {
-        if (isError) {
-            onProfileDeleted?.();
-        }
+        if (isError) onProfileDeleted?.();
     }, [isError, onProfileDeleted]);
-    const {linkMutation, confirmMutation, unconfirmMutation, unlinkMutation, voidMutation, updateNoteMutation: updateConnectionNoteMutation} = useConnectionMutations(profileId);
-    const {deleteProfileMutation, uploadAvatarMutation, deleteAvatarMutation, updateCaptionMutation, updateNoteMutation, refreshStatusMutation} = useProfileMutations(profileId);
-    const [showDuplicates, setShowDuplicates] = useState(false);
-    const [isAddConnectionOpen, setIsAddConnectionOpen] = useState(false);
-    const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
-    const [unlinkTarget, setUnlinkTarget] = useState(null);
-    const [voidTarget, setVoidTarget] = useState(null);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [showAvatarDeleteConfirm, setShowAvatarDeleteConfirm] = useState(false);
-    const [showAuditModal, setShowAuditModal] = useState(false);
-    const [activeTab, setActiveTab] = useState("connections");
-    const [selectedConnectionId, setSelectedConnectionId] = useState(null);
 
-    // Досьє змінилось — відновлюємо востаннє обраний звʼязок САМЕ ДЛЯ ЦЬОГО досьє
-    // (ключ localStorage прив'язаний до profileId, тож чуже значення сюди не потрапить).
-    // Якщо нічого не збережено — за замовчуванням перший звʼязок за порядком (не
-    // profile-relation); ефект перезапускається, коли профіль довантажиться (profile
-    // ще може бути undefined на момент зміни profileId).
-    useEffect(() => {
-        if (!profileId) {
-            setSelectedConnectionId(null);
-            return;
-        }
-
-        const stored = localStorage.getItem(connectionStorageKey(profileId));
-        if (stored) {
-            setSelectedConnectionId(Number(stored));
-            return;
-        }
-
-        const firstConnection = (profile?.connections ?? []).find((c) => !isProfileRelation(c));
-        setSelectedConnectionId(firstConnection ? firstConnection.id : null);
-    }, [profileId, profile]);
-
-    const selectConnection = (id) => {
-        setSelectedConnectionId(id);
-        if (!profileId) return;
-        if (id) {
-            localStorage.setItem(connectionStorageKey(profileId), String(id));
-        } else {
-            localStorage.removeItem(connectionStorageKey(profileId));
-        }
-    };
-
-    // Той самий патерн, що й handleCopyLink у TaskViewPanel.jsx.
-    const handleCopyLink = () => {
-        const url = `${window.location.origin}${window.location.pathname}?view=${profileId}`;
-        navigator.clipboard?.writeText(url)
-            .then(() => toast.success("Посилання скопійовано"))
-            .catch(() => toast.error("Не вдалося скопіювати посилання"));
-    };
-
-    // Назва й примітка редагуються разом (одна модалка, EditProfileModal) — чекаємо на
-    // ОБИДВА PATCH перед закриттям, щоб помилка одного не закрила форму передчасно
-    // (успіх кожної мутації вже сам оновлює кеш деталей профілю, окремий toast тут не
-    // потрібен — жодна з двох мутацій його й раніше не показувала).
-    const handleSaveProfile = ({caption, note}) => {
-        const captionChanged = caption !== (profile?.view_caption ?? "");
-        const noteChanged = note !== (profile?.note ?? "");
-
-        if (!captionChanged && !noteChanged) {
-            setIsEditProfileOpen(false);
-            return;
-        }
-
-        const tasks = [];
-        if (captionChanged) {
-            tasks.push(new Promise((resolve, reject) => updateCaptionMutation.mutate(caption, {onSuccess: resolve, onError: reject})));
-        }
-        if (noteChanged) {
-            tasks.push(new Promise((resolve, reject) => updateNoteMutation.mutate(note, {onSuccess: resolve, onError: reject})));
-        }
-
-        Promise.all(tasks)
-            .then(() => setIsEditProfileOpen(false))
-            .catch(() => {}); // помилка вже показана toast-ом усередині відповідної мутації
-    };
+    const { link: linkMutation, confirm: confirmMutation, unconfirm: unconfirmMutation, unlink: unlinkMutation, void: voidMutation, updateNote: updateConnectionNoteMutation } = vm.connections;
+    const { deleteProfile: deleteProfileMutation, uploadAvatar: uploadAvatarMutation, deleteAvatar: deleteAvatarMutation, updateCaption: updateCaptionMutation, updateNote: updateNoteMutation, refreshStatus: refreshStatusMutation } = vm.profileCmd;
+    const { showDuplicates, isAddConnectionOpen, isEditProfileOpen, unlinkTarget, voidTarget, showDeleteConfirm, showAvatarDeleteConfirm, showAuditModal, activeTab, selectedConnectionId } = vm;
+    const setter = (field) => (value) => vm.set(field, value);
+    const setShowDuplicates = setter("showDuplicates");
+    const setIsAddConnectionOpen = setter("isAddConnectionOpen");
+    const setIsEditProfileOpen = setter("isEditProfileOpen");
+    const setUnlinkTarget = setter("unlinkTarget");
+    const setVoidTarget = setter("voidTarget");
+    const setShowDeleteConfirm = setter("showDeleteConfirm");
+    const setShowAvatarDeleteConfirm = setter("showAvatarDeleteConfirm");
+    const setShowAuditModal = setter("showAuditModal");
+    const setActiveTab = setter("activeTab");
+    const selectConnection = vm.selectConnection;
+    const handleCopyLink = vm.copyLink;
+    const handleSaveProfile = vm.saveProfile;
 
     if (!profileId) {
         return (
@@ -579,4 +512,4 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
     );
 };
 
-export default ProfileDetailPane;
+export default observer(ProfileDetailPane);

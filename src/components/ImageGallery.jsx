@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import {useEffect} from "react";
 import ImageUploading from "react-images-uploading";
 import {Gallery, Item} from "react-photoswipe-gallery";
 import "photoswipe/dist/photoswipe.css";
@@ -62,7 +62,7 @@ export default function ImageGallery({
                 </div>
             </Gallery>
             {
-                !Boolean(isDisabled) &&
+                !isDisabled &&
                 <ImageUploading
                     multiple
                     allowNonImageType={allowNonImageType}

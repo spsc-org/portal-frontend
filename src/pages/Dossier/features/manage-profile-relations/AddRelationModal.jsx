@@ -1,7 +1,9 @@
-import React, {useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { DossierOptionsViewModel } from "../../viewmodel/DossierViewModels.js";
+import {useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
 import ProfileAutocomplete from "./ProfileAutocomplete.jsx";
-import {useDossierOptionsQuery} from "../../entities/dossier/queries.js";
 
 // Модальне вікно додавання profile-to-profile звʼязку (заміняє колишню
 // AddRelationForm.jsx, i-doc:component:sanction-profiles-add-relation-form,
@@ -9,7 +11,7 @@ import {useDossierOptionsQuery} from "../../entities/dossier/queries.js";
 // вибору профілю + вибір типу з довідника profile_connection_type (GET /api/dossier/options)
 // + нотатка. Мутація — переюз linkMutation з useProfileRelationMutations.
 const AddRelationModal = ({open, excludeId, linkMutation, onClose}) => {
-    const {data: options} = useDossierOptionsQuery();
+    const options = useViewModel((deps) => new DossierOptionsViewModel(deps)).options;
     const connectionTypes = options?.connectionTypes ?? [];
     const [relatedProfile, setRelatedProfile] = useState(null);
     const [connectionTypeId, setConnectionTypeId] = useState(connectionTypes[0]?.id ?? "");
@@ -96,4 +98,4 @@ const AddRelationModal = ({open, excludeId, linkMutation, onClose}) => {
     );
 };
 
-export default AddRelationModal;
+export default observer(AddRelationModal);

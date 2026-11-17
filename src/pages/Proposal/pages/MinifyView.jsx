@@ -1,51 +1,23 @@
-import {usePage} from "@inertiajs/react";
-import {useQuery} from "@tanstack/react-query";
-import {DictionaryProvider} from "../../Dictionary/DictionaryContext.jsx";
-import Page from "../../../Components/Page.jsx";
-import React, {useMemo} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
+import { ProposalViewViewModel } from "../viewmodel/ProposalViewModels.js";
+import Page from "../../../components/Page.jsx";
+import {useMemo} from "react";
+import {useParams} from "react-router";
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from "@tanstack/react-table";
-import {Button, Tooltip, Typography} from "@material-tailwind/react";
+import {Tooltip, Typography} from "@material-tailwind/react";
+import PageHeader from "../../../layouts/app/PageHeader.jsx";
 
 const columnHelper = createColumnHelper();
 
-const MinifyView = () => {
-    const {
-        id,
-        auth,
-        projectState = [],
-        subjectTypes = [],
-        proposalState = [],
-
-    } = usePage().props;
-
-    const {data = {data: null}} = useQuery({
-        queryKey: ['proposal-show', id],
-        queryFn: async () => {
-            const response = await axios.get(`/api/proposal/new/${id}`, {
-                headers: {"userId": auth?.user?.id}
-            });
-            return response.data;
-        }
-    });
-
-    const {data: projects, isFetching: isLinkedProjectsLoading} = useQuery({
-        queryKey: ['proposal-show-lined-projects-minify', id],
-        queryFn: async () => {
-            const response = await axios.get(`/api/proposal/new/${id}/linked-projects`, {
-                headers: {"userId": auth?.user?.id}
-            });
-            return response.data?.data;
-        }
-    });
-
-    const allItems = useMemo(() => {
-        if (!projects?.data) return [];
-        return Object.values(projects.data)
-            .flatMap(group =>
-                Object.values(group)
-                    .flatMap(arr => arr)
-            )
-    }, [projects?.data])
+const MinifyViewContent = observer(({ vm }) => {
+    const { id, projectState = [], subjectTypes = [], proposalState = [] } = vm.props;
+    const data = vm.proposalQuery.data ?? {data: null};
+    const projects = vm.projects;
+    // Мінімізований вигляд показує всі проєкти (не лише готові).
+    const allItems = projects?.data
+        ? Object.values(projects.data).flatMap(group => Object.values(group).flat())
+        : [];
 
     const proposal = data?.data;
     const isFixed = data?.data?.stateId
@@ -148,37 +120,21 @@ const MinifyView = () => {
     });
 
     return (
-        <DictionaryProvider>
             <Page>
-                <a data-i-doc="page:proposal-minify-view" href={`/proposal/${id}`}>
-                    <Button size="sm" variant="text">
-                        <i className="fa-regular fa-arrow-left"></i>
-                        <span className="ml-1">
-                            Назад
-                            </span>
-                    </Button>
-                </a>
-                <div className="flex flex-row mb-2  gap-x-1 font-medium dark:text-slate-200">
+                {/* "Назад" і назва подання — у breadcrumbs глобального Header */}
+                <PageHeader
+                    title="Спрощений вид"
+                    documentTitle="Подання (мінімізовано)"
+                    breadcrumbs={[{ label: "Подання", href: "/proposal" }, { label: proposal?.caption || `#${id}`, href: `/proposal/${id}` }]}
+                />
+                <div data-i-doc="page:proposal-minify-view" className="mb-2 flex items-center gap-x-1 font-medium dark:text-slate-200">
                     {
                         isFixed &&
                         <Tooltip content="Зафіксований">
                             <i className="text-md fa-solid fa-lock text-blue-600 mr-1"></i>
                         </Tooltip>
                     }
-                    <div className="-mt-px flex flex-col">
-                        <Typography
-                            variant="h5"
-                            className="font-medium"
-                        >
-                            {
-                                Boolean(proposal) &&
-                                <span className="ml-1">{proposal?.caption}</span>
-                            }
-                        </Typography>
-                        <div>
-                            {proposalElement}
-                        </div>
-                    </div>
+                    {proposalElement}
                 </div>
                 <div className="overflow-x-auto">
                     <table id="minifyTable" className="table-auto text-sm boreder w-full text-left text-gray-500 dark:text-gray-400">
@@ -207,8 +163,19 @@ const MinifyView = () => {
                     </table>
                 </div>
             </Page>
-        </DictionaryProvider>
     );
+});
+
+/** Маршрут /proposal/:id/minify (pageAccess). */
+const MinifyView = () => {
+    const { id } = useParams();
+    const vm = useViewModel((deps) => new ProposalViewViewModel({ ...deps, id, minify: true }));
+    return <MinifyViewContent vm={vm}/>;
 };
 
-export default MinifyView;
+const MinifyViewRoute = () => {
+    const { id } = useParams();
+    return <MinifyView key={id}/>;
+};
+
+export default MinifyViewRoute;

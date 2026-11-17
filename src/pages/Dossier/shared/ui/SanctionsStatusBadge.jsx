@@ -1,5 +1,7 @@
-import React from "react";
-import {useDossierOptionsQuery} from "../../entities/dossier/queries.js";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { DossierOptionsViewModel } from "../../viewmodel/DossierViewModels.js";
+
 import {pluralDays} from "../../entities/dossier/model.js";
 
 // Впізнаваний бейдж стану "під санкціями України" — переюзаний і в Реєстрі досьє (рядок),
@@ -30,7 +32,7 @@ const compactValue = (status, daysRemaining) =>
 // variant="compact" (Реєстр досьє, місця мало) і variant="full" (Картка досьє) — та сама
 // структура (щит + значення), full лише додає слова (підпис стану, "· ще N днів").
 const SanctionsStatusBadge = ({status, daysRemaining, onRefresh, isRefreshing = false, variant = "full"}) => {
-    const {data: options} = useDossierOptionsQuery();
+    const options = useViewModel((deps) => new DossierOptionsViewModel(deps)).options;
     const meta = options?.uaSanctionsStatuses?.find((item) => item.id === status);
 
     if (!meta) {
@@ -75,4 +77,4 @@ const SanctionsStatusBadge = ({status, daysRemaining, onRefresh, isRefreshing = 
     );
 };
 
-export default SanctionsStatusBadge;
+export default observer(SanctionsStatusBadge);

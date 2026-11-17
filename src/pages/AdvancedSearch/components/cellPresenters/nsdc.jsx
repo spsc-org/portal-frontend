@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable react-refresh/only-export-components -- реєстр презентерів комірок (об'єкт колонка → компонент) */
 import DecreeBadge from "../atoms/DecreeBadge.jsx";
 import ExpiryDateBadge from "../atoms/ExpiryDateBadge.jsx";
 
@@ -77,7 +77,6 @@ const DecreeRenderer = ({ row, highlightText, filters }) => {
 
     // Sanc datasets (20, 21, 24): last_action_decree + status + sanctions_end_date
     // Action datasets (22, 23, 25): action_type + decree + sanctions_end_date
-    const isSanc = od.last_action_decree !== undefined || od.status !== undefined;
 
     const decreeNumber  = od.last_action_decree || od.decree || null;
     const endDate       = od.sanctions_end_date || null;

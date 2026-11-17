@@ -1,4 +1,3 @@
-import React from 'react';
 import {Tooltip} from "@material-tailwind/react";
 import DecreeBadge from "../atoms/DecreeBadge.jsx";
 

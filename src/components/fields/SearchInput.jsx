@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {debounce} from "lodash";
 
 /**
@@ -73,7 +73,7 @@ const SearchInput = ({
                 }
                 <input ref={inputRef} onInput={sendChange} disabled={disabled} type={type} defaultValue={value} placeholder={placeholder}
                        name={name} {...rest}
-                       className={`w-full rounded-md border bg-white py-2 leading-5 text-${size} text-gray-800 placeholder:text-gray-500 shadow-sm transition duration-300 ease focus:outline-none focus:ring-1 disabled:bg-gray-200 dark:disabled:bg-gray-900 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:placeholder:text-gray-400 ${icon ? 'pl-8' : 'pl-3'} ${hasValue ? 'pr-8' : 'pr-3'} ${Boolean(error) ? 'border-red-500 focus:border-red-600 focus:ring-red-300 dark:border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-blue-300 dark:focus:border-blue-300'}`}/>
+                       className={`w-full rounded-md border bg-white py-2 leading-5 text-${size} text-gray-800 placeholder:text-gray-500 shadow-sm transition duration-300 ease focus:outline-none focus:ring-1 disabled:bg-gray-200 dark:disabled:bg-gray-900 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:placeholder:text-gray-400 ${icon ? 'pl-8' : 'pl-3'} ${hasValue ? 'pr-8' : 'pr-3'} ${error ? 'border-red-500 focus:border-red-600 focus:ring-red-300 dark:border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-blue-300 dark:focus:border-blue-300'}`}/>
                 {hasValue && !disabled &&
                     <button type="button"
                             onClick={handleClear}

@@ -1,17 +1,18 @@
-import React, { useMemo, useState } from "react";
-import { useProjectOptionsQuery } from "../../../entities/project/queries.js";
-import { useSetValidatorMutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useMemo, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import BulkFormShell from "./BulkFormShell.jsx";
 import { SelectField } from "./fields.jsx";
 
 // bulkTab10 — "Призначити валідатора".
 const SetValidatorForm = ({ projectIds, userId, onDone }) => {
-    const { data } = useProjectOptionsQuery(["user"], userId);
+    const data = useVM().cartModal.options;
     const users = useMemo(() => Object.values(data?.user ?? {}), [data]);
 
     const [validatorId, setValidatorId] = useState("");
     const [reason, setReason] = useState("");
-    const mutation = useSetValidatorMutation();
+    const mutation = useVM().cartModal.cmd.setValidator;
 
     const handleSubmit = () => {
         mutation.mutate([projectIds, validatorId, reason, userId], { onSuccess: (result) => onDone(result) });
@@ -26,7 +27,7 @@ const SetValidatorForm = ({ projectIds, userId, onDone }) => {
             onSubmit={handleSubmit}
             isPending={mutation.isPending}
             isError={mutation.isError}
-            errorMessage={getErrorMessage(mutation.error, "Не вдалося виконати операцію")}
+            errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
             disabled={!validatorId}
         >
             <SelectField label="Оберіть валідатора" value={validatorId} onChange={setValidatorId} options={users} />
@@ -34,4 +35,4 @@ const SetValidatorForm = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default SetValidatorForm;
+export default observer(SetValidatorForm);

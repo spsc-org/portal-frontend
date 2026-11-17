@@ -1,13 +1,11 @@
-import React, {useEffect, useState} from "react";
+import {useEffect} from "react";
 import ImageUploading from "react-images-uploading";
 import {Gallery, Item} from "react-photoswipe-gallery";
 import "photoswipe/dist/photoswipe.css";
-import {usePage} from "@inertiajs/react";
-import {useMutation} from "@tanstack/react-query";
 import {Spinner, Tooltip} from "@material-tailwind/react";
-import toast from "react-hot-toast";
-import CustomToast from "./CustomToast.jsx";
-import {downloadFile} from "../utils.js";
+import {observer} from "mobx-react-lite";
+import {useViewModel} from "../shared/mvvm/useViewModel.js";
+import {FileDownloadViewModel} from "../entities/file/FileDownloadViewModel.js";
 
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
 
@@ -63,38 +61,8 @@ const ImageThumb = ({attachment, onDelete}) => {
     );
 };
 
-const DocumentThumb = ({attachment, onDelete}) => {
-    const {auth} = usePage().props;
-    const {mutate: getFile, isPending} = useMutation({
-        mutationFn: async (path) => {
-            const response = await axios.get('/api/file', {
-                params: {path},
-                headers: {"userId": auth?.user?.id, 'Cache-Control': 'no-cache', 'Pragma': 'no-cache', 'Expires': '0'},
-                responseType: 'blob',
-            });
-            const contentDisposition = response.headers["content-disposition"];
-            let filename = attachment.fileName || "downloaded_file";
-            const match = contentDisposition?.match(/filename\*=utf-8''([^;]+)/i)
-                || contentDisposition?.match(/filename="([^"]+)"/i);
-            if (match) filename = decodeURIComponent(match[1]);
-            downloadFile(response.data, filename);
-        },
-        onError: (error) => {
-            const contentType = error?.response?.headers?.['content-type'];
-            if (contentType?.includes('application/json')) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    try {
-                        const errorData = JSON.parse(reader.result);
-                        toast.custom((t) => <CustomToast t={t} message={errorData?.message || "Виникла помилка завантаження."}/>);
-                    } catch (e) {
-                        // ignore malformed error body
-                    }
-                };
-                reader.readAsText(error.response.data);
-            }
-        },
-    });
+const DocumentThumb = observer(({attachment, onDelete, downloads}) => {
+    const isPending = downloads.isPending(attachment.id);
 
     // Без fileUrl файл ще не завантажений на сервер (локальна черга перед
     // відправкою форми) — показуємо іконку без можливості "завантажити".
@@ -113,7 +81,7 @@ const DocumentThumb = ({attachment, onDelete}) => {
     return (
         <Tile attachment={attachment} onDelete={onDelete}>
             <Tooltip content={attachment.fileName}>
-                <button type="button" onClick={() => getFile(attachment.fileUrl)}
+                <button type="button" onClick={() => downloads.download(attachment)}
                         title="Завантажити"
                         className="flex h-full w-full items-center justify-center bg-slate-100 dark:bg-slate-800">
                     {isPending
@@ -123,7 +91,7 @@ const DocumentThumb = ({attachment, onDelete}) => {
             </Tooltip>
         </Tile>
     );
-};
+});
 
 /**
  * Компактний спільний контейнер вкладень (зображення + будь-які файли):
@@ -135,6 +103,7 @@ const DocumentThumb = ({attachment, onDelete}) => {
  */
 const AttachmentsGallery = ({data = [], isLoading = false, isDisabled = false, onUpdateList, onDeleteAttachment}) => {
     const maxNumber = 30;
+    const downloads = useViewModel((deps) => new FileDownloadViewModel(deps));
 
     const handleUploadChange = (list) => {
         onUpdateList(list.filter(item => item?.file));
@@ -169,7 +138,7 @@ const AttachmentsGallery = ({data = [], isLoading = false, isDisabled = false, o
                         {isImageFile(attachment.fileName)
                             ? <ImageThumb attachment={attachment}
                                           onDelete={isDisabled ? undefined : onDeleteAttachment}/>
-                            : <DocumentThumb attachment={attachment}
+                            : <DocumentThumb attachment={attachment} downloads={downloads}
                                              onDelete={isDisabled ? undefined : onDeleteAttachment}/>}
                         <span title={attachment.fileName}
                               className="max-w-full truncate text-center text-[9px] leading-tight text-slate-500 dark:text-slate-400">

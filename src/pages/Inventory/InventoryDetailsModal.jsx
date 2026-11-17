@@ -1,4 +1,8 @@
-import React, {useMemo, useState} from "react";
+import {useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { InventoryDetailsViewModel } from "./viewmodel/InventoryViewModels.js";
+import { confirmToast } from "../../components/confirmToast.jsx";
 import {
     Button, Card,
     Dialog,
@@ -12,14 +16,10 @@ import {
     TabsBody,
     TabsHeader
 } from "@material-tailwind/react";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {usePage} from "@inertiajs/react";
-import DocumentGallery from "../../Components/DocumentGallary.jsx";
+import DocumentGallery from "../../components/DocumentGallary.jsx";
 import {useFilteredAttachments} from "../../hooks/useFilteredAttachments.jsx";
-import toast from "react-hot-toast";
-import {LoadingDialogBody} from "../../Components/Buttons/LoadingDialogBody.jsx";
-import ImageGallery from "../../Components/ImageGallery.jsx";
-import axios from "axios";
+import {LoadingDialogBody} from "../../components/Buttons/LoadingDialogBody.jsx";
+import ImageGallery from "../../components/ImageGallery.jsx";
 
 // --- AUDIT COMPONENTS START ---
 
@@ -217,240 +217,34 @@ const AuditEntry = ({entry, dictionary, inventoryType, inventoryLocation}) => {
 // --- AUDIT COMPONENTS END ---
 
 const InventoryDetailsModal = ({open, id, onClose, dictionary, readOnly = false}) => {
-    const {token, auth} = usePage().props;
-    const queryClient = useQueryClient();
+    const vm = useViewModel((deps) => new InventoryDetailsViewModel({ ...deps, id }));
     const inventoryLocation = dictionary?.inventoryLocation ?? [];
     const inventoryType = dictionary?.inventoryType ?? [];
     const users = dictionary?.user ?? [];
     const responsibleUsers = dictionary?.responsibleUser ?? [];
-    const [tab, setTab] = useState("info");
-    const [auditPage, setAuditPage] = useState(1);
-
-    const updateLocalInventoryCount = () => {
-        queryClient.invalidateQueries({queryKey: ['inventories']});
-    };
-
-    // Основні дані
-    const {data, isFetching: isDictionaryFetching} = useQuery({
-        queryKey: ['inventory-deitals', id],
-        queryFn: async () => {
-            const response = await axios.get(`api/inventory/${id}`, {
-                headers: {"userId": auth?.user?.id}
-            });
-            return response?.data;
-        },
-        enabled: !!id,
-    });
-
-    // Історія змін (новий аудит)
-    const {data: auditData, isFetching: auditLoading} = useQuery({
-        queryKey: ['inventory-audit', id, auditPage],
-        queryFn: async () => {
-            const res = await axios.get(`/api/inventory/${id}/audit`, {
-                 headers: {"userId": auth?.user?.id},
-                 params: {page: auditPage, limit: 50},
-            });
-            return res.data;
-        },
-        enabled: !!id && tab === 'history',
-    });
-
-    const {imageAttachments, wordAttachments} = useFilteredAttachments(data?.attachments);
-
-    const attachImages = useMutation({
-        mutationFn: async (attachments = []) => {
-            const formData = new FormData();
-            const filesToSubmit = attachments.filter(attachment => {
-                return attachment?.file instanceof File;
-            });
-            filesToSubmit.forEach((attachment, index) => {
-                if (attachment?.file instanceof File) {
-                    formData.append(`attachments[${index}]`, attachment.file);
-                }
-            });
-            const response = await axios.post(`/api/inventory/${id}/attach-file`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        "X-CSRF-Token": token,
-                        "userId": auth.user.id,
-                    }
-                }
-            );
-            return response.data;
-        },
-        onSuccess: async (responseData) => {
-            const {files, attachments_count} = responseData;
-            if (attachments_count !== undefined) {
-                updateLocalInventoryCount(attachments_count);
-            }
-            if (!files.length) return;
-            files.forEach(({fileName}) => {
-                return (
-                    toast.success(`Вкладення ${fileName} успішно завантажено`, {
-                        style: {
-                            background: 'dark:dark:bg-slate-800',
-                            color: 'text-slate-400',
-                        },
-                    })
-                )
-            })
-        },
-        onError: async () => toast.error('Помилка завантаження вкладення'),
-        onSettled: (data, error) => {
-            if (!error) {
-                queryClient.invalidateQueries({queryKey: ['inventory-deitals', id]});
-                queryClient.invalidateQueries({queryKey: ['inventory-audit', id]});
-            }
-        },
-    });
-
-
-    const attachDocuments = useMutation({
-        mutationFn: async (attachments = []) => {
-            const formData = new FormData();
-            const filesToSubmit = attachments.filter(attachment => {
-                return attachment?.file instanceof File;
-            });
-            filesToSubmit.forEach((attachment, index) => {
-                if (attachment?.file instanceof File) {
-                    formData.append(`attachments[${index}]`, attachment.file);
-                }
-            });
-            const response = await axios.post(`/api/inventory/${id}/attach-file`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        "X-CSRF-Token": token,
-                        "userId": auth.user.id,
-                    }
-                }
-            );
-            return response.data;
-        },
-        onSuccess: async (responseData) => {
-            const {files, attachments_count} = responseData;
-            if (attachments_count !== undefined) {
-                updateLocalInventoryCount(attachments_count);
-            }
-            if (!files.length) return;
-            files.forEach(({fileName}) => {
-                return (
-                    toast.success(`Вкладення ${fileName} успішно завантажено`, {
-                        style: {
-                            background: 'dark:dark:bg-slate-800',
-                            color: 'text-slate-400',
-                        },
-                    })
-                )
-            })
-        },
-        onError: async (error) => {
-            return toast.error('Помилка завантаження вкладення');
-        },
-        onSettled: (data, error) => {
-            if (!error) {
-                queryClient.invalidateQueries({queryKey: ['inventory-deitals', id]});
-                queryClient.invalidateQueries({queryKey: ['inventory-audit', id]});
-            }
-        },
-    });
-
-    const canUpdateRow = useMemo(() => {
-        if (!data?.data) return;
-        const permission = auth?.user?.permissions?.pages?.inventory?.update;
-        if (data?.data?.deletedAt) return false;
-        if (permission === 'individual') {
-            return data?.data?.createdUserId === auth?.user?.id;
-        }
-        if (permission === true) return true;
-        return false;
-    }, [data?.data, id, auth]);
-
-    const isReadOnly = useMemo(() => {
-        return Boolean(data?.data?.deletedAt) || readOnly
-    }, [readOnly, data]);
-
-
-    const deleteAttachment = useMutation({
-        mutationFn: async (attachment) => {
-            const response = await axios.delete(`/api/inventory/delete-file/${attachment.id}`,
-                {
-                    headers: {
-                        "X-CSRF-Token": token,
-                        "userId": auth.user.id,
-                    }
-                }
-            );
-            return response.data;
-        },
-        onSuccess: async (responseData) => {
-            const {fileName, attachments_count} = responseData;
-            if (attachments_count !== undefined) {
-                updateLocalInventoryCount(attachments_count);
-            }
-            toast.success(`Вкладення ${fileName} видалено успішно`);
-        },
-        onError: async () => toast.error('Помилка видалення вкладення'),
-        onSettled: () => {
-            queryClient.invalidateQueries({queryKey: ['inventory-deitals', id]});
-            queryClient.invalidateQueries({queryKey: ['inventory-audit', id]});
-        }
-    });
-
-
-    const handleUpdateDocumentList = (documentList = []) => {
-        if (!documentList.length) return
-        attachDocuments.mutate(documentList);
-    }
-
-    const handleUpdateImageList = (imageList = []) => {
-        if (!imageList.length) return
-        attachImages.mutate(imageList);
-    }
-
-    const handleDeleteAttachment = (attachment) => (event) => {
-        event.preventDefault();
-        if (!attachment)
-            return;
-        toast((t) => (
-                <div
-                    className={`${
-                        t.visible ? 'animate-enter' : 'animate-leave'
-                    }   max-w-3xl w-full pointer-events-auto flex items-center gap-x-1 flex-row`}
-                >
-                    <p className="text-sm font-medium text-gray-900">
-                        Ви точно хочете видалити файл?
-                    </p>
-                    <div className="flex flex-row gap-x-1 ">
-                        <Button size="sm" color="white" onClick={() => toast.dismiss(t.id)}>
-                            Скасувати
-                        </Button>
-                        <Button size="sm" color="red" onClick={() => {
-                            toast.dismiss(t.id)
-                            deleteAttachment.mutate(attachment)
-                        }}>
-                            Видалити
-                        </Button>
-                    </div>
-                </div>
-            ),
-            {
-                duration: 10000,
-                position: 'top-center',
-                style: {
-                    background: 'dark:dark:bg-slate-800',
-                    color: 'text-slate-400',
-                },
-            })
-    }
-
+    const tab = vm.tab;
+    const setTab = vm.setTab;
+    const auditPage = vm.auditPage;
+    const setAuditPage = vm.setAuditPage;
+    const data = vm.data;
+    const isDictionaryFetching = vm.isFetching;
+    const auditData = vm.auditData;
+    const auditLoading = vm.auditLoading;
     const auditHistory = auditData?.data ?? [];
     const auditTotal   = auditData?.total ?? 0;
     const auditPages   = auditData?.pages ?? 1;
+    const {imageAttachments, wordAttachments} = useFilteredAttachments(data?.attachments);
+    const attachImages = vm.attachCmd;
+    const attachDocuments = vm.attachCmd;
+    const canUpdateRow = vm.canUpdateRow;
+    const isReadOnly = Boolean(data?.data?.deletedAt) || readOnly;
+    const handleUpdateDocumentList = vm.attach;
+    const handleUpdateImageList = vm.attach;
 
+    const handleDeleteAttachment = (attachment) => (event) => {
+        event.preventDefault();
+        if (attachment) confirmToast("Видалити файл?", () => vm.deleteAttachment(attachment));
+    };
 
     return (
         <Dialog data-i-doc="modal:inventory-details" open={open} size="xxl" className="dark:bg-gray-800" handler={onClose}>
@@ -630,4 +424,4 @@ const InventoryDetailsModal = ({open, id, onClose, dictionary, readOnly = false}
     );
 };
 
-export default InventoryDetailsModal;
+export default observer(InventoryDetailsModal);

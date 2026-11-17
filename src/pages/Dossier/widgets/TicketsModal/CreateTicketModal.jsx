@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { CreateTicketViewModel } from "../../viewmodel/DossierViewModels.js";
+
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
-import {previewLinks as fetchLinksPreview} from "../../entities/dossierTicket/api.js";
-import {useTicketMutations} from "../../features/manage-tickets/useTicketMutations.js";
+
 import {entityLabel as entityTypeLabel} from "../../entities/dossierTicket/model.js";
-import {clearDraft, readDraft, writeDraft} from "../../entities/dossierTicket/draftStorage.js";
 import AddLinkFields from "./AddLinkFields.jsx";
 
 const linkKey = (link) => `${link.type}-${link.id}`;
@@ -15,61 +16,15 @@ const linkKey = (link) => `${link.type}-${link.id}`;
 // нема, тож onAdd лише накопичує в локальному стані, реальний запит іде разом зі
 // створенням. Чорновик (текст + список привʼязок) переживає закриття/повторне
 // відкриття цієї ж модалки (draftStorage, ключ — базова сутність).
+/** Монтується лише відкритою: чернетка читається при відкритті й пишеться на кожну зміну. */
 const CreateTicketModal = ({open, onClose, entityType, entityId, entityLabel, onCreated}) => {
-    const {createMutation} = useTicketMutations(entityType, entityId);
-    const [text, setText] = useState("");
-    const [extraLinks, setExtraLinks] = useState([]);
-    const [linkPreview, setLinkPreview] = useState([]);
-
-    useEffect(() => {
-        if (!open) return;
-        const draft = readDraft(entityType, entityId);
-        setText(draft?.text ?? "");
-        setExtraLinks(Array.isArray(draft?.extraLinks) ? draft.extraLinks : []);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [open, entityType, entityId]);
-
-    useEffect(() => {
-        if (!open) return;
-        writeDraft(entityType, entityId, {text, extraLinks});
-    }, [open, entityType, entityId, text, extraLinks]);
-
-    useEffect(() => {
-        if (extraLinks.length === 0) {
-            setLinkPreview([]);
-            return;
-        }
-        const timer = setTimeout(() => {
-            fetchLinksPreview(extraLinks).then(setLinkPreview).catch(() => setLinkPreview([]));
-        }, 400);
-        return () => clearTimeout(timer);
-    }, [extraLinks]);
-
-    const addLink = (link) => {
-        setExtraLinks((prev) => (prev.some((l) => linkKey(l) === linkKey(link)) ? prev : [...prev, link]));
-    };
-
-    const removeLink = (link) => {
-        setExtraLinks((prev) => prev.filter((l) => linkKey(l) !== linkKey(link)));
-    };
-
-    const submit = () => {
-        if (!text.trim()) return;
-
-        createMutation.mutate(
-            {text: text.trim(), extraLinks},
-            {
-                onSuccess: (ticket) => {
-                    setText("");
-                    setExtraLinks([]);
-                    setLinkPreview([]);
-                    clearDraft(entityType, entityId);
-                    onCreated?.(ticket);
-                    onClose();
-                },
-            },
-        );
-    };
+    const vm = useViewModel((deps) => new CreateTicketViewModel({ ...deps, entityType, entityId }));
+    const { text, extraLinks, linkPreview } = vm;
+    const setText = vm.setText;
+    const createMutation = vm.cmd.create;
+    const addLink = (link) => vm.addLink(link, linkKey);
+    const removeLink = (link) => vm.removeLink(link, linkKey);
+    const submit = () => vm.submit(onCreated, onClose);
 
     const previewByKey = new Map(linkPreview.map((p) => [linkKey(p), p]));
 
@@ -150,4 +105,4 @@ const CreateTicketModal = ({open, onClose, entityType, entityId, entityLabel, on
     );
 };
 
-export default CreateTicketModal;
+export default observer(CreateTicketModal);

@@ -1,5 +1,4 @@
-import TaskLayout from "../../Components/TaskLayout.jsx";
-import {Typography} from "@material-tailwind/react";
+import TaskLayout from "../../components/TaskLayout.jsx";
 
 const TaskProjectPage = () => {
     return (

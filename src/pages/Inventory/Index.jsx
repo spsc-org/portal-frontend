@@ -1,208 +1,46 @@
-import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
-import {Link, usePage} from "@inertiajs/react";
-import {convertDate} from "@/utils.js";
-import AdvancedSelect from "@/Components/fields/AdvancedSelect.jsx";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { InventoryListViewModel } from "./viewmodel/InventoryViewModels.js";
+import { confirmToast } from "../../components/confirmToast.jsx";
+import {useMemo} from 'react';
+import {Link} from "react-router";
+import {convertDate} from "../../lib/utils.js";
+import AdvancedSelect from "../../components/fields/AdvancedSelect.jsx";
 import {createColumnHelper} from "@tanstack/react-table";
-import Table, {loadColumnSizes} from "@/Components/Table/Table.jsx";
-import InventoryModal from "@/ReactPages/Inventory/InventoryModal.jsx";
-import toast from "react-hot-toast";
-import InventoryDetailsModal from "@/ReactPages/Inventory/InventoryDetailsModal.jsx";
+import Table, {loadColumnSizes} from "../../components/Table/Table.jsx";
+import InventoryModal from "./InventoryModal.jsx";
+import InventoryDetailsModal from "./InventoryDetailsModal.jsx";
 import {Badge, Button, Menu, MenuHandler, MenuItem, MenuList, Switch, Tooltip} from "@material-tailwind/react";
-import {keepPreviousData, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {fetchData} from "@/ReactPages/Inventory/utils.js";
-import Page from "@/Components/Page.jsx";
-import {DictionaryProvider} from "@/ReactPages/Dictionary/DictionaryContext.jsx";
-import SearchInput from "@/Components/fields/SearchInput.jsx";
-import {format} from "date-fns";
-import DateRangePicker from "@/Components/fields/DateRangePicker.jsx";
+import Page from "../../components/Page.jsx";
+import SearchInput from "../../components/fields/SearchInput.jsx";
+import DateRangePicker from "../../components/fields/DateRangePicker.jsx";
 // import InventoryAttachmentsDropdown from "./InventoryAttachmentsDropdown.jsx";
 import InventoryAttachmentsInline from "./InventoryAttachmentsInline.jsx";
 import InventoryNoteCell from "./InventoryNoteCell.jsx";
 import InventoryCommentModal from "./InventoryCommentModal.jsx";
-import CollapsibleSection from "@/Components/CollapsibleSection.jsx";
+import CollapsibleSection from "../../components/CollapsibleSection.jsx";
+import PageHeader from "../../layouts/app/PageHeader.jsx";
+import { HeaderButton } from "../../layouts/app/HeaderButtons.jsx";
 
 const columnHelper = createColumnHelper();
 const Index = () => {
-    const {auth} = usePage().props;
-    const token = document.querySelector('meta[name="csrfToken"]').getAttribute('content');
-    const addRef = useRef(null);
-    const queryClient = useQueryClient();
-    const [filters, setFilters] = useState({
-        fBaileeUser: [],
-        fLocation: [],
-        fResponsibleUser: [],
-        fText: "",
-        fType: [],
-        fNode: [],
-        from: undefined,
-        to: undefined,
-        hideDeleted: false,
-        hideNonInventory: false,
-        page: 0,
-        limit: 50,
-    });
-    const [sorting, setSorting] = useState([]);
-    const [pinnedRows, setPinnedRows] = useState([]);
-    const {data: dictionary, isFetching: isDictionaryFetching} = useQuery({
-        queryKey: ['dictionary', 'inventory/options'],
-        queryFn: async () => {
-            const response = await axios.get('api/inventory/options');
-            const data = response.data.data;
-            const {location, ...rest} = data;
-            return {location: Object.values(location ?? {}), ...rest};
-        },
-        staleTime: 5 * 60 * 1000,
-    });
-
-    const inventoryLocation = dictionary?.inventoryLocation ?? [];
-    const inventoryType = dictionary?.inventoryType ?? [];
-    const users = dictionary?.user ?? [];
-    const responsibleUsers = dictionary?.responsibleUser ?? [];
-    const {
-        data: inventories,
-        isFetching: isInventoryFetching,
-    } = useQuery({
-        queryKey: ['inventories', filters],
-        queryFn: () => fetchData({...filters, userId: auth?.user?.id}),
-        placeholderData: keepPreviousData,
-    });
-
-    const deleteMutation = useMutation({
-        mutationFn: async ({id, userId}) => {
-            const response = await fetch(`api/inventory/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'userId': userId,
-                    "X-CSRF-Token": token,
-                    "Accept": "application/json"
-                },
-
-            })
-            return response.json();
-        },
-        onSuccess: async () => toast.success('Успішно видалено'),
-        onError: async () => toast.error('Помилка видалення'),
-        onSettled: () => queryClient.invalidateQueries({queryKey: ['inventories']}),
-    })
-
-    const restoreMutation = useMutation({
-        mutationFn: async ({id, userId}) => {
-            const response = await fetch(`api/inventory/${id}/restore`, {
-                method: 'PATCH',
-                headers: {
-                    'userId': userId,
-                    "X-CSRF-Token": token,
-                    "Accept": "application/json"
-                },
-            })
-            return response.json();
-        },
-        onSuccess: async () => toast.success('Успішно відновлено'),
-        onError: async () => toast.error('Помилка відновлення'),
-        onSettled: () => queryClient.invalidateQueries({queryKey: ['inventories']}),
-    })
-
-
-    const [isEditOpen, setIsEditOpen] = useState(false);
-    const [isCloneOpen, setIsCloneOpen] = useState(false);
-    const [selectedId, setSelectedId] = useState(null);
-    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-    const [commentModal, setCommentModal] = useState(null);
-
-    const handleDetails = (id) => () => {
-        setSelectedId(id);
-        setIsDetailsOpen(true);
-    }
-
-    const handleRestore = (id) => () => {
-        toast((t) => (
-                <div
-                    className={`${
-                        t.visible ? 'animate-enter' : 'animate-leave'
-                    }   max-w-3xl w-full pointer-events-auto flex items-center flex-row`}
-                >
-                    <p className="text-sm font-medium text-gray-900 ">
-                        Відновити елемент?
-                    </p>
-                    <div className="flex flex-row gap-x-1 ">
-                        <Button size="sm" color="white" onClick={() => toast.dismiss(t.id)}>
-                            Скасувати
-                        </Button>
-                        <Button size="sm" color="green" onClick={() => {
-                            toast.dismiss(t.id)
-                            restoreMutation.mutate({id, userId: auth?.user?.id})
-                        }}>
-                            Відновити
-                        </Button>
-                    </div>
-                </div>
-            ),
-            {
-                duration: 10000,
-                position: 'top-center',
-                style: {
-                    background: 'dark:dark:bg-slate-800',
-                    color: 'text-slate-400',
-                },
-            })
-    }
-
-    const handleDelete = (id) => () => {
-        toast((t) => (
-                <div
-                    className={`${
-                        t.visible ? 'animate-enter' : 'animate-leave'
-                    }   max-w-3xl w-full pointer-events-auto flex items-center gap-x-1 flex-row`}
-                >
-                    <p className="text-sm font-medium text-gray-900">
-                        Видалити елемент?
-                    </p>
-                    <div className="flex flex-row gap-x-1 ">
-                        <Button size="sm" color="white" onClick={() => toast.dismiss(t.id)}>
-                            Скасувати
-                        </Button>
-                        <Button size="sm" color="red" onClick={() => {
-                            toast.dismiss(t.id)
-                            deleteMutation.mutate({id, userId: auth?.user?.id})
-                        }}>
-                            Видалити
-                        </Button>
-                    </div>
-                </div>
-            ),
-            {
-                duration: 10000,
-                position: 'top-center',
-                style: {
-                    background: 'dark:dark:bg-slate-800',
-                    color: 'text-slate-400',
-                },
-            })
-    }
-
-    const handleEdit = (id) => () => {
-        if (id) {
-            setSelectedId(id)
-            toggleEditOpen()
-        }
-    }
-
-    const handleClone = (id) => () => {
-        if (id) {
-            setSelectedId(id);
-            setIsCloneOpen(true)
-        }
-    }
-
-    const showRestoreBtn = (row) => {
-        if (!row) return false;
-        const restore = auth?.user?.permissions?.pages?.inventory?.restore;
-        if (restore === true && Boolean(row?.original?.deletedAt)) {
-            return true;
-        }
-        return restore === "individual" && Boolean(row?.original?.deletedAt) && auth?.user?.id === row?.original?.createdUserId;
-
-    }
+    const vm = useViewModel((deps) => new InventoryListViewModel(deps));
+    const auth = vm.auth;
+    const { filters, pinnedRows, selectedId, isEditOpen, isCloneOpen, isDetailsOpen, commentModal } = vm;
+    const dictionary = vm.dictionary;
+    const isDictionaryFetching = vm.optionsQuery.isFetching;
+    const { inventoryLocation, inventoryType, users, responsibleUsers } = vm.lists;
+    const inventories = vm.inventories;
+    const isInventoryFetching = vm.isFetching;
+    const setCommentModal = (modal) => (modal ? vm.openCommentModal(modal) : vm.closeCommentModal());
+    const handleDetails = (id) => () => vm.openDetails(id);
+    const handleRestore = (id) => () => confirmToast("Відновити елемент?", () => vm.restore(id), { confirmText: "Відновити", color: "green" });
+    const handleDelete = (id) => () => confirmToast("Видалити елемент?", () => vm.remove(id));
+    const handleEdit = (id) => () => vm.openEdit(id);
+    const handleClone = (id) => () => vm.openClone(id);
+    const showRestoreBtn = (row) => vm.canRestore(row);
+    const handleDeleteComment = (inventoryId) => (commentId) =>
+        confirmToast("Видалити коментар?", () => vm.deleteComment(inventoryId, commentId), { confirmText: "Так" });
 
     const columns = useMemo(() => [
         columnHelper.accessor('valueTypeId', {
@@ -278,13 +116,12 @@ const Index = () => {
             size: loadColumnSizes()?.find(item => item.column === 'note')?.size || 200,
             footer: info => info.column.id,
             cell: info => (
-                <InventoryNoteCell
+                <InventoryNoteCell onDeleteComment={handleDeleteComment(info.row.original.id)}
                     note={info.getValue()}
                     comments={info.row.original.comments ?? []}
                     users={users}
                     inventoryId={info.row.original.id}
                     currentUserId={auth?.user?.id}
-                    token={token}
                     onOpenModal={setCommentModal}
                 />
             ),
@@ -432,206 +269,51 @@ const Index = () => {
                     }
                 </div>),
         }),
-    ], [auth, inventoryType, inventoryLocation, users, responsibleUsers]);
+    ], [vm, auth, inventoryType, inventoryLocation, users, responsibleUsers]);
 
-    const hasNonEmptyFilter = () => {
-        const {
-            fBaileeUser,
-            fLocation,
-            from,
-            to,
-            fResponsibleUser,
-            fText,
-            fType,
-            fNode,
-            hideDeleted,
-            hideNonInventory
-        } = filters;
-        return (
-            fBaileeUser.length > 0 ||
-            fLocation.length > 0 ||
-            fResponsibleUser.length > 0 ||
-            fText.trim() !== "" ||
-            fType.length > 0 ||
-            fNode.length > 0 ||
-            from ||
-            to ||
-            Boolean(hideDeleted) ||
-            Boolean(hideNonInventory)
-        );
-    };
+    const hasNonEmptyFilter = () => vm.hasActiveFilters;
+    const handleChangeOptions = vm.changeOptions;
+    const handleChangeInput = vm.changeText;
+    const handleSortModel = vm.table.applySorting;
+    const handleLimit = vm.table.setLimit;
+    const handlePageChange = vm.table.setPageFromPaginator;
+    const handlePinRow = vm.setPinnedRows;
+    const handleClearFilters = vm.clearFilters;
+    const handleAdd = vm.openAdd;
+    const onCloseModal = vm.closeEdit;
+    const onDetailsClose = vm.closeDetails;
+    const toggleFilterSwitch = vm.toggleSwitch;
+    const handleChangeDate = vm.changeDate;
 
-    useEffect(() => {
-        const storedFilters = localStorage.getItem(`${location.pathname}-filters`);
-        const storedSorting = localStorage.getItem(`${location.pathname}-sorting`);
-        if (storedFilters) {
-            setFilters(JSON.parse(storedFilters));
-        }
-        if (storedSorting) {
-            setSorting(JSON.parse(storedSorting));
-        }
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem(`${location.pathname}-filters`, JSON.stringify(filters));
-        localStorage.setItem(`${location.pathname}-sorting`, JSON.stringify(sorting));
-    }, [filters, sorting]);
-
-
-    const handlePageChange = (pageNumber) => {
-        setFilters(prevState => ({...prevState, page: pageNumber - 1}));
-    }
-    const handleLimit = (value) => {
-        setFilters(prevState => ({...prevState, page: 0, limit: value}));
-    }
-
-    const handleChangeOptions = (key = '') => (newSelectedIds) => {
-        setFilters(prevState => ({...prevState, page: 0, [key]: newSelectedIds}));
-    };
-
-    const handleChangeInput = (event) => {
-        setFilters(prevState => ({...prevState, fText: event.target.value}));
-    }
-
-    const handleSortModel = (model) => {
-        setSorting(model);
-        const sortModel = model();
-        if (sortModel.length > 0) {
-            setFilters(prevState => ({
-                ...prevState,
-                sort: sortModel[0].id,
-                direction: Boolean(sortModel[0].desc) ? "desc" : "asc"
-            }));
-        }
-    };
-
-    const handlePinRow = (rows = []) => {
-        setPinnedRows(rows);
-    }
-
-    const handleClearFilters = () => {
-        setFilters({
-            fBaileeUser: [],
-            fLocation: [],
-            fResponsibleUser: [],
-            fText: "",
-            fType: [],
-            fNode: [],
-            page: 0,
-            from: undefined,
-            to: undefined,
-            limit: filters.limit,
-            hideDeleted: false,
-            hideNonInventory: false
-        })
-    }
-
-    const handleAdd = () => {
-        toggleEditOpen()
-    }
-
-    const toggleEditOpen = () => {
-        setIsEditOpen(!isEditOpen)
-    }
-    const onCloseModal = () => {
-        if (isEditOpen){
-            toggleEditOpen()
-        }
-        if (isCloneOpen){
-            setIsCloneOpen(false);
-        }
-        if (selectedId) {
-            setSelectedId(null);
-        }
-    }
-
-    const onDetailsClose = () => {
-        setIsDetailsOpen(!isDetailsOpen);
-        if (selectedId) {
-            setSelectedId(null);
-        }
-    }
-
-
+    // Видимі колонки таблиці (localStorage Table) — для друку/експорту.
     const getActiveColumns = () => {
-        const storedCols = JSON.parse(localStorage.getItem(`${location.pathname}-columns`));
-        return Object.keys(storedCols).length > 0 ? columns.filter(c => c.id !== "actions").reduce((acc, col) => {
-            if (storedCols.hasOwnProperty(col.id)) {
-                acc[col.id] = storedCols[col.id];
-            } else if (col.id) {
-                acc[col.id] = true;
-            }
+        let storedCols = {};
+        try {
+            storedCols = JSON.parse(localStorage.getItem(`${location.pathname}-columns`)) || {};
+        } catch {
+            storedCols = {};
+        }
+        return columns.filter(c => c.id !== "actions").reduce((acc, col) => {
+            if (col.id) acc[col.id] = Object.prototype.hasOwnProperty.call(storedCols, col.id) ? storedCols[col.id] : true;
             return acc;
-        }, {}) : Object.values(columns).filter(c => c.id !== "actions").reduce((acc, c) => {
-            acc[c.id] = true;
-            return acc;
-        }, {})
-    }
-
+        }, {});
+    };
     const handleExport = (e) => {
         e.preventDefault();
-        const query = {
-            fBaileeUser: filters?.fBaileeUser?.map(u => u?.value),
-            fLocation: filters?.fLocation?.map(u => u?.value),
-            fResponsibleUser: filters?.fResponsibleUser?.map(u => u?.value),
-            fText: filters?.fText,
-            fType: filters?.fType?.map(u => u?.value)
-        }
-        const url = `/inventory/export?filters=${JSON.stringify(query)}&columns=${JSON.stringify(getActiveColumns())}&hideNonInventory=${filters.hideNonInventory}`
-
-        window.open(url, '_blank');
-    }
-
+        vm.exportAll(getActiveColumns());
+    };
     const handleSelectedExport = (e) => {
         e.preventDefault();
-        const query = {
-            fId: pinnedRows
-        }
-
-        const url = `/inventory/export?filters=${JSON.stringify(query)}&columns=${JSON.stringify(getActiveColumns())}&hideNonInventory=${filters.hideNonInventory}`
-        window.open(url, '_blank');
-    }
-
-    const toggleFilterSwitch = ({target}) => {
-        setFilters(prevState => ({...prevState, [target.name]: target.checked}));
-    }
-
-    const handleAddListener = (event) => {
-        if (event.key === "Insert" && addRef.current) {
-            setSelectedId(null);
-            setIsDetailsOpen(false);
-            addRef.current.click();
-        }
-    }
-
-    useLayoutEffect(() => {
-        if (!isEditOpen && !isDetailsOpen) {
-            window.addEventListener('keyup', handleAddListener);
-        }
-        return () => {
-            window.removeEventListener("keyup", handleAddListener);
-        }
-    }, [isEditOpen, isDetailsOpen]);
-
-    const handleChangeDate = (range) => {
-        if (range?.from || range?.to) {
-            const from = format(range.from, "yyyy-MM-dd") || "";
-            const to = format(range.to, "yyyy-MM-dd") || "";
-            setFilters(prevState => ({...prevState, from: from, to: to}))
-        } else {
-            setFilters(prevState => ({...prevState, from: undefined, to: undefined}))
-        }
-    }
-
+        vm.exportSelected(getActiveColumns());
+    };
 
     return (
-        <DictionaryProvider>
             <Page>
-                <div data-i-doc="page:inventory" className="flex mt-2 mr-2 flex-row justify-end gap-x-2">
+                <PageHeader title="Інвентар" actions={<>
                     <Tooltip content="Версія для друку">
                         <Menu>
                             <Badge content={pinnedRows.length}
-                                   invisible={!Boolean(pinnedRows.length)}>
+                                   invisible={!pinnedRows.length}>
                                 <MenuHandler>
                                     <Button size="sm" variant="outlined"> <i className="fa-regular fa-print"></i></Button>
                                 </MenuHandler>
@@ -642,7 +324,7 @@ const Index = () => {
                                     Всі елементи
                                 </MenuItem>
                                 <MenuItem className="hover:bg-gray-200" onClick={handleSelectedExport}
-                                          disabled={!Boolean(pinnedRows.length)}>
+                                          disabled={!pinnedRows.length}>
                                     Обрані елементи: {pinnedRows.length}
                                 </MenuItem>
                             </MenuList>
@@ -650,18 +332,17 @@ const Index = () => {
 
                     </Tooltip>
                     <Tooltip content="Управління вузлами (комплектами)">
-                        <Link href="/inventory/nodes">
+                        <Link to="/inventory/nodes">
                             <Button size="sm" variant="outlined">
                                 <i className="fa-regular fa-diagram-nested mr-1.5"/>Вузли
                             </Button>
                         </Link>
                     </Tooltip>
                     {auth?.user?.permissions?.pages?.inventory?.create &&
-                        <Button size="sm" ref={addRef} title="Додати" onClick={handleAdd}>
-                            Додати
-                        </Button>
+                        <HeaderButton icon="fa-solid fa-plus" title="Додати" onClick={handleAdd}>Додати</HeaderButton>
                     }
-                </div>
+                </>} />
+                <span data-i-doc="page:inventory" hidden />
                 <CollapsibleSection
                     title="Фільтри"
                     showHiddenAppliedBadge
@@ -757,14 +438,12 @@ const Index = () => {
                         onRowClick={(row) => {
                             if (window.getSelection()?.toString()) return;
                             if ((auth?.user?.permissions?.pages?.inventory?.read && !row?.original?.deletedAt) || auth?.user?.permissions?.pages?.inventory?.restore) {
-                                setSelectedId(row.id);
-                                setIsDetailsOpen(true);
+                                vm.openDetails(row.id);
                             }
                         }}
                         onDoubleClick={(row) => {
                             if (auth?.user?.permissions?.pages?.inventory?.update && !row?.original?.deletedAt) {
-                                setSelectedId(row.id);
-                                setIsEditOpen(true);
+                                vm.openEdit(row.id);
                             }
                         }}
                         canPin
@@ -788,15 +467,15 @@ const Index = () => {
                     <InventoryDetailsModal open={isDetailsOpen} dictionary={dictionary} onClose={onDetailsClose}
                                            id={selectedId}/>
                 }
-                <InventoryCommentModal
-                    modal={commentModal}
-                    onClose={() => setCommentModal(null)}
-                    token={token}
-                    currentUserId={auth?.user?.id}
-                />
+                {commentModal &&
+                    <InventoryCommentModal
+                        key={`${commentModal.mode}-${commentModal.inventoryId}-${commentModal.comment?.id ?? "new"}`}
+                        modal={commentModal}
+                        onClose={() => setCommentModal(null)}
+                    />
+                }
             </Page>
-        </DictionaryProvider>
     );
 };
 
-export default Index;
+export default observer(Index);

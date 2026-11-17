@@ -1,4 +1,3 @@
-import React from "react";
 import {Field, LinkValue, ListField, splitAliases} from "./fieldPrimitives.jsx";
 
 // Шаблон подання джерела ds_uk_nsdc_action_p (код 20, санкційна дія щодо фіз. особи) —

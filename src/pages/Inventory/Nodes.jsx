@@ -1,18 +1,39 @@
-import React, {useState} from 'react';
-import {usePage, Link} from "@inertiajs/react";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { InventoryNodesViewModel } from "./viewmodel/InventoryViewModels.js";
 import {Button, IconButton, Spinner, Tooltip} from "@material-tailwind/react";
-import toast from "react-hot-toast";
-import Page from "@/Components/Page.jsx";
-import {DictionaryProvider} from "@/ReactPages/Dictionary/DictionaryContext.jsx";
-import AdvancedSelect from "@/Components/fields/AdvancedSelect.jsx";
+import Page from "../../components/Page.jsx";
+import PageHeader from "../../layouts/app/PageHeader.jsx";
+import { HeaderButton } from "../../layouts/app/HeaderButtons.jsx";
+import AdvancedSelect from "../../components/fields/AdvancedSelect.jsx";
+
+const InventoryRow = ({item, actionBtn, isAdded, inventoryType}) => {
+    const type = inventoryType.find(t => t.id === item.valueTypeId);
+    return (
+        <div className={`flex items-center justify-between rounded px-2 py-1.5 text-xs border dark:border-gray-700 ${isAdded ? 'bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-900/50' : 'bg-gray-50 dark:bg-gray-800'}`}>
+            <div className="flex items-center gap-2 min-w-0 overflow-hidden">
+                {type && <i className={`${type.icon} text-gray-500 shrink-0`} title={type.caption}/>}
+                {item.inventoryNum &&
+                    <span className="text-gray-400 shrink-0 font-mono">{item.inventoryNum}</span>}
+                <span className={`font-medium truncate ${isAdded ? 'text-blue-700 dark:text-blue-300' : 'dark:text-gray-200'}`}>
+                    {item.caption}
+                </span>
+                {item.serial && <span className="text-gray-400 shrink-0">{item.serial}</span>}
+            </div>
+            <div className="shrink-0 ml-2">
+                {isAdded ? (
+                    <div className="flex items-center gap-1 text-blue-500 font-semibold px-2">
+                       <i className="fa-regular fa-check-circle"/> <span className="hidden sm:inline">У вузлі</span>
+                    </div>
+                ) : actionBtn}
+            </div>
+        </div>
+    );
+};
 
 const NodesPage = () => {
-    const {auth, inventoryType = [], networkConnections = []} = usePage().props;
-    const queryClient = useQueryClient();
-    const token = document.querySelector('meta[name="csrfToken"]')?.getAttribute('content');
-    const headers = {userId: auth?.user?.id};
-    const authHeaders = {...headers, 'X-CSRF-Token': token};
+    const vm = useViewModel((deps) => new InventoryNodesViewModel(deps));
+    const { inventoryType, networkConnections, dictionary } = vm;
 
     // --- Static Data ---
     const nodeTypes = [
@@ -21,207 +42,25 @@ const NodesPage = () => {
         {value: 'other', caption: 'Інше'},
     ];
 
-    // --- State ---
-    const [selectedNodeId, setSelectedNodeId] = useState(null);
-    const [nodeSearch, setNodeSearch] = useState('');
-
-    const [itemFilters, setItemFilters] = useState({
-        search: '',
-        type: [],
-        user: []
-    });
-
-    const [isCreating, setIsCreating] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const [nodeForm, setNodeForm] = useState({
-        name: '',
-        notes: '',
-        network_connection: 'not_connected',
-        type: 'workplace',
-        responsible_user_id: null
-    });
-    const [showAddItems, setShowAddItems] = useState(false);
-
-    const invalidateAll = () => {
-        queryClient.invalidateQueries({queryKey: ['inventory-nodes']});
-        queryClient.invalidateQueries({queryKey: ['inventories']});
-    };
-    const invalidateDetail = () => {
-        queryClient.invalidateQueries({queryKey: ['inventory-node', selectedNodeId]});
-        queryClient.invalidateQueries({queryKey: ['inventory-nodes']});
-    };
-
-    // --- Queries ---
-    const {data: dictionary} = useQuery({
-        queryKey: ['dictionary', 'inventory/options'],
-        queryFn: async () => {
-            const response = await axios.get('/api/inventory/options');
-            return response.data.data;
-        },
-        staleTime: 5 * 60 * 1000,
-    });
-
-    const {data: nodesData, isFetching: isNodesFetching} = useQuery({
-        queryKey: ['inventory-nodes', nodeSearch],
-        queryFn: async () => {
-            const res = await axios.get('/api/inventory-nodes', {
-                params: {limit: 500, search: nodeSearch},
-                headers,
-            });
-            return res.data;
-        },
-    });
-
-    const {data: nodeDetail, isFetching: isDetailFetching} = useQuery({
-        queryKey: ['inventory-node', selectedNodeId],
-        queryFn: async () => {
-            const res = await axios.get(`/api/inventory-nodes/${selectedNodeId}`, {headers});
-            return res.data;
-        },
-        enabled: !!selectedNodeId,
-    });
-
-    const {data: inventoryForAdd, isFetching: isInventoryFetching} = useQuery({
-        queryKey: ['inventory-add-to-node', itemFilters],
-        queryFn: async () => {
-            const res = await axios.get('/api/inventory', {
-                params: {
-                    filters: JSON.stringify({
-                        fText: itemFilters.search,
-                        fBaileeUser: itemFilters.user.map(o => o.value),
-                        fLocation: [],
-                        fResponsibleUser: [],
-                        fType: itemFilters.type.map(o => o.value),
-                    }),
-                    limit: 30,
-                    page: 0,
-                    hideDeleted: true,
-                    userId: auth?.user?.id,
-                },
-                headers,
-            });
-            return res.data;
-        },
-        enabled: showAddItems,
-    });
-
-    // --- Mutations ---
-    const createMutation = useMutation({
-        mutationFn: (data) => axios.post('/api/inventory-nodes', data, {headers: authHeaders}),
-        onSuccess: (res) => {
-            toast.success('Вузол створено');
-            setIsCreating(false);
-            setNodeForm({name: '', notes: '', network_connection: 'not_connected', type: 'workplace', responsible_user_id: null});
-            invalidateAll();
-            const id = res.data?.data?.id;
-            if (id) setSelectedNodeId(id);
-        },
-        onError: () => toast.error('Помилка створення вузла'),
-    });
-
-    const updateMutation = useMutation({
-        mutationFn: ({id, data}) => axios.put(`/api/inventory-nodes/${id}`, data, {headers: authHeaders}),
-        onSuccess: () => {
-            toast.success('Вузол оновлено');
-            setIsEditing(false);
-            invalidateDetail();
-        },
-        onError: () => toast.error('Помилка оновлення вузла'),
-    });
-
-    const deleteMutation = useMutation({
-        mutationFn: (id) => axios.delete(`/api/inventory-nodes/${id}`, {headers: authHeaders}),
-        onSuccess: () => {
-            toast.success('Вузол видалено');
-            setSelectedNodeId(null);
-            invalidateAll();
-        },
-        onError: () => toast.error('Помилка видалення вузла'),
-    });
-
-    const addItemMutation = useMutation({
-        mutationFn: (inventoryId) =>
-            axios.post(`/api/inventory-nodes/${selectedNodeId}/items`, {inventory_id: inventoryId}, {headers: authHeaders}),
-        onSuccess: () => {
-            toast.success('Елемент додано до вузла');
-            invalidateDetail();
-            queryClient.invalidateQueries({queryKey: ['inventories']});
-        },
-        onError: () => toast.error('Помилка додавання елемента'),
-    });
-
-    const removeItemMutation = useMutation({
-        mutationFn: (inventoryId) =>
-            axios.delete(`/api/inventory-nodes/${selectedNodeId}/items/${inventoryId}`, {headers: authHeaders}),
-        onSuccess: () => {
-            toast.success('Елемент прибрано з вузла');
-            invalidateDetail();
-            queryClient.invalidateQueries({queryKey: ['inventories']});
-        },
-        onError: () => toast.error('Помилка видалення елемента'),
-    });
-
-    const nodes = nodesData?.data ?? [];
-    const currentItems = nodeDetail?.data?.items ?? [];
-    const currentItemIds = new Set(currentItems.map(i => i.id));
-    const searchItems = inventoryForAdd?.data ?? [];
-
-    const handleSelectNode = (id) => {
-        setSelectedNodeId(id);
-        setIsEditing(false);
-        setIsCreating(false);
-        setShowAddItems(false);
-        setItemFilters({search: '', type: [], user: []});
-    };
-
-    const handleStartCreate = () => {
-        setIsCreating(true);
-        setIsEditing(false);
-        setSelectedNodeId(null);
-        setShowAddItems(false);
-        setNodeForm({name: '', notes: '', network_connection: 'not_connected', type: 'workplace', responsible_user_id: null});
-    };
-
-    const handleStartEdit = () => {
-        setIsEditing(true);
-        setNodeForm({
-            name: nodeDetail?.data?.name ?? '',
-            notes: nodeDetail?.data?.notes ?? '',
-            network_connection: nodeDetail?.data?.network_connection ?? 'not_connected',
-            type: nodeDetail?.data?.type ?? 'workplace',
-            responsible_user_id: nodeDetail?.data?.responsible_user_id ?? null,
-        });
-    };
-
+    const { selectedNodeId, nodeSearch, itemFilters, isCreating, isEditing, nodeForm, showAddItems } = vm;
+    const { nodes, isNodesFetching, nodeDetail, isDetailFetching, currentItems, currentItemIds, searchItems, isInventoryFetching } = vm;
+    const setNodeSearch = vm.setNodeSearch;
+    const setItemFilters = vm.setItemFilters;
+    const setNodeForm = vm.setNodeForm;
+    const setShowAddItems = vm.setShowAddItems;
+    const setIsCreating = vm.setIsCreating;
+    const setIsEditing = vm.setIsEditing;
+    const handleSelectNode = vm.selectNode;
+    const handleStartCreate = vm.startCreate;
+    const handleStartEdit = vm.startEdit;
     const handleDeleteNode = () => {
-        if (confirm(`Видалити вузол "${nodeDetail?.data?.name}"?`)) {
-            deleteMutation.mutate(selectedNodeId);
-        }
+        if (window.confirm(`Видалити вузол "${nodeDetail?.data?.name}"?`)) vm.remove();
     };
-
-    const InventoryRow = ({item, actionBtn, isAdded}) => {
-        const type = inventoryType.find(t => t.id === item.valueTypeId);
-        return (
-            <div className={`flex items-center justify-between rounded px-2 py-1.5 text-xs border dark:border-gray-700 ${isAdded ? 'bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-900/50' : 'bg-gray-50 dark:bg-gray-800'}`}>
-                <div className="flex items-center gap-2 min-w-0 overflow-hidden">
-                    {type && <i className={`${type.icon} text-gray-500 shrink-0`} title={type.caption}/>}
-                    {item.inventoryNum &&
-                        <span className="text-gray-400 shrink-0 font-mono">{item.inventoryNum}</span>}
-                    <span className={`font-medium truncate ${isAdded ? 'text-blue-700 dark:text-blue-300' : 'dark:text-gray-200'}`}>
-                        {item.caption}
-                    </span>
-                    {item.serial && <span className="text-gray-400 shrink-0">{item.serial}</span>}
-                </div>
-                <div className="shrink-0 ml-2">
-                    {isAdded ? (
-                        <div className="flex items-center gap-1 text-blue-500 font-semibold px-2">
-                           <i className="fa-regular fa-check-circle"/> <span className="hidden sm:inline">У вузлі</span>
-                        </div>
-                    ) : actionBtn}
-                </div>
-            </div>
-        );
-    };
+    const createMutation = { mutate: vm.create, isPending: vm.createCmd.isPending };
+    const updateMutation = { mutate: ({id, data}) => vm.update(id, data), isPending: vm.updateCmd.isPending };
+    const deleteMutation = vm.deleteCmd;
+    const addItemMutation = { mutate: vm.addItem, isPending: vm.addItemCmd.isPending };
+    const removeItemMutation = { mutate: vm.removeItem, isPending: vm.removeItemCmd.isPending };
 
     const inputCls = "w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200";
 
@@ -229,24 +68,12 @@ const NodesPage = () => {
     const getTypeLabel = (value) => nodeTypes.find(t => t.value === value)?.caption ?? '---';
 
     return (
-        <DictionaryProvider>
             <Page>
                 <div data-i-doc="page:inventory-nodes" className="flex flex-col h-[calc(100vh-120px)] mt-2 mx-2 border rounded-xl bg-white dark:bg-gray-900 dark:border-gray-700 overflow-hidden shadow-sm">
-                    <div className="flex items-center justify-between border-b dark:border-gray-700 p-4">
-                        <div className="flex items-center gap-4">
-                            <Link href="/inventory">
-                                <Button size="sm" variant="text" className="flex items-center gap-2 dark:text-gray-300">
-                                    <i className="fa-regular fa-arrow-left"/> До обліку
-                                </Button>
-                            </Link>
-                            <h1 className="text-lg font-bold dark:text-gray-200">Вузли інвентарю</h1>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Button size="sm" color="green" onClick={handleStartCreate} className="flex items-center gap-2">
-                                <i className="fa-regular fa-plus"/> Новий вузол
-                            </Button>
-                        </div>
-                    </div>
+                    <PageHeader
+                        title="Вузли інвентарю"
+                        actions={<HeaderButton icon="fa-regular fa-plus" onClick={handleStartCreate}>Новий вузол</HeaderButton>}
+                    />
 
                     <div className="flex flex-row flex-1 overflow-hidden">
                         {/* ── Left: Nodes list ─────────────────────────── */}
@@ -644,8 +471,7 @@ const NodesPage = () => {
                     </div>
                 </div>
             </Page>
-        </DictionaryProvider>
     );
 };
 
-export default NodesPage;
+export default observer(NodesPage);

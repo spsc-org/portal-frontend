@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
 
 const MAX_CAPTION_LENGTH = 1000;
@@ -11,17 +11,10 @@ const MAX_NOTE_LENGTH = 2000;
 // два різних бекенд-ендпоінти з окремими аудит-діями, тому НЕ обʼєднані в один запит),
 // викликач чекає на обидва перед закриттям модалки.
 const EditProfileModal = ({open, profile, isPending, onClose, onConfirm}) => {
-    const [caption, setCaption] = useState("");
-    const [note, setNote] = useState("");
+    // Монтується лише відкритою (ProfileDetailPane) — початкові значення з профілю.
+    const [caption, setCaption] = useState(profile?.view_caption ?? "");
+    const [note, setNote] = useState(profile?.note ?? "");
     const [error, setError] = useState(null);
-
-    useEffect(() => {
-        if (open) {
-            setCaption(profile?.view_caption ?? "");
-            setNote(profile?.note ?? "");
-            setError(null);
-        }
-    }, [open, profile]);
 
     const handleSave = () => {
         const trimmedCaption = caption.trim();

@@ -1,242 +1,20 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {usePage} from "@inertiajs/react";
-import toast from "react-hot-toast";
-import SingleSelect from "@/Components/fields/SingleSelect.jsx";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { InventoryFormViewModel } from "./viewmodel/InventoryViewModels.js";
+import SingleSelect from "../../components/fields/SingleSelect.jsx";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
-import Input from "@/Components/fields/Input.jsx";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import Input from "../../components/fields/Input.jsx";
 
 const InventoryModal = ({open, onClose, dictionary, id, isClone = false}) => {
-    const {auth, token} = usePage().props;
-    const inventoryLocation = dictionary?.inventoryLocation ?? [];
-    const inventoryType = dictionary?.inventoryType ?? [];
-    const users = dictionary?.user ?? [];
-    const responsibleUsers = dictionary?.responsibleUser ?? [];
-    const req = (field) => dictionary?.requiredFields?.includes(field) ?? false;
-    const queryClient = useQueryClient()
-
-    const getInitialState = () => ({
-        inventoryId: '',
-        inventoryNum: '',
-        registryNum: '',
-        serial: '',
-        caption: '',
-        details: '',
-        amount: 1,
-        cost: '',
-        note: '',
-        valueTypeId: '',
-        baileeUserId: '',
-        responsibleUserId: '',
-        locationId: inventoryLocation?.find(l => l.id === 1) ?? '',
-        invoice: '',
-    });
-
-    const [form, setForm] = useState(getInitialState)
-    const [errors, setErrors] = useState(null);
-    const {data, isSuccess} = useQuery({
-        queryKey: ['inventory-edit', id],
-        queryFn: async () => {
-            const response = await axios.get(`api/inventory/${id}`, {headers: {"userId": auth?.user?.id}});
-            return response?.data
-        },
-        enabled: !!id,
-    })
-
-
-    const cloneMutation = useMutation({
-        mutationFn: async ({sourceId, body, userId}) => {
-            const response = await axios.post(`api/inventory/${sourceId}/clone`, body, {
-                cache: "no-cache", mode: 'same-origin', credentials: "same-origin", headers: {
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRF-Token": token,
-                    "userId": userId
-                },
-            });
-            return response.data;
-        },
-        onSuccess: async () => {
-            toast.success("Копію створено успішно");
-            cloneMutation.reset();
-            setForm(getInitialState());
-            onClose();
-        },
-        onError: error => {
-            if (error.response.status === 422) {
-                setErrors(error?.response?.data?.unvalidFields);
-            }
-        },
-        onSettled: (data, error) => {
-            if (!error) {
-                queryClient.invalidateQueries({queryKey: ['inventories']});
-            }
-        },
-    })
-
-    const createMutation = useMutation({
-        mutationFn: async ({body, userId}) => {
-            const response = await axios.post(`api/inventory`, body, {
-                cache: "no-cache", mode: 'same-origin', credentials: "same-origin", headers: {
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRF-Token": token,
-                    "userId": userId
-                },
-            });
-            return response.data;
-        },
-        onSuccess: async () => {
-            toast.success("Створено успішно", {
-                style: {
-                    background: 'dark:dark:bg-slate-800',
-                    color: 'text-slate-400',
-                },
-            });
-            createMutation.reset();
-            setForm(getInitialState());
-            onClose();
-        },
-        onError: error => {
-            if (error.response.status === 204) {
-                toast.error("Зміни не були внесені, оскільки дані залишилися незмінними");
-            }
-            if (error.response.status === 422) {
-                setErrors(error?.response?.data?.unvalidFields);
-            }
-        },
-        onSettled: (data, error) => {
-            if (!error) {
-                queryClient.invalidateQueries({queryKey: ['inventories']});
-            }
-        },
-    })
-
-    const updateMutation = useMutation({
-        mutationFn: async ({body, id, userId}) => {
-            const response = await axios.patch(`api/inventory/${id}`, body, {
-                cache: "no-cache", mode: 'same-origin', credentials: "same-origin", headers: {
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRF-Token": token,
-                    "userId": userId
-                },
-            })
-            return response.data;
-        },
-        onSuccess: async () => {
-            toast.success("Оновлено успішно", {
-                style: {
-                    background: 'dark:dark:bg-slate-800',
-                    color: 'text-slate-400',
-                },
-            });
-            updateMutation.reset();
-            setForm(getInitialState());
-            onClose();
-        },
-        onError: error => {
-            if (error.response.status === 204) {
-                toast.error("Зміни не були внесені, оскільки дані залишилися незмінними");
-            }
-            if (error.response.status === 422) {
-                setErrors(error?.response?.data?.unvalidFields);
-            }
-        },
-        onSettled: (data, error) => {
-            if (!error && data?.success && data?.data) {
-                queryClient.setQueriesData({queryKey: ['inventories']}, (oldData) => {
-                    if (!Array.isArray(oldData?.data)) {
-                        return oldData;
-                    }
-                    const newData = oldData.data.map((item) => {
-                        if (item.id === data.data.id) {
-                            return {...item, ...data.data, isUpdated: true};
-                        }
-                        return item;
-                    });
-                    return {...oldData, data: newData};
-                });
-            }
-        },
-    })
-
-    useEffect(() => {
-        if (isSuccess) {
-            setForm({
-                inventoryNum: data?.data?.inventoryNum,
-                registryNum: data?.data?.registryNum,
-                serial: data?.data?.serial,
-                note: data?.data?.note,
-                cost: data?.data?.cost,
-                caption: data?.data?.caption,
-                amount: data?.data?.amount,
-                details: data?.data?.details,
-                invoice: data?.data?.invoice,
-                responsibleUserId: responsibleUsers?.find(d => d.id === data?.data?.responsibleUserId),
-                baileeUserId: users?.find(d => d.id === data?.data?.baileeUserId),
-                valueTypeId: inventoryType?.find(d => d.id === data?.data?.valueTypeId),
-                locationId: inventoryLocation?.find(d => d.id === data?.data?.locationId),
-            });
-        }
-    }, [data])
-
-    const handleChangeForm = ({target}) => {
-        setErrors(prev => ({...prev, [target.name]: ""}))
-        setForm(prev => ({...prev, [target.name]: target.value}))
-    }
-
-    const handleChangeOptions = (key = '') => (newSelectedIds) => {
-        setErrors(prev => ({...prev, [key]: ""}))
-        setForm(prevState => ({...prevState, [key]: newSelectedIds}));
+    const vm = useViewModel((deps) => new InventoryFormViewModel({ ...deps, id, isClone, dictionary }));
+    const { inventoryLocation, inventoryType, users, responsibleUsers } = vm.lists;
+    const req = (field) => vm.isRequired(field);
+    const { form, errors, dialogTitle, submitText } = vm;
+    const handleChangeForm = vm.changeField;
+    const handleChangeOptions = vm.changeOptions;
+    const onSubmit = async () => {
+        if (await vm.submit()) onClose();
     };
-
-    const onSubmit = () => {
-        const body = {
-            ...form,
-            locationId: form.locationId?.id,
-            valueTypeId: form.valueTypeId?.id,
-            baileeUserId: form.baileeUserId?.id,
-            responsibleUserId: form.responsibleUserId?.id,
-        }
-        if (isClone) {
-            return cloneMutation.mutate({
-                sourceId: id,
-                body,
-                userId: auth?.user?.id
-            })
-        }
-        if (id) {
-            return updateMutation.mutate({body, id, userId: auth?.user?.id})
-        }
-        return createMutation.mutate({
-            body,
-            userId: auth?.user?.id
-        })
-    }
-
-    const dialogTitle = useMemo(() => {
-        if (isClone) {
-            return `Створити копію: ${data?.data?.caption}`;
-        }
-        if (id) {
-            return `Редагувати інвентар: ${data?.data?.caption}`;
-        }
-        return "Створити новий інвентар";
-    }, [id, isClone, data])
-
-
-    const submitText = useMemo(() => {
-        if (isClone) {
-            return `Створити копію`;
-        }
-        if (id) {
-            return `Редагувати`;
-        }
-        return "Створити";
-    }, [id, isClone, data])
-
-
 
     return (
         <Dialog open={open} size="lg" handler={onClose}>
@@ -298,7 +76,7 @@ const InventoryModal = ({open, onClose, dictionary, id, isClone = false}) => {
                 >
                     <span>Закрити</span>
                 </Button>
-                <Button variant="gradient" color="green" onClick={onSubmit}>
+                <Button variant="gradient" color="green" onClick={onSubmit} disabled={vm.isPending}>
                     <span>{submitText}</span>
                 </Button>
             </DialogFooter>
@@ -306,4 +84,4 @@ const InventoryModal = ({open, onClose, dictionary, id, isClone = false}) => {
     );
 };
 
-export default InventoryModal;
+export default observer(InventoryModal);

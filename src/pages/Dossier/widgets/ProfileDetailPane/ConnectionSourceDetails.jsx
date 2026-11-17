@@ -1,9 +1,9 @@
-import React from "react";
-import {usePage} from "@inertiajs/react";
-import {useQuery} from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { DossierOptionsViewModel, SourceDetailsViewModel } from "../../viewmodel/DossierViewModels.js";
+import { useStores } from "../../../../stores/storeHooks.js";
+
 import {sourceType} from "../../shared/config/sourceTypes.js";
-import {sanctionConnectionKeys} from "../../shared/lib/queryKeys.js";
-import {useDossierOptionsQuery} from "../../entities/dossier/queries.js";
 
 const DetailsSkeleton = () => (
     <div className="animate-pulse grid grid-cols-1 gap-2 md:grid-cols-2" aria-hidden="true">
@@ -24,17 +24,15 @@ const DetailsSkeleton = () => (
 // акордеон/кнопку прибрано — деталі джерела фетчаться і рендеряться автоматично при
 // монтуванні картки, без дії користувача; поки триває запит — skeleton замість Spinner)
 const ConnectionSourceDetails = ({modelClass, modelId}) => {
-    const {auth} = usePage().props;
-    const userId = auth?.user?.id;
-    const {data: options} = useDossierOptionsQuery();
+    const userId = useStores().session.userId;
+    const options = useViewModel((deps) => new DossierOptionsViewModel(deps)).options;
     const source = sourceType(modelClass);
     const DetailsFields = source.detailsFields;
-
-    const {data, isPending, isError, error} = useQuery({
-        queryKey: sanctionConnectionKeys.sourceDetails(modelClass, modelId),
-        queryFn: () => source.detailsFetcher(modelId, userId),
-        enabled: Boolean(source.detailsFetcher),
-    });
+    const vm = useViewModel((deps) => new SourceDetailsViewModel({
+        ...deps, modelClass, modelId,
+        fetcher: source.detailsFetcher ? (id) => source.detailsFetcher(id, userId) : null,
+    }));
+    const { data, isPending, isError, error } = vm.query;
 
     if (!source.detailsFetcher || !DetailsFields) {
         return null;
@@ -53,4 +51,4 @@ const ConnectionSourceDetails = ({modelClass, modelId}) => {
     );
 };
 
-export default ConnectionSourceDetails;
+export default observer(ConnectionSourceDetails);

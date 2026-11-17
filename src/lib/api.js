@@ -1,6 +1,10 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000'
+// Порожній рядок (дефолт) = той самий origin: у dev запити йдуть через Vite
+// proxy (vite.config.js), у prod — через reverse-proxy перед бекендом.
+// Задавай абсолютний URL лише якщо API на іншому origin (тоді потрібні CORS +
+// SANCTUM_STATEFUL_DOMAINS на бекенді).
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
 
@@ -21,7 +25,7 @@ function readCookie(name) {
 const client = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
-  headers: { Accept: 'application/json' },
+  headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
   validateStatus: () => true,
 })
 
@@ -42,7 +46,10 @@ export function setUnauthorizedHandler(handler) {
   unauthorizedHandler = handler
 }
 
-export async function apiFetch(path, { method = 'GET', body, headers = {}, ...rest } = {}) {
+// raw:true повертає весь response (потрібно для заголовків, напр.
+// content-disposition при завантаженні файлів responseType:'blob') замість
+// тільки payload.
+export async function apiFetch(path, { method = 'GET', body, headers = {}, raw = false, ...rest } = {}) {
   const upperMethod = method.toUpperCase()
   const isMutating = MUTATING_METHODS.has(upperMethod)
 
@@ -71,7 +78,7 @@ export async function apiFetch(path, { method = 'GET', body, headers = {}, ...re
     throw new ApiError(response.status, payload)
   }
 
-  return payload
+  return raw ? response : payload
 }
 
 export { API_BASE_URL }

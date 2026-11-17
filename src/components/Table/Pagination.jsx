@@ -1,5 +1,4 @@
-import {DOTS, usePagination} from "@/hooks/usePagination.jsx";
-import React from "react";
+import {DOTS, usePagination} from "../../hooks/usePagination.jsx";
 
 const Pagination = ({
                         currentPage = 1,

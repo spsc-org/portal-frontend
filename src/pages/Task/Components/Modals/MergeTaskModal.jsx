@@ -1,49 +1,24 @@
-import {useQuery} from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { MergeTaskViewModel } from "../../viewmodel/TaskViewModels.js";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
-import React, {useEffect, useState} from "react";
-import {useMergeTask} from "../../queries.jsx";
 
 // Злиття з іншою задачею: пошук донора за ID (не за назвою — свідомий
 // вибір, щоб не плутати однойменні задачі). Ця задача (baseId) — базова
 // (виживає), знайдена за ID — донор (видаляється, вміст переноситься
 // сюди). Винесено з TaskViewPanel.jsx — самодостатня модалка,
 // монтується лише поки відкрита (див. виклик у TaskViewPanel).
-const MergeTaskModal = ({onClose, baseId, auth, token}) => {
-    const [mergeDonorId, setMergeDonorId] = useState("");
-    const [mergeDonorIdDebounced, setMergeDonorIdDebounced] = useState("");
-
-    useEffect(() => {
-        const timer = setTimeout(() => setMergeDonorIdDebounced(mergeDonorId.trim()), 300);
-        return () => clearTimeout(timer);
-    }, [mergeDonorId]);
-
-    const mergeDonorIdNumber = Number(mergeDonorIdDebounced);
-    const isValidMergeDonorId = mergeDonorIdDebounced !== ""
-        && Number.isInteger(mergeDonorIdNumber) && mergeDonorIdNumber > 0
-        && mergeDonorIdNumber !== Number(baseId);
-    const isSelfMergeAttempt = mergeDonorIdDebounced !== "" && mergeDonorIdNumber === Number(baseId);
-
-    const {data: mergeDonorPreview, isFetching: isMergeDonorLoading, isError: isMergeDonorNotFound} = useQuery({
-        queryKey: ['task-merge-preview', mergeDonorIdNumber],
-        queryFn: async () => {
-            const response = await axios.get(`/api/task/${mergeDonorIdNumber}`, {
-                headers: {"userId": auth?.user?.id}
-            });
-            return response.data;
-        },
-        enabled: isValidMergeDonorId,
-        retry: false,
-    });
-    const mergeDonorTask = mergeDonorPreview?.data;
-
-    const mergeMutation = useMergeTask();
-
-    const confirmMerge = () => {
-        if (!mergeDonorTask) return;
-        mergeMutation.mutate({baseId, donorId: mergeDonorTask.id, auth, token}, {
-            onSuccess: () => onClose(),
-        });
-    };
+const MergeTaskModal = ({onClose, baseId}) => {
+    const vm = useViewModel((deps) => new MergeTaskViewModel({ ...deps, baseId }));
+    const mergeDonorId = vm.donorInput;
+    const setMergeDonorId = vm.setDonorInput;
+    const isValidMergeDonorId = vm.isValidDonor;
+    const isSelfMergeAttempt = vm.isSelfMergeAttempt;
+    const mergeDonorTask = vm.donorTask;
+    const isMergeDonorLoading = vm.isDonorLoading;
+    const isMergeDonorNotFound = vm.isDonorNotFound;
+    const mergeMutation = vm.mergeCmd;
+    const confirmMerge = () => vm.confirm(onClose);
 
     return (
         <Dialog data-i-doc="modal:task-view-panel-merge-task" open handler={onClose} size="sm">
@@ -95,4 +70,4 @@ const MergeTaskModal = ({onClose, baseId, auth, token}) => {
     );
 };
 
-export default MergeTaskModal;
+export default observer(MergeTaskModal);

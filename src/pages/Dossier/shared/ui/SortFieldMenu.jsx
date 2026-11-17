@@ -1,4 +1,3 @@
-import React from "react";
 import {Menu, MenuHandler, MenuList, MenuItem} from "@material-tailwind/react";
 
 // Атомарний вибір поля сортування — той самий візуальний патерн, що й TaskFilters.jsx

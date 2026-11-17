@@ -1,9 +1,11 @@
-import React, {useMemo} from "react";
-import AppChip from "@/Components/AppChip";
+import {useMemo} from "react";
+import AppChip from "../../../components/AppChip";
 import {format} from "date-fns";
 
+// onShowClick приймається (передає список), але для неготових проєктів не використовується
+// eslint-disable-next-line no-unused-vars
 const ProjectItem = ({states, caption, onShowClick, decrees, ...props}) => {
-    const {nameUk, nameRu, stateId, nameEn, order, precomputedData, decreeId, createdAt, id} = props;
+    const {nameUk, nameRu, stateId, nameEn, order, precomputedData, decreeId, createdAt, created_at, id} = props;
 
     const parsedPrecomputedData = useMemo(() => {
         if (precomputedData) {
@@ -110,8 +112,8 @@ const ProjectItem = ({states, caption, onShowClick, decrees, ...props}) => {
 
                 {/* Decree row (ProjectItem-specific) */}
                 <p className="text-sm text-gray-700 font-semibold dark:text-[#8b91a3] flex items-center gap-1">
-                    <i className={`fa-solid fa-file-contract ${Boolean(decreeId) ? 'text-green-400' : 'text-gray-300'}`}></i>
-                    {Boolean(decreeId) ? decrees.find(d => d.id === decreeId)?.name :
+                    <i className={`fa-solid fa-file-contract ${decreeId ? 'text-green-400' : 'text-gray-300'}`}></i>
+                    {decreeId ? decrees.find(d => d.id === decreeId)?.name :
                         <span className="italic">Указ відсутній</span>
                     }
                 </p>

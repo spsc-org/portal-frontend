@@ -1,23 +1,25 @@
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { ViewModelProvider } from "../../shared/mvvm/ViewModelContext.jsx";
+import { confirmToast } from "../../components/confirmToast.jsx";
+import { ProposalListViewModel } from "./viewmodel/ProposalViewModels.js";
 import {createColumnHelper} from "@tanstack/react-table";
-import {Link, usePage} from "@inertiajs/react";
-import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import {keepPreviousData, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {serializeParams} from "../../utils.js";
+import {Link} from "react-router";
+import {useMemo} from "react";
 import {Button, Popover, PopoverContent, PopoverHandler, Switch, Tooltip} from "@material-tailwind/react";
 import {format} from "date-fns";
-import Table, {loadColumnSizes} from "../../Components/Table/Table.jsx";
-import {DictionaryProvider} from "../Dictionary/DictionaryContext.jsx";
-import Page from "../../Components/Page.jsx";
-import SearchInput from "../../Components/fields/SearchInput.jsx";
+import Table, {loadColumnSizes} from "../../components/Table/Table.jsx";
+import Page from "../../components/Page.jsx";
+import SearchInput from "../../components/fields/SearchInput.jsx";
 import CreateProposalModal from "./CreateProposalModal.jsx";
 import UpdateProposalModal from "./UpdateProposalModal.jsx";
 import ProposalDetailsModal from "./ProposalDetailsModal.jsx";
-import toast from "react-hot-toast";
-import AdvancedSelect from "../../Components/fields/AdvancedSelect.jsx";
-import SingleSelect from "../../Components/fields/SingleSelect.jsx";
-import DateRangePicker from "../../Components/fields/DateRangePicker.jsx";
-import {useDialog} from "../../hooks/useDialog.js";
-import CollapsibleSection from "../../Components/CollapsibleSection.jsx";
+import AdvancedSelect from "../../components/fields/AdvancedSelect.jsx";
+import SingleSelect from "../../components/fields/SingleSelect.jsx";
+import DateRangePicker from "../../components/fields/DateRangePicker.jsx";
+import CollapsibleSection from "../../components/CollapsibleSection.jsx";
+import PageHeader from "../../layouts/app/PageHeader.jsx";
+import { HeaderButton } from "../../layouts/app/HeaderButtons.jsx";
 
 
 const columnHelper = createColumnHelper();
@@ -32,303 +34,28 @@ const PROPOSAL_STATE = [
         value: "0", label: "Незафіксовані"
     }
 ]
-const initialState = {
-    text: '',
-    decreeId: [],
-    stateId: [],
-    issuerId: [],
-    createdUserId: [],
-    hideDeleted: false,
-    hideNonHistorical: undefined,
-    outgoingNumber: '',
-    page: 0,
-    limit: 50,
-};
-
-const normalizeMultiSelectOptions = (items = [], source = []) => {
-    if (!Array.isArray(items)) return [];
-
-    return items
-        .map((item) => {
-            if (!item) return null;
-
-            if (item?.value !== undefined && item?.value !== null) {
-                return item;
-            }
-
-            const label = item?.label || item?.caption || item?.name;
-            if (!label) return null;
-
-            const matched = source.find((option) =>
-                [option?.caption, option?.name].includes(label)
-            );
-
-            if (matched?.id !== undefined && matched?.id !== null) {
-                return {label, value: matched.id};
-            }
-
-            return null;
-        })
-        .filter(Boolean);
-};
-
-const normalizeStoredFilters = (stored, {users = [], issuers = [], proposalState = [], decrees = []} = {}) => {
-    if (!stored || typeof stored !== "object") return null;
-
-    return {
-        ...initialState,
-        ...stored,
-        decreeId: normalizeMultiSelectOptions(stored?.decreeId, decrees),
-        stateId: normalizeMultiSelectOptions(stored?.stateId, proposalState),
-        issuerId: normalizeMultiSelectOptions(stored?.issuerId, issuers),
-        createdUserId: normalizeMultiSelectOptions(stored?.createdUserId, users),
-    };
-};
-
-const Index = () => {
-    const {auth, users = [], issuers = [], proposalState = [], decrees = []} = usePage().props;
-    const addRef = useRef(null);
-    const queryClient = useQueryClient();
-    const [filters, setFilters] = useState(initialState);
-
-    const [openCreate, setOpenCreate] = useState(false);
-    const [isEditOpen, setIsEditOpen] = useState(false);
-    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-
-    const [selectedId, setSelectedId] = useState(null);
-    const [sorting, setSorting] = useState([]);
-    const [isFiltersHydrated, setIsFiltersHydrated] = useState(false);
-
-    const {
-        open: editOpen,
-        handleOpen: handleEditOpen,
-        handleClose: handleEditClose,
-        dialogProps: editDialogProps
-    } = useDialog();
-
-    const {data, isFetching} = useQuery({
-        queryKey: ['proposal', filters],
-        queryFn: async () => {
-            const params = {
-                ...filters,
-                stateId: filters?.stateId?.map(f => f.value),
-                issuerId: filters?.issuerId?.map(f => f.value),
-                createdUserId: filters?.createdUserId?.map(f => f.value),
-                decreeId: filters?.decreeId?.map(f => f.value),
-                hideNonHistorical: Boolean(filters?.hideNonHistorical?.value) ? parseInt(filters?.hideNonHistorical?.value) : undefined
-            }
-            const searchParams = serializeParams(params);
-            const response = await axios.get("/api/proposal/new/list", {
-                params: searchParams,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'userId': auth?.user?.id,
-                },
-            })
-            return response.data;
-        },
-        placeholderData: keepPreviousData,
-    });
-
-    const deleteMutation = useMutation({
-        mutationFn: async (id) => {
-            return await axios.delete(`/api/proposal/new/${id}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'userId': auth?.user?.id,
-                },
-            });
-        },
-        onSuccess: async () => toast.success('Успішно видалено'),
-        onError: async () => toast.error('Помилка видалення'),
-        onSettled: () => queryClient.invalidateQueries({queryKey: ['proposal']}),
-    })
-
-    const restoreMutation = useMutation({
-        mutationFn: async (id) => {
-            return await axios.patch(`/api/proposal/new/${id}/restore`, null, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'userId': auth?.user?.id,
-                },
-            })
-        },
-        onSuccess: async () => toast.success('Успішно відновлено'),
-        onError: async () => toast.error('Помилка відновлення'),
-        onSettled: () => queryClient.invalidateQueries({queryKey: ['proposal']}),
-    })
-
-    const handleAdd = () => {
-        if (isFetching) return;
-        setOpenCreate(true);
-    }
-    const clearSelected = () => setSelectedId(null);
-
-    const handleClearFilters = () => {
-        setFilters({...initialState, limit: filters.limit})
-    }
-
-    const handleChangeFilters = ({target: {name, value}}) => {
-        setFilters({...filters, [name]: value});
-    }
-
-    const handleLimit = (value) => {
-        setFilters(prevState => ({...prevState, page: 0, limit: value}));
-    }
-    const handlePageChange = (pageNumber) => {
-        setFilters(prevState => ({...prevState, page: pageNumber - 1}));
-    }
-
-    const handleSortModel = (model) => {
-        setSorting(model);
-        const sortModel = model();
-        if (sortModel.length > 0) {
-            setFilters(prevState => ({
-                ...prevState,
-                sort: sortModel[0].id,
-                direction: Boolean(sortModel[0].desc) ? "desc" : "asc"
-            }));
-        }
-    };
-
-    const handleChangeOptions = (key = '') => (newSelectedIds) => {
-        setFilters(prevState => ({...prevState, page: 0, [key]: newSelectedIds || []}));
-    };
-
-    useEffect(() => {
-        const storedFilters = localStorage.getItem(`${location.pathname}-filters`);
-        const storedSorting = localStorage.getItem(`${location.pathname}-sorting`);
-
-        if (storedFilters) {
-            try {
-                const parsed = JSON.parse(storedFilters);
-                const normalized = normalizeStoredFilters(parsed, {users, issuers, proposalState, decrees});
-                if (normalized) {
-                    setFilters(prevState => ({
-                        ...prevState, ...normalized,
-                        limit: normalized?.limit || prevState.limit
-                    }));
-                }
-            } catch (error) {
-                console.error('Failed to parse stored proposal filters:', error);
-            }
-        }
-
-        if (storedSorting) {
-            try {
-                setSorting(JSON.parse(storedSorting));
-            } catch (error) {
-                console.error('Failed to parse stored proposal sorting:', error);
-            }
-        }
-
-        setIsFiltersHydrated(true);
-    }, []);
-
-    useEffect(() => {
-        if (!isFiltersHydrated) return;
-        localStorage.setItem(`${location.pathname}-filters`, JSON.stringify(filters));
-        localStorage.setItem(`${location.pathname}-sorting`, JSON.stringify(sorting));
-    }, [filters, sorting, isFiltersHydrated]);
-
-    const handleDetails = (id) => () => {
-        setIsDetailsOpen(!isDetailsOpen);
-        setSelectedId(id);
-    };
-
-    const handleAddListener = (event) => {
-        if (event.key === "Insert" && addRef.current) {
-            setSelectedId(null);
-            setIsDetailsOpen(false);
-            addRef.current.click();
-        }
-    }
-
-    const handleRestore = (id) => () => {
-        toast((t) => (
-                <div
-                    className={`${
-                        t.visible ? 'animate-enter' : 'animate-leave'
-                    }   max-w-3xl w-full pointer-events-auto flex items-center flex-row`}
-                >
-                    <p className="text-sm font-medium text-gray-900 ">
-                        Відновити подання?
-                    </p>
-                    <div className="flex flex-row gap-x-1 ">
-                        <Button size="sm" color="white" onClick={() => toast.dismiss(t.id)}>
-                            Скасувати
-                        </Button>
-                        <Button size="sm" color="green" onClick={() => {
-                            toast.dismiss(t.id)
-                            restoreMutation.mutate(id)
-                        }}>
-                            Відновити
-                        </Button>
-                    </div>
-                </div>
-            ),
-            {
-                duration: 10000,
-                position: 'top-center',
-                style: {
-                    background: 'dark:dark:bg-slate-800',
-                    color: 'text-slate-400',
-                },
-            })
-    }
-
-
-    useLayoutEffect(() => {
-        if (!isEditOpen && !isDetailsOpen) {
-            window.addEventListener('keyup', handleAddListener);
-        }
-        return () => {
-            window.removeEventListener("keyup", handleAddListener);
-        }
-    }, [isEditOpen, isDetailsOpen]);
-
-    const handleDelete = (id) => () => {
-        toast((t) => (
-                <div
-                    className={`${
-                        t.visible ? 'animate-enter' : 'animate-leave'
-                    }   max-w-3xl w-full pointer-events-auto flex items-center gap-x-1 flex-row`}
-                >
-                    <p className="text-sm font-medium text-gray-900">
-                        Ви хочете видалити пакет. #{id}
-                        Видалення пакету не видаляє пропозицій, що входять до нього. Дійсно видалити пакет?
-                    </p>
-                    <div className="flex flex-row gap-x-1 ">
-                        <Button size="sm" color="white" onClick={() => toast.dismiss(t.id)}>
-                            Скасувати
-                        </Button>
-                        <Button size="sm" color="red" onClick={() => {
-                            toast.dismiss(t.id)
-                            deleteMutation.mutate(id)
-                        }}>
-                            Видалити
-                        </Button>
-                    </div>
-                </div>
-            ),
-            {
-                duration: 10000,
-                position: 'top-center',
-                style: {
-                    background: 'dark:dark:bg-slate-800',
-                    color: 'text-slate-400',
-                },
-            })
-    }
-
-    const showRestoreBtn = (row) => {
-        if (!row) return false;
-        const restore = auth?.user?.permissions?.pages?.proposal?.restore;
-        if (restore === true && Boolean(row?.original?.deletedAt)) {
-            return true;
-        }
-        return restore === "individual" && Boolean(row?.original?.deletedAt) && auth?.user?.id === row?.original?.createdUserId;
-    }
+const IndexContent = observer(({ vm }) => {
+    const {auth, users = [], issuers = [], proposalState = [], decrees = []} = vm.props;
+    const { filters, selectedId, isDetailsOpen, data, isFetching } = vm;
+    const openCreate = vm.isCreateOpen;
+    const setOpenCreate = () => vm.closeCreate();
+    const editOpen = Boolean(vm.editDialog);
+    const editDialogProps = vm.editDialog;
+    const handleEditClose = vm.closeEdit;
+    const handleAdd = vm.openCreate;
+    const clearSelected = () => {};
+    const setIsDetailsOpen = () => vm.closeDetails();
+    const setSelectedId = (id) => vm.openDetails(id);
+    const handleClearFilters = vm.clearFilters;
+    const handleChangeFilters = vm.table.handleInput;
+    const handleLimit = vm.table.setLimit;
+    const handlePageChange = vm.table.setPageFromPaginator;
+    const handleSortModel = vm.table.applySorting;
+    const handleChangeOptions = vm.changeOptions;
+    const handleDetails = (id) => () => vm.openDetails(id);
+    const handleRestore = (id) => () => confirmToast("Відновити подання?", () => vm.restore(id), { confirmText: "Відновити", color: "green" });
+    const handleDelete = (id) => () => confirmToast(`Ви хочете видалити пакет. #${id} Видалення пакету не видаляє пропозицій, що входять до нього. Дійсно видалити пакет?`, () => vm.remove(id));
+    const showRestoreBtn = (row) => vm.canRestore(row);
 
     const columns = useMemo(() => [
         columnHelper.accessor("id", {
@@ -509,9 +236,9 @@ const Index = () => {
                         </Button>
                     }
                     {
-                        !Boolean(row?.original?.deletedAt) &&
+                        !row?.original?.deletedAt &&
                         <Tooltip content="Детальна інформація та наповнення">
-                            <Link href={`/proposal/${row.id}`}>
+                            <Link to={`/proposal/${row.id}`}>
                                 <Button size="sm"
                                         variant="filled" color="blue">
                                     <i className="fa-regular fa-list"></i>
@@ -521,8 +248,8 @@ const Index = () => {
                     }
                     {
                         Boolean(auth?.user?.permissions?.pages?.proposal?.delete)
-                        && !Boolean(row?.original?.isHistorical)
-                        && !Boolean(row?.original?.deletedAt)
+                        && !row?.original?.isHistorical
+                        && !row?.original?.deletedAt
                         && <Tooltip content="Видалити">
                             <Button
                                 onClick={handleDelete(row?.id)}
@@ -544,33 +271,24 @@ const Index = () => {
                 </div>),
         }),
 
-    ], [auth, data])
+    ], [vm, auth, data])
 
-    const toggleFilterSwitch = ({target}) => {
-        setFilters(prevState => ({...prevState, [target.name]: target.checked}));
-    }
-
+    const toggleFilterSwitch = ({target}) => vm.table.patchFilters({ [target.name]: target.checked }, { resetPage: false });
     const handleChangeDate = (range) => {
         if (range?.from || range?.to) {
-            const from = format(range.from, "yyyy-MM-dd") || "";
-            const to = format(range.to, "yyyy-MM-dd") || "";
-            setFilters(prevState => ({...prevState, from: from, to: to}))
+            vm.table.patchFilters({ from: format(range.from, "yyyy-MM-dd") || "", to: format(range.to, "yyyy-MM-dd") || "" }, { resetPage: false });
         } else {
-            setFilters(prevState => ({...prevState, from: initialState.from, to: initialState.to}))
+            vm.table.patchFilters({ from: undefined, to: undefined }, { resetPage: false });
         }
-    }
-
+    };
 
     return (
-        <DictionaryProvider>
             <Page>
-                <div data-i-doc="page:proposal" className="flex mt-2 mr-2 flex-row justify-end gap-x-2">
-                    {auth?.user?.permissions?.pages?.proposal?.create &&
-                        <Button ref={addRef} title="Додати" onClick={handleAdd}>
-                            Додати
-                        </Button>
-                    }
-                </div>
+                <PageHeader
+                    title="Подання"
+                    actions={auth?.user?.permissions?.pages?.proposal?.create && <HeaderButton icon="fa-solid fa-plus" onClick={handleAdd}>Додати</HeaderButton>}
+                />
+                <span data-i-doc="page:proposal" hidden />
 
                 <CollapsibleSection
                     title="Фільтри"
@@ -684,11 +402,20 @@ const Index = () => {
                 }
 
             </Page>
-        </DictionaryProvider>
+    );
+});
+
+/** Маршрут /proposal (pageAccess). Словники — /api/spa/pages/proposal/options. */
+const Index = () => {
+    const vm = useViewModel((deps) => new ProposalListViewModel(deps));
+    return (
+        <ViewModelProvider value={vm}>
+            <IndexContent vm={vm}/>
+        </ViewModelProvider>
     );
 };
 
-export default Index;
+export default observer(Index);
 
 const HighlightedText = ({text, filter}) => {
     if (!filter || !text) {

@@ -1,8 +1,10 @@
-import React, {useState} from "react";
-import ConfirmModal from "../../../../Components/Modal/ConfirmModal.jsx";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { RelatedProfilesViewModel } from "../../viewmodel/DossierViewModels.js";
+
+import ConfirmModal from "../../../../components/Modal/ConfirmModal.jsx";
 import {subjectType} from "../../shared/config/subjectTypes.js";
 import {profileTitle} from "../../entities/dossier/model.js";
-import {useProfileRelationMutations} from "../../features/manage-profile-relations/useProfileRelationMutations.js";
 import AddRelationModal from "../../features/manage-profile-relations/AddRelationModal.jsx";
 
 // Секція "Пов'язані профілі" (profile↔profile, напр. родинні звʼязки) —
@@ -10,9 +12,11 @@ import AddRelationModal from "../../features/manage-profile-relations/AddRelatio
 // connection_type, note; додавання — кнопкою-тригером, що відкриває
 // AddRelationModal (i-doc:modal:sanction-profiles-add-relation).
 const RelatedProfilesSection = ({profileId, relations, canManage, onSelectProfile}) => {
-    const {linkMutation, unlinkMutation} = useProfileRelationMutations(profileId);
-    const [unlinkTarget, setUnlinkTarget] = useState(null);
-    const [showAddRelation, setShowAddRelation] = useState(false);
+    const vm = useViewModel((deps) => new RelatedProfilesViewModel({ ...deps, profileId }));
+    const { link: linkMutation, unlink: unlinkMutation } = vm.cmd;
+    const { unlinkTarget, showAddRelation } = vm;
+    const setUnlinkTarget = vm.setUnlinkTarget;
+    const setShowAddRelation = vm.setShowAddRelation;
 
     return (
         <span data-i-doc="component:sanction-profiles-related-profiles-section" style={{display: "contents"}}>
@@ -103,4 +107,4 @@ const RelatedProfilesSection = ({profileId, relations, canManage, onSelectProfil
     );
 };
 
-export default RelatedProfilesSection;
+export default observer(RelatedProfilesSection);

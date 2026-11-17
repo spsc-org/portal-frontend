@@ -1,6 +1,5 @@
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
-import React from "react";
 
 /**
  * Багатовибірний селект на базі react-select.

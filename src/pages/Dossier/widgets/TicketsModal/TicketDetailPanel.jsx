@@ -1,14 +1,13 @@
-import React from "react";
+
 import {IconButton, Tooltip} from "@material-tailwind/react";
-import {useQueryClient} from "@tanstack/react-query";
 import TicketBody from "./TicketBody.jsx";
 
 // Панель деталей ОДНОГО обраного тікета праворуч (master-detail за зразком
 // TaskViewPanel): одинарний клік по рядку зліва підвантажує сюди. Вміст — TicketBody
 // (той самий, що й у SingleTicketModal на /dossier — не дублюємо логіку привʼязок/резолву).
-const TicketDetailPanel = ({ticket, canManage, onClose}) => {
-    const queryClient = useQueryClient();
-    const invalidate = () => queryClient.invalidateQueries({queryKey: ["dossier-tickets-all"]});
+/** onChanged — інвалідує список усіх тікетів (TicketsPageViewModel). */
+const TicketDetailPanel = ({ticket, canManage, onClose, onChanged}) => {
+    const invalidate = onChanged;
 
     if (!ticket) {
         return (
@@ -30,7 +29,7 @@ const TicketDetailPanel = ({ticket, canManage, onClose}) => {
                 </Tooltip>
             </div>
             <div className="flex-1 overflow-y-auto px-4 py-3">
-                <TicketBody ticket={ticket} canManage={canManage} onChanged={invalidate}/>
+                <TicketBody key={ticket.id} ticket={ticket} canManage={canManage} onChanged={invalidate}/>
             </div>
         </aside>
     );

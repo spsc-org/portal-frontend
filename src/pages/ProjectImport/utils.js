@@ -98,7 +98,7 @@ export const safeParsePrecomputed = (value) => {
     if (!value || typeof value !== "string") return null;
     try {
         return JSON.parse(value);
-    } catch (e) {
+    } catch {
         return null;
     }
 };

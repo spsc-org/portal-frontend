@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { useGenerateDossiersMutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import BulkFormShell from "./BulkFormShell.jsx";
 
 // bulkTab11 — "Згенерувати досьє". Файл, що повертає бекенд (docx/html),
@@ -12,7 +14,7 @@ const GenerateDossiersForm = ({ projectIds, userId, onDone }) => {
     const [includeNotes, setIncludeNotes] = useState(false);
     const [outputFormat, setOutputFormat] = useState("docx");
     const [reason, setReason] = useState("");
-    const mutation = useGenerateDossiersMutation();
+    const mutation = useVM().cartModal.cmd.generateDossiers;
 
     const handleSubmit = () => {
         const dossierOptions = { includePhoto, photoMode, includeNotes, outputFormat };
@@ -28,7 +30,7 @@ const GenerateDossiersForm = ({ projectIds, userId, onDone }) => {
             onSubmit={handleSubmit}
             isPending={mutation.isPending}
             isError={mutation.isError}
-            errorMessage={getErrorMessage(mutation.error, "Не вдалося виконати операцію")}
+            errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
         >
             <div className="flex flex-col gap-3">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -69,4 +71,4 @@ const GenerateDossiersForm = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default GenerateDossiersForm;
+export default observer(GenerateDossiersForm);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { setCartIds } from "../../entities/cart/storage.js";
 import AddProposalForm from "./bulkForms/AddProposalForm.jsx";
 import AddRestrictionsForm from "./bulkForms/AddRestrictionsForm.jsx";

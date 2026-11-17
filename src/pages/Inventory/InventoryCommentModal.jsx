@@ -1,50 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { InventoryCommentViewModel } from "./viewmodel/InventoryViewModels.js";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import axios from "axios";
 
 /**
  * modal: null | {mode:'add', inventoryId} | {mode:'edit', inventoryId, comment}
  */
-const InventoryCommentModal = ({modal, onClose, token, currentUserId}) => {
-    const queryClient = useQueryClient();
-    const [text, setText] = useState('');
-
-    useEffect(() => {
-        if (modal) setText(modal.mode === 'edit' ? modal.comment.comment : '');
-    }, [modal]);
-
-    const onSettled = () => queryClient.invalidateQueries({queryKey: ['inventories']});
-
-    const addMutation = useMutation({
-        mutationFn: ({inventoryId, comment}) => axios.post(`/api/inventory/${inventoryId}/comments`, {comment}, {
-            headers: {'X-CSRF-Token': token, userId: currentUserId},
-        }),
-        onSuccess: () => { toast.success('Коментар додано'); onClose(); },
-        onError: () => toast.error('Помилка'),
-        onSettled,
-    });
-
-    const editMutation = useMutation({
-        mutationFn: ({inventoryId, commentId, comment}) => axios.patch(`/api/inventory/${inventoryId}/comments/${commentId}`, {comment}, {
-            headers: {'X-CSRF-Token': token, userId: currentUserId},
-        }),
-        onSuccess: () => { toast.success('Збережено'); onClose(); },
-        onError: () => toast.error('Помилка'),
-        onSettled,
-    });
-
-    const handleSubmit = () => {
-        if (!text.trim()) return;
-        if (modal.mode === 'add') {
-            addMutation.mutate({inventoryId: modal.inventoryId, comment: text.trim()});
-        } else {
-            editMutation.mutate({inventoryId: modal.inventoryId, commentId: modal.comment.id, comment: text.trim()});
-        }
-    };
-
-    const isPending = addMutation.isPending || editMutation.isPending;
+/** Монтується з key (новий VM на кожне відкриття). */
+const InventoryCommentModal = ({modal, onClose}) => {
+    const vm = useViewModel((deps) => new InventoryCommentViewModel({ ...deps, modal }));
+    const text = vm.text;
+    const setText = vm.setText;
+    const handleSubmit = () => vm.submit(onClose);
+    const isPending = vm.isPending;
 
     return (
         <Dialog open={!!modal} handler={onClose} size="sm">
@@ -76,4 +44,4 @@ const InventoryCommentModal = ({modal, onClose, token, currentUserId}) => {
     );
 };
 
-export default InventoryCommentModal;
+export default observer(InventoryCommentModal);

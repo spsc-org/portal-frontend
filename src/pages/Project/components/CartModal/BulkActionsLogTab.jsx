@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
-import { useBulkOperationsLogQuery } from "../../entities/cart/queries.js";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../shared/mvvm/index.js";
 
 // tab-3 — "Лог операцій". `data` (JSON) містить `projectIdList` — показуємо
 // як список id через кому (так само, як processData() у cartManager.js);
@@ -31,8 +32,8 @@ const STATE_CLASS = {
 };
 const stateClass = (state) => STATE_CLASS[state] ?? "bg-red-300 dark:bg-red-800 dark:text-red-100";
 
-const BulkActionsLogTab = ({ userId }) => {
-    const { data: log = [], isLoading } = useBulkOperationsLogQuery(userId, true);
+const BulkActionsLogTab = () => {
+    const { log, isLogLoading: isLoading } = useVM().cartModal;
     const rows = useMemo(() => log, [log]);
 
     return (
@@ -93,4 +94,4 @@ const BulkActionsLogTab = ({ userId }) => {
     );
 };
 
-export default BulkActionsLogTab;
+export default observer(BulkActionsLogTab);

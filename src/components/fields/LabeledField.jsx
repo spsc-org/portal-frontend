@@ -1,4 +1,4 @@
-import React, {forwardRef} from "react";
+import {forwardRef} from "react";
 
 // Спільна розмітка "label + поле форми" (модалки створення/редагування:
 // Announcement, DeveloperPost, Handbook Телефони/Дні народження) — раніше

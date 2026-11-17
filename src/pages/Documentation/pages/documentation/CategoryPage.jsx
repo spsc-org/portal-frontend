@@ -1,22 +1,26 @@
-import MarkdownRenderer from "../../../../Components/MarkdownRenderer.jsx";
+import { observer } from "mobx-react-lite";
+import { Spinner } from "@material-tailwind/react";
+import MarkdownRenderer from "../../../../components/MarkdownRenderer.jsx";
 import DocumentationSidebar from "../../widgets/DocumentationSidebar/DocumentationSidebar.jsx";
-import MarkdownTitle from "../../shared/ui/MarkdownTitle.jsx";
 
-const CategoryPage = ({categories, activeCategory, content}) => {
-    return (
-        <div data-i-doc="page:documentation-category" className="flex min-h-screen">
-            <DocumentationSidebar categories={categories} active={activeCategory}/>
-            <main className="w-3/4 p-6 prose max-w-none">
-                <div className="p-4 max-w-none">
-                    {activeCategory && <MarkdownTitle active={activeCategory}/>}
-                </div>
-                <div className="dark:text-neutral-100">
-                    {content ? <MarkdownRenderer content={content}/> : <p className="dark:text-slate-400">Оберіть категорію документації.</p>}
-
-                </div>
-            </main>
-        </div>
-    );
+const Body = ({ vm }) => {
+    if (vm.isLoading) return <Spinner className="h-6 w-6"/>;
+    if (vm.notFound) return <p className="dark:text-slate-400">Категорію «{vm.category}» не знайдено.</p>;
+    if (vm.content) return <MarkdownRenderer content={vm.content}/>;
+    return <p className="dark:text-slate-400">Оберіть категорію документації.</p>;
 };
 
-export default CategoryPage;
+const CategoryPage = ({ vm }) => (
+    <div data-i-doc="page:documentation-category" className="flex min-h-screen">
+        <DocumentationSidebar categories={vm.categories} active={vm.activeCategory}/>
+        <div className="w-3/4 p-6 prose max-w-none">
+            <div className="p-4 max-w-none">
+            </div>
+            <div className="dark:text-neutral-100">
+                <Body vm={vm}/>
+            </div>
+        </div>
+    </div>
+);
+
+export default observer(CategoryPage);

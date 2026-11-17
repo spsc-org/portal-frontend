@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useProjectOptionsQuery } from "../../../entities/project/queries.js";
-import { useAddDocumentMutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import { lookupUnitByRegnum } from "../../../entities/cart/api.js";
 import BulkFormShell from "./BulkFormShell.jsx";
 import { SelectField } from "./fields.jsx";
-import SingleSelect from "@/Components/fields/SingleSelect.jsx";
+import SingleSelect from "../../../../../components/fields/SingleSelect.jsx";
 
 const inputClass = "w-full h-10 px-3 py-2 border border-gray-300 dark:border-neutral-600 rounded-md text-sm bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500";
 const labelClass = "mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300";
@@ -14,7 +15,7 @@ const labelClass = "mb-1 block text-sm font-medium text-gray-700 dark:text-gray-
 // "Підрозділ" (addDocUnit) у легасі заповнюється зі словника `initiator`
 // (той самий словник, не окрема сутність) — так само тут.
 const AddDocumentForm = ({ projectIds, userId, onDone }) => {
-    const { data } = useProjectOptionsQuery(["documentType", "initiator"], userId);
+    const data = useVM().cartModal.options;
     const documentTypes = useMemo(() => Object.values(data?.documentType ?? {}), [data]);
     const units = useMemo(() => Object.values(data?.initiator ?? {}), [data]);
 
@@ -60,10 +61,10 @@ const AddDocumentForm = ({ projectIds, userId, onDone }) => {
         }, 400);
 
         return () => clearTimeout(timer);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [fields.addDocRegnum]);
 
-    const mutation = useAddDocumentMutation();
+    const mutation = useVM().cartModal.cmd.addDocument;
 
     const handleSubmit = () => {
         mutation.mutate([projectIds, fields, userId], { onSuccess: (result) => onDone(result) });
@@ -82,7 +83,7 @@ const AddDocumentForm = ({ projectIds, userId, onDone }) => {
             onSubmit={handleSubmit}
             isPending={mutation.isPending}
             isError={mutation.isError}
-            errorMessage={getErrorMessage(mutation.error, "Не вдалося виконати операцію")}
+            errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
         >
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <SelectField label="Тип" value={fields.addDocType} onChange={setField("addDocType")} options={documentTypes} />
@@ -122,4 +123,4 @@ const AddDocumentForm = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default AddDocumentForm;
+export default observer(AddDocumentForm);

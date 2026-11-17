@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { useRewriteRestriction25Mutation, getErrorMessage } from "../../../entities/cart/queries.js";
+import { useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useVM } from "../../../../../shared/mvvm/index.js";
+import { cartErrorMessage } from "../../../model/projectModel.js";
 import BulkFormShell from "./BulkFormShell.jsx";
 
 // bulkTab4 — "Перезаписати 25-й обмежувальний захід": однаковий текст усім
@@ -9,7 +11,7 @@ import BulkFormShell from "./BulkFormShell.jsx";
 const RewriteRestriction25Form = ({ projectIds, userId, onDone }) => {
     const [text, setText] = useState("");
     const [reason, setReason] = useState("");
-    const mutation = useRewriteRestriction25Mutation();
+    const mutation = useVM().cartModal.cmd.rewriteRestriction25;
 
     const handleSubmit = () => {
         mutation.mutate([projectIds, text, reason, userId], { onSuccess: (result) => onDone(result) });
@@ -29,7 +31,7 @@ const RewriteRestriction25Form = ({ projectIds, userId, onDone }) => {
             onSubmit={handleSubmit}
             isPending={mutation.isPending}
             isError={mutation.isError}
-            errorMessage={getErrorMessage(mutation.error, "Не вдалося виконати операцію")}
+            errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
         >
             <div>
                 <label className="mb-1 flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -49,4 +51,4 @@ const RewriteRestriction25Form = ({ projectIds, userId, onDone }) => {
     );
 };
 
-export default RewriteRestriction25Form;
+export default observer(RewriteRestriction25Form);

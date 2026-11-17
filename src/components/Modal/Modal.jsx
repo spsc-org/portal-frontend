@@ -1,4 +1,3 @@
-import React from "react";
 import {Dialog, DialogBody, DialogHeader} from "@material-tailwind/react";
 
 const Modal = ({

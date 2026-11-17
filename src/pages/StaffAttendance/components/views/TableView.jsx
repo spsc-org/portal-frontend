@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, Typography, Button } from "@material-tailwind/react";
 import { format, parseISO, differenceInDays } from 'date-fns';

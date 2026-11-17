@@ -1,7 +1,9 @@
-import React from "react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
+import { DossierOptionsViewModel } from "../../viewmodel/DossierViewModels.js";
+
 import {sourceType} from "../../shared/config/sourceTypes.js";
 import {criteriaChipClasses, criteriaLabel, criteriaList} from "../../entities/dossierConnection/model.js";
-import {useDossierOptionsQuery} from "../../entities/dossier/queries.js";
 
 const MODEL_CLASS_PROJECT = 1;
 
@@ -14,7 +16,7 @@ const ConnectionListItemGroup = ({connections, isActive, onClick}) => {
     const source = sourceType(primary.model_class);
     const summary = primary.summary_data;
 
-    const {data: options} = useDossierOptionsQuery();
+    const options = useViewModel((deps) => new DossierOptionsViewModel(deps)).options;
     const projectState = primary.model_class === MODEL_CLASS_PROJECT && summary?.state_id != null
         ? options?.projectState?.find((item) => item.id === summary.state_id)
         : null;
@@ -97,4 +99,4 @@ const ConnectionListItemGroup = ({connections, isActive, onClick}) => {
     );
 };
 
-export default ConnectionListItemGroup;
+export default observer(ConnectionListItemGroup);

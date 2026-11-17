@@ -1,32 +1,16 @@
-import {usePage} from "@inertiajs/react";
-import {useQuery} from "@tanstack/react-query";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/useViewModel.js";
+import { ProposalDetailsViewModel } from "./viewmodel/ProposalViewModels.js";
+import { useProposalProps } from "./viewmodel/useProposalProps.js";
+import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
 import {format} from "date-fns";
-import React, {useMemo} from "react";
 
 
 const ProposalDetailsModal = ({selectedId: id, open = false, onClose}) => {
-    const {auth, users = [], issuers = [], proposalState = []} = usePage().props;
-    const {data = {data: null}} = useQuery({
-        queryKey: ['proposal-update', id],
-        queryFn: async () => {
-            const response = await axios.get(`/api/proposal/new/${id}`, {
-                headers: {"userId": auth?.user?.id}
-            });
-            return response.data;
-        }
-    })
+    const { users = [], issuers = [], proposalState = [] } = useProposalProps();
+    const vm = useViewModel((deps) => new ProposalDetailsViewModel({ ...deps, id }));
+    const proposal = vm.proposal;
 
-    const proposal = useMemo(() => {
-        const {data: result} = data;
-        return {
-            ...result,
-            createdAt: result?.createdAt || result?.created_at,
-            updatedAt: result?.updatedAt || result?.updated_at,
-            deletedAt: result?.deletedAt || result?.deleted_at,
-        }
-
-    }, [data])
     return (
         <Dialog open={open} handler={onClose} size="md">
             <DialogHeader className="dark:text-gray-200 space-x-5">
@@ -119,4 +103,4 @@ const ProposalDetailsModal = ({selectedId: id, open = false, onClose}) => {
     );
 };
 
-export default ProposalDetailsModal;
+export default observer(ProposalDetailsModal);

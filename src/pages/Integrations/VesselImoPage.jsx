@@ -1,59 +1,27 @@
-import React, { useState } from "react";
-import { usePage } from "@inertiajs/react";
-import IntegrationsLayout from "./shared/ui/IntegrationsLayout.jsx";
-import { canReadIntegrationsVesselImo } from "./shared/lib/permissions.js";
-import VesselImoTable from "./components/VesselImo/VesselImoTable.jsx";
-import VesselImoImportDialog from "./components/VesselImo/VesselImoImportDialog.jsx";
-import VesselImoLogTable from "./components/VesselImo/VesselImoLogTable.jsx";
-import VesselImoDetailsTable from "./components/VesselImo/VesselImoDetailsTable.jsx";
-import VesselImoDetailsImportDialog from "./components/VesselImo/VesselImoDetailsImportDialog.jsx";
-import { useVesselImoListsQuery } from "./entities/vesselImo/queries.js";
-const VesselImoPage = () => {
-    const { auth } = usePage().props;
-    const [vesselImportOpen, setVesselImportOpen] = useState(false);
-    const [vesselDetailsImportOpen, setVesselDetailsImportOpen] = useState(false);
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../shared/mvvm/index.js";
+import { usePageTitle } from "../../shared/hooks/usePageTitle.js";
+import { VesselImoViewModel } from "./viewmodel/IntegrationsViewModels.js";
+import IntegrationsLayout from "./view/IntegrationsLayout.jsx";
+import VesselImoTable from "./view/VesselImo/VesselImoTable.jsx";
+import VesselImoDetailsTable from "./view/VesselImo/VesselImoDetailsTable.jsx";
+import VesselImoLogTable from "./view/VesselImo/VesselImoLogTable.jsx";
+import VesselImoImportDialog from "./view/VesselImo/VesselImoImportDialog.jsx";
+import VesselImoDetailsImportDialog from "./view/VesselImo/VesselImoDetailsImportDialog.jsx";
 
-    const hasAccess = canReadIntegrationsVesselImo(auth);
-    const { data: vesselLists } = useVesselImoListsQuery(hasAccess);
+const VesselImoView = observer(({ vm }) => (
+    <IntegrationsLayout data-i-doc="page:integrations-vessel-imo" active="vessel-imo" canRead={vm.canRead}>
+        <VesselImoTable lists={vm.lists} onImportClick={vm.openListsImport}/>
+        <VesselImoDetailsTable list={vm.details} onImportClick={vm.openDetailsImport}/>
+        <VesselImoLogTable list={vm.logs}/>
+        {vm.listsImportOpen && <VesselImoImportDialog open onClose={vm.closeListsImport} onImportSuccess={vm.closeListsImport}/>}
+        {vm.detailsImportOpen && <VesselImoDetailsImportDialog open onClose={vm.closeDetailsImport} onImportSuccess={vm.closeDetailsImport}/>}
+    </IntegrationsLayout>
+));
 
-    if (!hasAccess) {
-        return (
-            <IntegrationsLayout active="vessel-imo">
-                <div className="flex min-h-[50vh] items-center justify-center text-slate-400 dark:text-slate-600">
-                    <i className="fa-solid fa-lock mr-2"></i>Немає доступу до цього розділу.
-                </div>
-            </IntegrationsLayout>
-        );
-    }
-
-    return (
-        <IntegrationsLayout data-i-doc="page:integrations-vessel-imo" active="vessel-imo">
-            <VesselImoTable
-                lists={vesselLists}
-                onImportClick={() => setVesselImportOpen(true)}
-            />
-            <VesselImoDetailsTable
-                onImportClick={() => setVesselDetailsImportOpen(true)}
-            />
-            <VesselImoLogTable />
-
-            {vesselImportOpen && (
-                <VesselImoImportDialog
-                    open
-                    onClose={() => setVesselImportOpen(false)}
-                    onImportSuccess={() => setVesselImportOpen(false)}
-                />
-            )}
-
-            {vesselDetailsImportOpen && (
-                <VesselImoDetailsImportDialog
-                    open
-                    onClose={() => setVesselDetailsImportOpen(false)}
-                    onImportSuccess={() => setVesselDetailsImportOpen(false)}
-                />
-            )}
-        </IntegrationsLayout>
-    );
-};
-
-export default VesselImoPage;
+/** Маршрут /integrations-vessel-imo (pageAccess). */
+export default function VesselImoPage() {
+    const vm = useViewModel((deps) => new VesselImoViewModel(deps));
+    usePageTitle("Судна під санкціями (IMO)");
+    return <VesselImoView vm={vm} />;
+}

@@ -1,4 +1,3 @@
-import React from 'react';
 
 const DecreeBadge = ({ code, highlightText, filters, className = '' }) => {
     if (!code) return null;

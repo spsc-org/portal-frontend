@@ -1,8 +1,3 @@
-import React from 'react';
-import {Button} from "@material-tailwind/react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import axios from "axios";
 
 const truncate = (str, n) => str && str.length > n ? str.slice(0, n) + '…' : str;
 
@@ -71,27 +66,8 @@ const CommentCard = ({c, author, isOwn, onEdit, onDelete}) => {
     );
 };
 
-const InventoryNoteCell = ({note, comments = [], users = [], inventoryId, currentUserId, token, onOpenModal}) => {
-    const queryClient = useQueryClient();
-
-    const deleteMutation = useMutation({
-        mutationFn: (commentId) => axios.delete(`/api/inventory/${inventoryId}/comments/${commentId}`, {
-            headers: {'X-CSRF-Token': token, userId: currentUserId},
-        }),
-        onSuccess: () => toast.success('Видалено'),
-        onError: () => toast.error('Помилка'),
-        onSettled: () => queryClient.invalidateQueries({queryKey: ['inventories']}),
-    });
-
-    const handleDelete = (commentId) => {
-        toast((t) => (
-            <div className="flex items-center gap-2">
-                <span className="text-sm">Видалити коментар?</span>
-                <Button size="sm" color="white" onClick={() => toast.dismiss(t.id)}>Ні</Button>
-                <Button size="sm" color="red" onClick={() => { toast.dismiss(t.id); deleteMutation.mutate(commentId); }}>Так</Button>
-            </div>
-        ), {duration: 8000, position: 'top-center'});
-    };
+const InventoryNoteCell = ({note, comments = [], users = [], inventoryId, currentUserId, onOpenModal, onDeleteComment}) => {
+    const handleDelete = (commentId) => onDeleteComment(commentId);
 
     return (
         <div className="flex flex-col" onClick={e => e.stopPropagation()}>

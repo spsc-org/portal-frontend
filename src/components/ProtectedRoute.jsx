@@ -1,17 +1,22 @@
+import { observer } from 'mobx-react-lite'
 import { Navigate, Outlet, useLocation } from 'react-router'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useSession } from '../stores/storeHooks.js'
 
-export default function ProtectedRoute() {
-  const { status } = useAuth()
+function ProtectedRoute() {
+  const session = useSession()
   const location = useLocation()
 
-  if (status === 'loading') {
+  // Поки /api/me у дорозі: з кешем меню одразу показуємо каркас (сайдбар),
+  // сам вміст сторінки AuthorizedLayout чекає підтвердження сесії.
+  if (session.status === 'loading' && !session.canRenderShell) {
     return null
   }
 
-  if (status === 'guest') {
+  if (session.status === 'guest') {
     return <Navigate to="/login" replace state={{ from: location }} />
   }
 
   return <Outlet />
 }
+
+export default observer(ProtectedRoute)

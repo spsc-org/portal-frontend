@@ -1,3 +1,7 @@
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
+import { AttachDecreeViewModel } from "../viewmodel/ProposalViewModels.js";
+import { useProposalProps } from "../viewmodel/useProposalProps.js";
 import {
     Button,
     Checkbox,
@@ -8,9 +12,8 @@ import {
     Tooltip,
     Typography
 } from "@material-tailwind/react";
-import SingleSelect from "../../../Components/fields/SingleSelect.jsx";
+import SingleSelect from "../../../components/fields/SingleSelect.jsx";
 import React, {useMemo, useState} from "react";
-import {usePage} from "@inertiajs/react";
 import {
     createColumnHelper,
     flexRender,
@@ -19,9 +22,7 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {format} from "date-fns";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import LoadingButton from "../../../Components/Buttons/LoadingButton.jsx";
+import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import AlertProjects from "./AlertProjects.jsx";
 
 const columnHelper = createColumnHelper();
@@ -48,54 +49,14 @@ const FlagChip = ({ iso, name }) => {
 };
 
 const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
-    const queryClient = useQueryClient();
-
-    const {auth, token, projectState = [], proposalState = [], subjectTypes = [], decrees = []} = usePage().props;
-    const [errors, setErrors] = useState(null);
-    const [form, setForm] = useState({
-        decreeId: null,
-    });
-
+    const { id: proposalId, projectState = [], proposalState = [], subjectTypes = [], decrees = [] } = useProposalProps();
+    const vm = useViewModel((deps) => new AttachDecreeViewModel({ ...deps, proposalId }));
+    const { form, errors } = vm;
+    const setForm = vm.setForm;
+    const create = vm.attachCmd;
+    // Вибір рядків таблиці / фільтр за типом — локальний UI-стан View (react-table).
     const [columnFilters, setColumnFilters] = useState("");
-
     const [rowSelection, setRowSelection] = useState([]);
-
-    const create = useMutation({
-        mutationFn: async (form) => {
-            const response = await axios.post(`/api/project/bulk-attach-decree`,
-                form,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        "X-CSRF-Token": token,
-                        "userId": auth.user.id,
-                    }
-                }
-            );
-            return response.data;
-        },
-        onSuccess: async () => {
-            toast.success("Успішно додано указ", {
-                style: {
-                    background: 'dark:dark:bg-slate-800',
-                    color: 'text-slate-400',
-                },
-            });
-            create.reset();
-            onClose();
-        },
-        onError: error => {
-            if (error?.response?.status === 422) {
-                setErrors(error?.response?.data?.errors);
-            }
-        },
-        onSettled: (data, error) => {
-            if (!error) {
-                queryClient.invalidateQueries(['proposal-show', 'proposal-show-lined-projects']);
-                onClose();
-            }
-        },
-    });
 
     const columns = useMemo(() => [
         {
@@ -232,11 +193,7 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
         enableRowSelection: true,
         onRowSelectionChange: (updater) => {
             setRowSelection((prev) => {
-                const next = typeof updater === "function" ? updater(prev) : updater;
-                const selectedRows = Object.keys(next)
-                    .filter((k) => next[k])
-                    .map((rowId) => filteredData[Number(rowId)]);
-                return next;
+                return typeof updater === "function" ? updater(prev) : updater;
             });
         },
         onColumnFiltersChange: setColumnFilters,
@@ -250,12 +207,8 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
         setForm(prevState => ({...prevState, [key]: selected}));
     }
 
-    const handleSubmit = () => {
-        const projectIds = Object.keys(rowSelection);
-        create.mutate({
-            decreeId: form?.decreeId?.id,
-            projectIds: projectIds
-        });
+    const handleSubmit = async () => {
+        if (await vm.submit(Object.keys(rowSelection))) onClose();
     }
 
     const ignoreAttachAlert = useMemo(() => {
@@ -401,4 +354,4 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
     );
 };
 
-export default AttachDecreeModal;
+export default observer(AttachDecreeModal);

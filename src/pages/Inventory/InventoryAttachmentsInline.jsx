@@ -1,4 +1,3 @@
-import React from 'react';
 import {Tooltip} from "@material-tailwind/react";
 
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];

@@ -1,4 +1,3 @@
-import React from "react";
 
 // Дрібні перевикористовувані поля для bulk-форм кошика.
 // Мультивибір із пошуком — див. спільний Components/fields/MultiSelect.jsx

@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable react-refresh/only-export-components -- реєстр презентерів комірок (об'єкт колонка → компонент) */
 import FlagSanctionBadge from "../atoms/FlagSanctionBadge.jsx";
 
 const DefaultRenderer = ({ value, highlightText, filters, columnId }) => {

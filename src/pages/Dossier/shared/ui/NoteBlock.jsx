@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 // Клікабельна примітка (профілю чи звʼязку): показує поточний текст/плейсхолдер,
 // клік → textarea з явними Зберегти/Скасувати (Escape теж скасовує) — той самий
 // патерн, що й InlineDescriptionField у Task-модулі, самостійна копія тут (Dossier

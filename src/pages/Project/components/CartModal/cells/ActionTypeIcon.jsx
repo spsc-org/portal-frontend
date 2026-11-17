@@ -1,4 +1,3 @@
-import React from "react";
 
 // Порт TableManager.js:#renderCellActionType() у чистий React — той самий
 // набір кодів/кольорів/підписів, без залежності від легасі myApp.

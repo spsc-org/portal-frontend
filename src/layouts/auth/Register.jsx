@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { Button } from '@material-tailwind/react'
-import { useAuth } from '../../context/AuthContext.jsx'
+import { useSession } from '../../stores/storeHooks.js'
 import { ApiError } from '../../lib/api.js'
 import AuthLayout from './AuthLayout.jsx'
 import FormField from './FormField.jsx'
@@ -9,7 +9,7 @@ import { fieldError } from './formErrors.js'
 
 // Еквівалент resources/views/auth/register.blade.php
 export default function Register() {
-  const { register } = useAuth()
+  const { register } = useSession()
   const navigate = useNavigate()
 
   const [form, setForm] = useState({ name: '', email: '', password: '', password_confirmation: '' })

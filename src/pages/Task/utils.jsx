@@ -1,5 +1,5 @@
+/* eslint-disable react-refresh/only-export-components -- спільні стилі/хелпери рендеру задач (функції + дрібні компоненти) */
 import {Chip, Tooltip} from "@material-tailwind/react";
-import React from "react";
 
 const statusColorMap = {
     "Нова": "cyan",

@@ -1,4 +1,4 @@
-import React from "react";
+import {Link} from "react-router";
 
 // Друге бокове меню розділу (не плутати з головним сайдбаром застосунку) —
 // список посилань на підсторінки одного простору (напр. /staff/*, /handbook/*).
@@ -14,9 +14,9 @@ const SecondaryNavPanel = ({title, items = [], active}) => (
         {items.map((item) => {
             const isActive = item.key === active;
             return (
-                <a
+                <Link
                     key={item.key}
-                    href={item.href}
+                    to={item.href}
                     className={`flex items-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium transition ${
                         isActive
                             ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
@@ -25,7 +25,7 @@ const SecondaryNavPanel = ({title, items = [], active}) => (
                 >
                     <i className={`${item.icon} w-4 text-center text-xs ${isActive ? "" : "text-slate-400 dark:text-slate-500"}`}></i>
                     {item.label}
-                </a>
+                </Link>
             );
         })}
     </nav>

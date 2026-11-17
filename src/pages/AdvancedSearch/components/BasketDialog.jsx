@@ -1,4 +1,6 @@
-import React, {useMemo, useState} from 'react';
+import { observer } from "mobx-react-lite";
+import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
+import { BasketDialogViewModel } from "../viewmodel/AdvancedSearchViewModel.js";
 import {
     Button,
     Dialog,
@@ -10,100 +12,13 @@ import {
     Spinner
 } from "@material-tailwind/react";
 import {useBasket} from "../context/BasketContext.jsx";
-import {useQuery} from "@tanstack/react-query";
-import axios from "axios";
 
 const BasketDialog = ({open, onClose, renderCell}) => {
-    const {items, toggleItem, clearBasket} = useBasket();
-    const [isExporting, setIsExporting] = useState(false);
-
-    // Запит на бекенд для отримання повних даних
-    const {data: basketData, isLoading, isError} = useQuery({
-        queryKey: ['basketData', items],
-        queryFn: async () => {
-            if (items.length === 0) return [];
-
-            // Готуємо дані для запиту (тільки datasetId та id)
-            const requestItems = items.map(item => ({
-                datasetId: item.datasetId,
-                id: item.id
-            }));
-
-            const response = await axios.post("api/consolidated-data/by-ids", {
-                items: requestItems
-            });
-
-            return response.data.data || [];
-        },
-        enabled: open && items.length > 0, // Запит тільки якщо діалог відкритий і є записи
-        staleTime: 1000 * 60 * 5, // Кешуємо на 5 хвилин
-    });
-
-    // Об'єднуємо дані з бекенду з даними з кошика (для збереження порядку та addedAt)
-    const displayItems = useMemo(() => {
-        if (!basketData) return [];
-
-        // Створюємо мапу для швидкого пошуку даних з бекенду
-        const dataMap = new Map();
-        basketData.forEach(record => {
-            dataMap.set(`${record.datasetId}-${record.id}`, record);
-        });
-
-        // Проходимо по items (зберігаючи порядок додавання) і підставляємо дані
-        return items.map(item => {
-            const record = dataMap.get(`${item.datasetId}-${item.id}`);
-            if (record) {
-                return {
-                    ...record,
-                    addedAt: item.addedAt,
-                    // Додаємо original для сумісності з renderCell
-                    original: {
-                        ...record,
-                        datasetId: item.datasetId // Гарантуємо наявність datasetId
-                    }
-                };
-            }
-            // Якщо запис не знайдено на бекенді (наприклад, видалено), повертаємо заглушку або null
-            // Краще повернути те, що є в кошику, з поміткою
-            return {
-                ...item,
-                captions: 'Запис не знайдено або видалено',
-                original: { datasetId: item.datasetId }
-            };
-        });
-    }, [items, basketData]);
-
-    const handleExport = async () => {
-        if (items.length === 0) return;
-
-        setIsExporting(true);
-        try {
-            const requestItems = items.map(item => ({
-                datasetId: item.datasetId,
-                id: item.id
-            }));
-
-            const response = await axios.post("api/consolidated-data/export-basket", {
-                items: requestItems
-            }, {
-                responseType: 'blob' // Важливо для завантаження файлу
-            });
-
-            // Створюємо посилання для завантаження
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `basket_export_${new Date().toISOString().slice(0, 10)}.xlsx`);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-        } catch (error) {
-            console.error('Export failed:', error);
-            // Тут можна додати повідомлення про помилку
-        } finally {
-            setIsExporting(false);
-        }
-    };
+    const basket = useBasket();
+    const vm = useViewModel((deps) => new BasketDialogViewModel({ ...deps, basket }));
+    const { items, toggleItem, clearBasket } = basket;
+    const { isLoading, isExporting, displayItems } = vm;
+    const handleExport = vm.export;
 
     if (!open) return null;
 
@@ -233,4 +148,4 @@ const BasketDialog = ({open, onClose, renderCell}) => {
     );
 };
 
-export default BasketDialog;
+export default observer(BasketDialog);
