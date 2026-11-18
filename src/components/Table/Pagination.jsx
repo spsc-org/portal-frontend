@@ -29,7 +29,7 @@ const Pagination = ({
     }
 
     return (
-        <div className="flex flex-wrap shadow-md items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-2 dark:border-neutral-700 dark:bg-neutral-800/60">
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-white px-2.5 py-1.5 dark:border-neutral-700 dark:bg-neutral-800">
             <div className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                 <span>Знайдено: {totalCount}</span>
             </div>

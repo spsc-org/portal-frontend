@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router"
 import { observer } from "mobx-react-lite"
-import { Card, Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip, Typography } from "@material-tailwind/react"
+import { Card, Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
 import Button from "../../components/Buttons/Button.jsx"
 import { format } from "date-fns"
@@ -13,6 +13,8 @@ import PageHeader from "../../layouts/app/PageHeader.jsx"
 import { ProjectImportViewModel } from "./viewmodel/ProjectImportViewModel.js"
 import TableValidationV2 from "./components/TableValidationV2.jsx"
 import { CATEG_CLASS, IDENT_ICONS, PROPOSAL_CLASS } from "./utils.js"
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../components/Table/tableStyles.js";
 
 const ImportContent = observer(({ vm }) => {
   const { itemType, projectActionType, projectState, users, terms } = vm
@@ -48,9 +50,9 @@ const ImportContent = observer(({ vm }) => {
 
   const itemTypeOptions = Boolean(itemType?.length) && (
     <div>
-      <Typography variant="small" className="dark:text-gray-300">
+      <div className="text-sm text-gray-700 dark:text-gray-300">
         Оберіть тип суб'єкта та файл
-      </Typography>
+      </div>
       <div className="mb-2 flex flex-wrap gap-1">
         {itemType.map((type) => (
           <label key={type.id} className="cursor-pointer">
@@ -226,11 +228,8 @@ const ImportContent = observer(({ vm }) => {
         className="mb-2 empty:hidden"
       >
         {Boolean(data?.data) && (
-          <Typography
-            variant="small"
-            color="gray"
-            className="flex flex-wrap items-center gap-x-1.5 text-xs font-normal text-gray-600 dark:text-gray-400"
-          >
+          <div
+           className="flex flex-wrap items-center gap-x-1.5 text-xs text-gray-600 dark:text-gray-400">
             <i className="fa-regular fa-file-lines"></i>
             <span>Документ: {data?.data?.regNum}</span>
             {data?.data?.regDate && (
@@ -238,7 +237,7 @@ const ImportContent = observer(({ vm }) => {
                 від {format(data?.data?.regDate, "dd.MM.yyyy")}
               </span>
             )}
-          </Typography>
+          </div>
         )}
       </div>
       <Card className="m-0 border border-gray-100 p-2.5 shadow-lg sm:p-3 dark:border-neutral-700/60 dark:bg-neutral-700">
@@ -249,19 +248,14 @@ const ImportContent = observer(({ vm }) => {
                 <i className="fa-solid fa-folder-plus"></i>
               </span>
               <div className="space-y-0.5">
-                <Typography
-                  variant="h6"
-                  className="leading-tight text-gray-900 dark:text-gray-100"
-                >
+                <h4
+                 className="text-sm font-bold leading-tight text-gray-900 dark:text-gray-100">
                   Додати проєкти
-                </Typography>
-                <Typography
-                  variant="small"
-                  color="gray"
-                  className="text-xs font-normal text-gray-600 dark:text-gray-400"
-                >
+                </h4>
+                <div
+                 className="text-xs text-gray-600 dark:text-gray-400">
                   Оберіть тип проєкту та завантажте файл у шаблоні.
-                </Typography>
+                </div>
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -319,12 +313,12 @@ const ImportContent = observer(({ vm }) => {
       {importProjects.isSuccess && (
         <Modal open={importProjects.isSuccess} size="xl">
           <ModalHeader>
-            Імпортовано успішно
-          </ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Імпортовано успішно</h3>
+            </ModalHeader>
           <ModalBody className="max-h-[65vh] overflow-auto pt-0">
-            <Typography className="mb-2 text-sm font-medium dark:text-gray-200">
+            <p className="text-gray-700 mb-2 text-sm font-medium dark:text-gray-200">
               Додано проєктів: {importedCount}
-            </Typography>
+            </p>
             {isImportDetailsLoading && (
               <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                 <Spinner className="h-4 w-4" />
@@ -334,41 +328,41 @@ const ImportContent = observer(({ vm }) => {
             {!isImportDetailsLoading &&
               Boolean(importedProjectsData?.length) && (
                 <div className="rounded-md border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
-                  <div className="overflow-auto">
-                    <table className="min-w-full text-xs text-gray-700 dark:text-gray-200">
-                      <thead className="bg-gray-100 text-gray-700 dark:bg-neutral-700 dark:text-gray-200">
+                  <div className={twMerge(TABLE_WRAP, "overflow-auto")}>
+                    <table className={twMerge(TABLE, "min-w-full")}>
+                      <thead>
                         <tr>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Дія
                           </th>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Стан
                           </th>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Тип
                           </th>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Назви/ДН
                           </th>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Країни
                           </th>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Ідентифікаційні дані
                           </th>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Дод.інформація
                           </th>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Термін
                           </th>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Категорії
                           </th>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Документи
                           </th>
-                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
+                          <th className={TH}>
                             Виконавець
                           </th>
                         </tr>
@@ -389,9 +383,8 @@ const ImportContent = observer(({ vm }) => {
                           return (
                             <tr
                               key={row.id}
-                              className="bg-white hover:bg-gray-50 dark:bg-neutral-800 dark:hover:bg-neutral-700/70"
-                            >
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              className={TR}>
+                              <td className={twMerge(TD, "align-top")}>
                                 <Tooltip content={action?.caption || ""}>
                                   <span>
                                     {action?.icon ? (
@@ -402,13 +395,13 @@ const ImportContent = observer(({ vm }) => {
                                   </span>
                                 </Tooltip>
                               </td>
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              <td className={twMerge(TD, "align-top")}>
                                 {renderStateIcon(row.stateId)}
                               </td>
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              <td className={twMerge(TD, "align-top")}>
                                 {renderSubjectType(row.subjectTypeId)}
                               </td>
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              <td className={twMerge(TD, "align-top")}>
                                 {row.nameUk ? (
                                   <>
                                     <strong>
@@ -446,25 +439,25 @@ const ImportContent = observer(({ vm }) => {
                                   </span>
                                 ) : null}
                               </td>
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              <td className={twMerge(TD, "align-top")}>
                                 {renderCountries(parsed)}
                               </td>
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              <td className={twMerge(TD, "align-top")}>
                                 {renderIdentifiers(parsed)}
                               </td>
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              <td className={twMerge(TD, "align-top")}>
                                 {renderAttributes(row, parsed)}
                               </td>
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              <td className={twMerge(TD, "align-top")}>
                                 {termCaption}
                               </td>
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              <td className={twMerge(TD, "align-top")}>
                                 {renderCategories(parsed)}
                               </td>
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              <td className={twMerge(TD, "align-top")}>
                                 {renderDocuments(row, parsed)}
                               </td>
-                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
+                              <td className={twMerge(TD, "align-top")}>
                                 {performer?.name || ""}
                               </td>
                             </tr>
@@ -534,10 +527,10 @@ const ImportContent = observer(({ vm }) => {
             <span>422 Невалідні дані</span>
           </ModalHeader>
           <div className="px-4 pb-2">
-            <Typography className="text-sm text-gray-700 dark:text-gray-200">
+            <p className="text-sm text-gray-700 dark:text-gray-200">
               {invalidFieldsDialogProps?.message ||
                 "Некоректні параметри запиту"}
-            </Typography>
+            </p>
           </div>
           <div className="px-4 pb-1">
             <div className="max-h-[55vh] overflow-auto rounded-md border border-gray-200 bg-gray-50 p-3 dark:border-neutral-700 dark:bg-neutral-800/40">
@@ -547,14 +540,14 @@ const ImportContent = observer(({ vm }) => {
                     key={index}
                     className="mb-3 rounded border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-700/80"
                   >
-                    <Typography className="mb-1 text-xs font-semibold text-red-700 dark:text-red-300">
+                    <p className="mb-1 text-xs font-semibold text-red-700 dark:text-red-300">
                       {index + 1}. Помилка
-                    </Typography>
-                    <Typography className="text-xs leading-5 whitespace-pre-line text-gray-700 dark:text-gray-200">
+                    </p>
+                    <p className="text-xs leading-5 whitespace-pre-line text-gray-700 dark:text-gray-200">
                       {String(item || "")
                         .split("; ")
                         .join(";\n")}
-                    </Typography>
+                    </p>
                   </div>
                 )
               )}

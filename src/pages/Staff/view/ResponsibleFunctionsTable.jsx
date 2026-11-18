@@ -7,6 +7,8 @@ import ChipToggle from "../../../components/fields/ChipToggle.jsx";
 import ChipResetButton from "../../../components/fields/ChipResetButton.jsx";
 import ResponsibleFunctionModal from "./ResponsibleFunctionModal.jsx";
 import ConfirmModal from "../../../components/Modal/ConfirmModal.jsx";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
 // ТАБ "Функції" — довідник + менеджмент (створення/редагування/видалення).
 // Панель фільтрів у тому самому стилі, що TaskFilters.jsx (SearchInput +
@@ -46,20 +48,20 @@ const ResponsibleFunctionsTable = ({vm, isLoading}) => {
                 }
             </div>
 
-            <div className="max-w-full overflow-x-auto rounded-lg bg-white shadow-md dark:bg-neutral-700">
-                <table className="w-full table-auto text-left text-sm text-gray-600 dark:text-gray-400">
+            <div className={twMerge(TABLE_WRAP, "max-w-full")}>
+                <table className={twMerge(TABLE, "w-full table-auto text-left")}>
                     <thead>
-                        <tr className="bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-gray-400">
-                            <th className="px-3 py-2 font-normal">Назва</th>
-                            <th className="px-3 py-2 font-normal">Опис</th>
-                            <th className="px-3 py-2 font-normal">Відповідальні</th>
-                            {canManage && <th className="px-3 py-2 font-normal">Дії</th>}
+                        <tr>
+                            <th className={TH}>Назва</th>
+                            <th className={TH}>Опис</th>
+                            <th className={TH}>Відповідальні</th>
+                            {canManage && <th className={TH}>Дії</th>}
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                    <tbody>
                         {!isLoading && filtered.length === 0 &&
-                            <tr>
-                                <td colSpan={canManage ? 4 : 3} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">
+                            <tr className={TR}>
+                                <td colSpan={canManage ? 4 : 3} className={twMerge(TD, "text-center")}>
                                     Нічого не знайдено
                                 </td>
                             </tr>
@@ -69,10 +71,10 @@ const ResponsibleFunctionsTable = ({vm, isLoading}) => {
                             return (
                                 <tr key={func.id}
                                     onClick={onSelectFunction ? () => onSelectFunction(isSelected ? null : func.id) : undefined}
-                                    className={`${isSelected ? "bg-blue-100/80 dark:bg-blue-900/40" : "bg-neutral-100 dark:bg-neutral-800"} ${onSelectFunction ? "cursor-pointer" : ""} hover:bg-neutral-200 dark:hover:bg-neutral-700`}>
-                                    <td className="px-3 py-2 font-semibold text-gray-800 dark:text-gray-200">{func.name}</td>
-                                    <td className="px-3 py-2">{func.description || "—"}</td>
-                                    <td className="px-3 py-2">
+                                    className={twMerge(TR, `${isSelected ? "bg-blue-100/80 dark:bg-blue-900/40" : "bg-neutral-100 dark:bg-neutral-800"} ${onSelectFunction ? "cursor-pointer" : ""} hover:bg-neutral-200 dark:hover:bg-neutral-700`)}>
+                                    <td className={twMerge(TD, "font-semibold")}>{func.name}</td>
+                                    <td className={TD}>{func.description || "—"}</td>
+                                    <td className={TD}>
                                         <div className="flex flex-wrap gap-1">
                                             {(func.active_assignments || []).flatMap((a) => (a.users || []).map((u) => (
                                                 <Chip key={`${a.id}-${u.id}`} size="sm" value={u.name} variant="ghost" color="blue-gray"
@@ -84,7 +86,7 @@ const ResponsibleFunctionsTable = ({vm, isLoading}) => {
                                         </div>
                                     </td>
                                     {canManage &&
-                                        <td className="px-3 py-2">
+                                        <td className={TD}>
                                             <div className="flex items-center gap-1">
                                                 <Tooltip content="Редагувати функцію">
                                                     <IconButton size="sm" variant="text"

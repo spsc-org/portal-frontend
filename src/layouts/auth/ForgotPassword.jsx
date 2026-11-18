@@ -48,7 +48,7 @@ export default function ForgotPassword() {
 
       <StatusAlert status={status} />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <FormField
           label="Email"
           type="email"

@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { ProposalFormViewModel } from "./viewmodel/ProposalViewModels.js";
 import { useProposalProps } from "./viewmodel/useProposalProps.js";
-import { Spinner, Typography } from "@material-tailwind/react"
+import { Spinner } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
 import Button from "../../components/Buttons/Button.jsx"
 import Input from "../../components/fields/Input.jsx";
@@ -29,9 +29,9 @@ const UpdateProposalModal = ({selectedId: id, open, onClose}) => {
     return (
         <Modal open={open} handler={onClose} size="md">
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                     Оновити подання
-                </Typography>
+                </h3>
             </ModalHeader>
             <ModalBody className="h-[32rem] relative overflow-y-auto">
                 {

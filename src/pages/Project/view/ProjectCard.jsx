@@ -120,7 +120,7 @@ export const ProjectCardDock = observer(() => {
     return (
         <div className="pointer-events-none fixed bottom-2 left-2 right-2 z-[1050] flex flex-wrap-reverse items-end justify-end gap-2" data-i-doc="component:project-card-dock">
             {vm.dock.map((item) => (
-                <div key={item.projectId} className="pointer-events-auto flex max-w-[16rem] items-center rounded-lg border border-gray-300 bg-white shadow-lg dark:border-neutral-700 dark:bg-neutral-700">
+                <div key={item.projectId} className="pointer-events-auto flex max-w-[16rem] items-center rounded-lg border border-gray-300 bg-white shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
                     <button type="button" title={`Розгорнути картку #${item.projectId}`} onClick={() => vm.restoreFromDock(item)} className="flex min-w-0 items-center gap-2 rounded-l-lg py-1.5 pl-3 pr-2 text-sm text-gray-800 hover:bg-blue-50 dark:text-gray-100 dark:hover:bg-neutral-600">
                         <i className="fa-regular fa-window-restore pointer-events-none text-blue-700 dark:text-blue-400" />
                         <span className="pointer-events-none shrink-0 font-semibold">#{item.projectId}</span>

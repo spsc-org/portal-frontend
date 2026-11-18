@@ -14,7 +14,7 @@ const StatisticFormView = ({ vm }) => {
 
     return (
         <Page>
-            <div data-i-doc="page:statistic" className="max-w-md mx-auto mt-10 bg-white dark:bg-neutral-700 rounded-lg shadow-lg p-6">
+            <div data-i-doc="page:statistic" className="max-w-md mx-auto mt-10 bg-white dark:bg-neutral-800 rounded-xl p-6 border border-gray-200 dark:border-neutral-700">
                 <p className="mb-4 text-sm font-medium text-gray-600 dark:text-gray-300">Нереалізовані проєкти</p>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-y-4">
                     <div>

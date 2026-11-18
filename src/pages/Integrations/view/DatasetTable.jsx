@@ -1,11 +1,14 @@
 import { observer } from "mobx-react-lite";
-import { Card, Typography, Tooltip } from "@material-tailwind/react"
+import { Tooltip } from "@material-tailwind/react"
 import IconButton from "../../../components/Buttons/IconButton.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
 import { convertDate } from "../../../lib/utils.js";
 import ImportDatasetResultDialog from './ImportDatasetResultDialog.jsx';
 import { getImportTypeIcon, StatusChip } from "./ImportLogShared.jsx";
 import ImportLogDetailsDialog from "./ImportLogDetailsDialog.jsx";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TD_EMPTY, TH, TR, ariaSort } from "../../../components/Table/tableStyles.js";
+import SortButton from "../../../components/Table/SortButton.jsx";
 
 const COLUMNS = [
     { key: 'format',               label: 'Формат' },
@@ -21,7 +24,8 @@ const COLUMNS = [
 /** vm — DatasetsViewModel (сортування, діалоги журналу/деталей). */
 const DatasetTable = ({ vm, onImportClick }) => {
     const { sortedDatasets, requestSort, sortConfig } = vm;
-    const getSortIndicator = (key) => (sortConfig.key !== key ? null : sortConfig.direction === 'ascending' ? ' ▲' : ' ▼');
+    // VM: direction 'ascending' | 'descending' → SortButton: "asc" | "desc" | false
+    const sortDirection = (key) => (sortConfig.key !== key ? false : sortConfig.direction === 'ascending' ? "asc" : "desc");
     const handleOpenDetails = ({ logId }) => vm.openDetails(logId);
     const selectedDataset = vm.historyDataset;
     const setSelectedDataset = (dataset) => (dataset ? vm.openHistory(dataset) : vm.closeHistory());
@@ -30,46 +34,47 @@ const DatasetTable = ({ vm, onImportClick }) => {
     const detailsDialogProps = { logId: vm.detailsLogId };
 
     return (
-        <div className="bg-white dark:bg-neutral-700 p-6 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-4 dark:text-gray-200">Доступні датасети для імпорту</h2>
+        <div className="bg-white dark:bg-neutral-800 p-6 rounded-xl border border-gray-200 dark:border-neutral-700">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Доступні датасети для імпорту</h2>
 
-            <Card className="w-full overflow-auto dark:bg-neutral-700 shadow-none">
-                <table className="w-full min-w-max table-auto text-left">
-                    <thead className="sticky top-0 z-10">
+            <div className={TABLE_WRAP}>
+                <table className={twMerge(TABLE, "w-full min-w-max table-auto text-left")}>
+                    <thead>
                         <tr>
                             {COLUMNS.map(({ key, label }) => (
-                                <th
-                                    key={label}
-                                    className="border-b border-blue-gray-100 dark:border-neutral-700 bg-blue-gray-50 dark:bg-neutral-800 py-2 px-2 cursor-pointer"
-                                    onClick={() => requestSort(key)}
-                                >
-                                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70 dark:text-gray-400">
-                                        {label}{getSortIndicator(key)}
-                                    </Typography>
+                                <th key={label} scope="col" className={TH} aria-sort={key ? ariaSort(sortDirection(key)) : undefined}>
+                                    {key ? (
+                                        <SortButton
+                                            label={label}
+                                            direction={sortDirection(key)}
+                                            next={sortDirection(key) === "asc" ? "desc" : "asc"}
+                                            onClick={() => requestSort(key)}
+                                        />
+                                    ) : (
+                                        label
+                                    )}
                                 </th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedDatasets.map((dataset, index) => {
-                            const isLast = index === sortedDatasets.length - 1;
-                            const classes = isLast ? 'py-2 px-2' : 'py-2 px-2 border-b border-blue-gray-50 dark:border-neutral-700';
+                        {sortedDatasets.map((dataset) => {
 
                             return (
-                                <tr key={dataset.id} className="even:bg-blue-gray-50/50 dark:even:bg-neutral-600/30 hover:bg-blue-gray-50 dark:hover:bg-neutral-600/50">
-                                    <td className={classes}>
+                                <tr key={dataset.id} className={TR}>
+                                    <td className={TD}>
                                         <div className="flex items-center gap-2">
                                             {getImportTypeIcon(dataset.format)}
-                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-300">
+                                            <div>
                                                 {dataset.format || '—'}
-                                            </Typography>
+                                            </div>
                                         </div>
                                     </td>
-                                    <td className={classes}>
+                                    <td className={TD}>
                                         <div className="flex flex-col">
-                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-200">
+                                            <div>
                                                 {dataset.caption || dataset.name || '—'}
-                                            </Typography>
+                                            </div>
                                             {dataset.url && (
                                                 <a
                                                     href={dataset.url}
@@ -82,36 +87,36 @@ const DatasetTable = ({ vm, onImportClick }) => {
                                             )}
                                         </div>
                                     </td>
-                                    <td className={classes}>
+                                    <td className={TD}>
                                         <div className="flex items-center gap-2">
                                             {dataset.country && (
                                                 <img
                                                     src={`/flag-svg/${dataset.country.toLowerCase()}.svg`}
                                                     alt={dataset.country}
-                                                    className="h-4 w-6 object-contain border border-blue-gray-50 dark:border-gray-600"
+                                                    className="h-4 w-6 object-contain border border-gray-200 dark:border-neutral-600"
                                                 />
                                             )}
-                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-300">
+                                            <div>
                                                 {dataset.country || '—'}
-                                            </Typography>
+                                            </div>
                                         </div>
                                     </td>
-                                    <td className={classes}>
-                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-300">
+                                    <td className={TD}>
+                                        <div>
                                             {convertDate(dataset.last_updated_at) || '—'}
-                                        </Typography>
+                                        </div>
                                     </td>
-                                    <td className={classes}>
-                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-300">
+                                    <td className={TD}>
+                                        <div>
                                             {dataset.updated_by_name || 'N/A'}
-                                        </Typography>
+                                        </div>
                                     </td>
-                                    <td className={classes}>
-                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-300">
+                                    <td className={TD}>
+                                        <div>
                                             {dataset.last_run_record_count ?? '—'}
-                                        </Typography>
+                                        </div>
                                     </td>
-                                    <td className={classes}>
+                                    <td className={TD}>
                                         {dataset.last_import_log ? (
                                             <div className="flex items-center gap-2">
                                                 <StatusChip
@@ -128,25 +133,25 @@ const DatasetTable = ({ vm, onImportClick }) => {
                                                             variant="text"
                                                             size="sm"
                                                             onClick={() => handleOpenDetails({ logId: dataset.last_import_log.id })}
-                                                            className="dark:text-gray-400 dark:hover:text-gray-200"
+                                                            
                                                         >
-                                                            <i className="fa-solid fa-circle-info text-blue-gray-500 dark:text-gray-400" />
+                                                            <i className="fa-solid fa-circle-info text-gray-600 dark:text-gray-400" />
                                                         </IconButton>
                                                     </Tooltip>
                                                 )}
                                             </div>
                                         ) : (
-                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-50 dark:text-gray-500">
+                                            <div className="text-gray-600 dark:text-gray-400">
                                                 -
-                                            </Typography>
+                                            </div>
                                         )}
                                     </td>
-                                    <td className={classes}>
+                                    <td className={TD}>
                                         <div className="flex gap-x-2">
-                                            <Button size="sm" variant="gradient" color="blue" onClick={() => onImportClick(dataset)}>
+                                            <Button size="sm" onClick={() => onImportClick(dataset)}>
                                                 Імпорт
                                             </Button>
-                                            <Button size="sm" variant="outlined" color="blue-gray" onClick={() => setSelectedDataset(dataset)} className="dark:text-gray-300 dark:border-neutral-500 dark:hover:bg-neutral-600">
+                                            <Button size="sm" color="secondary" onClick={() => setSelectedDataset(dataset)}>
                                                 Журнал
                                             </Button>
                                         </div>
@@ -154,9 +159,16 @@ const DatasetTable = ({ vm, onImportClick }) => {
                                 </tr>
                             );
                         })}
+                        {sortedDatasets.length === 0 && (
+                            <tr>
+                                <td colSpan={COLUMNS.length} className={TD_EMPTY}>
+                                    {vm.datasetsQuery.isPending ? "Завантаження датасетів…" : "Датасетів немає"}
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
-            </Card>
+            </div>
 
             <ImportDatasetResultDialog
                 open={!!selectedDataset}

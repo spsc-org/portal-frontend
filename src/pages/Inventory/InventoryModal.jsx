@@ -19,7 +19,9 @@ const InventoryModal = ({open, onClose, dictionary, id, isClone = false}) => {
 
     return (
         <Modal open={open} size="lg" handler={onClose}>
-            <ModalHeader>{dialogTitle}</ModalHeader>
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">{dialogTitle}</h3>
+            </ModalHeader>
             <ModalBody>
                 <div className="grid grid-cols-2 gap-4">
                     <Input error={errors?.caption} label="Опис" value={form.caption}

@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
 import { NOTIFICATION_CHANNEL_COLUMNS } from './notificationChannels.js';
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "./Table/tableStyles.js";
 
 /**
  * Спільна таблиця "категорія × канал" — використовується і на `/settings`
@@ -17,31 +19,31 @@ const NotificationCategoryTable = ({ categories, onToggle, disabled = false, rea
     }
 
     return (
-        <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-neutral-700">
-            <table className="w-full border-collapse text-xs">
+        <div className={twMerge(TABLE_WRAP, "")}>
+            <table className={twMerge(TABLE, "w-full")}>
                 <thead>
-                    <tr className="border-b border-gray-200 bg-gray-50 dark:border-neutral-700 dark:bg-neutral-700/60">
-                        <th className="px-3 py-2 text-left font-medium text-gray-600 dark:text-gray-400">
+                    <tr>
+                        <th className={twMerge(TH, "text-left")}>
                             Категорія
                         </th>
                         {NOTIFICATION_CHANNEL_COLUMNS.map((col) => (
-                            <th key={col.channel} className="w-24 px-3 py-2 text-center font-medium text-gray-600 dark:text-gray-400">
+                            <th key={col.channel} className={twMerge(TH, "w-24 text-center")}>
                                 {col.label}
                             </th>
                         ))}
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-neutral-700">
+                <tbody>
                     {categories.map((item) => (
                         <Fragment key={item.category}>
-                            <tr className="bg-white dark:bg-neutral-800">
-                                <td className="px-3 py-2 font-medium text-gray-800 dark:text-gray-200">
+                            <tr className={TR}>
+                                <td className={twMerge(TD, "font-medium")}>
                                     {item.label}
                                 </td>
                                 {NOTIFICATION_CHANNEL_COLUMNS.map((col) => {
                                     const ch = item.channels.find((c) => c.channel === col.channel);
                                     return (
-                                        <td key={col.channel} className="px-3 py-2 text-center">
+                                        <td key={col.channel} className={twMerge(TD, "text-center")}>
                                             {ch ? (
                                                 <input
                                                     type="checkbox"

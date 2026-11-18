@@ -10,7 +10,7 @@ import VesselImoImportDialog from "./view/VesselImo/VesselImoImportDialog.jsx";
 import VesselImoDetailsImportDialog from "./view/VesselImo/VesselImoDetailsImportDialog.jsx";
 
 const VesselImoView = observer(({ vm }) => (
-    <IntegrationsLayout data-i-doc="page:integrations-vessel-imo" active="vessel-imo" canRead={vm.canRead}>
+    <IntegrationsLayout data-i-doc="page:integrations-vessel-imo" canRead={vm.canRead}>
         <VesselImoTable lists={vm.lists} onImportClick={vm.openListsImport}/>
         <VesselImoDetailsTable list={vm.details} onImportClick={vm.openDetailsImport}/>
         <VesselImoLogTable list={vm.logs}/>

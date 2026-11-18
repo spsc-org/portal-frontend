@@ -16,7 +16,7 @@ const cardButtonClasses = (color) =>
     `cmd-btn ${color} text-white font-bold py-2 px-4 rounded inline-flex items-center shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed`;
 
 const ToolCard = ({step, color, icon, title, description, children, onRun, isRunning, disabled}) => (
-    <div data-i-doc="page:develop-dossier" className="bg-white dark:bg-neutral-700 shadow-md rounded-lg p-6 mb-6">
+    <div data-i-doc="page:develop-dossier" className="bg-white dark:bg-neutral-800 rounded-xl p-6 mb-6 border border-gray-200 dark:border-neutral-700">
         <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2">
             <span className={`flex-none min-w-[1.5rem] h-6 px-1 rounded-full ${color} text-white text-xs font-bold flex items-center justify-center`}>
                 {step}

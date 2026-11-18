@@ -1,5 +1,4 @@
 import { observer } from "mobx-react-lite";
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import { LabeledInput, LabeledTextarea } from "../../../components/fields/LabeledField.jsx";
@@ -14,7 +13,7 @@ const PhoneFormModal = ({ entry = null, onClose, onCreated }) => {
     return (
         <Modal data-i-doc={vm.isEditing ? "modal:handbook-phone-edit" : "modal:handbook-phone-create"} open handler={onClose} size="sm">
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">{vm.isEditing ? "Редагування запису" : "Новий запис"}</Typography>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">{vm.isEditing ? "Редагування запису" : "Новий запис"}</h3>
             </ModalHeader>
             <ModalBody className="flex max-h-[70vh] flex-col gap-4 overflow-y-auto">
                 <LabeledInput

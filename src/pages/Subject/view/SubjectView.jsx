@@ -5,13 +5,11 @@ import { Tooltip } from "@material-tailwind/react"
 import Button from "../../../components/Buttons/Button.jsx"
 import Page from "../../../components/Page.jsx";
 import Table from "../../../components/Table/Table.jsx";
-import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import SingleSelect from "../../../components/fields/SingleSelect.jsx";
 import SubjectDetailsModal from "./SubjectDetailsModal.jsx";
 
 const columnHelper = createColumnHelper();
-const savedSize = (key, fallback = 150) => loadColumnSizes()?.find((item) => item.column === key)?.size || fallback;
 
 const SummaryData = ({ data }) => {
     if (!data || !(data instanceof Object)) return null;
@@ -27,21 +25,21 @@ function useSubjectColumns(vm) {
     return useMemo(() => [
         columnHelper.accessor("typeId", {
             id: "typeId",
-            size: savedSize("typeId"),
+            size: 150,
             header: () => "Тип суб'єкта",
             cell: (info) => (info.getValue() ? <span>{vm.subjectTypeCaption(info.getValue())} </span> : ""),
         }),
-        columnHelper.accessor("caption", { id: "caption", size: savedSize("caption"), header: () => "Caption" }),
+        columnHelper.accessor("caption", { id: "caption", size: 150, header: () => "Caption" }),
         columnHelper.accessor("summaryData", {
             id: "summaryData",
-            size: savedSize("summaryData"),
+            size: 150,
             header: () => "Ідентифікаційні дані",
             enableSorting: false,
             cell: (info) => <SummaryData data={info.getValue()}/>,
         }),
         columnHelper.accessor("relProjectsCount", {
             id: "relProjectsCount",
-            size: savedSize("relProjectsCount"),
+            size: 150,
             header: () => "К-сть проєктів",
             cell: (info) => info.getValue() || 0,
         }),
@@ -95,7 +93,6 @@ const SubjectView = ({ vm }) => {
                 <Table
                     loading={vm.isLoading}
                     canChangeVisibility
-                    canChangeResize
                     textSize="xs"
                     pagination={vm.pagination}
                     data={vm.rows}

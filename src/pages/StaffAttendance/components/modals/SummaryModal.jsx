@@ -6,6 +6,8 @@ import { Modal, ModalHeader } from "../../../../components/Modal/Modal.jsx"
 import CloseButton from "../../../../components/Buttons/CloseButton.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
 import AdvancedSelectWithDefaults from '../../../../components/fields/AdvancedSelectWithDefaults.jsx';
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../../components/Table/tableStyles.js";
 
 const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
     const vm = useViewModel((deps) => new SummaryViewModel({ ...deps, initialFilters }));
@@ -109,11 +111,11 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                         Немає даних для обраного періоду
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full border-collapse border border-gray-300 dark:border-gray-600">
+                    <div className={twMerge(TABLE_WRAP, "")}>
+                        <table className={twMerge(TABLE, "w-full")}>
                             <thead>
-                                <tr className="bg-gray-200 dark:bg-neutral-700">
-                                    <th className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-left text-sm font-bold min-w-[200px]">
+                                <tr>
+                                    <th className={twMerge(TH, "text-left min-w-[200px]")}>
                                         Співробітник
                                     </th>
                                     {columns.map((type) => {
@@ -121,9 +123,8 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                                         return (
                                             <th
                                                 key={type}
-                                                className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold min-w-[80px]"
-                                                style={{ borderTopColor: typeConfig?.color, borderTopWidth: '3px' }}
-                                            >
+                                                className={twMerge(TH, "text-center min-w-[80px]")}
+                                                style={{ borderTopColor: typeConfig?.color, borderTopWidth: '3px' }}>
                                                 <div className="flex flex-col items-center gap-1">
                                                     <span
                                                         className="w-3 h-3 rounded-sm"
@@ -138,8 +139,8 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                             </thead>
                             <tbody>
                                 {rows.map((row) => (
-                                    <tr key={row.user_id} className="hover:bg-gray-50 dark:hover:bg-neutral-800/30">
-                                        <td className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm font-medium">
+                                    <tr key={row.user_id} className={TR}>
+                                        <td className={twMerge(TD, "font-medium")}>
                                             {row.user_name}
                                         </td>
                                         {columns.map((type) => {
@@ -148,11 +149,10 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                                             return (
                                                 <td
                                                     key={`${row.user_id}-${type}`}
-                                                    className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center font-medium transition-colors"
+                                                    className={twMerge(TD, "text-center transition-colors font-medium")}
                                                     style={{
                                                         backgroundColor: days > 0 ? `${typeConfig?.color}20` : 'transparent',
-                                                    }}
-                                                >
+                                                    }}>
                                                     {days > 0 ? (
                                                         <span style={{ color: typeConfig?.color }}>
                                                             {days}
@@ -165,8 +165,8 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                                         })}
                                     </tr>
                                 ))}
-                                <tr className="bg-gray-200 dark:bg-neutral-700 font-bold">
-                                    <td className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm">
+                                <tr className={TR}>
+                                    <td className={TD}>
                                         Разом
                                     </td>
                                     {columns.map((type) => {
@@ -175,11 +175,10 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                                         return (
                                             <td
                                                 key={`total-${type}`}
-                                                className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center"
+                                                className={twMerge(TD, "text-center")}
                                                 style={{
                                                     backgroundColor: total > 0 ? `${typeConfig?.color}30` : 'transparent',
-                                                }}
-                                            >
+                                                }}>
                                                 {total > 0 ? (
                                                     <span style={{ color: typeConfig?.color }}>
                                                         {total}

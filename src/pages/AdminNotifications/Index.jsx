@@ -41,7 +41,7 @@ class AdminNotificationsViewModel {
 // ---- View ----------------------------------------------------------------
 
 const AdminNotificationsView = observer(({ vm }) => (
-    <AdminLayout data-i-doc="page:admin-notifications" active="notifications">
+    <AdminLayout data-i-doc="page:admin-notifications">
         <div className="mx-2 mt-5 max-w-2xl">
             <div className="mb-3">
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">

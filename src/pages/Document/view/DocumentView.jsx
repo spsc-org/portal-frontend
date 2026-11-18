@@ -5,7 +5,6 @@ import { Badge, Tooltip } from "@material-tailwind/react"
 import Button from "../../../components/Buttons/Button.jsx"
 import { convertDate } from "../../../lib/utils.js";
 import Table from "../../../components/Table/Table.jsx";
-import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import Page from "../../../components/Page.jsx";
 import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
 import SearchInput from "../../../components/fields/SearchInput.jsx";
@@ -17,7 +16,6 @@ import PageHeader from "../../../layouts/app/PageHeader.jsx";
 import { HeaderButton } from "../../../layouts/app/HeaderButtons.jsx";
 
 const columnHelper = createColumnHelper();
-const savedSize = (key, fallback) => loadColumnSizes()?.find((item) => item.column === key)?.size || fallback;
 
 const getColor = (id) => {
     switch (id) {
@@ -45,7 +43,7 @@ function useDocumentColumns(vm) {
     return useMemo(() => [
         columnHelper.accessor("typeId", {
             id: 'typeId',
-            size: savedSize('typeId', 220),
+            size: 220,
             header: () => 'Тип',
             cell: ({ row }) => (
                 <div className="inline-flex gap-x-2 items-center p-2">
@@ -58,18 +56,18 @@ function useDocumentColumns(vm) {
                 </div>
             ),
         }),
-        columnHelper.accessor("unitId", { id: 'unitId', size: savedSize('unitId', 100), header: () => 'Підрозділ' }),
-        columnHelper.accessor("caption", { id: 'caption', size: savedSize('caption', 250), header: () => 'Назва', cell: (info) => info.getValue() }),
-        columnHelper.accessor("regNum", { id: 'regNum', size: savedSize('regNum', 200), header: () => 'Реєстраційний номер', cell: (info) => info.getValue() }),
-        columnHelper.accessor("regDate", { id: 'regDate', size: savedSize('regDate', 100), header: () => 'Дата реєстрації', cell: dateCell }),
-        columnHelper.accessor("listItem", { id: 'listItem', size: savedSize('listItem', 100), header: () => 'Пункт переліку', cell: (info) => info.getValue() || ' ---- ' }),
-        columnHelper.accessor("path", { id: 'path', size: savedSize('path', 200), header: () => 'Шлях', enableSorting: false, cell: (info) => info.getValue() }),
-        columnHelper.accessor("comments", { id: 'comments', size: savedSize('comments', 150), header: () => 'Коментар', enableSorting: false, cell: (info) => info.getValue() }),
-        columnHelper.accessor('performerId', { id: "performerId", header: () => 'Виконавець', cell: (props) => props.getValue(), size: savedSize('createdUserId', 200) }),
+        columnHelper.accessor("unitId", { id: 'unitId', size: 100, header: () => 'Підрозділ' }),
+        columnHelper.accessor("caption", { id: 'caption', size: 250, header: () => 'Назва', cell: (info) => info.getValue() }),
+        columnHelper.accessor("regNum", { id: 'regNum', size: 200, header: () => 'Реєстраційний номер', cell: (info) => info.getValue() }),
+        columnHelper.accessor("regDate", { id: 'regDate', size: 100, header: () => 'Дата реєстрації', cell: dateCell }),
+        columnHelper.accessor("listItem", { id: 'listItem', size: 100, header: () => 'Пункт переліку', cell: (info) => info.getValue() || ' ---- ' }),
+        columnHelper.accessor("path", { id: 'path', size: 200, header: () => 'Шлях', enableSorting: false, cell: (info) => info.getValue() }),
+        columnHelper.accessor("comments", { id: 'comments', size: 150, header: () => 'Коментар', enableSorting: false, cell: (info) => info.getValue() }),
+        columnHelper.accessor('performerId', { id: "performerId", header: () => 'Виконавець', cell: (props) => props.getValue(), size: 200 }),
         columnHelper.accessor('createdAt', { id: "createdAt", header: () => 'Дата створення', cell: dateCell, size: 100 }),
-        columnHelper.accessor("createdUserId", { id: 'createdUserId', size: savedSize('createdUserId', 250), header: () => 'Створив' }),
+        columnHelper.accessor("createdUserId", { id: 'createdUserId', size: 250, header: () => 'Створив' }),
         columnHelper.accessor('updatedAt', { id: "updatedAt", header: () => 'Дата зміни', cell: dateCell, size: 100 }),
-        columnHelper.accessor("updatedUserId", { id: 'updatedUserId', size: savedSize('updatedUserId', 250), header: () => 'Змінив', cell: (props) => props.getValue() }),
+        columnHelper.accessor("updatedUserId", { id: 'updatedUserId', size: 250, header: () => 'Змінив', cell: (props) => props.getValue() }),
         columnHelper.accessor('deleted_at', { id: "deleted_at", header: () => 'Дата видалення', cell: dateCell, size: 100, enableResizing: false }),
         columnHelper.display({
             id: 'actions',
@@ -176,7 +174,6 @@ const DocumentView = ({ vm }) => {
                     onDoubleClick={(row) => vm.select(row?.id)}
                     loading={vm.isFetching}
                     canChangeVisibility
-                    canChangeResize
                     textSize="xs"
                     pagination={vm.pagination}
                     data={vm.documents?.data}

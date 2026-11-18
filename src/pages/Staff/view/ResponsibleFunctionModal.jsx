@@ -15,7 +15,9 @@ const ResponsibleFunctionModalInner = observer(({open, onClose, func = null}) =>
 
     return (
         <Modal data-i-doc="modal:staff-responsible-function" open={open} handler={onClose} size="sm">
-            <ModalHeader>{isEditing ? "Редагувати функцію" : "Нова функція"}</ModalHeader>
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">{isEditing ? "Редагувати функцію" : "Нова функція"}</h3>
+            </ModalHeader>
             <ModalBody className="flex flex-col gap-3">
                 <LabeledInput
                     label="Назва"

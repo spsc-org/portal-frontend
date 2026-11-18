@@ -86,7 +86,6 @@ const ValidationView = ({ vm }) => {
                     <Table
                         loading={vm.isFetching}
                         canChangeVisibility
-                        canChangeResize
                         textSize="xs"
                         data={vm.rows}
                         columns={columns}

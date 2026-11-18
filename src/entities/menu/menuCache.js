@@ -97,14 +97,18 @@ export function resolveMenuItems(menu) {
  * тож прибираємо їх тут, а не в бекенді. /project/v2 ("Нова версія") — у SPA це вже
  * основна сторінка /project (маршрут /project/v2 лише перенаправляє туди).
  */
-const SPA_HIDDEN_HREFS = new Set(['/project/v2'])
+// /integrations-export-v2, -v3 — Inertia-сторінки, у SPA ще не перенесені (маршрутів немає).
+const SPA_HIDDEN_HREFS = new Set(['/project/v2', '/integrations-export-v2', '/integrations-export-v3'])
 // Легасі-сторінки: пункт лишається в меню, але позначений і веде на екран "доступ закрито".
 const SPA_LEGACY_HREFS = new Set(['/dictionary/identify'])
+// Групи, які в SPA розкриваються підменю в сайдбарі, хоча бекенд (спільно з legacy
+// Blade-сайдбаром) віддає їх з expandable:false і другим меню на сторінці.
+const SPA_EXPANDABLE_KEYS = new Set(['integrations', 'admin'])
 
 function withoutSpaHiddenLinks(item) {
   if (!Array.isArray(item.submenu)) return item
   const submenu = item.submenu
     .filter((sub) => !SPA_HIDDEN_HREFS.has(sub?.href))
     .map((sub) => (SPA_LEGACY_HREFS.has(sub?.href) ? { ...sub, legacy: true } : sub))
-  return { ...item, submenu }
+  return SPA_EXPANDABLE_KEYS.has(item.key) ? { ...item, submenu, expandable: true } : { ...item, submenu }
 }

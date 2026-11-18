@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { ProjectDetailsViewModel } from "./ProjectDetailsViewModel.js";
-import { Spinner, Typography } from "@material-tailwind/react"
+import { Spinner } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
 import Button from "../../components/Buttons/Button.jsx"
 import DetailsLayout from "./DetailsLayout.jsx";
@@ -17,9 +17,9 @@ const ProjectDetails = ({open, onClose, id}) => {
             <ModalHeader>
                 <div className="flex flex-col gap-1">
                     <div className="flex space-x-1">
-                        <Typography variant="h4" className="dark:text-gray-200">
+                        <h4 className="text-base font-bold text-gray-800 dark:text-gray-200">
                             Проєкт: {project?.actionType}
-                        </Typography>
+                        </h4>
                         {/*{*/}
                         {/*    Boolean(auth?.user?.permissions?.pages?.project?.update) &&*/}
                         {/*    <Link href={`/project/new/${id}/edit`}>*/}
@@ -29,7 +29,7 @@ const ProjectDetails = ({open, onClose, id}) => {
                         {/*    </Link>*/}
                         {/*}*/}
                     </div>
-                    <Typography variant="small">ID: {project?.id}</Typography>
+                    <div className="text-sm text-gray-700 dark:text-gray-300">ID: {project?.id}</div>
                 </div>
             </ModalHeader>
             <ModalBody className="relative overflow-y-auto">

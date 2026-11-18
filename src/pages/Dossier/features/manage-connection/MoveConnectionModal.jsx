@@ -1,5 +1,4 @@
 import {useState} from "react";
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
 import ProfilesMasterList from "../../widgets/ProfilesMasterList/ProfilesMasterList.jsx";
@@ -34,7 +33,7 @@ const MoveConnectionModal = ({open, currentProfileId, isPending, onClose, onConf
             className="border"
             overlayProps={{className: "bg-black/20 backdrop-blur-none"}}>
             <ModalHeader>
-                <Typography variant="h5">Перенести зв'язок</Typography>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Перенести зв'язок</h3>
             </ModalHeader>
             <ModalBody className="p-0 h-[80vh] overflow-hidden flex">
                 <ProfilesMasterList

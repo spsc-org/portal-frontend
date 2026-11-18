@@ -8,6 +8,8 @@ import ConfirmModal from "../../components/Modal/ConfirmModal.jsx";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { usePageTitle } from "../../shared/hooks/usePageTitle.js";
 import { ReasonRulesViewModel, reasonRuleErrorMessage as getErrorMessage } from "./viewmodel/ReasonRulesViewModel.js";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TD, TH, TR } from "../../components/Table/tableStyles.js";
 
 const CATEGORY_OPTIONS = [
     { value: "warning", label: "Увага" },
@@ -84,7 +86,7 @@ const ReasonRulesPage = () => {
         <>
             <Page>
                 <div data-i-doc="page:project-reason-rules" className="mx-auto mt-6 max-w-5xl px-4">
-                    <div className="mb-6 rounded-lg bg-white p-6 shadow-md dark:bg-neutral-700">
+                    <div className="mb-6 rounded-xl bg-white p-6 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700">
                         <p className="mb-1 text-sm text-gray-600 dark:text-gray-400">
                             Глобальні правила застосовуються до всіх користувачів під час перевірки
                             обґрунтування проєкту. Правила <strong>персональні</strong> (налаштовані
@@ -103,7 +105,7 @@ const ReasonRulesPage = () => {
                         </div>
                     </div>
 
-                    <div className="mb-6 rounded-lg bg-white p-6 shadow-md dark:bg-neutral-700">
+                    <div className="mb-6 rounded-xl bg-white p-6 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700">
                         <h2 className="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Додати правило</h2>
                         <div className="flex flex-wrap items-end gap-3">
                             <div className="min-w-[240px] flex-1">
@@ -202,25 +204,25 @@ const ReasonRulesPage = () => {
                         )}
 
                         {!isLoading && visibleRules.length > 0 && (
-                            <table className="w-full text-sm">
-                                <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-600 dark:bg-neutral-800 dark:text-gray-400">
+                            <table className={twMerge(TABLE, "w-full")}>
+                                <thead>
                                     <tr>
-                                        <th className="px-4 py-3 text-left">Фраза</th>
-                                        <th className="w-[120px] px-4 py-3 text-left">Категорія</th>
-                                        <th className="w-[180px] px-4 py-3 text-left">Країна</th>
-                                        <th className="w-[120px] px-4 py-3 text-left">Поле</th>
-                                        <th className="w-[100px] px-4 py-3 text-center">Регістр</th>
-                                        <th className="w-[80px] px-4 py-3 text-center">Активне</th>
-                                        <th className="w-[80px] px-4 py-3 text-right">Дії</th>
+                                        <th className={twMerge(TH, "text-left")}>Фраза</th>
+                                        <th className={twMerge(TH, "w-[120px] text-left")}>Категорія</th>
+                                        <th className={twMerge(TH, "w-[180px] text-left")}>Країна</th>
+                                        <th className={twMerge(TH, "w-[120px] text-left")}>Поле</th>
+                                        <th className={twMerge(TH, "w-[100px] text-center")}>Регістр</th>
+                                        <th className={twMerge(TH, "w-[80px] text-center")}>Активне</th>
+                                        <th className={twMerge(TH, "w-[80px] text-right")}>Дії</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100 dark:divide-neutral-700">
+                                <tbody>
                                     {visibleRules.map((r) => (
-                                        <tr key={r.id} className={`transition hover:bg-gray-50 dark:hover:bg-neutral-600/50 ${r.is_active ? "" : "opacity-50"}`}>
-                                            <td className="px-4 py-3">
+                                        <tr key={r.id} className={twMerge(TR, `transition hover:bg-gray-50 dark:hover:bg-neutral-600/50 ${r.is_active ? "" : "opacity-50"}`)}>
+                                            <td className={TD}>
                                                 <span className="font-mono text-gray-800 dark:text-gray-200">{r.phrase}</span>
                                             </td>
-                                            <td className="px-4 py-3">
+                                            <td className={TD}>
                                                 <select
                                                     value={r.category}
                                                     onChange={(e) => patchRule(r.id, { category: e.target.value }, "Категорію змінено")}
@@ -229,7 +231,7 @@ const ReasonRulesPage = () => {
                                                     {CATEGORY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                                                 </select>
                                             </td>
-                                            <td className="px-4 py-3 text-sm">
+                                            <td className={TD}>
                                                 <select
                                                     value={r.target_country_id ?? ""}
                                                     onChange={(e) => patchRule(r.id, { target_country_id: e.target.value || null }, "Країну змінено")}
@@ -239,10 +241,10 @@ const ReasonRulesPage = () => {
                                                     {sortedCountries.map((c) => <option key={c.id} value={c.id}>{countryName(c)}</option>)}
                                                 </select>
                                             </td>
-                                            <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                                            <td className={TD}>
                                                 {r.field_type === "reasoning" ? "Обґрунтування" : r.field_type}
                                             </td>
-                                            <td className="px-4 py-3 text-center">
+                                            <td className={twMerge(TD, "text-center")}>
                                                 <input
                                                     type="checkbox"
                                                     checked={r.is_case_sensitive}
@@ -250,7 +252,7 @@ const ReasonRulesPage = () => {
                                                     className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 dark:border-gray-600"
                                                 />
                                             </td>
-                                            <td className="px-4 py-3 text-center">
+                                            <td className={twMerge(TD, "text-center")}>
                                                 <button
                                                     type="button"
                                                     title={r.is_active ? "Деактивувати" : "Активувати"}
@@ -260,7 +262,7 @@ const ReasonRulesPage = () => {
                                                     <i className={`fa-solid ${r.is_active ? "fa-toggle-on" : "fa-toggle-off"} text-xl`} />
                                                 </button>
                                             </td>
-                                            <td className="px-4 py-3 text-right">
+                                            <td className={twMerge(TD, "text-right")}>
                                                 <Tooltip content="Видалити">
                                                     <IconButton size="sm" variant="text" onClick={() => setDeleteTarget(r)} className="text-gray-600 hover:text-red-600 dark:text-gray-500">
                                                         <i className="fa-solid fa-trash-can" />

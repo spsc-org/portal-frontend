@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
 import { observer } from "mobx-react-lite";
 import { useVM } from "../../../../shared/mvvm/index.js";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../../components/Table/tableStyles.js";
 
 // tab-3 — "Лог операцій". `data` (JSON) містить `projectIdList` — показуємо
 // як список id через кому (так само, як processData() у cartManager.js);
@@ -44,35 +46,35 @@ const BulkActionsLogTab = () => {
                 </span>
             </div>
 
-            <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-sm">
+            <div className={twMerge(TABLE_WRAP, "")}>
+                <table className={twMerge(TABLE, "w-full")}>
                     <thead>
-                        <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 dark:border-neutral-600 dark:bg-neutral-700 dark:text-gray-400">
-                            <th className="whitespace-nowrap px-3 py-2">ID</th>
-                            <th className="whitespace-nowrap px-3 py-2">Операція</th>
-                            <th className="whitespace-nowrap px-3 py-2">Причина</th>
-                            <th className="whitespace-nowrap px-3 py-2">Проєкти</th>
-                            <th className="min-w-[260px] px-3 py-2">Лог</th>
-                            <th className="whitespace-nowrap px-3 py-2">Стан</th>
-                            <th className="whitespace-nowrap px-3 py-2">Дата</th>
+                        <tr className="text-left">
+                            <th className={twMerge(TH, "whitespace-nowrap")}>ID</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Операція</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Причина</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Проєкти</th>
+                            <th className={twMerge(TH, "min-w-[260px]")}>Лог</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Стан</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Дата</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-neutral-700">
+                    <tbody>
                         {isLoading && (
-                            <tr><td colSpan={7} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">Завантаження…</td></tr>
+                            <tr className={TR}><td colSpan={7} className={twMerge(TD, "text-center")}>Завантаження…</td></tr>
                         )}
                         {!isLoading && rows.length === 0 && (
-                            <tr><td colSpan={7} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">Журнал порожній</td></tr>
+                            <tr className={TR}><td colSpan={7} className={twMerge(TD, "text-center")}>Журнал порожній</td></tr>
                         )}
                         {rows.map((item) => {
                             const logLines = processLogText(item.log);
                             return (
-                            <tr key={item.id} className="align-top text-gray-700 dark:text-gray-200">
-                                <td className="whitespace-nowrap px-3 py-2">{item.id}</td>
-                                <td className="whitespace-nowrap px-3 py-2">{item.bulkName || ""}</td>
-                                <td className="px-3 py-2">{item.reason || ""}</td>
-                                <td className="px-3 py-2">{processLogData(item.data)}</td>
-                                <td className="px-3 py-2">
+                            <tr key={item.id} className={twMerge(TR, "align-top")}>
+                                <td className={twMerge(TD, "whitespace-nowrap")}>{item.id}</td>
+                                <td className={twMerge(TD, "whitespace-nowrap")}>{item.bulkName || ""}</td>
+                                <td className={TD}>{item.reason || ""}</td>
+                                <td className={TD}>{processLogData(item.data)}</td>
+                                <td className={TD}>
                                     {logLines.map((line, i) => (
                                         <React.Fragment key={i}>
                                             {line}
@@ -80,10 +82,10 @@ const BulkActionsLogTab = () => {
                                         </React.Fragment>
                                     ))}
                                 </td>
-                                <td className="whitespace-nowrap px-3 py-2">
+                                <td className={twMerge(TD, "whitespace-nowrap")}>
                                     <span className={`rounded px-1.5 ${stateClass(item.state)}`}>{item.state}</span>
                                 </td>
-                                <td className="whitespace-nowrap px-3 py-2">{item.createdAt || ""}</td>
+                                <td className={twMerge(TD, "whitespace-nowrap")}>{item.createdAt || ""}</td>
                             </tr>
                             );
                         })}

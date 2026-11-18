@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { GenerateDossiersViewModel } from "../viewmodel/ProposalViewModels.js";
-import { Radio, Switch, Typography } from "@material-tailwind/react"
+import { Radio, Switch } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
@@ -16,12 +16,12 @@ const GenerateDossiersModal = ({open = false, onClose, ...dialogProps}) => {
     return (
         <Modal data-i-doc="modal:proposal-view-generate-dossiers" open={open} handler={onClose} size="sm">
             <ModalHeader>
-                <span>Згенерувати досьє</span>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase"><span>Згенерувати досьє</span></h3>
             </ModalHeader>
             <ModalBody className="overflow-y-auto max-h-[calc(100vh-200px)]">
-                <Typography variant="small" className="dark:text-gray-400 mb-2">
+                <div className="text-sm text-gray-700 dark:text-gray-400 mb-2">
                     Генерація досьє для готових проєктів подання (зі станами «Готово» та «Є питання»).
-                </Typography>
+                </div>
                 <div className="flex flex-col space-y-4">
                     <Switch ripple={false}
                             color="green"
@@ -48,9 +48,9 @@ const GenerateDossiersModal = ({open = false, onClose, ...dialogProps}) => {
                             checked={form.includeNotes}
                             onChange={toggleSwitch}/>
                     <div className="flex flex-col gap-2">
-                        <Typography variant="small" className="font-medium dark:text-gray-300">
+                        <div className="text-sm text-gray-700 font-medium dark:text-gray-300">
                             Формат виводу
-                        </Typography>
+                        </div>
                         <div className="flex gap-4">
                             <Radio name="outputFormat"
                                    label="Word (.docx)"

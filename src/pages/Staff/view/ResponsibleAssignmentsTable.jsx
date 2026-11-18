@@ -15,6 +15,8 @@ import DatePicker from "../../../components/fields/DatePicker.jsx";
 import {LabeledInput} from "../../../components/fields/LabeledField.jsx";
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import {canManageResponsibleAssignment} from "../shared/lib/responsiblePermissions.js";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
 
 // Один модал на створення І редагування — призначення це акт (функція +
@@ -31,7 +33,9 @@ const AssignmentModalInner = observer(({open, onClose, assignment = null, functi
 
     return (
         <Modal data-i-doc="modal:staff-responsible-assignment" open={open} handler={onClose} size="sm">
-            <ModalHeader>{isEditing ? "Редагувати призначення" : "Нове призначення"}</ModalHeader>
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">{isEditing ? "Редагувати призначення" : "Нове призначення"}</h3>
+            </ModalHeader>
             <ModalBody className="flex flex-col gap-3">
                 <SingleSelect id="assignment-function" label="Функція" options={functionOptions} value={func} onChange={setFunc}/>
                 <MultiSelect id="assignment-users" label="Користувачі" options={userOptions} value={selectedUsers} onChange={setSelectedUsers}/>
@@ -87,23 +91,23 @@ const ResponsibleAssignmentsTable = ({vm, auth}) => {
                 }
             </div>
 
-            <div className="max-w-full overflow-x-auto rounded-lg bg-white shadow-md dark:bg-neutral-700">
-                <table className="w-full table-auto text-left text-sm text-gray-600 dark:text-gray-400">
+            <div className={twMerge(TABLE_WRAP, "max-w-full")}>
+                <table className={twMerge(TABLE, "w-full table-auto text-left")}>
                     <thead>
-                        <tr className="bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-gray-400">
-                            <th className="px-3 py-2 font-normal">Функція</th>
-                            <th className="px-3 py-2 font-normal">Користувачі</th>
-                            <th className="px-3 py-2 font-normal">Підстава</th>
-                            <th className="px-3 py-2 font-normal">З дати</th>
-                            <th className="px-3 py-2 font-normal">До дати</th>
-                            <th className="px-3 py-2 font-normal">Статус</th>
-                            <th className="px-3 py-2 font-normal">Дії</th>
+                        <tr>
+                            <th className={TH}>Функція</th>
+                            <th className={TH}>Користувачі</th>
+                            <th className={TH}>Підстава</th>
+                            <th className={TH}>З дати</th>
+                            <th className={TH}>До дати</th>
+                            <th className={TH}>Статус</th>
+                            <th className={TH}>Дії</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                    <tbody>
                         {!isLoading && filtered.length === 0 &&
-                            <tr>
-                                <td colSpan={7} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">
+                            <tr className={TR}>
+                                <td colSpan={7} className={twMerge(TD, "text-center")}>
                                     {selectedFunctionId != null ? "У цієї функції ще немає призначень" : "Нічого не знайдено"}
                                 </td>
                             </tr>
@@ -113,19 +117,19 @@ const ResponsibleAssignmentsTable = ({vm, auth}) => {
                             const isEnded = Boolean(row.ended_at);
                             return (
                                 <tr key={row.id}
-                                    className={`${isEnded ? "opacity-60" : ""} bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700`}>
-                                    <td className="px-3 py-2 font-semibold text-gray-800 dark:text-gray-200">{row.function?.name || "—"}</td>
-                                    <td className="px-3 py-2">
+                                    className={twMerge(TR, `${isEnded ? "opacity-60" : ""} bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700`)}>
+                                    <td className={twMerge(TD, "font-semibold")}>{row.function?.name || "—"}</td>
+                                    <td className={TD}>
                                         <UserAvatars users={row.users || []}/>
                                     </td>
-                                    <td className="px-3 py-2">{row.reason || "—"}</td>
-                                    <td className="px-3 py-2 whitespace-nowrap">
+                                    <td className={TD}>{row.reason || "—"}</td>
+                                    <td className={twMerge(TD, "whitespace-nowrap")}>
                                         {row.started_at ? format(new Date(row.started_at), "d MMM yyyy", {locale: uk}) : "—"}
                                     </td>
-                                    <td className="px-3 py-2 whitespace-nowrap">
+                                    <td className={twMerge(TD, "whitespace-nowrap")}>
                                         {isEnded ? format(new Date(row.ended_at), "d MMM yyyy", {locale: uk}) : "—"}
                                     </td>
-                                    <td className="px-3 py-2 whitespace-nowrap">
+                                    <td className={twMerge(TD, "whitespace-nowrap")}>
                                         {isEnded
                                             ? <span className="rounded-full bg-gray-200 px-2 py-0.5 text-[10px] font-bold text-gray-600 dark:bg-neutral-600 dark:text-gray-300">
                                                 Скасовано
@@ -135,7 +139,7 @@ const ResponsibleAssignmentsTable = ({vm, auth}) => {
                                             </span>
                                         }
                                     </td>
-                                    <td className="px-3 py-2">
+                                    <td className={TD}>
                                         {canManage &&
                                             <div className="flex items-center gap-1">
                                                 <Tooltip content="Редагувати">

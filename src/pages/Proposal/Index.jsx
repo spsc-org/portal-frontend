@@ -10,7 +10,6 @@ import { Popover, PopoverContent, PopoverHandler, Switch, Tooltip } from "@mater
 import Button from "../../components/Buttons/Button.jsx"
 import {format} from "date-fns";
 import Table from "../../components/Table/Table.jsx";
-import { loadColumnSizes } from "../../components/Table/columnSizes.js";
 import Page from "../../components/Page.jsx";
 import SearchInput from "../../components/fields/SearchInput.jsx";
 import CreateProposalModal from "./CreateProposalModal.jsx";
@@ -83,7 +82,7 @@ const IndexContent = observer(({ vm }) => {
         }),
         columnHelper.accessor("issuerId", {
             id: 'issuerId',
-            size: loadColumnSizes()?.find(item => item.column === 'issuerId')?.size || 150,
+            size: 150,
             header: () => "Суб'єкт подання",
             cell: info => {
                 if (info.getValue()) {
@@ -96,7 +95,7 @@ const IndexContent = observer(({ vm }) => {
         }),
         columnHelper.accessor("stateId", {
             id: 'stateId',
-            size: loadColumnSizes()?.find(item => item.column === 'stateId')?.size || 100,
+            size: 100,
             header: () => 'Стан',
             cell: info => {
                 if (info.getValue()) {
@@ -109,7 +108,7 @@ const IndexContent = observer(({ vm }) => {
         }),
         columnHelper.accessor("caption", {
             id: 'caption',
-            size: loadColumnSizes()?.find(item => item.column === 'caption')?.size || 100,
+            size: 100,
             header: () => 'Назва',
             cell: info => <HighlightedText
                 text={info.getValue()}
@@ -119,7 +118,7 @@ const IndexContent = observer(({ vm }) => {
         }),
         columnHelper.accessor("description", {
             id: 'description',
-            size: loadColumnSizes()?.find(item => item.column === 'description')?.size || 100,
+            size: 100,
             header: () => 'Опис',
             cell: info => {
                 const rawValue = info.getValue();
@@ -132,7 +131,7 @@ const IndexContent = observer(({ vm }) => {
                                 className="inline-flex w-full cursor-pointer max-w-[150px] hover:underline">{displayText}</span>
                         </PopoverHandler>
                         <PopoverContent
-                            className="bg-white dark:bg-neutral-700 shadow-md max-w-lg max-h-80 overflow-auto font-normal text-xs text-gray-600 dark:text-gray-200">
+                            className="bg-white dark:bg-neutral-800 shadow-md max-w-lg max-h-80 overflow-auto font-normal text-xs text-gray-600 dark:text-gray-200 border border-gray-200 dark:border-neutral-700">
                             {rawValue}
                         </PopoverContent>
                     </Popover> : <span>{info.getValue()}</span>
@@ -143,7 +142,7 @@ const IndexContent = observer(({ vm }) => {
         }),
         columnHelper.accessor("calcSummary", {
             id: 'calcSummary',
-            size: loadColumnSizes()?.find(item => item.column === 'calcSummary')?.size || 250,
+            size: 250,
             header: () => 'Summary',
             cell: info => {
                 return <span dangerouslySetInnerHTML={{__html: info.getValue()}}/>
@@ -153,7 +152,7 @@ const IndexContent = observer(({ vm }) => {
         }),
         columnHelper.accessor("decreeIds", {
             id: 'decreeIds',
-            size: loadColumnSizes()?.find(item => item.column === 'decreeIds')?.size || 250,
+            size: 250,
             header: () => 'Указ',
             cell: info => {
                 return (info.getValue() || []).map((item, key) => {
@@ -201,7 +200,7 @@ const IndexContent = observer(({ vm }) => {
                                 className="inline-flex w-full cursor-pointer max-w-[150px] hover:underline">{displayText}</span>
                         </PopoverHandler>
                         <PopoverContent
-                            className="bg-white dark:bg-neutral-700 shadow-md max-w-lg max-h-80 overflow-auto font-normal text-xs text-gray-600 dark:text-gray-200">
+                            className="bg-white dark:bg-neutral-800 shadow-md max-w-lg max-h-80 overflow-auto font-normal text-xs text-gray-600 dark:text-gray-200 border border-gray-200 dark:border-neutral-700">
                             {rawValue}
                         </PopoverContent>
                     </Popover> : <span>{info.getValue()}</span>
@@ -378,7 +377,6 @@ const IndexContent = observer(({ vm }) => {
                     onDoubleClick={(row) => setSelectedId(row?.id)}
                     loading={isFetching}
                     canChangeVisibility
-                    canChangeResize
                     textSize="xs"
                     pagination={{
                         onLimitChange: handleLimit,

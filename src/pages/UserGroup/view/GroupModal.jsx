@@ -12,8 +12,8 @@ const GroupModal = ({ group, onClose }) => {
 
     return (
         <Modal data-i-doc="modal:user-groups-group-modal" open size="sm" handler={onClose} className="border">
-            <ModalHeader className="border-b">
-                {vm.isEdit ? "Редагувати групу" : "Нова група"}
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">{vm.isEdit ? "Редагувати групу" : "Нова група"}</h3>
             </ModalHeader>
             <ModalBody className="flex flex-col gap-4">
                 <Input

@@ -87,7 +87,7 @@ const Index = () => {
                     <Link
                         to="/dossier/tickets"
                         title="Усі тікети модуля Досьє"
-                        className="inline-flex items-center gap-2 h-9 px-3.5 rounded-full text-[12.5px] font-semibold shadow-md transition bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 dark:bg-neutral-700 dark:border-blue-800 dark:text-blue-400"
+                        className="inline-flex items-center gap-2 h-9 px-3.5 rounded-full text-[12.5px] font-semibold shadow-md transition bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 dark:bg-neutral-800 dark:border-blue-800 dark:text-blue-400 border-gray-200"
                     >
                         <i className="fa-solid fa-ticket text-xs"></i>
                         Тікети

@@ -1,5 +1,3 @@
-import { Typography } from '@material-tailwind/react'
-
 // Ширини лейблів для природного вигляду (не однакові прямокутники) —
 // той самий підхід, що й SectionSkeleton/StatCardSkeleton (Welcome).
 const LABEL_WIDTHS = ['w-20', 'w-24', 'w-16', 'w-28', 'w-20', 'w-24', 'w-16', 'w-24', 'w-20', 'w-28']
@@ -7,24 +5,18 @@ const LABEL_WIDTHS = ['w-20', 'w-24', 'w-16', 'w-28', 'w-20', 'w-24', 'w-16', 'w
 /**
  * Плейсхолдер для <nav> у Sidebar.jsx, поки GET /api/me (menu.catalog) ще
  * не відповів — без нього список пунктів меню на мить рендериться порожнім.
+ * Розміри — як у пунктів меню (40px / 44px у згорнутому сайдбарі).
  */
 export default function SidebarNavSkeleton({ open }) {
   return (
-    <div className="animate-pulse" aria-hidden="true">
+    <div className="flex animate-pulse flex-col gap-px" aria-hidden="true">
       {LABEL_WIDTHS.map((width, index) => (
-        <div key={index} className="my-1 flex items-center gap-1">
-          <div className="flex-1 rounded-md border border-transparent px-2 py-1">
-            <span className="flex min-w-0 items-center">
-              <Typography as="div" variant="small" className="h-3 w-3 shrink-0 rounded-full bg-gray-300 dark:bg-neutral-600">
-                &nbsp;
-              </Typography>
-              {open && (
-                <Typography as="div" variant="small" className={`mx-2 h-3 ${width} rounded-full bg-gray-300 dark:bg-neutral-600`}>
-                  &nbsp;
-                </Typography>
-              )}
-            </span>
-          </div>
+        <div
+          key={index}
+          className={open ? 'flex h-7 items-center gap-2 px-2' : 'mx-auto flex h-8 w-8 items-center justify-center'}
+        >
+          <span className="h-3.5 w-3.5 shrink-0 rounded bg-gray-200 dark:bg-neutral-700" />
+          {open && <span className={`h-3 ${width} rounded-full bg-gray-200 dark:bg-neutral-700`} />}
         </div>
       ))}
     </div>

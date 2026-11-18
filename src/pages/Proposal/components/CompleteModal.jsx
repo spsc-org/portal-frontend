@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { CompleteViewModel } from "../viewmodel/ProposalViewModels.js";
 import { useProposalProps } from "../viewmodel/useProposalProps.js";
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
 import Input from "../../../components/fields/Input.jsx";
@@ -26,15 +25,15 @@ const CompleteModal = ({open, onClose, ...dialogProps}) => {
     return (
         <Modal open={open} handler={onClose} size="md">
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                     {title}
-                </Typography>
+                </h3>
             </ModalHeader>
             <ModalBody className="h-[32rem] overflow-y-auto">
                 <div className="grid grid-cols-1 gap-2">
-                    <Typography variant="paragraph" className="font-medium dark:text-gray-400">Виконуючи цю дію
+                    <p className="text-sm text-gray-700 font-medium dark:text-gray-400">Виконуючи цю дію
                         стане
-                        неможливо редагувати та змінювати порядок проєктів.</Typography>
+                        неможливо редагувати та змінювати порядок проєктів.</p>
                     <Input error={errors?.outgoingNumber} placeholder="" label="Реєстраційний номер"
                            value={form.outgoingNumber} name="outgoingNumber"
                            onChange={handleInput}/>

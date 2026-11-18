@@ -1,5 +1,4 @@
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable,} from "@tanstack/react-table";
-import "./index.css"
 import {Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import Pagination from "./Pagination.jsx";
 import {IndeterminateCheckbox} from "./IndeterminateCheckbox.jsx";
@@ -7,23 +6,8 @@ import { Spinner, Tooltip } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../Modal/Modal.jsx"
 import Button from "../Buttons/Button.jsx"
 import PinnedRow from "./PinnedRow.jsx";
-import {loadColumnSizes} from "./columnSizes.js";
-
-const uniqueObjectsArray = (array, object) => {
-    if (!Array.isArray(array) || Object.keys(object).length === 0) return array;
-    const index = array.findIndex(item => item.column === object.column);
-    if (index !== -1) {
-        array[index] = object;
-    } else {
-        array.push(object);
-    }
-    return Array.from(new Map(array.map(item => [item.column, item])).values());
-}
-
-
-const saveColumnSizes = (sizes) => {
-    localStorage.setItem(`${location.pathname}-column-size`, JSON.stringify(sizes));
-};
+import ColumnHeader from "./ColumnHeader.jsx";
+import {TABLE, TABLE_WRAP, TD, TD_EMPTY, TR, TR_MUTED, TR_SELECTED} from "./tableStyles.js";
 
 const columnHelper = createColumnHelper();
 
@@ -46,7 +30,6 @@ const Table = ({
                    canPin = false,
                    loading = false,
                    textSize = 'sm',
-                   canChangeResize = false,
                    // Початковий стан сортування (напр. відновлений з localStorage) —
                    // читається один раз при монтуванні
                    initialSorting = [],
@@ -72,7 +55,6 @@ const Table = ({
     const tableRef = useRef(null);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [sorting, setSorting] = useState(initialSorting);
-    const [columnSizingInfo, setColumnSizingInfo] = useState({});
     const [uncontrolledSelection, setUncontrolledSelection] = useState({});
     const isSelectionControlled = rowSelectionProp !== undefined;
     const rowSelection = isSelectionControlled ? rowSelectionProp : uncontrolledSelection;
@@ -84,17 +66,11 @@ const Table = ({
         }
     }, []);
 
+
+    // Зміну ширини колонок прибрано — чистимо збережені раніше ширини сторінки
     useEffect(() => {
-        if (columnSizingInfo?.startSize && columnSizingInfo.deltaOffset && columnSizingInfo?.isResizingColumn) {
-            const newSize = columnSizingInfo.startSize + (columnSizingInfo.deltaOffset);
-            const colObj = {
-                size: newSize,
-                column: columnSizingInfo?.isResizingColumn
-            }
-            const colSizes = loadColumnSizes();
-            saveColumnSizes(uniqueObjectsArray(colSizes, colObj))
-        }
-    }, [columnSizingInfo])
+        localStorage.removeItem(`${location.pathname}-column-size`);
+    }, []);
 
     useEffect(() => {
         localStorage.setItem(`${location.pathname}-columns`, JSON.stringify(columnVisibility));
@@ -221,7 +197,6 @@ const Table = ({
             rowSelection,
             columnVisibility,
             sorting,
-            columnSizingInfo,
         },
 
         enableRowSelection: canSelect
@@ -245,9 +220,7 @@ const Table = ({
             onSelectRow?.(next);
         },
         onColumnVisibilityChange: setColumnVisibility,
-        onColumnSizingInfoChange: setColumnSizingInfo,
-        columnResizeMode: 'onChange',
-        columnResizeDirection: 'ltr',
+        enableColumnResizing: false,
         getCoreRowModel: getCoreRowModel(),
         debugTable: false,
         debugHeaders: false,
@@ -256,11 +229,6 @@ const Table = ({
 
     const toggleModal = () => {
         setIsOpen(!isOpen);
-    }
-
-    const handleResetColumnSize = () => {
-        localStorage.removeItem(`${location.pathname}-column-size`);
-        table.resetColumnSizing(true)
     }
 
     useLayoutEffect(() => {
@@ -286,21 +254,7 @@ const Table = ({
                     <Pagination onLimitChange={onLimitChange} onPageChange={onPageChange} currentPage={currentPage + 1}
                                 pageSize={pageSize}
                                 totalCount={totalCount}/>
-                    <div className="flex shadow-md items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 p-1 dark:border-neutral-700 dark:bg-neutral-800/60">
-                        {
-                            canChangeResize &&
-                            <Tooltip content="Скинути ширину стовців">
-                                <button
-                                    type="button"
-                                    aria-label="Скинути ширину стовців"
-                                    disabled={!loadColumnSizes().length}
-                                    onClick={handleResetColumnSize}
-                                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200 dark:hover:border-blue-400 dark:hover:bg-neutral-600"
-                                >
-                                    <i className="fa-solid fa-arrows-up-down-left-right text-xs"></i>
-                                </button>
-                            </Tooltip>
-                        }
+                    {canChangeVisibility && <div className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white p-1 dark:border-neutral-700 dark:bg-neutral-800">
                         {
                             canChangeVisibility &&
                             <Tooltip content="Налаштувати видимість стовпців">
@@ -314,75 +268,28 @@ const Table = ({
                                 </button>
                             </Tooltip>
                         }
-                    </div>
+                    </div>}
                 </div>
-                <div
-                    className={`max-w-full shadow-md  sm:rounded-lg bg-white dark:bg-neutral-700 mb-5 text-${textSize}`}>
-                    <table ref={tableRef} className="table-auto  w-full text-left text-gray-600 dark:text-gray-400">
+                <div className={`${TABLE_WRAP} mb-5`}>
+                    <table ref={tableRef} className={`${TABLE} table-auto text-${textSize === "sm" ? "xs" : textSize}`}>
                         <thead>
                         {table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
-                                {headerGroup.headers.map(header => {
-                                    return (
-                                        <th
-                                            className={`px-1 py-0.5 sticky top-0 z-1 text-gray-800 font-normal  bg-gray-200 dark:bg-neutral-600 dark:text-gray-400`}
-                                            key={header.id}
-                                            colSpan={header.colSpan}
-                                            style={{width: header.getSize()}}
-                                        >
-                                            {header.column?.id !== 'select' &&
-                                                <span title={
-                                                    header.column.getCanSort()
-                                                        ? header.column.getNextSortingOrder() === 'asc'
-                                                            ? 'Sort ascending'
-                                                            : header.column.getNextSortingOrder() === 'desc'
-                                                                ? 'Sort descending'
-                                                                : 'Clear sort'
-                                                        : undefined
-                                                } onClick={header.column.getToggleSortingHandler()}
-                                                      className={`${header.column.getCanSort() ? 'cursor-pointer mr-1 ' : ''}`}>
-                                                {
-                                                    header.column.getCanSort() ?
-                                                        {
-                                                            asc: <i className="fa-regular fa-arrow-up"></i>,
-                                                            desc: <i className="fa-regular fa-arrow-down"></i>,
-                                                        }[header.column.getIsSorted()] ??
-                                                        <i className="fa-regular fa-arrow-down-arrow-up"></i> : null
-                                                }
-                                                </span>
-                                            }
-
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext(),
-                                                )}
-                                            {header.column.getCanResize() && (
-                                                <div
-                                                    title="Змінити ширину стовпця"
-                                                    onMouseDown={header.getResizeHandler()}
-                                                    onMouseUp={header.getResizeHandler()}
-                                                    className={`resizer  ${
-                                                        header.column.getIsResizing() ? 'isResizing' : ''
-                                                    } ${header.column.getCanSort()} && 'cursor-pointer`}
-                                                ></div>
-                                            )}
-                                        </th>
-                                    )
-                                })}
+                                {headerGroup.headers.map(header => (
+                                    <ColumnHeader key={header.id} header={header}/>
+                                ))}
                             </tr>
                         ))}
                         </thead>
-                        <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                        <tbody>
                         {table.getTopRows().map(row => (
                             <PinnedRow key={row.id} row={row} table={table}/>
                         ))}
                         {
                             loading ?
-                                <tr className="bg-white text-center dark:bg-neutral-800 border-b dark:border-neutral-700">
-                                    <td colSpan={columns.length}
-                                        className="py-1 text-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <td colSpan={table.getVisibleLeafColumns().length}
+                                        className={TD_EMPTY}>
                                         <span className="inline-flex justify-center items-center py-10">
                                             <Spinner className="h-12 w-12"/>
                                         </span>
@@ -395,9 +302,9 @@ const Table = ({
                                             <tr key={row.id}
                                                 data-id={row.id}
                                                 data-updated={row?.original?.isUpdated}
-                                                className={`${(selectedRowId != null && row?.original?.id === selectedRowId) ? 'bg-blue-100/80 dark:bg-blue-900/40' : (row?.original?.deletedAt || row?.original?.deleted_at) ? 'bg-gray-200 dark:bg-neutral-700' : 'bg-neutral-100 dark:bg-neutral-800'} ${row.original?.isPinned && "hidden"} hover:bg-neutral-200 dark:hover:bg-neutral-700 ${(onDoubleClick || onRowClick) ? 'cursor-pointer' : ''}`}>
+                                                className={`${TR} ${(selectedRowId != null && row?.original?.id === selectedRowId) ? TR_SELECTED : (row?.original?.deletedAt || row?.original?.deleted_at) ? TR_MUTED : ""} ${row.original?.isPinned ? "hidden" : ""} ${(onDoubleClick || onRowClick) ? "cursor-pointer" : ""}`}>
                                                 {row.getVisibleCells().map(cell => (
-                                                    <td className="text-gray-700 dark:text-gray-400 font-mono"
+                                                    <td className={TD}
                                                         key={cell.id}
                                                         {...{
                                                             style: {
@@ -430,19 +337,18 @@ const Table = ({
                                         );
                                     })
                                     :
-                                    <tr className="odd:bg-white text-center odd:dark:bg-neutral-800 even:bg-gray-50 even:dark:bg-neutral-700 border-b dark:border-neutral-700">
-                                        <td colSpan={columns.length}
-                                            className="py-2 text-lg  font-medium text-gray-700 dark:text-gray-400">Відсутні
-                                            записи
+                                    <tr>
+                                        <td colSpan={table.getVisibleLeafColumns().length} className={TD_EMPTY}>
+                                            Відсутні записи
                                         </td>
                                     </tr>
                         }
                         </tbody>
-                        <tfoot className="border border-t border-gray-200 dark:border-neutral-700">
+                        <tfoot>
                         {
                             canSelect ?
-                                <tr className="odd:bg-white odd:dark:bg-neutral-800 even:bg-gray-50 even:dark:bg-neutral-700 border-b dark:border-neutral-700">
-                                    <td className="p-2 font-medium text-gray-700 dark:text-gray-400">
+                                <tr className="bg-gray-50 dark:bg-neutral-900/40">
+                                    <td className={`${TD} border-b-0 py-2`}>
                                         <IndeterminateCheckbox
                                             {...{
                                                 checked: table.getIsAllPageRowsSelected(),
@@ -451,7 +357,7 @@ const Table = ({
                                             }}
                                         />
                                     </td>
-                                    <td colSpan={columns.length}>Рядків обрано
+                                    <td colSpan={columns.length} className={`${TD} border-b-0 py-2 text-gray-600 dark:text-gray-400`}>Рядків обрано
                                         ({table.getSelectedRowModel().rows.length})
                                     </td>
                                 </tr> : null
@@ -464,13 +370,15 @@ const Table = ({
                             totalCount={totalCount}/>
             </div>
             <Modal open={isOpen} size="xs" handler={toggleModal}>
-                <ModalHeader>Оберіть стовпці, які будуть відображатись</ModalHeader>
+                <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Оберіть стовпці, які будуть відображатись</h3>
+            </ModalHeader>
                 <ModalBody className="overflow-y-auto">
                     <div>
-                        <div className="px-1 pb-1 border-b border-solid border-blueGray-200 dark:border-black ">
-                            <label className="cursor-pointer text-gray-600 dark:text-gray-400">
+                        <div className="px-1 pb-1 border-b border-gray-200 dark:border-neutral-700">
+                            <label className="flex cursor-pointer items-center gap-2 text-gray-700 dark:text-gray-300">
                                 <input
-                                    className="cursor-pointer form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-300"
+                                    className="cursor-pointer h-4 w-4 rounded text-blue-600 focus:ring-blue-300"
                                     {...{
                                         type: 'checkbox',
                                         checked: table.getIsAllColumnsVisible(),
@@ -484,9 +392,9 @@ const Table = ({
                             if (column.id === 'select') return;
                             return (
                                 <div key={column.id} className="px-1 py-1">
-                                    <label className="cursor-pointer text-gray-600 dark:text-gray-400">
+                                    <label className="flex cursor-pointer items-center gap-2 text-gray-700 dark:text-gray-300">
                                         <input
-                                            className="cursor-pointer form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-300"
+                                            className="cursor-pointer h-4 w-4 rounded text-blue-600 focus:ring-blue-300"
                                             {...{
                                                 type: 'checkbox',
                                                 checked: column.getIsVisible(),
@@ -501,8 +409,7 @@ const Table = ({
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button
-                        color="gray"
+                    <Button color="secondary"
                         onClick={toggleModal}>
                         <span>Закрити</span>
                     </Button>

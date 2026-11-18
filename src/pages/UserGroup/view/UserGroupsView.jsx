@@ -49,7 +49,7 @@ const UserGroupsView = () => {
     const vm = useVM();
 
     return (
-        <AdminLayout data-i-doc="page:user-groups" active="groups">
+        <AdminLayout data-i-doc="page:user-groups">
             <PageHeader
                 title="Групи користувачів"
                 actions={<HeaderButton icon="fa-solid fa-plus" onClick={vm.openCreate}>Створити групу</HeaderButton>}

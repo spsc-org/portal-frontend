@@ -3,7 +3,6 @@ import { observer } from "mobx-react-lite";
 import AdvancedSelectWithDefaults from "../../components/fields/AdvancedSelectWithDefaults.jsx";
 import {createColumnHelper} from "@tanstack/react-table";
 import Table from "../../components/Table/Table.jsx";
-import { loadColumnSizes } from "../../components/Table/columnSizes.js";
 import { Tooltip } from "@material-tailwind/react"
 import Button from "../../components/Buttons/Button.jsx"
 import Page from "../../components/Page.jsx";
@@ -116,7 +115,7 @@ const IndexContent = observer(({ vm }) => {
     const columns = useMemo(() => [
         columnHelper.accessor("datasetId", {
             id: 'datasetId',
-            size: loadColumnSizes()?.find(item => item.column === 'datasetId')?.size || 90,
+            size: 90,
             header: () => 'База',
             cell: info => {
                 const datasetId = info.getValue();
@@ -149,7 +148,7 @@ const IndexContent = observer(({ vm }) => {
 
         columnHelper.accessor("typeId", {
             id: 'typeId',
-            size: loadColumnSizes()?.find(item => item.column === 'typeId')?.size || 40,
+            size: 40,
             header: () => 'Тип',
             cell: info => {
                 const typeId = info.getValue();
@@ -171,7 +170,7 @@ const IndexContent = observer(({ vm }) => {
 
         columnHelper.accessor("methods", {
             id: 'methods',
-            size: loadColumnSizes()?.find(item => item.column === 'methods')?.size || 120,
+            size: 120,
             header: () => 'Методи',
             cell: info => {
                 const methods = info.getValue() || [];
@@ -203,26 +202,26 @@ const IndexContent = observer(({ vm }) => {
 
         columnHelper.accessor("captions", {
             id: 'captions',
-            size: loadColumnSizes()?.find(item => item.column === 'captions')?.size || 450,
+            size: 450,
             header: () => 'Назва/Ім\'я',
             cell: info => renderCell('captions', info.row, info.getValue()),
         }),
         columnHelper.accessor("identifiers", {
             id: 'identifiers',
-            size: loadColumnSizes()?.find(item => item.column === 'identifiers')?.size || 300,
+            size: 300,
             header: () => 'Ідентифікатори',
             cell: info => renderCell('identifiers', info.row, info.getValue()),
         }),
         columnHelper.accessor("decree", {
             id: 'decree',
-            size: loadColumnSizes()?.find(item => item.column === 'decree')?.size || 200,
+            size: 200,
             header: () => 'Указ/Санкції',
             cell: info => renderCell('decree', info.row, info.getValue()),
         }),
 
         columnHelper.accessor("other", {
             id: 'other',
-            size: loadColumnSizes()?.find(item => item.column === 'other')?.size || 200,
+            size: 200,
             header: () => 'Інше',
             cell: info => renderCell('other', info.row, info.getValue()),
         }),
@@ -353,7 +352,6 @@ const IndexContent = observer(({ vm }) => {
                 <Table
                     textSize="xs"
                     loading={vm.isFetching}
-                    canChangeResize
                     canChangeVisibility
                     pagination={vm.pagination}
                     data={getTableData()}

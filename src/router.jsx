@@ -63,6 +63,7 @@ export const router = createBrowserRouter([
                   { path: 'welcome', lazy: page(() => import('./pages/Welcome/Index.jsx')) },
                   { path: 'notifications', lazy: page(() => import('./pages/Notifications/Index.jsx')) },
                   { path: 'settings', lazy: page(() => import('./pages/Settings/Index.jsx')) },
+                  { path: 'profile', lazy: page(() => import('./pages/Profile/Index.jsx')) },
                   { path: 'admin-users', lazy: page(() => import('./pages/Admin/Index.jsx')) },
                   { path: 'admin-groups', lazy: page(() => import('./pages/UserGroup/Index.jsx')) },
                   { path: 'admin-notifications', lazy: page(() => import('./pages/AdminNotifications/Index.jsx')) },

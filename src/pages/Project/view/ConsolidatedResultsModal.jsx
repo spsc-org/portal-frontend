@@ -2,9 +2,11 @@ import { observer } from "mobx-react-lite";
 import { useVM } from "../../../shared/mvvm/index.js";
 import { HighlightedText } from "./liveAnalysis/AnalysisText.jsx";
 import { PROJECTS_DATASET_ID, TYPE_BADGES, fieldLabel, portalLinks, queryWords } from "../model/consolidatedSearchModel.js";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
-const CELL = "border-b border-gray-100 px-2 py-1.5 align-top text-[11px] dark:border-neutral-700/60";
-const TH = "sticky top-0 z-10 bg-gray-50 px-2 py-1.5 text-left text-[11px] font-semibold uppercase text-gray-600 dark:bg-neutral-900 dark:text-gray-400";
+// Клітинки — kit-таблиця (tableStyles.js)
+const CELL = TD;
 
 const Highlight = ({ text, query }) => <HighlightedText text={text ?? ""} items={queryWords(query)} />;
 
@@ -14,7 +16,7 @@ const SourceCell = ({ record }) => {
     const links = portalLinks(record);
     const own = record.datasetId === PROJECTS_DATASET_ID;
     return (
-        <td className={`${CELL} ${own ? "bg-amber-50 dark:bg-amber-900/20" : ""}`}>
+        <td className={twMerge(TD, `${CELL} ${own ? "bg-amber-50 dark:bg-amber-900/20" : ""}`)}>
             <div className="font-medium text-gray-700 dark:text-gray-300">{record.datasetName || String(record.datasetId)}</div>
             {type && <span className={`inline-block rounded-full px-1.5 text-[10px] font-medium leading-4 ${type.className}`}>{type.label}</span>}
             {links && (
@@ -34,14 +36,14 @@ const SourceCell = ({ record }) => {
 const RecordCells = ({ record, query }) => (
     <>
         <SourceCell record={record} />
-        <td className={`${CELL} font-medium text-gray-800 dark:text-gray-200`}>
+        <td className={twMerge(TD, `${CELL} font-medium text-gray-800 dark:text-gray-200`)}>
             <Highlight text={record.captions} query={query} />
         </td>
-        <td className={`${CELL} text-gray-600 dark:text-gray-400`}>
+        <td className={twMerge(TD, `${CELL} text-gray-600 dark:text-gray-400`)}>
             <Highlight text={record.identifiers} query={query} />
         </td>
-        <td className={`${CELL} text-gray-600 dark:text-gray-400`}>{record.decree || ""}</td>
-        <td className={`${CELL} whitespace-pre-line text-gray-600 dark:text-gray-400`}>
+        <td className={twMerge(TD, `${CELL} text-gray-600 dark:text-gray-400`)}>{record.decree || ""}</td>
+        <td className={twMerge(TD, `${CELL} whitespace-pre-line text-gray-600 dark:text-gray-400`)}>
             <Highlight text={record.other} query={query} />
         </td>
     </>
@@ -91,15 +93,15 @@ const ConsolidatedResultsModal = () => {
                     {rows.length === 0 ? (
                         <p className="py-10 text-center text-sm text-gray-600">Збігів не знайдено</p>
                     ) : (
-                        <table className="w-full border-collapse">
+                        <table className={twMerge(TABLE, "w-full")}>
                             <thead>
                                 <tr>
-                                    <th className={`${TH} w-40`}>Джерело</th>
+                                    <th className={twMerge(TH, `${TH} w-40`)}>Джерело</th>
                                     <th className={TH}>Назви</th>
                                     <th className={TH}>Ідентифікатори</th>
-                                    <th className={`${TH} w-28`}>Указ</th>
+                                    <th className={twMerge(TH, `${TH} w-28`)}>Указ</th>
                                     <th className={TH}>Інше</th>
-                                    {isAll && <th className={`${TH} w-48`}>Збіги</th>}
+                                    {isAll && <th className={twMerge(TH, `${TH} w-48`)}>Збіги</th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -109,7 +111,7 @@ const ConsolidatedResultsModal = () => {
                                           return (
                                               <tr key={key} className={rowClass(record)}>
                                                   <RecordCells record={record} query={query} />
-                                                  <td className={`${CELL} leading-5`}>
+                                                  <td className={twMerge(TD, `${CELL} leading-5`)}>
                                                       {matches.length > 1 && (
                                                           <span className="mb-1 inline-block rounded-full bg-amber-100 px-1 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
                                                               {matches.length} поля

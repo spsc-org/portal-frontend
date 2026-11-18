@@ -127,6 +127,10 @@ export const customTheme = {
             base: {
                 backdrop: {
                     pointerEvents: 'none',
+                    // MT: "bg-black bg-opacity-60" — у Tailwind v4 bg-opacity-* немає, фон ставав
+                    // суцільно чорним. Прозорість — через модифікатор кольору.
+                    backgroundColor: 'bg-black/60',
+                    backgroundOpacity: '',
                 }
             }
         }

@@ -4,7 +4,6 @@ import { VesselCallSignsViewModel } from "../viewmodel/DictionaryViewModels.js";
 import {useMemo} from 'react';
 import {createColumnHelper} from "@tanstack/react-table";
 import Table from "../../../components/Table/Table.jsx";
-import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import { Tooltip, Typography } from "@material-tailwind/react"
 import Button from "../../../components/Buttons/Button.jsx"
 import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
@@ -25,7 +24,7 @@ const VesselCallSigns = ({ page }) => {
     const columns = useMemo(() => [
         columnHelper.accessor("belong_country_name", {
             id: 'belong_country_name',
-            size: loadColumnSizes()?.find(item => item.column === 'belong_country_name')?.size || 200,
+            size: 200,
             header: () => 'Країна (РНБО)',
             footer: info => info.column.id,
             cell: info => info.getValue(),
@@ -33,7 +32,7 @@ const VesselCallSigns = ({ page }) => {
         }),
         columnHelper.accessor("allocated_country_name", {
             id: 'allocated_country_name',
-            size: loadColumnSizes()?.find(item => item.column === 'allocated_country_name')?.size || 200,
+            size: 200,
             header: () => 'Країна (ITU)',
             footer: info => info.column.id,
             cell: info => info.getValue(),
@@ -65,7 +64,7 @@ const VesselCallSigns = ({ page }) => {
         }),
         columnHelper.accessor("updated_at", {
             id: 'updated_at',
-            size: loadColumnSizes()?.find(item => item.column === 'updated_at')?.size || 120,
+            size: 120,
             header: () => 'Дата оновлення',
             enableResizing: false,
             footer: info => info.column.id,
@@ -106,7 +105,6 @@ const VesselCallSigns = ({ page }) => {
                 <Table
                     loading={isFetching}
                     canChangeVisibility
-                    canChangeResize
                     textSize="xs"
                     data={data?.data ?? []}
                     columns={columns}

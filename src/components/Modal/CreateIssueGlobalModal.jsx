@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { observer } from "mobx-react-lite";
-import { Typography, Textarea, Spinner } from "@material-tailwind/react"
+import { Textarea, Spinner } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "./Modal.jsx"
 import Button from "../Buttons/Button.jsx"
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
@@ -48,20 +48,20 @@ const CreateIssueGlobalModal = () => {
             backdropProps={{ className: "z-[99998]" }}
             style={{ zIndex: 99999 }}>
             <ModalHeader className="flex flex-col items-start gap-1 px-8 py-4 border-b">
-                <Typography variant="h5" className="text-gray-900 dark:text-white font-bold">
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white">
                     Зворотний зв'язок
-                </Typography>
-                <Typography variant="small" className="text-gray-600 dark:text-gray-400 font-normal">
+                </h4>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
                     Допоможіть нам стати краще. Повідомте про помилку або поділіться ідеєю.
-                </Typography>
+                </div>
             </ModalHeader>
 
             <ModalBody className="p-0 flex min-h-[520px] max-h-[75vh]">
                 {/* Рівень 1 — "Стосується" (куди піде задача) */}
                 <div className="w-52 shrink-0 border-r border-gray-200 dark:border-neutral-700 p-4 flex flex-col gap-1">
-                    <Typography variant="small" className="font-bold text-gray-700 dark:text-gray-300 mb-1 ml-1">
+                    <div className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 ml-1">
                         Стосується
-                    </Typography>
+                    </div>
                     {vm.scopes.map((s) => (
                         <button key={s.id} type="button" onClick={() => vm.setScope(s.id)}
                                 className={`w-full text-left rounded-lg border-l-2 px-3 py-2.5 text-[13px] font-semibold transition-all ${
@@ -89,9 +89,9 @@ const CreateIssueGlobalModal = () => {
 
                     <div className="flex flex-col lg:flex-row gap-6 items-start">
                         <div className="flex-1 w-full">
-                            <Typography variant="small" className="font-bold text-gray-700 dark:text-gray-300 mb-2 ml-1">
+                            <div className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 ml-1">
                                 Детальний опис
-                            </Typography>
+                            </div>
                             <Textarea
                                 placeholder={currentType?.placeholder ?? "Опишіть вашу ідею чи зауваження..."}
                                 value={vm.description}
@@ -106,9 +106,9 @@ const CreateIssueGlobalModal = () => {
                             <div className="w-full lg:w-80 flex flex-col pt-[26px]">
                                 <div className="flex-1">
                                     <div className={`bg-${currentType.color}-50 dark:bg-${currentType.color}-900/10 border border-${currentType.color}-100 dark:border-${currentType.color}-800/50 p-5 rounded-xl animate-in fade-in zoom-in duration-300`}>
-                                        <Typography variant="small" className={`font-bold text-${currentType.color}-900 dark:text-${currentType.color}-400 mb-3 flex items-center gap-2`}>
+                                        <div className={`text-sm font-bold text-${currentType.color}-900 dark:text-${currentType.color}-400 mb-3 flex items-center gap-2`}>
                                             <i className={`fa-solid ${currentType.icon}`}></i> {currentType.helpTitle}
-                                        </Typography>
+                                        </div>
                                         {currentType.helpItems ? (
                                             <ul className={`text-[11px] text-${currentType.color}-800 dark:text-${currentType.color}-500 space-y-3 list-disc list-inside opacity-90 leading-relaxed`}>
                                                 {currentType.helpItems.map((item, idx) => (
@@ -128,9 +128,9 @@ const CreateIssueGlobalModal = () => {
 
                     <div className="flex flex-col lg:flex-row gap-6 items-end">
                         <div className="flex-1 w-full flex flex-col gap-2">
-                            <Typography variant="small" className="font-bold text-gray-700 dark:text-gray-300 ml-1">
+                            <div className="text-sm font-bold text-gray-700 dark:text-gray-300 ml-1">
                                 Скріншоти або файли
-                            </Typography>
+                            </div>
                             <Suspense fallback={<Spinner className="h-4 w-4"/>}>
                                 <AttachmentsGallery
                                     data={vm.files}
@@ -145,9 +145,9 @@ const CreateIssueGlobalModal = () => {
 
                         {currentScope.showContext &&
                             <div className="w-full lg:w-80 bg-gray-50 dark:bg-neutral-700/50 border border-gray-200 dark:border-neutral-700 p-3 rounded-xl">
-                                <Typography variant="small" className="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                                <div className="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2">
                                     <i className="fa-solid fa-microchip"></i> Контекст звернення
-                                </Typography>
+                                </div>
                                 <div className="space-y-1.5 overflow-hidden">
                                     <div className="flex items-start gap-2 overflow-hidden">
                                         <i className="fa-solid fa-link text-[10px] mt-1 text-gray-500"></i>

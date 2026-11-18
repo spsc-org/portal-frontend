@@ -7,6 +7,8 @@ import {useParams} from "react-router";
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from "@tanstack/react-table";
 import {Tooltip, Typography} from "@material-tailwind/react";
 import PageHeader from "../../../layouts/app/PageHeader.jsx";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
 const columnHelper = createColumnHelper();
 
@@ -136,13 +138,13 @@ const MinifyViewContent = observer(({ vm }) => {
                     }
                     {proposalElement}
                 </div>
-                <div className="overflow-x-auto">
-                    <table id="minifyTable" className="table-auto text-sm boreder w-full text-left text-gray-600 dark:text-gray-400">
+                <div className={twMerge(TABLE_WRAP, "")}>
+                    <table id="minifyTable" className={twMerge(TABLE, "table-auto boreder w-full text-left")}>
                         <thead>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <th key={header.id} className="border p-2 dark:bg-b text-left px-1 py-0.5  text-gray-800 font-normal  bg-gray-200 dark:bg-neutral-600 dark:text-gray-400">
+                                    <th key={header.id} className={twMerge(TH, "dark:bg-b text-left")}>
                                         {flexRender(header.column.columnDef.header, header.getContext())}
                                     </th>
                                 ))}
@@ -151,9 +153,9 @@ const MinifyViewContent = observer(({ vm }) => {
                         </thead>
                         <tbody>
                         {table.getRowModel().rows.map((row) => (
-                            <tr key={row.id}>
+                            <tr className={TR} key={row.id}>
                                 {row.getVisibleCells().map((cell) => (
-                                    <td key={cell.id} className="border p-2 align-top bg-white text-left dark:bg-neutral-800 border-b dark:border-neutral-700">
+                                    <td key={cell.id} className={twMerge(TD, "align-top text-left")}>
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}

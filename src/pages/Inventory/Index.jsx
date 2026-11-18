@@ -8,7 +8,6 @@ import {convertDate} from "../../lib/utils.js";
 import AdvancedSelect from "../../components/fields/AdvancedSelect.jsx";
 import {createColumnHelper} from "@tanstack/react-table";
 import Table from "../../components/Table/Table.jsx";
-import { loadColumnSizes } from "../../components/Table/columnSizes.js";
 import InventoryModal from "./InventoryModal.jsx";
 import InventoryDetailsModal from "./InventoryDetailsModal.jsx";
 import { Badge, Menu, MenuHandler, MenuItem, MenuList, Switch, Tooltip } from "@material-tailwind/react"
@@ -54,21 +53,21 @@ const Index = () => {
                         className={`${valueType?.icon} fa-lg`}></i> {valueType?.caption}  </span>
                     : null;
             },
-            size: loadColumnSizes()?.find(item => item.column === 'valueTypeId')?.size || 120,
+            size: 120,
             header: () => 'Тип',
             footer: info => info.column.id,
             enableSorting: true,
         }),
         columnHelper.accessor('inventoryNum', {
             id: 'inventoryNum',
-            size: loadColumnSizes()?.find(item => item.column === 'inventoryNum')?.size || 120,
+            size: 120,
             cell: info => info.getValue(),
             header: () => 'Інвентарний номер',
             footer: info => info.column.id,
         }),
         columnHelper.accessor('registryNum', {
             id: 'registryNum',
-            size: loadColumnSizes()?.find(item => item.column === 'registryNum')?.size || 120,
+            size: 120,
             cell: info => info.getValue(),
             header: () => 'Реєстр. №',
             footer: info => info.column.id,
@@ -76,33 +75,33 @@ const Index = () => {
         columnHelper.accessor('locationId', {
             id: 'locationId',
             header: () => 'Розташування',
-            size: loadColumnSizes()?.find(item => item.column === 'locationId')?.size || 80,
+            size: 80,
             cell: info => info.getValue() ? inventoryLocation.find(l=>l.id === info.getValue())?.caption : null,
             footer: info => info.column.id,
         }),
         columnHelper.accessor('serial', {
             id: "serial",
             header: () => 'Серійний номер',
-            size: loadColumnSizes()?.find(item => item.column === 'serial')?.size || 150,
+            size: 150,
             cell: info => info.getValue(),
             footer: info => info.column.id,
         }),
         columnHelper.accessor('caption', {
             id: "caption",
             header: () => 'Заголовок',
-            size: loadColumnSizes()?.find(item => item.column === 'caption')?.size || 250,
+            size: 250,
             footer: info => info.column.id,
         }),
         columnHelper.accessor('details', {
             id: "details",
             header: () => 'Деталі',
-            size: loadColumnSizes()?.find(item => item.column === 'details')?.size || 150,
+            size: 150,
             footer: info => info.column.id,
         }),
         columnHelper.accessor('responsibleUserId', {
             id: 'responsibleUserId',
             header: () => 'Мат. відповідальний',
-            size: loadColumnSizes()?.find(item => item.column === 'responsibleUserId')?.size || 100,
+            size: 100,
             cell: info => info.getValue() ? responsibleUsers.find(u=>u.id === info.getValue())?.initials : null,
             footer: info => info.column.id,
         }),
@@ -115,7 +114,7 @@ const Index = () => {
         columnHelper.accessor('note', {
             id: 'note',
             header: () => 'Примітка',
-            size: loadColumnSizes()?.find(item => item.column === 'note')?.size || 200,
+            size: 200,
             footer: info => info.column.id,
             cell: info => (
                 <InventoryNoteCell onDeleteComment={handleDeleteComment(info.row.original.id)}
@@ -131,7 +130,7 @@ const Index = () => {
         columnHelper.accessor('cost', {
             id: 'cost',
             header: () => 'Вартість',
-            size: loadColumnSizes()?.find(item => item.column === 'cost')?.size || 100,
+            size: 100,
             footer: info => info.column.id,
         }),
         columnHelper.accessor('amount', {
@@ -180,7 +179,7 @@ const Index = () => {
         columnHelper.accessor('nodes', {
             id: 'nodes',
             header: () => 'Вузли',
-            size: loadColumnSizes()?.find(item => item.column === 'nodes')?.size || 160,
+            size: 160,
             enableSorting: false,
             footer: info => info.column.id,
             cell: info => {
@@ -203,7 +202,7 @@ const Index = () => {
         }),
         columnHelper.accessor("attachments", {
             id: 'attachments',
-            size: loadColumnSizes()?.find(item => item.column === 'attachments')?.size || 120,
+            size: 120,
             header: () => 'Файли',
             enableSorting: false,
             footer: info => info.column.id,
@@ -212,7 +211,7 @@ const Index = () => {
         /*
         columnHelper.accessor("attachments_count", {
             id: 'attachments_count',
-            size: loadColumnSizes()?.find(item => item.column === 'attachments_count')?.size || 80,
+            size: 80,
             header: () => 'Кількість файлів',
             enableSorting: false,
             footer: info => info.column.id,
@@ -451,7 +450,6 @@ const Index = () => {
                         canPin
                         onRowPinning={handlePinRow}
                         loading={isDictionaryFetching || isInventoryFetching}
-                        canChangeResize
                         canChangeVisibility pagination={{
                         onLimitChange: handleLimit,
                         onPageChange: handlePageChange,

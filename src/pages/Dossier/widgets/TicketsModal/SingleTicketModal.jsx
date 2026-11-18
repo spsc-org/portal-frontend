@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { TicketsButtonViewModel } from "../../viewmodel/DossierViewModels.js";
 
-import { Typography, Spinner } from "@material-tailwind/react"
+import { Spinner } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
 import TicketBody from "./TicketBody.jsx";
@@ -27,7 +27,7 @@ const SingleTicketModal = ({open, onClose, ticketId, entityType, entityId, canMa
             overlayProps={{className: "bg-black/20 backdrop-blur-none"}}>
             <ModalHeader className="flex items-center gap-2">
                 <i className="fa-solid fa-ticket text-base"></i>
-                <Typography variant="h5">Тікет #{ticketId}</Typography>
+                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">Тікет #{ticketId}</h4>
             </ModalHeader>
             <ModalBody className="max-h-[70vh] overflow-y-auto">
                 {isFetching && !ticket && (
@@ -39,7 +39,7 @@ const SingleTicketModal = ({open, onClose, ticketId, entityType, entityId, canMa
                 {ticket && <TicketBody key={ticket.id} ticket={ticket} canManage={canManage} onChanged={invalidate}/>}
             </ModalBody>
             <ModalFooter>
-                <Button variant="text" color="gray" onClick={onClose}>
+                <Button color="secondary" onClick={onClose}>
                     Закрити
                 </Button>
             </ModalFooter>

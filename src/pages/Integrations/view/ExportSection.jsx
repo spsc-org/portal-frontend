@@ -3,6 +3,8 @@ import { Card, Typography, Tooltip } from "@material-tailwind/react"
 import IconButton from "../../../components/Buttons/IconButton.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import ImportResultDialog from "./ImportResultDialog.jsx";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
 /** vm — ExportViewModel. */
 const ExportSection = ({ vm }) => {
@@ -14,7 +16,7 @@ const ExportSection = ({ vm }) => {
     const handleDelete = vm.remove;
 
     return (
-        <div className="mt-6 bg-white dark:bg-neutral-700 p-6 rounded-lg shadow-md">
+        <div className="mt-6 bg-white dark:bg-neutral-800 p-6 rounded-xl border border-gray-200 dark:border-neutral-700">
             <div className="flex justify-between items-start mb-4">
                 <div>
                     <h2 className="text-lg font-semibold mb-2 dark:text-gray-200">Експорт даних</h2>
@@ -37,26 +39,26 @@ const ExportSection = ({ vm }) => {
                     <Typography variant="small" className="font-semibold text-blue-gray-600 dark:text-gray-400 mb-2">
                         Історія експортів:
                     </Typography>
-                    <Card className="w-full overflow-auto shadow-none border border-blue-gray-100 dark:border-neutral-700 dark:bg-neutral-700">
-                        <table className="w-full min-w-max table-auto text-left">
+                    <Card className="w-full overflow-auto shadow-none border border-gray-200 dark:border-neutral-700 dark:bg-neutral-800">
+                        <table className={twMerge(TABLE, "w-full min-w-max table-auto text-left")}>
                             <thead>
                                 <tr>
-                                    <th className="border-b border-blue-gray-100 dark:border-neutral-700 bg-blue-gray-50 dark:bg-neutral-800 p-2">
+                                    <th className={TH}>
                                         <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70 dark:text-gray-400">
                                             Файл
                                         </Typography>
                                     </th>
-                                    <th className="border-b border-blue-gray-100 dark:border-neutral-700 bg-blue-gray-50 dark:bg-neutral-800 p-2">
+                                    <th className={TH}>
                                         <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70 dark:text-gray-400">
                                             Дата створення
                                         </Typography>
                                     </th>
-                                    <th className="border-b border-blue-gray-100 dark:border-neutral-700 bg-blue-gray-50 dark:bg-neutral-800 p-2">
+                                    <th className={TH}>
                                         <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70 dark:text-gray-400">
                                             Розмір
                                         </Typography>
                                     </th>
-                                    <th className="border-b border-blue-gray-100 dark:border-neutral-700 bg-blue-gray-50 dark:bg-neutral-800 p-2 w-24 text-center">
+                                    <th className={twMerge(TH, "w-24 text-center")}>
                                         <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70 dark:text-gray-400">
                                             Дії
                                         </Typography>
@@ -68,7 +70,7 @@ const ExportSection = ({ vm }) => {
                                     const isLast = index === exportFiles.length - 1;
                                     const classes = isLast ? "p-2" : "p-2 border-b border-blue-gray-50 dark:border-neutral-700";
                                     return (
-                                        <tr key={file.name} className="even:bg-blue-gray-50/50 dark:even:bg-neutral-600/30 hover:bg-blue-gray-50 dark:hover:bg-neutral-600/50 transition-colors">
+                                        <tr key={file.name} className={twMerge(TR, "transition-colors")}>
                                             <td className={classes}>
                                                 <div className="flex items-center gap-2">
                                                     <i className="fa-solid fa-file-code text-blue-500 dark:text-blue-400"></i>

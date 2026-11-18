@@ -7,7 +7,6 @@ import {Fragment, useMemo} from "react";
 import PageHeader from "../../../layouts/app/PageHeader.jsx";
 import { HeaderButton } from "../../../layouts/app/HeaderButtons.jsx";
 import Table from "../../../components/Table/Table.jsx";
-import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import {createColumnHelper} from "@tanstack/react-table";
 import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
 import { Switch, Tooltip } from "@material-tailwind/react"
@@ -48,28 +47,28 @@ const DictionaryIdentify = ({ page }) => {
     const columns = useMemo(() => [
         columnHelper.accessor("code", {
             id: 'code',
-            size: loadColumnSizes()?.find(item => item.column === 'code')?.size || 100,
+            size: 100,
             header: () => 'Код',
             footer: info => info.column.id,
             cell: info => info.getValue(),
         }),
         columnHelper.accessor("group", {
             id: 'group',
-            size: loadColumnSizes()?.find(item => item.column === 'group')?.size || 100,
+            size: 100,
             header: () => 'Група',
             footer: info => info.column.id,
             cell: info => info.getValue(),
         }),
         columnHelper.accessor("pattern", {
             id: 'pattern',
-            size: loadColumnSizes()?.find(item => item.column === 'pattern')?.size || 100,
+            size: 100,
             header: () => 'Паттерн',
             footer: info => info.column.id,
             cell: info => info.getValue(),
         }),
         columnHelper.accessor("name_uk", {
             id: 'name_uk',
-            size: loadColumnSizes()?.find(item => item.column === 'name_uk')?.size || 250,
+            size: 250,
             header: () => 'Назва',
             enableSorting: false,
             footer: info => info.column.id,
@@ -77,7 +76,7 @@ const DictionaryIdentify = ({ page }) => {
         }),
         columnHelper.accessor("name_en", {
             id: 'name_en',
-            size: loadColumnSizes()?.find(item => item.column === 'name_en')?.size || 250,
+            size: 250,
             header: () => 'Назва англійською',
             enableSorting: false,
             footer: info => info.column.id,
@@ -85,14 +84,14 @@ const DictionaryIdentify = ({ page }) => {
         }),
         columnHelper.accessor("name_doc", {
             id: 'name_doc',
-            size: loadColumnSizes()?.find(item => item.column === 'name_doc')?.size || 250,
+            size: 250,
             header: () => 'Виводити як',
             footer: info => info.column.id,
             cell: info => info.getValue(),
         }),
         columnHelper.accessor("description_uk", {
             id: 'description_uk',
-            size: loadColumnSizes()?.find(item => item.column === 'description_uk')?.size || 250,
+            size: 250,
             header: () => 'Опис українською',
             enableSorting: false,
             footer: info => info.column.id,
@@ -100,7 +99,7 @@ const DictionaryIdentify = ({ page }) => {
         }),
         columnHelper.accessor("description_en", {
             id: 'description_en',
-            size: loadColumnSizes()?.find(item => item.column === 'description_en')?.size || 250,
+            size: 250,
             header: () => 'Опис англійською',
             enableSorting: false,
             footer: info => info.column.id,
@@ -108,21 +107,21 @@ const DictionaryIdentify = ({ page }) => {
         }),
         columnHelper.accessor("subjectTypeId", {
             id: 'subjectTypeId',
-            size: loadColumnSizes()?.find(item => item.column === 'subjectTypeId')?.size || 100,
+            size: 100,
             header: () => "Тип суб'єкта",
             footer: info => info.column.id,
             cell: ({row}) => <span>{row?.original?.subjectTypeId?.caption}</span>,
         }),
         columnHelper.accessor("belongCountryId", {
             id: 'belongCountryId',
-            size: loadColumnSizes()?.find(item => item.column === 'belongCountryId')?.size || 100,
+            size: 100,
             header: () => 'Країна',
             footer: info => info.column.id,
             cell: ({row}) => <span>{row?.original?.belongCountryId?.caption}</span>,
         }),
         columnHelper.accessor("comment", {
             id: 'comment',
-            size: loadColumnSizes()?.find(item => item.column === 'comment')?.size || 250,
+            size: 250,
             header: () => 'Коментар',
             enableSorting: false,
             footer: info => info.column.id,
@@ -273,7 +272,6 @@ const DictionaryIdentify = ({ page }) => {
                     }}
                     loading={isFetching}
                     canChangeVisibility
-                    canChangeResize
                     textSize="xs"
                     pagination={{
                         onLimitChange: handleLimit,

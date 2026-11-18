@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { ExportLinkedProjectsViewModel } from "../viewmodel/ProposalViewModels.js";
-import { Switch, Textarea, Typography } from "@material-tailwind/react"
+import { Switch, Textarea } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
@@ -46,13 +46,13 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
 
     return (
         <Modal open={open} handler={onClose} size="md">
-            <ModalHeader className="space-x-5">
-                <span>Експорт</span>
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase"><span>Експорт</span></h3>
             </ModalHeader>
             <ModalBody className="overflow-y-auto max-h-[calc(100vh-200px)]">
-                <Typography variant="h5" component="p" className="dark:text-gray-400">
+                <h4 component="p" className="text-sm font-bold text-gray-800 dark:text-gray-400">
                     Обмеження
-                </Typography>
+                </h4>
                 <div className="flex flex-col space-y-4">
                     <AdvancedSelect isMulti
                                     options={MAPPED_RESTRICTIONS}
@@ -72,9 +72,9 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
                             name="restrictionsSeparateProcessingNum24"
                             checked={form.restrictionsSeparateProcessingNum24}
                             onChange={toggleSwitch}/>
-                    <Typography variant="h5" component="p" className="dark:text-gray-400">
+                    <h4 component="p" className="text-sm font-bold text-gray-800 dark:text-gray-400">
                         Додаткова інформація
-                    </Typography>
+                    </h4>
 
 
 
@@ -96,27 +96,27 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
                             checked={form.moveAddressesToAdditionalInfo}
                             className="dark:text-gray-400"
                             onChange={toggleSwitch}/>
-                    <Typography variant="h5" component="p" className="dark:text-gray-400">
+                    <h4 component="p" className="text-sm font-bold text-gray-800 dark:text-gray-400">
                         Ідентифікатори
-                    </Typography>
+                    </h4>
                     <AdvancedSelect isMulti
                                     options={identifierTypes}
                                     label={"Не виводити при експорті"}
                                     id="skipIdentifierTypes"
                                     selectedOptions={form.skipIdentifierTypes}
                                     onChange={handleChangeOptions('skipIdentifierTypes')}/>
-                    <Typography variant="h5" component="p" className="dark:text-gray-400 mt-2">
+                    <h4 component="p" className="text-sm font-bold text-gray-800 dark:text-gray-400 mt-2">
                         Атрибути
-                    </Typography>
+                    </h4>
                     <AdvancedSelect isMulti
                                     options={attributeTypes}
                                     label={"Не виводити обрані атрибути при експорті"}
                                     id="skipAttributeTypes"
                                     selectedOptions={form.skipAttributeTypes}
                                     onChange={handleChangeOptions('skipAttributeTypes')}/>
-                    <Typography variant="h5" component="p" className="dark:text-gray-400">
+                    <h4 component="p" className="text-sm font-bold text-gray-800 dark:text-gray-400">
                         Інше
-                    </Typography>
+                    </h4>
                     <Switch ripple={true}
                             color="green"
                             label="Перевірка ідентифікаторів (тип, значення, країни)"
@@ -151,9 +151,9 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
                                 labelProps={{className: "dark:text-gray-200"}}
                             />
                             <div className="p-2 bg-gray-50 dark:bg-neutral-700 rounded-lg border border-gray-200 dark:border-neutral-700">
-                                <Typography variant="small" className="font-bold mb-1 dark:text-gray-300">
+                                <div className="text-sm text-gray-700 font-bold mb-1 dark:text-gray-300">
                                     Доступні плейсхолдери:
-                                </Typography>
+                                </div>
                                 <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                                     <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[reasoning] <span className="text-gray-600 dark:text-gray-400">- обгрунтування</span></span>
                                     <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[notes] <span className="text-gray-600 dark:text-gray-400">- примітки</span></span>
@@ -164,9 +164,9 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
                                     <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[birthDate] <span className="text-gray-600 dark:text-gray-400">- дата народж.</span></span>
                                     <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[actionType] <span className="text-gray-600 dark:text-gray-400">- тип дії</span></span>
                                 </div>
-                                <Typography variant="small" className="text-gray-600 dark:text-gray-400 mt-2 italic text-[10px]">
+                                <div className="text-gray-600 dark:text-gray-400 mt-2 italic text-[10px]">
                                     * Плейсхолдери будуть замінені на відповідні значення з бази даних для кожного запису.
-                                </Typography>
+                                </div>
                             </div>
                         </div>
                     )}

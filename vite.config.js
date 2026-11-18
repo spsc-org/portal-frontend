@@ -34,10 +34,12 @@ const BACKEND_PREFIXES = [
 
 // SPA-маршрути під backend-префіксами: навігацію браузера (Accept: text/html)
 // на них віддаємо Vite/SPA, а XHR/fetch — бекенду. Решта HTML-навігацій під
-// префіксом — Blade-сторінки (/staff/summary-print, /staff/vacation-schedule,
-// /profile) — іде на бекенд.
+// префіксом — Blade-сторінки (/staff/summary-print, /staff/vacation-schedule)
+// — іде на бекенд.
 const SPA_OVERLAP = {
   '/staff': /^\/staff(?:\/(?:contracts|responsible))?\/?(?:[?#].*)?$/,
+  // /profile — SPA-сторінка; бекенд під префіксом лишається лише для легасі /profile/avatar.
+  '/profile': /^\/profile\/?(?:[?#].*)?$/,
 }
 
 const spaNavigationBypass = (pattern) => (req) => {

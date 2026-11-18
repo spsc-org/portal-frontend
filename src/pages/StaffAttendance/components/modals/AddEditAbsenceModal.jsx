@@ -34,7 +34,9 @@ const AddEditAbsenceModal = ({ vm }) => {
 
     return (
         <Modal data-i-doc="modal:staff-attendance-add-edit-absence" open={isOpen} handler={onClose} size="lg">
-            <ModalHeader>{editingAbsence ? "Редагування" : "Створити заявку"}</ModalHeader>
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">{editingAbsence ? "Редагування" : "Створити заявку"}</h3>
+            </ModalHeader>
             <form onSubmit={submitRequest}>
                 <ModalBody className="flex flex-col gap-4">
                     {/* Row 1: Користувач + Статус (2 cols) */}
@@ -145,7 +147,7 @@ const AddEditAbsenceModal = ({ vm }) => {
                     />
                 </ModalBody>
                 <ModalFooter className="justify-end gap-2">
-                    <Button variant="text" color="blue-gray" onClick={onClose} disabled={submitMutation.isPending}>Скасувати</Button>
+                    <Button color="secondary" onClick={onClose} disabled={submitMutation.isPending}>Скасувати</Button>
                     {editingAbsence && (
                         <Button
                             variant="text"

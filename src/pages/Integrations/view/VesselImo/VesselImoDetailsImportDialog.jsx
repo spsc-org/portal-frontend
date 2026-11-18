@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { Alert, Input, Spinner, Typography } from "@material-tailwind/react"
+import { Alert, Input, Spinner } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
 import LoadingButton from "../../../../components/Buttons/LoadingButton.jsx";
@@ -61,9 +61,9 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
 
         return (
             <div>
-                <Typography className="dark:text-gray-300 mb-4">
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
                     Аналіз файлу «{file?.name}» — стан ДО імпорту.
-                </Typography>
+                </p>
                 {previewMutation.isError && <Alert color="red" className="mb-4">{errorMessage}</Alert>}
                 {summary && !hasChanges && (
                     <Alert color="blue" className="mb-4">
@@ -80,7 +80,7 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
             return (
                 <div className="flex flex-col items-center justify-center h-48 gap-4">
                     <Spinner className="h-12 w-12" />
-                    <Typography className="dark:text-gray-200">Йде імпорт, будь ласка, зачекайте…</Typography>
+                    <p className="text-sm text-gray-700 dark:text-gray-200">Йде імпорт, будь ласка, зачекайте…</p>
                 </div>
             );
         }
@@ -93,7 +93,7 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
             return (
                 <div className="flex flex-col items-center justify-center h-48 gap-4">
                     <Spinner className="h-12 w-12" />
-                    <Typography className="dark:text-gray-200">Аналізуємо файл…</Typography>
+                    <p className="text-sm text-gray-700 dark:text-gray-200">Аналізуємо файл…</p>
                 </div>
             );
         }
@@ -105,10 +105,10 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
         return (
             <>
                 {error && <Alert color="red" className="mb-4">{error}</Alert>}
-                <Typography className="dark:text-gray-300 mb-4">
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
                     Завантажте Excel-книгу з деталями суден (один лист, ключ — IMO). Імпорт
                     повністю замінює поточну таблицю деталей.
-                </Typography>
+                </p>
                 <a
                     href="/integrations/vessel-imo/details/template"
                     className="text-sm text-blue-500 hover:underline mb-4 inline-flex items-center gap-1"
@@ -134,13 +134,13 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
     return (
         <Modal open={open} handler={handleClose} size="md">
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                     Імпорт деталей суден
-                </Typography>
+                </h3>
             </ModalHeader>
             <ModalBody>{renderBody()}</ModalBody>
             <ModalFooter>
-                <Button variant="text" color="blue-gray" onClick={handleClose} className="mr-1 dark:text-gray-300 dark:hover:bg-neutral-600">
+                <Button color="secondary" onClick={handleClose}>
                     Закрити
                 </Button>
                 {showAnalyzeButton && (

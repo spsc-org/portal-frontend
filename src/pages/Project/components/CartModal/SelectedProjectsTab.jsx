@@ -8,6 +8,8 @@ import RestrictionsCell from "./cells/RestrictionsCell.jsx";
 import CategoriesCell from "./cells/CategoriesCell.jsx";
 import DecreeCell from "./cells/DecreeCell.jsx";
 import ProposalsCell from "./cells/ProposalsCell.jsx";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../../components/Table/tableStyles.js";
 
 // tab-1 — "Відібрані проєкти". Колонки й логіка форматування — порт
 // TableManager.js (renderCellActionType/SubjectType/State/Restrictions/
@@ -65,55 +67,55 @@ const SelectedProjectsTab = ({ cart }) => {
                 </button>
             </div>
 
-            <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-sm">
+            <div className={twMerge(TABLE_WRAP, "")}>
+                <table className={twMerge(TABLE, "w-full")}>
                     <thead>
-                        <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 dark:border-neutral-600 dark:bg-neutral-700 dark:text-gray-400">
-                            <th className="whitespace-nowrap px-3 py-2">ID</th>
-                            <th className="whitespace-nowrap px-3 py-2">Дія</th>
-                            <th className="whitespace-nowrap px-3 py-2">Тип</th>
-                            <th className="whitespace-nowrap px-3 py-2">Стан</th>
-                            <th className="min-w-[180px] px-3 py-2">Назва</th>
-                            <th className="whitespace-nowrap px-3 py-2">Обмеження</th>
-                            <th className="whitespace-nowrap px-3 py-2">Категорії</th>
-                            <th className="whitespace-nowrap px-3 py-2">Пакет / подання</th>
-                            <th className="whitespace-nowrap px-3 py-2">Примітки</th>
-                            <th className="whitespace-nowrap px-3 py-2">Користувачі</th>
-                            <th className="w-10 px-3 py-2" />
+                        <tr className="text-left">
+                            <th className={twMerge(TH, "whitespace-nowrap")}>ID</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Дія</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Тип</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Стан</th>
+                            <th className={twMerge(TH, "min-w-[180px]")}>Назва</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Обмеження</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Категорії</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Пакет / подання</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Примітки</th>
+                            <th className={twMerge(TH, "whitespace-nowrap")}>Користувачі</th>
+                            <th className={twMerge(TH, "w-10")} />
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-neutral-700">
+                    <tbody>
                         {isLoading && (
-                            <tr><td colSpan={11} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">Завантаження…</td></tr>
+                            <tr className={TR}><td colSpan={11} className={twMerge(TD, "text-center")}>Завантаження…</td></tr>
                         )}
                         {!isLoading && filtered.length === 0 && (
-                            <tr><td colSpan={11} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">Список порожній</td></tr>
+                            <tr className={TR}><td colSpan={11} className={twMerge(TD, "text-center")}>Список порожній</td></tr>
                         )}
                         {filtered.map((row) => {
                             const precomputedData = parsePrecomputedData(row.precomputedData);
                             return (
                                 <tr key={row.id} className={row.isDisabled === 1 ? "bg-gray-200 dark:bg-neutral-800" : "text-gray-700 dark:text-gray-200"}>
-                                    <td className="whitespace-nowrap px-3 py-2">
+                                    <td className={twMerge(TD, "whitespace-nowrap")}>
                                         {row.id}{" "}
                                         {row.deletedAt && <span className="rounded bg-red-300 p-1">DELETED</span>}
                                     </td>
-                                    <td className="whitespace-nowrap px-3 py-2"><ActionTypeIcon actionType={row.actionTypeId} /></td>
-                                    <td className="whitespace-nowrap px-3 py-2"><SubjectTypeIcon typeId={row.subjectTypeId} /></td>
-                                    <td className="whitespace-nowrap px-3 py-2"><StateIcon stateId={row.stateId} states={states} /></td>
-                                    <td className="px-3 py-2">{row.nameUk || row.nameEn || "—"}</td>
-                                    <td className="px-3 py-2"><RestrictionsCell precomputedData={precomputedData} /></td>
-                                    <td className="px-3 py-2"><CategoriesCell precomputedData={precomputedData} /></td>
-                                    <td className="px-3 py-2">
+                                    <td className={twMerge(TD, "whitespace-nowrap")}><ActionTypeIcon actionType={row.actionTypeId} /></td>
+                                    <td className={twMerge(TD, "whitespace-nowrap")}><SubjectTypeIcon typeId={row.subjectTypeId} /></td>
+                                    <td className={twMerge(TD, "whitespace-nowrap")}><StateIcon stateId={row.stateId} states={states} /></td>
+                                    <td className={TD}>{row.nameUk || row.nameEn || "—"}</td>
+                                    <td className={TD}><RestrictionsCell precomputedData={precomputedData} /></td>
+                                    <td className={TD}><CategoriesCell precomputedData={precomputedData} /></td>
+                                    <td className={TD}>
                                         <DecreeCell decreeCode={row.decreeCode} expiredAt={row.expiredAt} decree={precomputedData?.decree} />
                                         <ProposalsCell precomputedData={precomputedData} />
                                     </td>
-                                    <td className="max-w-[220px] truncate px-3 py-2" title={row.notes ?? ""}>{row.notes || "—"}</td>
-                                    <td className="whitespace-nowrap px-3 py-2">
+                                    <td className={twMerge(TD, "max-w-[220px] truncate")} title={row.notes ?? ""}>{row.notes || "—"}</td>
+                                    <td className={twMerge(TD, "whitespace-nowrap")}>
                                         {userCaption(row.createdUserId)}
                                         <br />
                                         {userCaption(row.updatedUserId)}
                                     </td>
-                                    <td className="px-3 py-2 text-right">
+                                    <td className={twMerge(TD, "text-right")}>
                                         <button
                                             type="button"
                                             onClick={() => cart.remove(row.id)}

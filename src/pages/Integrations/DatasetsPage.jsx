@@ -8,7 +8,7 @@ import ImportLogTable from "./view/ImportLogTable.jsx";
 import ImportDataDialog from "./view/ImportDataDialog.jsx";
 
 const DatasetsView = observer(({ vm }) => (
-    <IntegrationsLayout data-i-doc="page:integrations-datasets" active="datasets" canRead={vm.canRead}>
+    <IntegrationsLayout data-i-doc="page:integrations-datasets" canRead={vm.canRead}>
         <DatasetTable vm={vm} onImportClick={vm.openImport}/>
         <div className="mt-6">
             <ImportLogTable list={vm.logs}/>

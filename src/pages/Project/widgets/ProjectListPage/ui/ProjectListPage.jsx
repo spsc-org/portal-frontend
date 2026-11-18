@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import ProjectFilters from "../../../features/filter-projects/ui/ProjectFilters.jsx";
+import ActiveFiltersBar from "../../../features/saved-filters/ui/ActiveFiltersBar.jsx";
 import NewProjectsButton from "../../../features/new-projects-notice/ui/NewProjectsButton.jsx";
 import Pagination from "../../../shared/ui/Pagination.jsx";
 import PageSizeSelect from "../../../shared/ui/PageSizeSelect.jsx";
@@ -20,6 +21,8 @@ const ListBar = ({ total, page, pages, onPageChange, pageSize, pageSizes, onPage
 const ProjectListPage = ({ vm }) => (
     <div className="flex flex-col gap-2">
         <ProjectFilters vm={vm.filters} />
+
+        <ActiveFiltersBar filters={vm.filters} saved={vm.savedFilters} />
 
         <ListBar {...vm.pagination} />
 

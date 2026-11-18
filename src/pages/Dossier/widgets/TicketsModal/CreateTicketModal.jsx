@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { CreateTicketViewModel } from "../../viewmodel/DossierViewModels.js";
 
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
 
@@ -39,7 +38,7 @@ const CreateTicketModal = ({open, onClose, entityType, entityId, entityLabel, on
             overlayProps={{className: "bg-black/20 backdrop-blur-none"}}>
             <ModalHeader className="flex items-center gap-2">
                 <i className="fa-solid fa-ticket text-base"></i>
-                <Typography variant="h5">Новий тікет{entityLabel ? ` — ${entityLabel}` : ""}</Typography>
+                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">Новий тікет{entityLabel ? ` — ${entityLabel}` : ""}</h4>
             </ModalHeader>
             <ModalBody className="flex flex-col gap-2">
                 <textarea
@@ -90,7 +89,7 @@ const CreateTicketModal = ({open, onClose, entityType, entityId, entityLabel, on
                 <AddLinkFields onAdd={addLink}/>
             </ModalBody>
             <ModalFooter className="gap-2">
-                <Button variant="text" color="gray" onClick={onClose}>
+                <Button color="secondary" onClick={onClose}>
                     Закрити
                 </Button>
                 <Button

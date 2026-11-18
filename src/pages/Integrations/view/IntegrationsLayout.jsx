@@ -1,25 +1,16 @@
-import { observer } from "mobx-react-lite";
-import SecondaryNavLayout from "../../../components/SecondaryNav/SecondaryNavLayout.jsx";
-import { filterAccessibleNavItems } from "../../../components/SecondaryNav/filterAccessibleNavItems.js";
-import { useSession } from "../../../stores/storeHooks.js";
-import { INTEGRATIONS_NAVIGATION } from "../shared/config/navigation.js";
-
+// Сторінки Інтеграцій (Датасети / Судна під санкціями (IMO) / Експорт) перемикаються
+// підменю пункту «Інтеграції» в сайдбарі (entities/menu/menuCache.js, SPA_EXPANDABLE_KEYS),
+// тож другого меню на сторінці немає. Без права — заглушка замість сторінки.
 const NoAccess = () => (
-    <div className="flex min-h-[50vh] items-center justify-center text-gray-600 dark:text-gray-600">
+    <div className="flex min-h-[50vh] items-center justify-center text-gray-600 dark:text-gray-400">
         <i className="fa-solid fa-lock mr-2"></i>Немає доступу до цього розділу.
     </div>
 );
 
-/** Друге меню Інтеграцій; без права — заглушка замість сторінки. */
-const IntegrationsLayout = ({ active, canRead = true, children, "data-i-doc": dataIDoc }) => {
-    const { me } = useSession();
-    const items = filterAccessibleNavItems(INTEGRATIONS_NAVIGATION, me?.access?.pages ?? []);
+const IntegrationsLayout = ({ canRead = true, children, "data-i-doc": dataIDoc }) => (
+    <div data-i-doc={canRead ? dataIDoc : undefined} className="px-3 pb-6 pt-3 sm:px-4">
+        {canRead ? children : <NoAccess/>}
+    </div>
+);
 
-    return (
-        <SecondaryNavLayout data-i-doc={canRead ? dataIDoc : undefined} title="Інтеграції" items={items} active={active}>
-            {canRead ? children : <NoAccess/>}
-        </SecondaryNavLayout>
-    );
-};
-
-export default observer(IntegrationsLayout);
+export default IntegrationsLayout;

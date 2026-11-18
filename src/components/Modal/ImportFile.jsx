@@ -41,7 +41,9 @@ const ImportFile = ({
 
     return (
         <Modal open={open} size="xs" handler={onClose}>
-            <ModalHeader>Імпорт файлу</ModalHeader>
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Імпорт файлу</h3>
+            </ModalHeader>
             <ModalBody>
                 {extraContent}
                 <input ref={fileInput} type="file" onChange={handleFileInput}

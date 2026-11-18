@@ -6,7 +6,7 @@ import IntegrationsLayout from "./view/IntegrationsLayout.jsx";
 import ExportSection from "./view/ExportSection.jsx";
 
 const ExportView = observer(({ vm }) => (
-    <IntegrationsLayout data-i-doc="page:integrations-export" active="export" canRead={vm.canRead}>
+    <IntegrationsLayout data-i-doc="page:integrations-export" canRead={vm.canRead}>
         <ExportSection vm={vm}/>
     </IntegrationsLayout>
 ));

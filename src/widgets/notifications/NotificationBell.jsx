@@ -9,7 +9,10 @@ import NotificationPanelRow, { EmptyNotifications } from './NotificationPanelRow
 import { positionStyle } from './anchoredPosition.js';
 import { useDismissOnOutside } from './useDismissOnOutside.js';
 
-function NotificationBell() {
+const DEFAULT_BUTTON_CLASS =
+    'relative flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-neutral-700';
+
+function NotificationBell({ className = DEFAULT_BUTTON_CLASS }) {
     const vm = useViewModel((deps) => new NotificationBellViewModel(deps));
     const navigate = useNavigate();
     const btnRef = useRef(null);
@@ -35,13 +38,13 @@ function NotificationBell() {
                 ref={btnRef}
                 type="button"
                 onClick={handleClick}
-                className="relative flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-neutral-700"
+                className={className}
                 title="Нотифікації"
                 aria-label="Нотифікації"
             >
                 <i className="fas fa-bell text-sm" />
                 {vm.unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 rounded-full bg-red-600 px-1.5 py-1 text-[10px] leading-none text-white">
+                    <span className="absolute -top-1 -right-1 rounded-fullbg-red-600 px-1.5 py-1 text-[10px] leading-none text-white">
                         {vm.badgeLabel}
                     </span>
                 )}

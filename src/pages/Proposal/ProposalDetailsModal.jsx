@@ -4,99 +4,67 @@ import { ProposalDetailsViewModel } from "./viewmodel/ProposalViewModels.js";
 import { useProposalProps } from "./viewmodel/useProposalProps.js";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
 import Button from "../../components/Buttons/Button.jsx"
+import { DetailGrid, DetailItem, DetailSection } from "../../components/DetailFields.jsx";
 import {format} from "date-fns";
 
+const formatDate = (value) => (value ? format(value, "dd.MM.yyyy") : null);
 
+/** Деталі подання (Portal UI kit: шапка модалки, секції, «підпис — значення»). */
 const ProposalDetailsModal = ({selectedId: id, open = false, onClose}) => {
     const { users = [], issuers = [], proposalState = [] } = useProposalProps();
     const vm = useViewModel((deps) => new ProposalDetailsViewModel({ ...deps, id }));
     const proposal = vm.proposal;
+    const userName = (userId) => (userId ? users.find((u) => u.id === userId)?.name : null);
 
     return (
-        <Modal open={open} handler={onClose} size="md">
-            <ModalHeader className="space-x-5">
-                <span>Подання: {proposal?.outgoingNumber}</span>
-                {
-                    proposal?.isHistorical &&
-                    <i className="fa-solid fa-lock text-blue-600" title="Зафіксований"></i>
-
-                }
+        <Modal open={open} onClose={onClose} size="md">
+            <ModalHeader>
+                <h3 className="flex min-w-0 items-center gap-2 text-base font-bold uppercase">
+                    <span className="truncate">Подання{proposal?.outgoingNumber ? ` ${proposal.outgoingNumber}` : ""}</span>
+                    {proposal?.isHistorical && (
+                        <i className="fa-solid fa-lock text-sm text-blue-600 dark:text-blue-400" title="Зафіксований" aria-label="Зафіксований" />
+                    )}
+                </h3>
             </ModalHeader>
-            <ModalBody className="h-[26rem] overflow-y-auto">
-                <div className="grid grid-cols-2 mb-2">
-                    <div className="flex flex-col gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Назва:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.caption}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Реєстраційний номер:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.outgoingNumber}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Реєстраційна дата:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.outgoingDate ? format(proposal?.outgoingDate, "dd.MM.yyyy") : "-"}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Суб'єкт подання:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.issuerId ? issuers.find(i => i.id === proposal?.issuerId)?.caption : "-"}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Стан:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.stateId ? proposalState.find(s => s.id === proposal?.stateId)?.caption : "-"}</p>
-                    </div>
+            <ModalBody className="flex flex-col gap-5">
+                <DetailItem label="Назва" value={proposal?.caption}/>
 
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">К-сть юридичних:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.calcLegal}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">К-сть фізичних:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.calcPerson}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Дата створення:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.createdAt ? format(proposal?.createdAt, "dd.MM.yyyy") : "-"}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Створив:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.createdUserId ? users.find(s => s.id === proposal?.createdUserId)?.name : "-"}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Дата оновлення:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.updatedAt ? format(proposal?.updatedAt, "dd.MM.yyyy") : "-"}</p>
-                    </div>
+                <DetailSection title="Реєстрація">
+                    <DetailGrid>
+                        <DetailItem label="Реєстраційний номер" value={proposal?.outgoingNumber}/>
+                        <DetailItem label="Реєстраційна дата" value={formatDate(proposal?.outgoingDate)}/>
+                        <DetailItem label="Суб'єкт подання" value={proposal?.issuerId ? issuers.find((i) => i.id === proposal.issuerId)?.caption : null}/>
+                        <DetailItem label="Стан" value={proposal?.stateId ? proposalState.find((s) => s.id === proposal.stateId)?.caption : null}/>
+                        <DetailItem label="К-сть юридичних" value={proposal?.calcLegal}/>
+                        <DetailItem label="К-сть фізичних" value={proposal?.calcPerson}/>
+                    </DetailGrid>
+                </DetailSection>
 
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Оновив:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.updatedUserId ? users.find(s => s.id === proposal?.updatedUserId)?.name : "-"}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Дата видалення:</p>
-                        <p className="font-normal dark:text-gray-400">{proposal?.deletedAt ? format(proposal?.deletedAt, "dd.MM.yyyy") : "-"}</p>
-                    </div>
+                <DetailSection title="Історія">
+                    <DetailGrid>
+                        <DetailItem label="Створив" value={userName(proposal?.createdUserId)}/>
+                        <DetailItem label="Дата створення" value={formatDate(proposal?.createdAt)}/>
+                        <DetailItem label="Оновив" value={userName(proposal?.updatedUserId)}/>
+                        <DetailItem label="Дата оновлення" value={formatDate(proposal?.updatedAt)}/>
+                        <DetailItem label="Дата видалення" value={formatDate(proposal?.deletedAt)}/>
+                    </DetailGrid>
+                </DetailSection>
 
-                </div>
-                <div className="flex flex-col gap-x-2">
-                    <p className="font-bold dark:text-gray-50">Summary:</p>
-                    <p className="font-normal dark:text-gray-400">{proposal?.calcSummary ?
-                        <div dangerouslySetInnerHTML={{__html: proposal?.calcSummary}}></div> : null}</p>
-                </div>
-                <div className="flex flex-col gap-x-2 max-h-44 overflow-auto">
-                    <p className="font-bold dark:text-gray-50">Опис:</p>
-                    <p className="font-normal dark:text-gray-400">{proposal?.description}</p>
-                </div>
-                <div className="flex flex-col gap-x-2 max-h-44 overflow-auto">
-                    <p className="font-bold dark:text-gray-50">Коментар:</p>
-                    <p className="font-normal dark:text-gray-400 ">{proposal?.comments}</p>
-                </div>
-
+                <DetailSection title="Зміст">
+                    <div className="flex flex-col gap-3">
+                        <DetailItem label="Summary">
+                            {proposal?.calcSummary
+                                ? <div dangerouslySetInnerHTML={{__html: proposal.calcSummary}}/>
+                                : <span className="text-gray-500 dark:text-gray-500">—</span>}
+                        </DetailItem>
+                        <DetailItem label="Опис" className="[&>div:last-child]:max-h-44 [&>div:last-child]:overflow-auto [&>div:last-child]:whitespace-pre-wrap" value={proposal?.description}/>
+                        <DetailItem label="Коментар" className="[&>div:last-child]:max-h-44 [&>div:last-child]:overflow-auto [&>div:last-child]:whitespace-pre-wrap" value={proposal?.comments}/>
+                    </div>
+                </DetailSection>
             </ModalBody>
             <ModalFooter>
-                <Button
-                    color="secondary"
-                    onClick={onClose}
-                    className="mr-1">
-                    <span>Закрити</span>
+                <Button color="secondary" onClick={onClose}>
+                    Закрити
                 </Button>
             </ModalFooter>
         </Modal>

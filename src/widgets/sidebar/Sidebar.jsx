@@ -8,7 +8,15 @@ import SidebarNavSkeleton from '../../components/sidebar/SidebarNavSkeleton.jsx'
 import { SIDEBAR_UI, SidebarViewModel } from './SidebarViewModel.js';
 import { isHrefActive } from './sidebarStorage.js';
 import OnlineUsersBlock from './OnlineUsersBlock.jsx';
+import PortalLogo from '../../components/PortalLogo.jsx';
 import SidebarUserMenu from './SidebarUserMenu.jsx';
+
+// Дизайн "Portal — Login" › Sidebar: 280px / 72px, пункти 40px (44px у згорнутому), rounded-lg.
+const ITEM_ACTIVE = 'bg-blue-50 font-medium text-blue-700 dark:bg-neutral-800 dark:text-white';
+const ITEM_IDLE =
+    'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-neutral-800 dark:hover:text-white';
+const ICON_BTN =
+    'inline-flex items-center justify-center rounded-lg text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-neutral-700 dark:hover:text-white';
 
 const NavItem = observer(function NavItem({ vm, item, pathname }) {
     const { open } = vm;
@@ -23,23 +31,24 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
     const [popoverOpen, setPopoverOpen] = useState(false);
     const badgeRef = useRef(null);
     const showSubmenuPanel = hasSubmenu && item.expandable !== false;
+    const submenuShown = submenuOpen || submenuActive;
     const badgeCount = vm.badgeCount(item.key);
 
-    const linkClass = active
-        ? 'border-blue-200 bg-blue-50 text-blue-700 shadow-sm dark:border-gray-600 dark:bg-neutral-700 dark:text-white'
-        : 'border-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-neutral-700 dark:hover:text-white';
-    const iconClass = active ? 'text-blue-600 dark:text-blue-300' : 'text-gray-600 dark:text-gray-400';
+    const itemClass = `relative flex items-center rounded-lg transition ${active ? ITEM_ACTIVE : ITEM_IDLE} ${
+        open ? 'h-7 min-w-0 flex-1 gap-2 px-2' : 'h-8 w-8 justify-center'
+    }`;
+    const iconClass = active ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400';
     const toggleSubmenu = () => setSubmenuOpen((prev) => !prev);
 
     const label = (
         <>
-            <i className={`${item.icon} w-4 shrink-0 text-center text-xs ${iconClass}`} />
-            {open && <span className="mx-2 min-w-0 flex-1 truncate whitespace-nowrap text-xs font-medium">{item.label}</span>}
+            <i className={`${item.icon} w-4 shrink-0 text-center text-xs ${iconClass}`} aria-hidden="true" />
+            {open && <span className="min-w-0 flex-1 truncate whitespace-nowrap text-xs">{item.label}</span>}
         </>
     );
 
     return (
-        <div className="group relative my-1">
+        <div className={`group relative ${open ? '' : 'flex justify-center'}`}>
             <div className="flex items-center gap-1">
                 {isGroup ? (
                     // Група-контейнер без власної сторінки — клік лише розгортає підменю.
@@ -53,38 +62,38 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
                                 toggleSubmenu();
                             }
                         }}
-                        title={item.label}
-                        className={`sidebar-link relative flex-1 cursor-pointer select-none rounded-md border px-2 py-1 transition ${linkClass}`}
+                        aria-label={open ? undefined : item.label}
+                        aria-expanded={showSubmenuPanel ? submenuShown : undefined}
+                        className={`sidebar-link cursor-pointer select-none ${itemClass}`}
                     >
-                        <span className="flex min-w-0 items-center">{label}</span>
+                        {label}
                     </div>
                 ) : (
                     <Link
                         to={item.href}
-                        title={item.label}
-                        className={`sidebar-link relative flex-1 rounded-md border px-2 py-1 transition ${linkClass}`}
+                        aria-current={active ? 'page' : undefined}
+                        aria-label={open ? undefined : item.label}
+                        className={`sidebar-link ${itemClass}`}
                     >
-                        <span className="flex min-w-0 items-center">
-                            {label}
-                            {badgeCount > 0 && (
-                                <span
-                                    ref={badgeRef}
-                                    title="Показати нотифікації цього розділу"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setPopoverOpen((prev) => !prev);
-                                    }}
-                                    className={`flex cursor-pointer items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold leading-none text-white transition hover:bg-red-600 ${
-                                        open
-                                            ? 'ml-auto h-[1.1rem] min-w-[1.1rem] shrink-0'
-                                            : 'absolute -right-1 -top-1 h-[1.1rem] min-w-[1.1rem] ring-2 ring-white dark:ring-neutral-800'
-                                    }`}
-                                >
-                                    {vm.badgeLabel(item.key)}
-                                </span>
-                            )}
-                        </span>
+                        {label}
+                        {badgeCount > 0 && (
+                            <span
+                                ref={badgeRef}
+                                title="Показати нотифікації цього розділу"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setPopoverOpen((prev) => !prev);
+                                }}
+                                className={`flex h-[1.1rem] min-w-[1.1rem] cursor-pointer items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white transition hover:bg-red-600 ${
+                                    open
+                                        ? 'shrink-0'
+                                        : 'absolute -right-0.5 -top-0.5 ring-2 ring-white dark:ring-neutral-900'
+                                }`}
+                            >
+                                {vm.badgeLabel(item.key)}
+                            </span>
+                        )}
                     </Link>
                 )}
                 {popoverOpen && (
@@ -99,49 +108,59 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
                     <button
                         type="button"
                         onClick={toggleSubmenu}
-                        className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-300 dark:hover:bg-neutral-700"
+                        className={`${ICON_BTN} h-6 w-6 shrink-0`}
                         aria-label={item.label}
+                        aria-expanded={submenuShown}
                     >
-                        <i className={`fa-solid fa-chevron-down text-[10px] transition-transform duration-200 ${submenuOpen || submenuActive ? 'rotate-180' : ''}`} />
+                        <i
+                            className={`fa-solid fa-chevron-down text-xs transition-transform duration-200 ${submenuShown ? 'rotate-180' : ''}`}
+                            aria-hidden="true"
+                        />
                     </button>
                 )}
             </div>
 
             {showSubmenuPanel && open && (
                 <div
-                    className={`mt-1 ml-7 grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
-                        submenuOpen || submenuActive ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                    className={`ml-4 grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+                        submenuShown ? 'mt-0.5 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                     }`}
                 >
-                    <div className="overflow-hidden border-l border-gray-300/80 pl-2 dark:border-neutral-700">
-                        {item.submenu.map((sub) => (
-                            <Link
-                                key={sub.href}
-                                to={sub.href}
-                                title={sub.legacy ? `${sub.label} — легасі-сторінка, доступ закрито` : sub.label}
-                                className={`mb-0.5 flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium transition ${
-                                    isHrefActive(sub.href, pathname)
-                                        ? 'bg-blue-100 text-blue-700 dark:bg-neutral-700 dark:text-blue-300'
-                                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-neutral-700 dark:hover:text-gray-200'
-                                } ${sub.legacy ? 'opacity-60' : ''}`}
-                            >
-                                <i className="fa-solid fa-level-up-alt rotate-90 text-[10px] opacity-70" />
-                                <i className={`${sub.icon} text-[11px]`} />
-                                <span className="min-w-0 truncate">{sub.label}</span>
-                                {sub.legacy && (
-                                    <span className="ml-auto inline-flex shrink-0 items-center gap-0.5 rounded bg-gray-200 px-1 text-[9px] font-semibold uppercase text-gray-600 dark:bg-neutral-600 dark:text-gray-400">
-                                        <i className="fa-solid fa-lock text-[8px]" />
-                                        легасі
-                                    </span>
-                                )}
-                            </Link>
-                        ))}
+                    <div className="flex flex-col gap-px overflow-hidden border-l border-gray-200 pl-2 dark:border-neutral-700">
+                        {item.submenu.map((sub) => {
+                            const subActive = isHrefActive(sub.href, pathname);
+                            return (
+                                <Link
+                                    key={sub.href}
+                                    to={sub.href}
+                                    aria-current={subActive ? 'page' : undefined}
+                                    title={sub.legacy ? `${sub.label} — легасі-сторінка, доступ закрито` : sub.label}
+                                    className={`flex h-6 items-center gap-1.5 rounded-md px-2 text-[11px] transition ${
+                                        subActive ? ITEM_ACTIVE : ITEM_IDLE
+                                    } ${sub.legacy ? 'opacity-60' : ''}`}
+                                >
+                                    <i
+                                        className={`${sub.icon} w-3.5 shrink-0 text-center text-[11px] ${
+                                            subActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'
+                                        }`}
+                                        aria-hidden="true"
+                                    />
+                                    <span className="min-w-0 truncate">{sub.label}</span>
+                                    {sub.legacy && (
+                                        <span className="ml-auto inline-flex shrink-0 items-center gap-0.5 rounded bg-gray-200 px-1 text-[9px] font-semibold uppercase text-gray-600 dark:bg-neutral-700 dark:text-gray-400">
+                                            <i className="fa-solid fa-lock text-[8px]" aria-hidden="true" />
+                                            легасі
+                                        </span>
+                                    )}
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             )}
 
             {!open && (
-                <div className="pointer-events-none invisible absolute left-[calc(100%+0.625rem)] top-1/2 z-[1300] -translate-y-1/2 whitespace-nowrap rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:opacity-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-200">
+                <div className="pointer-events-none invisible absolute left-[calc(100%+0.75rem)] top-1/2 z-[1300] -translate-y-1/2 whitespace-nowrap rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:opacity-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-200">
                     {item.label}
                 </div>
             )}
@@ -156,49 +175,64 @@ function Sidebar() {
     const { pathname } = useLocation();
     const open = vm.open;
 
+    const toggleButton = (
+        <button
+            type="button"
+            onClick={vm.toggleOpen}
+            className={`${ICON_BTN} ${open ? 'h-10 w-10' : 'h-11 w-11'}`}
+            aria-label={open ? SIDEBAR_UI.collapse : SIDEBAR_UI.expand}
+            title={open ? SIDEBAR_UI.collapse : SIDEBAR_UI.expand}
+        >
+            <i className={`fa-solid ${open ? 'fa-angles-left' : 'fa-angles-right'} text-sm`} aria-hidden="true" />
+        </button>
+    );
+
     return (
         <aside
             data-i-doc="component:sidebar"
+            aria-label="Головне меню"
             // Висота — рівно екран (не за вмістом сторінки): sticky лишає сайдбар на місці, поки
             // скролиться вікно, а довге меню прокручується всередині (flex-1 + overflow-y-auto).
-            className={`sticky top-0 flex h-screen shrink-0 flex-col self-start overflow-hidden border-r border-gray-200 bg-white p-1 transition-[width] duration-300 dark:border-neutral-700 dark:bg-neutral-800 ${
-                open ? 'w-56' : 'w-12'
+            className={`sticky top-0 flex h-screen shrink-0 flex-col self-start overflow-hidden border-r border-gray-200 bg-white text-gray-700 transition-[width] duration-300 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-300 ${
+                open ? 'w-[280px]' : 'w-[72px]'
             }`}
         >
-            <div className="flex items-center justify-between">
-                {open && (
-                    <Link
-                        to="/"
-                        className="group flex items-center gap-x-2 rounded-xl px-2 py-0 transition hover:bg-gray-100/80 dark:hover:bg-neutral-700/70"
-                    >
-                        <span className="text-xl font-semibold text-gray-800 dark:text-gray-200">Portal</span>
-                    </Link>
-                )}
-                <button
-                    type="button"
-                    onClick={vm.toggleOpen}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 transition hover:border-gray-300 hover:bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-200 dark:hover:bg-neutral-700"
-                    aria-label={open ? SIDEBAR_UI.collapse : SIDEBAR_UI.expand}
+            {/* Висота шапки = глобальний Header (50px), щоб нижні межі йшли однією лінією. */}
+            <div
+                className={`flex h-[50px] shrink-0 items-center border-b border-gray-200 dark:border-neutral-700 ${
+                    open ? 'justify-between pl-5 pr-3' : 'justify-center'
+                }`}
+            >
+                <Link
+                    to="/"
+                    title="Портал"
+                    aria-label={open ? undefined : 'Портал'}
+                    className="flex items-center gap-2.5 rounded-lg"
                 >
-                    <i className={`fa-solid ${open ? 'fa-left-long-to-line' : 'fa-right-long-to-line'} text-sm transition-transform duration-300`} />
-                </button>
+                    <PortalLogo className="h-[30px] w-[30px] shrink-0 text-blue-500 dark:text-blue-400" />
+                    {open && (
+                        <span className="text-lg font-bold tracking-wide text-gray-900 dark:text-white">Портал</span>
+                    )}
+                </Link>
+                {open && toggleButton}
             </div>
 
-            <hr className="my-2.5 border-gray-200 dark:border-neutral-700" />
+            {!open && <div className="mt-3 flex shrink-0 justify-center">{toggleButton}</div>}
 
-            <div className="flex min-h-0 flex-1 flex-col">
-                {/* flex-1: коли блок "Користувачі онлайн" згорнутий, меню займає вивільнене місце. */}
-                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1 [scrollbar-width:thin] [scrollbar-color:#94a3b8_transparent] dark:[scrollbar-color:#525252_transparent]">
-                    <nav>
-                        {vm.isMenuLoading ? (
-                            <SidebarNavSkeleton open={open} />
-                        ) : (
-                            vm.items.map((item) => <NavItem key={item.key} vm={vm} item={item} pathname={pathname} />)
-                        )}
-                    </nav>
-                </div>
+            <div
+                className={`flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden [scrollbar-color:#94a3b8_transparent] dark:[scrollbar-color:#525252_transparent] ${
+                    // У 72px-колонці смуга прокрутки перекриває іконки — ховаємо її (колесо працює).
+                    open ? 'px-2 py-2 [scrollbar-width:thin]' : 'py-1.5 [scrollbar-width:none]'
+                }`}
+            >
+                <nav className="flex flex-col gap-px">
+                    {vm.isMenuLoading ? (
+                        <SidebarNavSkeleton open={open} />
+                    ) : (
+                        vm.items.map((item) => <NavItem key={item.key} vm={vm} item={item} pathname={pathname} />)
+                    )}
+                </nav>
 
-                <hr className="my-3 shrink-0 border-gray-200 dark:border-neutral-700" />
                 {/* Каркас може бути з кешу меню — онлайн/користувач лише після підтвердження сесії. */}
                 {vm.isAuthenticated && (
                     <OnlineUsersBlock
@@ -210,42 +244,47 @@ function Sidebar() {
                 )}
             </div>
 
-            <div className="mt-4 px-2">
+            <div
+                className={`flex shrink-0 flex-col gap-3 border-t border-gray-200 py-3 dark:border-neutral-700 ${
+                    open ? 'px-3' : 'items-center'
+                }`}
+            >
                 <button
                     type="button"
                     onClick={ui.openFeedback}
                     title={`${SIDEBAR_UI.feedback} (Alt+B)`}
-                    className="group flex w-full items-center gap-x-2 rounded-lg border border-gray-300/80 bg-white/50 px-2 py-2 text-gray-700 transition hover:bg-blue-50 hover:text-blue-700 dark:border-neutral-700/70 dark:bg-neutral-800/50 dark:text-gray-300 dark:hover:bg-neutral-700 dark:hover:text-white"
+                    aria-label={open ? undefined : SIDEBAR_UI.feedback}
+                    className={`flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 text-sm font-medium text-blue-700 transition hover:bg-blue-100 dark:border-blue-400/40 dark:bg-blue-800/20 dark:text-blue-300 dark:hover:bg-blue-800/35 ${
+                        open ? 'h-10 w-full' : 'h-11 w-11'
+                    }`}
                 >
-                    <i className="fa-solid fa-circle-exclamation text-sm opacity-70 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
-                    {open && <span className="text-xs font-medium">{SIDEBAR_UI.feedback}</span>}
+                    <i className="fa-solid fa-circle-exclamation text-[15px]" aria-hidden="true" />
+                    {open && <span>{SIDEBAR_UI.feedback}</span>}
                 </button>
-            </div>
 
-            {open && vm.version && (
-                <div className="-mb-1 mt-2 text-center">
+                {vm.isAuthenticated && <SidebarUserMenu collapsed={!open} />}
+
+                {vm.version && (
                     <Link
                         to="/developer-posts"
-                        className="text-xs text-gray-600 transition hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                        className={`text-center text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white ${
+                            open ? 'text-xs' : 'text-[11px]'
+                        }`}
                         title="Що нового"
                     >
-                        Версія {vm.version}
+                        {open ? `Портал · версія ${vm.version}` : `v${vm.version}`}
                     </Link>
-                </div>
-            )}
+                )}
 
-            <div className={`mt-4 flex min-w-0 items-center px-2 py-1.5 ${open ? 'justify-between' : 'justify-center'}`}>
-                {vm.isAuthenticated && <SidebarUserMenu collapsed={!open} />}
+                {open && (
+                    <Link
+                        to="/welcome"
+                        className="-mt-2 truncate text-center text-[11px] text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                    >
+                        © {new Date().getFullYear()} Sanctions policy support centre
+                    </Link>
+                )}
             </div>
-
-            {open && (
-                <Link to="/welcome" className="mt-2 text-center text-xs">
-                    <span className="p-0.5 text-gray-600 dark:text-gray-300">
-                        © {new Date().getFullYear()}{' '}
-                        <span className="text-gray-700 dark:text-gray-300">Sanctions policy support centre</span>
-                    </span>
-                </Link>
-            )}
         </aside>
     );
 }

@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { AttachDecreeViewModel } from "../viewmodel/ProposalViewModels.js";
 import { useProposalProps } from "../viewmodel/useProposalProps.js";
-import { Checkbox, Tooltip, Typography } from "@material-tailwind/react"
+import { Checkbox, Tooltip } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
 import SingleSelect from "../../../components/fields/SingleSelect.jsx";
@@ -17,6 +17,8 @@ import {
 import {format} from "date-fns";
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import AlertProjects from "./AlertProjects.jsx";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
 const columnHelper = createColumnHelper();
 
@@ -217,10 +219,10 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
 
     return (
         <Modal open={open} handler={onClose} size="xxl">
-            <ModalHeader className="border-b dark:border-[rgba(255,255,255,0.07)] py-3 px-4">
-                <Typography variant="h6" className="text-gray-900 dark:text-[#e8eaf0]">
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                     Прикріплення указу
-                </Typography>
+                </h3>
             </ModalHeader>
             <ModalBody>
                 <div className="flex flex-col lg:flex-row gap-4">
@@ -260,8 +262,8 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
                             ))}
                         </div>
 
-                        <div className="h-[70vh] overflow-y-auto">
-                            <table className="min-w-full text-sm">
+                        <div className={twMerge(TABLE_WRAP, "h-[70vh] overflow-y-auto")}>
+                            <table className={twMerge(TABLE, "min-w-full")}>
                                 <thead>
                                 {table.getHeaderGroups().map((headerGroup) => (
                                     <tr key={headerGroup.id}>
@@ -269,8 +271,7 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
                                             <th
                                                 key={header.id}
                                                 style={{width: header.getSize()}}
-                                                className="sticky top-0 z-10 bg-gray-50 dark:bg-[#1a2035] text-[11px] font-semibold text-gray-600 dark:text-[#8b91a3] uppercase tracking-wide px-3 py-2 text-left border-b border-gray-200 dark:border-[rgba(255,255,255,0.07)]"
-                                            >
+                                                className={twMerge(TH, "sticky top-0 z-10 dark:bg-[#1a2035] dark:text-[#8b91a3] text-left")}>
                                                 {header.isPlaceholder ? null : (
                                                     <div>
                                                         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -285,12 +286,11 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
                                 {table.getRowModel().rows.map((row) => (
                                     <tr
                                         key={row.id}
-                                        className={`border-b border-gray-100 dark:border-[rgba(255,255,255,0.05)] transition-colors
+                                        className={twMerge(TR, `border-b border-gray-100 dark:border-[rgba(255,255,255,0.05)] transition-colors
                                             ${row.getIsSelected() ? 'bg-blue-50 dark:bg-[rgba(79,142,247,0.08)]' : 'hover:bg-gray-50 dark:hover:bg-[#1e2536]'}
-                                        `}
-                                    >
+                                        `)}>
                                         {row.getVisibleCells().map((cell) => (
-                                            <td key={cell.id} className="px-3 py-2 text-[12px] text-gray-700 dark:text-[#c9d8ff]">
+                                            <td key={cell.id} className={twMerge(TD, "dark:text-[#c9d8ff]")}>
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </td>
                                         ))}
@@ -311,13 +311,11 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
                                           error={errors?.decreeId}
                                           value={form.decreeId}
                                           onChange={handleChangeSelect('decreeId')}/>
-                            <Typography
-                                variant="paragraph"
-                                className="text-[12px] text-gray-600 dark:text-[#8b91a3] flex items-start gap-2 p-3 rounded-[8px] bg-blue-50 dark:bg-[rgba(79,142,247,0.08)] mt-3"
-                            >
+                            <p
+                             className="text-[12px] text-gray-600 dark:text-[#8b91a3] flex items-start gap-2 p-3 rounded-[8px] bg-blue-50 dark:bg-[rgba(79,142,247,0.08)] mt-3">
                                 <i className="fa-solid fa-circle-info mt-0.5"></i>
                                 Оберіть указ та проєкти.
-                            </Typography>
+                            </p>
                         </div>
                         {
                             Boolean(ignoreAttachAlert.length) && <AlertProjects ignoreAttachAlert={ignoreAttachAlert}/>

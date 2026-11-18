@@ -23,8 +23,8 @@ const MergeTaskModal = ({onClose, baseId}) => {
 
     return (
         <Modal data-i-doc="modal:task-view-panel-merge-task" open handler={onClose} size="sm">
-            <ModalHeader className="text-base">
-                Злити з іншою задачею
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Злити з іншою задачею</h3>
             </ModalHeader>
             <ModalBody className="max-h-[60vh] overflow-y-auto pt-0">
                 <input
@@ -61,7 +61,7 @@ const MergeTaskModal = ({onClose, baseId}) => {
                 }
             </ModalBody>
             <ModalFooter className="gap-2">
-                <Button variant="text" color="blue-gray" onClick={onClose}>Скасувати</Button>
+                <Button color="secondary" onClick={onClose}>Скасувати</Button>
                 <Button color="green" disabled={!mergeDonorTask || mergeMutation.isPending}
                         onClick={confirmMerge}>
                     {mergeMutation.isPending ? 'Зливаю…' : 'Злити'}

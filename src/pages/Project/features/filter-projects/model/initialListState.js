@@ -17,6 +17,8 @@ const readSaved = (storage) => {
 // (?fDecree=12&fAction=1) дає чистий набір фільтрів — як pages/project.js:init().
 // Розмір сторінки (limit) — налаштування користувача, тож зберігається і при deep-link.
 // defaults — emptyFilterValues() (передається ззовні, щоб функція лишалась чистою).
+// source: "url" (deep-link) | "saved" (останній стан) | "defaults" (перше відкриття —
+// тоді сторінка застосовує збережений набір фільтрів за замовчуванням, якщо він є).
 export const readInitialListState = (search, storage, defaults) => {
     const params = new URLSearchParams(search);
     const urlFId = params.get("fId");
@@ -26,6 +28,7 @@ export const readInitialListState = (search, storage, defaults) => {
 
     if (urlFId || urlFDecree.length > 0) {
         return {
+            source: "url",
             page: 1,
             limit,
             values: {
@@ -46,10 +49,10 @@ export const readInitialListState = (search, storage, defaults) => {
                 values[key] = value;
             }
         }
-        return { page: Number.isInteger(saved.page) && saved.page > 0 ? saved.page : 1, limit, values };
+        return { source: "saved", page: Number.isInteger(saved.page) && saved.page > 0 ? saved.page : 1, limit, values };
     }
 
-    return { page: 1, limit, values: defaults };
+    return { source: "defaults", page: 1, limit, values: defaults };
 };
 
 export const saveListState = (storage, state) => {

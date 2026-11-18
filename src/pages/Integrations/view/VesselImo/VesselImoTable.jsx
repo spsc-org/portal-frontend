@@ -1,13 +1,14 @@
-import { Card, Typography } from "@material-tailwind/react"
 import Button from "../../../../components/Buttons/Button.jsx"
 import { convertDate } from "../../../../lib/utils.js";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../../components/Table/tableStyles.js";
 
 const VesselImoTable = ({ lists = [], onImportClick }) => {
     return (
-        <div className="bg-white dark:bg-neutral-700 p-6 rounded-lg shadow-md">
+        <div className="bg-white dark:bg-neutral-800 p-6 rounded-xl border border-gray-200 dark:border-neutral-700">
             <div className="flex justify-between items-start mb-4">
                 <div>
-                    <h2 className="text-lg font-semibold mb-2 dark:text-gray-200">
+                    <h2 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">
                         Судна під санкціями (IMO)
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400">
@@ -16,68 +17,63 @@ const VesselImoTable = ({ lists = [], onImportClick }) => {
                         розпізнані вкладки одразу (повне перезаписування списку).
                     </p>
                 </div>
-                <Button size="sm" variant="gradient" color="blue" onClick={onImportClick}>
+                <Button size="sm" onClick={onImportClick}>
                     <i className="fa-solid fa-file-arrow-up mr-2" />
                     Імпортувати книгу
                 </Button>
             </div>
 
-            <Card className="w-full overflow-auto dark:bg-neutral-700 shadow-none">
-                <table className="w-full min-w-max table-auto text-left">
+            <div className={TABLE_WRAP}>
+                <table className={twMerge(TABLE, "w-full min-w-max table-auto text-left")}>
                     <thead>
                         <tr>
                             {['Країна', 'Список', 'Кількість IMO', 'Останнє оновлення'].map((label) => (
-                                <th key={label} className="border-b border-blue-gray-100 dark:border-neutral-700 bg-blue-gray-50 dark:bg-neutral-800 py-2 px-2">
-                                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70 dark:text-gray-400">
-                                        {label}
-                                    </Typography>
-                                </th>
+                                <th key={label} className={TH}>{label}</th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {lists.map((list, index) => {
-                            const classes = index === lists.length - 1 ? 'py-2 px-2' : 'py-2 px-2 border-b border-blue-gray-50 dark:border-neutral-700';
+                        {lists.map((list) => {
                             return (
-                                <tr key={list.id} className="even:bg-blue-gray-50/50 dark:even:bg-neutral-600/30 hover:bg-blue-gray-50 dark:hover:bg-neutral-600/50">
-                                    <td className={classes}>
+                                <tr key={list.id} className={TR}>
+                                    <td className={TD}>
                                         <div className="flex items-center gap-2">
                                             {list.country && (
                                                 <img
                                                     src={`/flag-svg/${list.country.toLowerCase()}.svg`}
                                                     alt={list.country}
-                                                    className="h-4 w-6 object-contain border border-blue-gray-50 dark:border-gray-600"
+                                                    className="h-4 w-6 object-contain border border-gray-200 dark:border-neutral-600"
                                                 />
                                             )}
-                                            <Typography variant="small" className="dark:text-gray-300">
+                                            <div>
                                                 {list.country || '—'}
-                                            </Typography>
+                                            </div>
                                         </div>
                                     </td>
-                                    <td className={classes}>
-                                        <Typography variant="small" className="font-medium dark:text-gray-200">
+                                    <td className={TD}>
+                                        <div className="font-medium text-gray-900 dark:text-gray-100">
                                             {list.caption}
-                                        </Typography>
-                                        <Typography variant="small" className="text-xs text-gray-600 dark:text-gray-500">
+                                        </div>
+                                        <div className="text-xs text-gray-600 dark:text-gray-400">
                                             {list.code}
-                                        </Typography>
+                                        </div>
                                     </td>
-                                    <td className={classes}>
-                                        <Typography variant="small" className="dark:text-gray-300">
+                                    <td className={TD}>
+                                        <div>
                                             {list.rowCount ?? 0}
-                                        </Typography>
+                                        </div>
                                     </td>
-                                    <td className={classes}>
-                                        <Typography variant="small" className="dark:text-gray-300">
+                                    <td className={TD}>
+                                        <div>
                                             {convertDate(list.lastImportedAt) || '—'}
-                                        </Typography>
+                                        </div>
                                     </td>
                                 </tr>
                             );
                         })}
                     </tbody>
                 </table>
-            </Card>
+            </div>
         </div>
     );
 };

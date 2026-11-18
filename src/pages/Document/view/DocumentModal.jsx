@@ -1,6 +1,6 @@
-import { Card, Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
+import { DetailGrid, DetailItem } from "../../../components/DetailFields.jsx";
 import { observer } from "mobx-react-lite";
 import { format } from "date-fns";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
@@ -15,114 +15,54 @@ const DocumentModal = ({selectedId, open = false, onClose, dictionaries}) => {
     // Фільтр "Документ" переноситься в налаштування legacy-сторінки /project.
     const redirectToProjects = () => openProjectsForDocument(document?.regNum);
 
+    const fmt = (value) => (value ? format(value, "dd.MM.yyyy") : null);
+    const COUNTS = [
+        { icon: "fa-person", title: "Фізичні особи", value: document?.personalCount },
+        { icon: "fa-industry", title: "Юридичні особи", value: document?.legalCount },
+        { icon: "fa-ship", title: "Судна", value: document?.vesselCount },
+        { icon: "fa-plane", title: "Повітряні судна", value: document?.aircraftCount },
+    ];
+
     return (
-        <Modal data-i-doc="modal:document-details" open={open} handler={onClose} size="sm">
+        <Modal data-i-doc="modal:document-details" open={open} onClose={onClose} size="sm">
             <ModalHeader>
-                <span className="mr-5">Детальна інформація: {document?.regNum}
-                    <span>  {document?.regDate ? format(document?.regDate, "dd.MM.yyyy") : null}</span></span>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
+                    Документ{document?.regNum ? ` ${document.regNum}` : ""}
+                    {document?.regDate && <span className="ml-1 font-normal normal-case text-gray-600 dark:text-gray-400">від {fmt(document.regDate)}</span>}
+                </h3>
             </ModalHeader>
-            <ModalBody className="h-fit overflow-y-auto">
-                <div className="mb-2 inline-flex gap-x-6 self-center dark:text-gray-400 items-center">
-                    <Typography variant={"small"} className="font-normal ">Кількість
-                        проєктів:</Typography>
-                        <Button onClick={redirectToProjects} variant="filled" size="sm">
-                            <div className="flex gap-2">
-                                <div>
-                                    <Typography as="div" variant={"small"} className="font-normal inline-flex">
-                                        <div className="w-4">
-                                            <i className="fa-regular fa-person"></i>
-                                        </div>
-                                        <span>{document?.personalCount || 0}</span>
-                                    </Typography>
-                                </div>
-                                <div>
-                                    <Typography as="div" variant={"small"} className="font-normal inline-flex">
-                                        <div className="w-4">
-                                            <i className="fa-regular fa-industry"></i>
-                                        </div>
-                                        <span>{document?.legalCount || 0}</span>
-                                    </Typography>
-                                </div>
-                                <div>
-                                    <Typography as="div" variant={"small"} className="font-normal inline-flex">
-                                        <div className="w-4">
-                                            <i className="fa-regular fa-ship"></i>
-                                        </div>
-                                        <span>{document?.vesselCount || 0}</span>
-                                    </Typography>
-                                </div>
-                                <div>
-                                    <Typography as="div" variant={"small"} className="font-normal inline-flex">
-                                        <div className="w-4">
-                                            <i className="fa-regular fa-plane"></i>
-                                        </div>
-                                        <span>{document?.aircraftCount || 0}</span>
-                                    </Typography>
-                                </div>
+            <ModalBody className="flex flex-col gap-5">
+                <DetailItem label="Кількість проєктів">
+                    <Button size="sm" color="secondary" onClick={redirectToProjects} title="Відкрити проєкти з цим документом" className="mt-1 gap-3">
+                        {COUNTS.map(({ icon, title, value }) => (
+                            <span key={icon} className="inline-flex items-center gap-1" title={title}>
+                                <i className={`fa-regular ${icon} text-xs text-gray-600 dark:text-gray-400`} aria-hidden="true"></i>
+                                {value || 0}
+                            </span>
+                        ))}
+                    </Button>
+                </DetailItem>
 
-                            </div>
-                        </Button>
-                </div>
-
-                <Card className=" p-2 grid grid-cols-2 gap-1 bg-gray-900/10 dark:bg-neutral-800">
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Назва:</p>
-                        <p className="font-normal dark:text-gray-400">{document?.caption}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Реєстраційний номер:</p>
-                        <p className="font-normal dark:text-gray-400">{document?.regNum}
-                            <span>  {document?.regDate ? format(document?.regDate, "dd.MM.yyyy") : null}</span>
-                        </p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Тип:</p>
-                        <p className="font-normal dark:text-gray-400">{document?.typeId ? types.find(type => type.id === document.typeId)?.caption : null}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Підрозділ:</p>
-                        <p className="font-normal dark:text-gray-400">{document?.unitId ? units.find(unit => unit.id === document.unitId)?.caption : null}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2 max-w-[450px]">
-                        <p className="font-bold dark:text-gray-50">Шлях:</p>
-                        {document?.path ?
-                            <div className=" bg-gray-800 w-full dark:bg-neutral-900 px-1 py-0.5 rounded-md">
-                            <span
-                                className="text-xs font-normal break-words text-green-500 dark:text-green-700">{document?.path}</span>
-                            </div>
-                            : null
-                        }
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Коментар:</p>
-                        <p className="font-normal dark:text-gray-400">{document?.comments}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Створений:</p>
-                        <p className="font-normal dark:text-gray-400">{document?.createdAt ? format(document?.createdAt, "dd.MM.yyyy") : null}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Оновлений:</p>
-                        <p className="font-normal dark:text-gray-400">{document?.updatedAt ? format(document?.updatedAt, "dd.MM.yyyy") : null}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Створив:</p>
-                        <p className="font-normal dark:text-gray-400">{document?.createdUserId ? users.find(u => u.id === document.createdUserId)?.name : null}</p>
-                    </div>
-                    <div className="inline-flex gap-x-2">
-                        <p className="font-bold dark:text-gray-50">Оновив:</p>
-                        <p className="font-normal dark:text-gray-400">{document?.updatedUserId ? users.find(u => u.id === document.updatedUserId)?.name : null}</p>
-                    </div>
-
-                </Card>
-
+                <DetailGrid>
+                    <DetailItem label="Назва" value={document?.caption}/>
+                    <DetailItem label="Реєстраційний номер" value={document?.regNum ? `${document.regNum}${document?.regDate ? ` від ${fmt(document.regDate)}` : ""}` : null}/>
+                    <DetailItem label="Тип" value={document?.typeId ? types.find(type => type.id === document.typeId)?.caption : null}/>
+                    <DetailItem label="Підрозділ" value={document?.unitId ? units.find(unit => unit.id === document.unitId)?.caption : null}/>
+                    <DetailItem label="Створений" value={fmt(document?.createdAt)}/>
+                    <DetailItem label="Оновлений" value={fmt(document?.updatedAt)}/>
+                    <DetailItem label="Створив" value={document?.createdUserId ? users.find(u => u.id === document.createdUserId)?.name : null}/>
+                    <DetailItem label="Оновив" value={document?.updatedUserId ? users.find(u => u.id === document.updatedUserId)?.name : null}/>
+                </DetailGrid>
+                <DetailItem label="Шлях">
+                    {document?.path
+                        ? <code className="block break-words rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-xs text-gray-800 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-200">{document.path}</code>
+                        : <span className="text-gray-500">—</span>}
+                </DetailItem>
+                <DetailItem label="Коментар" value={document?.comments}/>
             </ModalBody>
             <ModalFooter>
-                <Button
-                    color="secondary"
-                    onClick={onClose}
-                    className="mr-1">
-                    <span>Закрити</span>
+                <Button color="secondary" onClick={onClose}>
+                    Закрити
                 </Button>
             </ModalFooter>
         </Modal>

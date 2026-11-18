@@ -1,11 +1,11 @@
 import { observer } from "mobx-react-lite";
 import { Spinner } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody } from "../../../components/Modal/Modal.jsx"
-import CloseButton from "../../../components/Buttons/CloseButton.jsx"
+import { DetailGrid, DetailItem } from "../../../components/DetailFields.jsx";
 import { convertDate } from "../../../lib/utils.js";
 
 const renderValue = (val) => {
-    if (val === null || val === undefined) return <span className="text-gray-600 italic">—</span>;
+    if (val === null || val === undefined) return <span className="italic text-gray-600 dark:text-gray-400">—</span>;
     if (typeof val === 'object' && 'label' in val && 'value' in val) {
         return <span>{val.label ? `${val.label}: ` : ''}{val.value ?? '—'}</span>;
     }
@@ -18,17 +18,17 @@ const DiffSection = ({ title, color, items, renderRow }) => {
     if (!entries.length) return null;
 
     return (
-        <div className="mb-3">
-            <div className={`text-xs font-semibold uppercase tracking-wide mb-1 ${color}`}>{title}</div>
-            <div className="divide-y divide-gray-100 dark:divide-neutral-700 border border-gray-200 dark:border-neutral-700 rounded">
+        <section>
+            <h4 className={`mb-1.5 text-xs font-bold uppercase tracking-wide ${color}`}>{title}</h4>
+            <div className="divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 bg-white dark:divide-neutral-700 dark:border-neutral-700 dark:bg-neutral-800">
                 {entries.map(([key, val]) => (
-                    <div key={key} className="flex gap-2 px-2 py-1 text-xs">
-                        <span className="text-gray-600 dark:text-gray-400 shrink-0 w-40 truncate" title={key}>{key}</span>
-                        {renderRow(val)}
+                    <div key={key} className="flex gap-3 px-3 py-1.5 text-xs">
+                        <span className="w-40 shrink-0 truncate font-medium text-gray-800 dark:text-gray-200" title={key}>{key}</span>
+                        <span className="min-w-0 break-words">{renderRow(val)}</span>
                     </div>
                 ))}
             </div>
-        </div>
+        </section>
     );
 };
 
@@ -39,36 +39,29 @@ const AuditDetailModal = ({ vm }) => {
     const isFetching = vm.detailQuery.isFetching;
 
     return (
-        <Modal open={vm.selectedId != null} handler={vm.closeDetail} size="lg">
-            <ModalHeader hideClose className="flex items-center justify-between py-3 px-4 border-b">
-                <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                    Деталі запису аудиту #{vm.selectedId}
-                </div>
-                <CloseButton onClick={vm.closeDetail} />
-            </ModalHeader>
+        <Modal open={vm.selectedId != null} onClose={vm.closeDetail} size="lg">
+            <ModalHeader title={`Деталі запису аудиту #${vm.selectedId ?? ""}`}/>
 
-            <ModalBody className="px-4 py-3 overflow-y-auto max-h-[70vh]">
+            <ModalBody className="flex flex-col gap-4">
                 {isFetching && <div className="flex justify-center py-8"><Spinner/></div>}
 
                 {!isFetching && record && (
                     <>
-                        <div className="flex flex-wrap gap-x-6 gap-y-1 mb-4 text-xs text-gray-600 dark:text-gray-400">
-                            <span><span className="font-medium">Дія:</span> {record.action}</span>
-                            <span><span className="font-medium">Сутність ID:</span> {record.entityId ?? record.projectId ?? record.identifierId ?? '—'}</span>
-                            <span><span className="font-medium">Користувач:</span> {vm.userName(record.userId)}</span>
-                            <span><span className="font-medium">Дата:</span> {convertDate(record.createdAt)}</span>
-                            {detail.previous && (
-                                <span><span className="font-medium">Попередній запис:</span> #{detail.previous}</span>
-                            )}
-                        </div>
+                        <DetailGrid className="md:grid-cols-3">
+                            <DetailItem label="Дія" value={record.action}/>
+                            <DetailItem label="Сутність ID" value={record.entityId ?? record.projectId ?? record.identifierId}/>
+                            <DetailItem label="Користувач" value={vm.userName(record.userId)}/>
+                            <DetailItem label="Дата" value={convertDate(record.createdAt)}/>
+                            {detail.previous && <DetailItem label="Попередній запис" value={`#${detail.previous}`}/>}
+                        </DetailGrid>
 
                         {!vm.hasChanges && (
-                            <p className="text-xs text-gray-600 italic">Немає змін (перший знімок або порожній diff)</p>
+                            <p className="m-0 text-sm italic text-gray-600 dark:text-gray-400">Немає змін (перший знімок або порожній diff)</p>
                         )}
 
                         <DiffSection
                             title="Додано"
-                            color="text-green-600 dark:text-green-400"
+                            color="text-green-700 dark:text-green-400"
                             items={diff.added}
                             renderRow={(val) => <span className="text-green-700 dark:text-green-400">{renderValue(val)}</span>}
                         />
@@ -78,17 +71,17 @@ const AuditDetailModal = ({ vm }) => {
                             items={diff.changed}
                             renderRow={(val) => (
                                 <span className="flex gap-2 items-center">
-                                    <span className="text-red-500 line-through">{renderValue(val?.fromLabel ?? val?.from)}</span>
+                                    <span className="text-red-700 line-through dark:text-red-400">{renderValue(val?.fromLabel ?? val?.from)}</span>
                                     <i className="fa-solid fa-arrow-right text-gray-500 text-[10px]"/>
-                                    <span className="text-green-600">{renderValue(val?.toLabel ?? val?.to)}</span>
+                                    <span className="text-green-700 dark:text-green-400">{renderValue(val?.toLabel ?? val?.to)}</span>
                                 </span>
                             )}
                         />
                         <DiffSection
                             title="Видалено"
-                            color="text-red-600 dark:text-red-400"
+                            color="text-red-700 dark:text-red-400"
                             items={diff.removed}
-                            renderRow={(val) => <span className="text-red-500 line-through">{renderValue(val)}</span>}
+                            renderRow={(val) => <span className="text-red-700 line-through dark:text-red-400">{renderValue(val)}</span>}
                         />
                     </>
                 )}

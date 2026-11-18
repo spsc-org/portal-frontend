@@ -70,7 +70,10 @@ There is no `typecheck` script (no TypeScript/tsconfig in this repo), no `format
     `IconButton`): `components/Modal/Modal.jsx` (`Modal`/`ModalHeader title`/`ModalBody`/`ModalFooter`,
     close button auto-rendered from `onClose`, `hideClose` if the header has its own; `fullHeight` opt-in),
     `components/Buttons/Button.jsx` / `IconButton.jsx` / `CloseButton.jsx` (styles in `buttonStyles.js`;
-    MT colour names are aliased, `green` → `primary`). Dark surfaces are `neutral` (page 900, card 800,
+    MT colour names are aliased, `green` → `primary`). Tables: reference look is `/project`
+    (`ProjectListTable`); shared classes in `components/Table/tableStyles.js` (`TABLE_WRAP`, `TABLE`, `TH`,
+    `TD`, `TR`, `TABLE_BAR`), header with the sort CTA in `components/Table/ColumnHeader.jsx`
+    (used by `Table.jsx`). Column resizing was removed on purpose (unused) — don't re-add it. Dark surfaces are `neutral` (page 900, card 800,
     border 700; form fields bg `neutral-900` + border `neutral-600`, kit `surface-field`/`border-input`), dark text `gray`; no `slate`. Shared view helpers: `components/confirmToast.jsx` (toast-style confirm used by
     decree/dictionary), `components/UploadFileList.jsx` (attachments list).
   - `/project` is the former `/project/v2` (`/project/v2` redirects): `src/pages/Project/` —
@@ -85,7 +88,10 @@ There is no `typecheck` script (no TypeScript/tsconfig in this repo), no `format
     `canonicalSnapshot`) + `_key` per table row, so the origin `shared/lib/threeWayMerge.js` /
     `projectSnapshot.js` merge 409 conflicts of `PATCH /api/project/json/{id}` directly; drafts live in
     IndexedDB (`shared/lib/drafts.js`, enabled by "project-settings".useProjectDraft); `?edit={id}` /
-    `?card={id}` deep links. Settings, proposal filter, hints and "last added" share localStorage
+    `?card={id}` deep links. Saved filter sets ("Збережені:" in the active-filters bar,
+    `features/saved-filters/` + `viewmodel/SavedFiltersViewModel.js`, `vm.savedFilters`) live in
+    localStorage `project-saved-filters:{userId}` (no backend API); the default set applies on first
+    open (no saved list state, no deep link) and on "Скинути все". Settings, proposal filter, hints and "last added" share localStorage
     "project-settings" with legacy. Live analysis (port of `LiveAnalysisManager`) is shared by the card
     and the form: `model/liveAnalysisModel.js` (API, highlight segments, tooltip config) +
     `viewmodel/LiveAnalysisState.js` (results per `field[:objectId]`, per-field request staleness) +

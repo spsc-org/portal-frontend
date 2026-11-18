@@ -10,9 +10,9 @@ import PermissionsGrid from "./components/PermissionsGrid.jsx";
 
 const ConfirmUnlockDialog = observer(({ vm }) => (
     <Modal open={vm.confirmUnlock} size="xs" handler={vm.cancelUnlockAdmin} className="border">
-        <ModalHeader className="border-b">
-            <span>Увага!</span>
-        </ModalHeader>
+        <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase"><span>Увага!</span></h3>
+            </ModalHeader>
         <ModalBody>
             <p className="font-normal dark:text-gray-200">Ви дійсно хочете змінити повноваження?</p>
         </ModalBody>
@@ -52,9 +52,9 @@ const UserFormModal = ({ data, id = null, onClose }) => {
     return (
         <span data-i-doc={vm.isEdit ? "modal:admin-user-update-modal" : "modal:admin-user-modal"} style={{ display: "contents" }}>
             <Modal open size="lg" handler={onClose} className="border">
-                <ModalHeader className="border-b">
-                    <span>{vm.title}</span>
-                </ModalHeader>
+                <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase"><span>{vm.title}</span></h3>
+            </ModalHeader>
                 {vm.isEdit ? (
                     <ModalBody className="flex h-[42rem] max-h-[calc(100vh-12rem)] flex-col overflow-hidden p-0">
                         <EditTabs vm={vm}/>

@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { Menu, MenuHandler, MenuItem, MenuList, Typography } from "@material-tailwind/react"
+import { Menu, MenuHandler, MenuItem, MenuList } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
 import Button from "../../components/Buttons/Button.jsx"
 import { format } from "date-fns";
@@ -63,12 +63,12 @@ const DocumentFormModal = ({ open, onClose, mode = "create", documentId = null, 
         return (
             <Modal data-i-doc="modal:document-update" open={open} handler={onClose} size="sm">
                 <ModalHeader>
-                    <Typography variant="h5" className="dark:text-gray-200">
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                         Редагувати документ: {doc?.regNum} {doc?.regDate ?
                         <span>від {format(doc.regDate, "dd.MM.yyyy")}</span>
                         : ""}
-                    </Typography>
-                </ModalHeader>
+                    </h3>
+            </ModalHeader>
                 <ModalBody>
                     <div className="mb-2">
                         <label className="cursor-pointer text-gray-600 dark:text-gray-400">
@@ -117,7 +117,7 @@ const DocumentFormModal = ({ open, onClose, mode = "create", documentId = null, 
     return (
         <Modal data-i-doc="modal:document-create" open={open} handler={onClose} size="sm">
             <ModalHeader>
-                Створити новий документ
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Створити новий документ</h3>
             </ModalHeader>
             <ModalBody>
                 <div className="grid grid-cols-2 gap-2">

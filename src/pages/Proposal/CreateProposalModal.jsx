@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { ProposalFormViewModel } from "./viewmodel/ProposalViewModels.js";
 import { useProposalProps } from "./viewmodel/useProposalProps.js";
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
 import Button from "../../components/Buttons/Button.jsx"
 import SingleSelect from "../../components/fields/SingleSelect.jsx";
@@ -27,9 +26,9 @@ const CreateProposalModal = ({open, onClose}) => {
     return (
         <Modal open={open} handler={onClose} size="md" dismiss={{escapeKey: false}}>
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                     Створити подання
-                </Typography>
+                </h3>
             </ModalHeader>
             <ModalBody className="h-[32rem] overflow-y-auto">
                 <div className="grid grid-cols-2 gap-2">

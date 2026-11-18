@@ -17,8 +17,8 @@ const InventoryCommentModal = ({modal, onClose}) => {
 
     return (
         <Modal open={!!modal} handler={onClose} size="sm">
-            <ModalHeader className="text-sm py-3">
-                {modal?.mode === 'add' ? 'Додати коментар' : 'Редагувати коментар'}
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">{modal?.mode === 'add' ? 'Додати коментар' : 'Редагувати коментар'}</h3>
             </ModalHeader>
             <ModalBody className="py-2">
                 <textarea
@@ -36,7 +36,7 @@ const InventoryCommentModal = ({modal, onClose}) => {
                 <p className="text-[11px] text-gray-600 mt-1">Ctrl+Enter — зберегти</p>
             </ModalBody>
             <ModalFooter className="gap-2 py-2">
-                <Button size="sm" color="white" onClick={onClose}>Скасувати</Button>
+                <Button color="secondary" size="sm" onClick={onClose}>Скасувати</Button>
                 <Button size="sm" color="blue" onClick={handleSubmit} disabled={!text.trim() || isPending}>
                     {isPending ? 'Збереження…' : 'Зберегти'}
                 </Button>

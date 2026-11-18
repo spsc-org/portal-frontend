@@ -35,6 +35,8 @@ import { ProjectSettingsViewModel, ProposalFilterViewModel } from './ProjectSett
 import { PersonalReasonRulesViewModel } from './PersonalReasonRulesViewModel.js'
 import { ProjectCardViewModel } from './ProjectCardViewModel.js'
 import { VocabularyModalViewModel } from './VocabularyModalViewModel.js'
+import { SavedFiltersViewModel } from './SavedFiltersViewModel.js'
+import { buildActiveChips } from '../features/saved-filters/model/activeChips.js'
 
 const HIGHLIGHT_MS = 3000
 const UPDATED_PULSE_MS = 3000 // = animation highlight (Portal UI kit, 3s)
@@ -138,6 +140,7 @@ export class ProjectListPageViewModel {
       reasonRules: false,
       projectCard: false,
       vocabularyModal: false,
+      savedFilters: false,
       menuRef: false,
       initialOpen: false,
     })
@@ -157,6 +160,10 @@ export class ProjectListPageViewModel {
     this.reasonRules = new PersonalReasonRulesViewModel({ scope, page: this })
     this.projectCard = new ProjectCardViewModel({ scope, page: this })
     this.vocabularyModal = new VocabularyModalViewModel({ scope, page: this })
+    // Збережені набори фільтрів: deep-link — набір не активний; перше відкриття — набір за замовчуванням
+    this.savedFilters = new SavedFiltersViewModel({ page: this })
+    if (initial.source === 'url') this.savedFilters.detach()
+    else if (initial.source === 'defaults') this.savedFilters.resetToDefault()
     // Deep link ?edit={id} (форма) / ?card={id} (картка), як legacy project.js — після словників
     const params = new URLSearchParams(search)
     this.initialOpen = { edit: Number(params.get('edit')) || null, card: Number(params.get('card')) || null, chain: params.has('chain') }
@@ -305,8 +312,10 @@ export class ProjectListPageViewModel {
       compact: this.compact,
       onToggleCompact: this.toggleCompact,
       hiddenActiveCount: countHiddenActive(this.values, visibility, this.compact),
-      canReset: countActive(this.values, Object.keys(this.values)) > 0,
+      canReset: countActive(this.values, Object.keys(this.values)) > 0 || this.savedFilters.canResetToDefault,
       onReset: this.resetFilters,
+      activeChips: buildActiveChips(this.values, options),
+      onRemoveChip: this.removeChip,
       proposalExtendedCount: proposalExtended?.enabled ? proposalExtended.val?.length ?? 0 : null,
     }
   }
@@ -397,9 +406,19 @@ export class ProjectListPageViewModel {
     this.values = { ...this.values, [key]: value }
     this.page = 1
   }
+  /** «Скинути все»: набір за замовчуванням (якщо є), інакше порожні фільтри. */
   resetFilters() {
+    if (this.savedFilters.resetToDefault()) return
     this.values = emptyFilterValues()
     this.page = 1
+  }
+  /** Застосувати значення цілком (збережений набір). */
+  applyFilterValues(values) {
+    this.values = values
+    this.page = 1
+  }
+  removeChip(chip) {
+    this.setValue(chip.key, chip.empty)
   }
   toggleCompact() {
     this.compact = !this.compact
@@ -613,6 +632,7 @@ export class ProjectListPageViewModel {
 
   /** Escape закриває верхню з відкритих модалок сторінки; true — якщо щось закрито. */
   closeTopModal() {
+    if (this.savedFilters.closeTop()) return true
     const stack = [this.vocabularyModal, this.consolidatedModal, this.ticketForm, this.projectForm, this.projectCard, this.reasonRules, this.proposalFilter, this.settings]
     const top = stack.find((modal) => modal.isOpen)
     top?.close()

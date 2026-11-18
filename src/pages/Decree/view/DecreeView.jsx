@@ -10,7 +10,6 @@ import SingleSelect from "../../../components/fields/SingleSelect.jsx";
 import DateRangePicker from "../../../components/fields/DateRangePicker.jsx";
 import CollapsibleSection from "../../../components/CollapsibleSection.jsx";
 import Table from "../../../components/Table/Table.jsx";
-import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import { confirmToast } from "../../../components/confirmToast.jsx";
 import { BOOLEANS, convertDate, SANC_DECREE_TYPES } from "../../../lib/utils.js";
 import DecreeModal from "./DecreeModal.jsx";
@@ -20,7 +19,6 @@ import PageHeader from "../../../layouts/app/PageHeader.jsx";
 import { HeaderButton } from "../../../layouts/app/HeaderButtons.jsx";
 
 const columnHelper = createColumnHelper();
-const savedSize = (key, fallback) => loadColumnSizes()?.find((item) => item.column === key)?.size || fallback;
 const dateCell = (props) => props.getValue()
     ? <Tooltip content={props.getValue()}>{convertDate(props.getValue())}</Tooltip>
     : ' ---- ';
@@ -29,11 +27,11 @@ function useDecreeColumns(vm) {
     const { canUpdate, canDelete } = vm;
     return useMemo(() => [
         columnHelper.accessor("id", { id: 'id', size: 80, enableResizing: false, header: () => 'ID' }),
-        columnHelper.accessor("typeId", { id: 'typeId', size: savedSize('typeId', 150), header: () => 'Тип' }),
-        columnHelper.accessor("code", { id: 'code', size: savedSize('code', 100), header: () => 'Код', cell: (info) => info.getValue() }),
+        columnHelper.accessor("typeId", { id: 'typeId', size: 150, header: () => 'Тип' }),
+        columnHelper.accessor("code", { id: 'code', size: 100, header: () => 'Код', cell: (info) => info.getValue() }),
         columnHelper.accessor("date", {
             id: 'date',
-            size: savedSize('date', 100),
+            size: 100,
             header: () => 'Дата',
             cell: (props) => props.getValue() ? format(props.getValue(), 'dd.MM.yyyy') : ' ---- ',
         }),
@@ -52,13 +50,13 @@ function useDecreeColumns(vm) {
                 </div>;
             },
         }),
-        columnHelper.accessor("comment", { id: 'comment', size: savedSize('comment', 250), header: () => 'Коментар', enableSorting: false }),
+        columnHelper.accessor("comment", { id: 'comment', size: 250, header: () => 'Коментар', enableSorting: false }),
         columnHelper.accessor('createdAt', { id: "createdAt", header: () => 'Дата створення', cell: dateCell, size: 100 }),
         columnHelper.accessor('updatedAt', { id: "updatedAt", header: () => 'Дата зміни', cell: dateCell, size: 100 }),
         columnHelper.accessor('deleted_at', { id: "deleted_at", header: () => 'Дата видалення', cell: dateCell, size: 100, enableResizing: false }),
         columnHelper.accessor("attachments_count", {
             id: 'attachments_count',
-            size: savedSize('attachments_count', 80),
+            size: 80,
             header: () => 'Кількість файлів',
             enableSorting: false,
             cell: (info) => <AttachmentsDropdown id={info.row.id} count={info.getValue()}/>,
@@ -146,7 +144,6 @@ const DecreeView = ({ vm }) => {
                 <Table
                     loading={vm.isFetching}
                     canChangeVisibility
-                    canChangeResize
                     textSize="xs"
                     pagination={vm.pagination}
                     data={vm.decrees?.data}

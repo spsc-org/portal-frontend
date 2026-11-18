@@ -43,7 +43,7 @@ export default function ConfirmPassword() {
         Це захищена ділянка застосунку. Будь ласка, підтвердіть свій пароль, перш ніж продовжити.
       </Typography>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <FormField
           label="Пароль"
           type="password"

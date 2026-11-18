@@ -21,7 +21,7 @@ const AuditView = () => {
     return (
         <Page>
             <Tabs value={vm.tab}>
-                <div data-i-doc="page:audit" className="bg-white dark:bg-neutral-700 w-8/12 mx-auto rounded-lg shadow-lg mb-5">
+                <div data-i-doc="page:audit" className="bg-white dark:bg-neutral-800 w-8/12 mx-auto rounded-xl mb-5 border border-gray-200 dark:border-neutral-700">
                     <TabsHeader
                         className="rounded-none text-xs border-blue-gray-50 bg-transparent p-0 z-0"
                         indicatorProps={{ className: "bg-transparent border-b-2 border-gray-900 shadow-none rounded-none" }}

@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { Checkbox, Typography } from "@material-tailwind/react"
+import { Checkbox } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
 import ConfirmModal from "../../../components/Modal/ConfirmModal.jsx";
@@ -8,11 +8,13 @@ import { COPY_OPTIONS } from "../viewmodel/ProjectListViewModels.js";
 /** Копіювання проєкту — legacy Page.confirmAndCopy (myApp.showConfirm з чекбоксами). */
 const CopyProjectDialog = observer(({ vm }) => (
     <Modal open={vm.copyTarget != null} handler={vm.closeCopy} size="xs">
-        <ModalHeader>Копіювання проєкту</ModalHeader>
+        <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Копіювання проєкту</h3>
+            </ModalHeader>
         <ModalBody className="flex flex-col gap-2">
-            <Typography className="text-sm dark:text-gray-300">
+            <p className="text-gray-700 text-sm dark:text-gray-300">
                 Створити копію проєкту #{vm.copyTarget}. Оберіть що включити до копії:
-            </Typography>
+            </p>
             {COPY_OPTIONS.map(({ group, items }) => (
                 <div key={group} className="flex flex-col">
                     <span className="text-xs font-semibold uppercase text-gray-600 dark:text-gray-400">{group}</span>
@@ -30,7 +32,7 @@ const CopyProjectDialog = observer(({ vm }) => (
             ))}
         </ModalBody>
         <ModalFooter className="gap-2">
-            <Button variant="text" onClick={vm.closeCopy}>
+            <Button color="secondary" onClick={vm.closeCopy}>
                 Скасувати
             </Button>
             <Button color="blue" onClick={vm.copy} data-testid="copy-confirm">

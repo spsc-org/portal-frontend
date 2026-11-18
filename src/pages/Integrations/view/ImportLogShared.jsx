@@ -1,5 +1,7 @@
 /* eslint-disable react-refresh/only-export-components -- спільні хелпери форматування + дрібні компоненти журналу */
 import { Chip, Tooltip } from "@material-tailwind/react";
+import Button from "../../../components/Buttons/Button.jsx";
+import { TABLE_BAR } from "../../../components/Table/tableStyles.js";
 
 export const formatBytes = (bytes, decimals = 2) => {
     if (!+bytes) return '0 Bytes';
@@ -64,29 +66,22 @@ export const StatusChip = ({ status, status_label, has_warnings, warnings_count,
     );
 };
 
+/** Пагінація журналів (Portal UI kit: смуга-картка як ListBar /project, кнопки secondary). */
 export const PaginationFooter = ({ pagination, page, onPageChange }) => {
-    if (!pagination || pagination.total === 0) return null;
+    if (!pagination || pagination.total === 0 || (pagination.last_page ?? 1) <= 1) return null;
 
     return (
-        <div className="flex items-center justify-between border-t border-blue-gray-50 dark:border-neutral-700 pt-4 mt-4">
-            <span className="text-sm text-blue-gray-600 dark:text-gray-400">
-                Сторінка {pagination.current_page} з {pagination.last_page} (Всього: {pagination.total})
+        <div className={`${TABLE_BAR} mt-3`}>
+            <span className="text-xs text-gray-600 dark:text-gray-400">
+                Сторінка {pagination.current_page} з {pagination.last_page} · всього {pagination.total}
             </span>
-            <div className="flex gap-2">
-                <button
-                    className="text-sm px-3 py-1 border border-blue-gray-300 dark:border-gray-600 rounded disabled:opacity-40 dark:text-gray-300 dark:hover:bg-neutral-600"
-                    onClick={() => onPageChange(page - 1)}
-                    disabled={page === 1}
-                >
-                    Попередня
-                </button>
-                <button
-                    className="text-sm px-3 py-1 border border-blue-gray-300 dark:border-gray-600 rounded disabled:opacity-40 dark:text-gray-300 dark:hover:bg-neutral-600"
-                    onClick={() => onPageChange(page + 1)}
-                    disabled={page === pagination.last_page}
-                >
-                    Наступна
-                </button>
+            <div className="ml-auto flex gap-1.5">
+                <Button size="xs" color="secondary" onClick={() => onPageChange(page - 1)} disabled={page === 1}>
+                    ← Назад
+                </Button>
+                <Button size="xs" color="secondary" onClick={() => onPageChange(page + 1)} disabled={page === pagination.last_page}>
+                    Далі →
+                </Button>
             </div>
         </div>
     );

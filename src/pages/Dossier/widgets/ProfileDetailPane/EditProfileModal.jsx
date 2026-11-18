@@ -1,5 +1,4 @@
 import {useState} from "react";
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
 
@@ -42,7 +41,7 @@ const EditProfileModal = ({open, profile, isPending, onClose, onConfirm}) => {
             className="border"
             overlayProps={{className: "bg-black/20 backdrop-blur-none"}}>
             <ModalHeader>
-                <Typography variant="h5">Редагувати картку досьє</Typography>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Редагувати картку досьє</h3>
             </ModalHeader>
             <ModalBody className="flex flex-col gap-3">
                 <div>

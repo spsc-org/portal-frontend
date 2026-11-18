@@ -25,8 +25,8 @@ const ProjectsSetModal = ({onClose, taskId, initialProjects}) => {
 
     return (
         <Modal data-i-doc="modal:task-view-panel-projects-set" open handler={onClose} size="md">
-            <ModalHeader className="text-base">
-                Набір проєктів ({draft.length})
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Набір проєктів ({draft.length})</h3>
             </ModalHeader>
             <ModalBody className="max-h-[65vh] overflow-y-auto pt-0">
                 {/* Пошук проєктів для додавання — той самий фільтр-движок, що /project */}
@@ -139,7 +139,7 @@ const ProjectsSetModal = ({onClose, taskId, initialProjects}) => {
                 </p>
             </ModalBody>
             <ModalFooter className="gap-2">
-                <Button variant="text" color="blue-gray" onClick={onClose}>Скасувати</Button>
+                <Button color="secondary" onClick={onClose}>Скасувати</Button>
                 <Button color="green" disabled={updateLinkedProjectsMutation.isPending}
                         onClick={saveDraft}>
                     {updateLinkedProjectsMutation.isPending ? 'Зберігаю…' : 'Зберегти'}

@@ -10,7 +10,7 @@ const ReportIndexView = ({ vm }) => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <Link
                             to="/report/imo-analysis"
-                            className="block bg-white dark:bg-neutral-700 rounded-lg shadow p-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-neutral-700"
+                            className="block bg-white dark:bg-neutral-800 rounded-xl p-4 hover:border-blue-300 transition-shadow border border-gray-200 dark:border-neutral-700"
                         >
                             <div className="font-medium text-gray-900 dark:text-gray-100">
                                 Аналіз суден за списком IMO
@@ -21,7 +21,7 @@ const ReportIndexView = ({ vm }) => {
                         </Link>
                         <Link
                             to="/report/duplicates"
-                            className="block bg-white dark:bg-neutral-700 rounded-lg shadow p-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-neutral-700"
+                            className="block bg-white dark:bg-neutral-800 rounded-xl p-4 hover:border-blue-300 transition-shadow border border-gray-200 dark:border-neutral-700"
                         >
                             <div className="flex items-center gap-2 font-medium text-gray-900 dark:text-gray-100">
                                 Дублікати в Рупорах
@@ -37,7 +37,7 @@ const ReportIndexView = ({ vm }) => {
                             <Link
                                 key={report.key}
                                 to={`/report/validation/${report.key}`}
-                                className="block bg-white dark:bg-neutral-700 rounded-lg shadow p-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-neutral-700"
+                                className="block bg-white dark:bg-neutral-800 rounded-xl p-4 hover:border-blue-300 transition-shadow border border-gray-200 dark:border-neutral-700"
                             >
                                 <div className="flex items-center gap-2 font-medium text-gray-900 dark:text-gray-100">
                                     {report.label}

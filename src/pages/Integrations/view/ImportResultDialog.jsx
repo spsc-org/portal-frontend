@@ -1,4 +1,3 @@
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
 
@@ -18,12 +17,12 @@ const ImportResultDialog = ({ open, onClose, result, onDownload }) => {
     return (
         <Modal open={open} handler={onClose} size="xl">
             <ModalHeader>
-                <Typography variant="h5" color={success ? "green" : "red"}>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                     {success ? "Результат операції" : "Помилка"}
-                </Typography>
+                </h3>
             </ModalHeader>
             <ModalBody divider className="flex flex-col gap-4">
-                <Typography variant="h6">{message}</Typography>
+                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">{message}</h4>
 
                 {downloadUrl && (
                     <div className="flex justify-center my-4">

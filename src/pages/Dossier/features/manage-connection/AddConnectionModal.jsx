@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { SourceSearchViewModel } from "../../viewmodel/DossierViewModels.js";
 import {useEffect, useState} from "react";
-import { Spinner, Typography } from "@material-tailwind/react"
+import { Spinner } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
 import {MODEL_CLASS_OPTIONS} from "../../shared/config/sourceTypes.js";
@@ -49,7 +49,7 @@ const AddConnectionModal = ({open, isPending, onClose, onConfirm}) => {
             className="border"
             overlayProps={{className: "bg-black/20 backdrop-blur-none"}}>
             <ModalHeader>
-                <Typography variant="h5">Додати звʼязок</Typography>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Додати звʼязок</h3>
             </ModalHeader>
             <ModalBody className="flex flex-col gap-3">
                 <select

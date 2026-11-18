@@ -5,7 +5,11 @@ import { IdentifierDetailsViewModel } from "../viewmodel/DictionaryViewModels.js
 import { Spinner, Tab, TabPanel, Tabs, TabsBody, TabsHeader } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
+import { DetailGrid, DetailItem } from "../../../components/DetailFields.jsx";
+import AuditPager from "../../../components/Audit/AuditPager.jsx";
+import { KIT_TAB, KIT_TAB_ACTIVE, KIT_TAB_PANEL, KIT_TABS_HEADER } from "../../../components/tabsStyles.js";
 import {useMemo, useState} from "react";
+import { AUDIT_BODY, AUDIT_CARD, AUDIT_EMPTY, AUDIT_HEAD, AUDIT_META, AUDIT_USER, DIFF_FIELD, DIFF_FROM, DIFF_HEAD_ROW, DIFF_TABLE, DIFF_TH, DIFF_TO, DIFF_TR } from "../../../components/Audit/auditStyles.js";
 
 const FIELD_LABELS = {
     code: 'Код',
@@ -22,14 +26,14 @@ const FIELD_LABELS = {
 };
 
 const ACTION_CONFIG = {
-    create:  {label: 'Створено',   color: 'bg-green-100 text-green-800'},
-    update:  {label: 'Оновлено',   color: 'bg-blue-100 text-blue-800'},
-    delete:  {label: 'Видалено',   color: 'bg-red-100 text-red-800'},
-    restore: {label: 'Відновлено', color: 'bg-orange-100 text-orange-800'},
+    create:  {label: 'Створено',   color: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'},
+    update:  {label: 'Оновлено',   color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300'},
+    delete:  {label: 'Видалено',   color: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'},
+    restore: {label: 'Відновлено', color: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300'},
 };
 
 const ActionBadge = ({action}) => {
-    const cfg = ACTION_CONFIG[action] || {label: action, color: 'bg-gray-100 text-gray-800'};
+    const cfg = ACTION_CONFIG[action] || {label: action, color: 'bg-gray-100 text-gray-800 dark:bg-neutral-600 dark:text-gray-300'};
     return (
         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}>
             {cfg.label}
@@ -53,51 +57,51 @@ const AuditEntry = ({entry, dictionary}) => {
     ];
 
     const formatValue = (value) => {
-        if (value === null || value === undefined || value === '') return <span className="text-gray-600 italic">—</span>;
+        if (value === null || value === undefined || value === '') return <span className="italic text-gray-600 dark:text-gray-400">—</span>;
         if (typeof value === 'object') return value.label ?? value.value ?? '';
         return String(value);
     };
 
     return (
-        <div className="border rounded-lg mb-2 overflow-hidden dark:border-gray-600">
+        <div className={AUDIT_CARD}>
             <button
                 onClick={() => setOpen(o => !o)}
-                className="w-full flex items-center justify-between px-3 py-2 text-left bg-gray-50 dark:bg-neutral-600 hover:bg-gray-100 dark:hover:bg-neutral-500"
+                className={AUDIT_HEAD}
             >
                 <div className="flex items-center gap-x-3">
                     <ActionBadge action={entry.action}/>
-                    <span className="text-xs text-gray-600 dark:text-gray-400">{entry.createdAt}</span>
-                    <span className="text-xs dark:text-gray-300">{userName}</span>
+                    <span className={AUDIT_META}>{entry.createdAt}</span>
+                    <span className={AUDIT_USER}>{userName}</span>
                     {rows.length > 0 && (
-                        <span className="text-xs text-gray-600">({rows.length} зм.)</span>
+                        <span className={AUDIT_META}>({rows.length} зм.)</span>
                     )}
                 </div>
                 <i className={`fa-regular fa-chevron-${open ? 'up' : 'down'} text-gray-600 text-xs`}/>
             </button>
 
             {open && (
-                <div className="px-3 py-2 dark:bg-neutral-700">
+                <div className={AUDIT_BODY}>
                     {rows.length === 0 ? (
-                        <p className="text-xs text-gray-600 italic">Немає змін у відстежуваних полях</p>
+                        <p className={AUDIT_EMPTY}>Немає змін у відстежуваних полях</p>
                     ) : (
-                        <table className="w-full text-xs">
+                        <table className={DIFF_TABLE}>
                             <thead>
-                            <tr className="text-left text-gray-600 dark:text-gray-400">
-                                <th className="pb-1 w-1/4">Поле</th>
-                                <th className="pb-1 w-[37.5%]">Було</th>
-                                <th className="pb-1 w-[37.5%]">Стало</th>
+                            <tr className={DIFF_HEAD_ROW}>
+                                <th className={`${DIFF_TH} w-1/4`}>Поле</th>
+                                <th className={`${DIFF_TH} w-[37.5%]`}>Було</th>
+                                <th className={`${DIFF_TH} w-[37.5%]`}>Стало</th>
                             </tr>
                             </thead>
                             <tbody>
                             {rows.map(({field, from, to}) => (
-                                <tr key={field} className="border-t dark:border-gray-600">
-                                    <td className="py-1 font-medium dark:text-gray-300">
+                                <tr key={field} className={DIFF_TR}>
+                                    <td className={DIFF_FIELD}>
                                         {FIELD_LABELS[field] || field}
                                     </td>
-                                    <td className="py-1 text-red-500 dark:text-red-400">
+                                    <td className={DIFF_FROM}>
                                         {formatValue(from)}
                                     </td>
-                                    <td className="py-1 text-green-600 dark:text-green-400">
+                                    <td className={DIFF_TO}>
                                         {formatValue(to)}
                                     </td>
                                 </tr>
@@ -149,71 +153,65 @@ const IdentifyV2DetailsModal = ({open, id, onClose, dictionary, dictionaries}) =
     const auditTotal   = auditData?.total ?? 0;
     const auditPages   = auditData?.pages ?? 1;
 
+    const FIELDS = [
+        ['ID', details?.id],
+        ['Код', details?.code],
+        ['Група', details?.group],
+        ['Назва українською', details?.name_uk],
+        ['Опис українською', details?.description_uk],
+        ['Виводити як', details?.name_doc],
+        ['Опис англійською', details?.description_en],
+        ['Назва англійською', details?.name_en],
+        ['Коментар', details?.comment],
+        ["Тип суб'єкта", details?.subjectType?.caption],
+        ['Країна', details?.belongCountry?.caption],
+        ['Створено', details?.createdAt],
+        ['Останнє оновлення', details?.updatedAt],
+    ];
+
     return (
-        <Modal data-i-doc="modal:dictionary-identify-v2-details-modal" open={open} size="xl" handler={onClose}>
+        <Modal data-i-doc="modal:dictionary-identify-v2-details-modal" open={open} size="xl" onClose={onClose}>
             <ModalHeader>
-                <span className="mr-5">Детальна інформація {details?.code}</span>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
+                    Ідентифікатор{details?.code ? <span className="ml-2 normal-case text-blue-600 dark:text-blue-400">{details.code}</span> : null}
+                </h3>
             </ModalHeader>
-            <ModalBody className="max-h-[calc(100vh-12rem)] overflow-y-auto">
+            <ModalBody>
                 {isFetching
-                    ? <div className="flex justify-center w-full"><Spinner className="h-12 w-12"/></div>
+                    ? <div className="flex w-full justify-center py-10"><Spinner className="h-12 w-12"/></div>
                     : (
                         <Tabs value={tab}>
-                            <TabsHeader className="bg-transparent" indicatorProps={{
-                                className: "bg-gray-900/10 dark:bg-blue-900/50 shadow-none !text-gray-900",
-                            }}>
-                                <Tab value="info" onClick={() => setTab("info")} className="dark:text-gray-50">
+                            <TabsHeader {...KIT_TABS_HEADER}>
+                                <Tab value="info" onClick={() => setTab("info")} className={KIT_TAB} activeClassName={KIT_TAB_ACTIVE}>
                                     Загальна інформація
                                 </Tab>
-                                <Tab value="audit" onClick={() => setTab("audit")} className="dark:text-gray-50">
+                                <Tab value="audit" onClick={() => setTab("audit")} className={KIT_TAB} activeClassName={KIT_TAB_ACTIVE}>
                                     <div className="flex items-center gap-x-2">
                                         Аудит змін
                                         {auditTotal > 0 && (
-                                            <div className="relative h-[20px] w-[20px] bg-gray-950 dark:bg-neutral-900 rounded-full">
-                                                <span className="absolute text-sm left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
-                                                    {auditTotal}
-                                                </span>
-                                            </div>
+                                            <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gray-200 px-1.5 text-xs font-semibold text-gray-700 dark:bg-neutral-700 dark:text-gray-200">
+                                                {auditTotal}
+                                            </span>
                                         )}
                                     </div>
                                 </Tab>
                             </TabsHeader>
                             <TabsBody>
-                                <TabPanel data-i-doc="tab:dictionary-identify-v2-info" value="info">
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {[
-                                            ['ID', details?.id],
-                                            ['Код', details?.code],
-                                            ['Група', details?.group],
-                                            ['Назва українською', details?.name_uk],
-                                            ['Опис українською', details?.description_uk],
-                                            ['Виводити як', details?.name_doc],
-                                            ['Опис англійською', details?.description_en],
-                                            ['Назва англійською', details?.name_en],
-                                            ['Коментар', details?.comment],
-                                            ["Тип суб'єкта", details?.subjectType?.caption],
-                                            ['Країна', details?.belongCountry?.caption],
-                                            ['Створено', details?.createdAt],
-                                            ['Останнє оновлення', details?.updatedAt],
-                                        ].map(([label, value]) => (
-                                            <div key={label} className="flex flex-row gap-x-2">
-                                                <span className="dark:text-gray-400 font-bold">{label}:</span>
-                                                <span className="dark:text-gray-400">{value}</span>
-                                            </div>
-                                        ))}
-                                        {details?.pattern && (
-                                            <div className="flex flex-row gap-x-2 col-span-2">
-                                                <span className="dark:text-gray-400 font-bold">Паттерн:</span>
-                                                <pre><code className="bg-gray-800 dark:bg-neutral-900 px-2 py-1.5 rounded-md text-green-500 dark:text-green-700">{details.pattern}</code></pre>
-                                            </div>
-                                        )}
-                                    </div>
+                                <TabPanel data-i-doc="tab:dictionary-identify-v2-info" value="info" className={KIT_TAB_PANEL}>
+                                    <DetailGrid>
+                                        {FIELDS.map(([label, value]) => <DetailItem key={label} label={label} value={value}/>)}
+                                        <DetailItem label="Паттерн" className="md:col-span-2">
+                                            {details?.pattern
+                                                ? <code className="block break-words rounded-md border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-xs text-gray-800 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-200">{details.pattern}</code>
+                                                : <span className="text-gray-500">—</span>}
+                                        </DetailItem>
+                                    </DetailGrid>
                                 </TabPanel>
-                                <TabPanel data-i-doc="tab:dictionary-identify-v2-audit" value="audit">
+                                <TabPanel data-i-doc="tab:dictionary-identify-v2-audit" value="audit" className={KIT_TAB_PANEL}>
                                     {auditLoading
                                         ? <div className="flex justify-center py-4"><Spinner className="h-8 w-8"/></div>
                                         : auditHistory.length === 0
-                                            ? <p className="text-sm text-gray-600 italic">Записів аудиту немає</p>
+                                            ? <p className="py-6 text-center text-sm text-gray-600 dark:text-gray-400">Записів аудиту немає</p>
                                             : <>
                                                 {auditHistory.map(entry => (
                                                     <AuditEntry
@@ -222,23 +220,7 @@ const IdentifyV2DetailsModal = ({open, id, onClose, dictionary, dictionaries}) =
                                                         dictionary={dictionary}
                                                     />
                                                 ))}
-                                                {auditPages > 1 && (
-                                                    <div className="flex items-center justify-center gap-x-2 mt-3">
-                                                        <button
-                                                            disabled={auditPage <= 1}
-                                                            onClick={() => setAuditPage(p => p - 1)}
-                                                            className="px-3 py-1 text-xs rounded border dark:border-gray-600 disabled:opacity-40"
-                                                        >‹ Новіші</button>
-                                                        <span className="text-xs text-gray-600 dark:text-gray-400">
-                                                            {auditPage} / {auditPages}
-                                                        </span>
-                                                        <button
-                                                            disabled={auditPage >= auditPages}
-                                                            onClick={() => setAuditPage(p => p + 1)}
-                                                            className="px-3 py-1 text-xs rounded border dark:border-gray-600 disabled:opacity-40"
-                                                        >Старіші ›</button>
-                                                    </div>
-                                                )}
+                                                <AuditPager page={auditPage} pages={auditPages} onChange={setAuditPage}/>
                                             </>
                                     }
                                 </TabPanel>
@@ -248,8 +230,8 @@ const IdentifyV2DetailsModal = ({open, id, onClose, dictionary, dictionaries}) =
                 }
             </ModalBody>
             <ModalFooter>
-                <Button onClick={onClose} color="gray">
-                    <span>Закрити</span>
+                <Button color="secondary" onClick={onClose}>
+                    Закрити
                 </Button>
             </ModalFooter>
         </Modal>

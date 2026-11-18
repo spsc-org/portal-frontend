@@ -1,34 +1,36 @@
 import { observer } from "mobx-react-lite";
-import { Card, Input, Typography } from "@material-tailwind/react"
 import IconButton from "../../../../components/Buttons/IconButton.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
+import SearchInput from "../../../../components/fields/SearchInput.jsx"
+import { PaginationFooter } from "../ImportLogShared.jsx";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TD_EMPTY, TH, TR } from "../../../../components/Table/tableStyles.js";
 
 const equasisUrl = (imo) => `https://www.equasis.org/EquasisWeb/restricted/ShipInfo?fs=ShipSearch&imo=${imo}`;
 const vesselTrackerUrl = (imo) => `https://www.vesseltracker.com/en/Ships/Imo/${imo}.html`;
 const marineTrafficUrl = (imo) => `https://www.marinetraffic.com/en/ais/details/ships/imo:${imo}`;
 
 const DetailRow = ({ detail, expanded, onToggle }) => {
-    const classes = 'py-2 px-2 border-b border-blue-gray-50 dark:border-neutral-700';
 
     return (
         <>
-            <tr className="even:bg-blue-gray-50/50 dark:even:bg-neutral-600/30 hover:bg-blue-gray-50 dark:hover:bg-neutral-600/50">
-                <td className={classes}>
-                    <IconButton variant="text" size="sm" onClick={onToggle} className="dark:text-gray-400">
+            <tr className={TR}>
+                <td className={TD}>
+                    <IconButton variant="text" size="sm" onClick={onToggle}>
                         <i className={`fa-solid fa-chevron-${expanded ? 'up' : 'down'}`} />
                     </IconButton>
                 </td>
-                <td className={classes}>
-                    <Typography variant="small" className="font-medium dark:text-gray-200">{detail.imo}</Typography>
+                <td className={TD}>
+                    <div className="font-medium text-gray-900 dark:text-gray-100">{detail.imo}</div>
                 </td>
-                <td className={classes}><Typography variant="small" className="dark:text-gray-300">{detail.name || '—'}</Typography></td>
-                <td className={classes}><Typography variant="small" className="dark:text-gray-300">{detail.shipType || '—'}</Typography></td>
-                <td className={classes}><Typography variant="small" className="dark:text-gray-300">{detail.flag || '—'}</Typography></td>
-                <td className={classes}><Typography variant="small" className="dark:text-gray-300">{detail.status || '—'}</Typography></td>
-                <td className={classes}><Typography variant="small" className="dark:text-gray-300">{detail.yearBuilt || '—'}</Typography></td>
-                <td className={classes}><Typography variant="small" className="dark:text-gray-300">{detail.ownerName || '—'}</Typography></td>
-                <td className={classes}>
-                    <div className="flex gap-2 text-blue-500">
+                <td className={TD}><div>{detail.name || '—'}</div></td>
+                <td className={TD}><div>{detail.shipType || '—'}</div></td>
+                <td className={TD}><div>{detail.flag || '—'}</div></td>
+                <td className={TD}><div>{detail.status || '—'}</div></td>
+                <td className={TD}><div>{detail.yearBuilt || '—'}</div></td>
+                <td className={TD}><div>{detail.ownerName || '—'}</div></td>
+                <td className={TD}>
+                    <div className="flex gap-2 text-blue-600 dark:text-blue-400">
                         <a href={equasisUrl(detail.imo)} target="_blank" rel="noreferrer" title="Equasis"><i className="fa-solid fa-arrow-up-right-from-square" /></a>
                         <a href={vesselTrackerUrl(detail.imo)} target="_blank" rel="noreferrer" title="VesselTracker"><i className="fa-solid fa-ship" /></a>
                         <a href={marineTrafficUrl(detail.imo)} target="_blank" rel="noreferrer" title="MarineTraffic"><i className="fa-solid fa-location-dot" /></a>
@@ -36,9 +38,9 @@ const DetailRow = ({ detail, expanded, onToggle }) => {
                 </td>
             </tr>
             {expanded && (
-                <tr>
-                    <td colSpan={9} className="p-3 bg-blue-gray-50/50 dark:bg-neutral-800 text-xs">
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 dark:text-gray-400">
+                <tr className={TR}>
+                    <td colSpan={9} className={TD}>
+                        <div className="grid grid-cols-2 gap-2 py-1 text-gray-700 md:grid-cols-3 dark:text-gray-300">
                             <div><span className="font-medium">Позивний:</span> {detail.callSign || '—'} ({detail.callSignCountry || '—'})</div>
                             <div><span className="font-medium">MMSI:</span> {detail.mmsi || '—'} ({detail.mmsiCountry || '—'})</div>
                             <div><span className="font-medium">Газ:</span> {detail.isGas ? 'так' : 'ні'}</div>
@@ -70,39 +72,39 @@ const VesselImoDetailsTable = ({ list, onImportClick }) => {
     const meta = list.meta;
 
     return (
-        <div className="mt-6 bg-white dark:bg-neutral-700 p-6 rounded-lg shadow-md">
+        <div className="mt-6 bg-white dark:bg-neutral-800 p-6 rounded-xl border border-gray-200 dark:border-neutral-700">
             <div className="flex justify-between items-start mb-4">
                 <div>
-                    <h2 className="text-lg font-semibold mb-2 dark:text-gray-200">Деталі суден</h2>
+                    <h2 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Деталі суден</h2>
                     <p className="text-gray-600 dark:text-gray-400">
                         Загальна таблиця з детальною інформацією про судна (Equasis та подібні
                         джерела), ключ — IMO. Незалежна від списків санкцій вище; кожен імпорт
                         повністю замінює дані.
                     </p>
                 </div>
-                <Button size="sm" variant="gradient" color="blue" onClick={onImportClick}>
+                <Button size="sm" onClick={onImportClick}>
                     <i className="fa-solid fa-file-arrow-up mr-2" />
                     Імпортувати
                 </Button>
             </div>
 
-            <Input
-                label="Пошук за IMO, назвою або власником"
-                value={search}
-                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                className="dark:text-gray-200 mb-4"
-                labelProps={{ className: "dark:!text-gray-400 dark:peer-focus:!text-blue-300" }}
-                containerProps={{ className: "max-w-md" }}
-            />
+            <div className="mb-3 w-full max-w-md">
+                <SearchInput
+                    size="xs"
+                    name="vessel-details-search"
+                    value={search}
+                    onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                    placeholder="Пошук за IMO, назвою або власником"
+                    icon="fa-regular fa-magnifying-glass"
+                />
+            </div>
 
-            <Card className="w-full overflow-auto dark:bg-neutral-700 shadow-none">
-                <table className="w-full min-w-max table-auto text-left">
+            <div className={TABLE_WRAP}>
+                <table className={twMerge(TABLE, "w-full min-w-max table-auto text-left")}>
                     <thead>
                         <tr>
                             {['', 'IMO', 'Назва', 'Тип', 'Прапор', 'Статус', 'Рік', 'Власник', 'Посилання'].map((label) => (
-                                <th key={label} className="border-b border-blue-gray-100 dark:border-neutral-700 bg-blue-gray-50 dark:bg-neutral-800 py-2 px-2">
-                                    <Typography variant="small" className="font-normal opacity-70 dark:text-gray-400">{label}</Typography>
-                                </th>
+                                <th key={label} className={TH}>{label}</th>
                             ))}
                         </tr>
                     </thead>
@@ -116,39 +118,21 @@ const VesselImoDetailsTable = ({ list, onImportClick }) => {
                             />
                         ))}
                         {!isFetching && details.length === 0 && (
-                            <tr>
-                                <td colSpan={9} className="text-center py-4 text-gray-600 dark:text-gray-500">
+                            <tr className={TR}>
+                                <td colSpan={9} className={TD_EMPTY}>
                                     {search ? 'Нічого не знайдено' : 'Дані ще не імпортовані'}
                                 </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
-            </Card>
+            </div>
 
-            {meta && meta.pages > 1 && (
-                <div className="flex items-center justify-between border-t border-blue-gray-50 dark:border-neutral-700 pt-4 mt-4">
-                    <span className="text-sm text-blue-gray-600 dark:text-gray-400">
-                        Сторінка {meta.page} з {meta.pages} (Всього: {meta.total})
-                    </span>
-                    <div className="flex gap-2">
-                        <button
-                            className="text-sm px-3 py-1 border border-blue-gray-300 dark:border-gray-600 rounded disabled:opacity-40 dark:text-gray-300"
-                            onClick={() => setPage((p) => p - 1)}
-                            disabled={page === 1}
-                        >
-                            Попередня
-                        </button>
-                        <button
-                            className="text-sm px-3 py-1 border border-blue-gray-300 dark:border-gray-600 rounded disabled:opacity-40 dark:text-gray-300"
-                            onClick={() => setPage((p) => p + 1)}
-                            disabled={page === meta.pages}
-                        >
-                            Наступна
-                        </button>
-                    </div>
-                </div>
-            )}
+            <PaginationFooter
+                pagination={meta && { current_page: meta.page, last_page: meta.pages, total: meta.total }}
+                page={page}
+                onPageChange={setPage}
+            />
         </div>
     );
 };

@@ -13,8 +13,8 @@ const BulkActionsModal = ({ data, userIds, onClose }) => {
 
     return (
         <Modal data-i-doc="modal:admin-bulk-actions" open size="xl" handler={() => onClose()}>
-            <ModalHeader className="border-b">
-                <span>Масові дії · обрано {userIds.length}</span>
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase"><span>Масові дії · обрано {userIds.length}</span></h3>
             </ModalHeader>
             <ModalBody className="flex h-[42rem] max-h-[calc(100vh-12rem)] flex-col overflow-hidden p-0">
                 <Tabs value="permissions" className="flex min-h-0 flex-1 flex-col">

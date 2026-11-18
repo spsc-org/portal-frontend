@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { DossierOptionsViewModel } from "../../viewmodel/DossierViewModels.js";
 import {useState} from "react";
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
 import ProfileAutocomplete from "./ProfileAutocomplete.jsx";
@@ -48,7 +47,7 @@ const AddRelationModal = ({open, excludeId, linkMutation, onClose}) => {
             className="border"
             overlayProps={{className: "bg-black/20 backdrop-blur-none"}}>
             <ModalHeader>
-                <Typography variant="h5">Додати пов'язаний профіль</Typography>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Додати пов'язаний профіль</h3>
             </ModalHeader>
             {/* overflow-visible: випадаючий список ProfileAutocomplete (absolute) інакше обрізається тілом модалки */}
             <ModalBody className="flex flex-col gap-3.5 overflow-visible">

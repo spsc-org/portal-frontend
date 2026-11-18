@@ -1,4 +1,3 @@
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
 import { observer } from "mobx-react-lite";
@@ -48,12 +47,12 @@ const DetailsDialog = ({open, onClose, record}) => {
                         </div>
                     )}
                     <div className="flex flex-col flex-grow">
-                        <Typography variant="h5" className="dark:text-gray-200">
+                        <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">
                             Детальна інформація
-                        </Typography>
-                        <Typography variant="small" className="font-normal text-gray-600 dark:text-gray-400">
+                        </h4>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
                             {record.dataset_name || dataset?.caption || 'Невідомий датасет'}
-                        </Typography>
+                        </div>
                     </div>
                     <div className="flex gap-2">
                         <Button

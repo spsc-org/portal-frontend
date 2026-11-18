@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { Checkbox, Typography } from "@material-tailwind/react"
+import { Checkbox } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import { LabeledInput, LabeledTextarea } from "../../../components/fields/LabeledField.jsx";
@@ -13,7 +13,7 @@ const BirthdayFormModal = ({ onClose, onCreated }) => {
     return (
         <Modal data-i-doc="modal:handbook-birthday-create" open handler={onClose} size="sm">
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">Новий запис</Typography>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Новий запис</h3>
             </ModalHeader>
             <ModalBody className="flex flex-col gap-4">
                 <LabeledInput

@@ -1,5 +1,4 @@
 import { observer } from "mobx-react-lite";
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
 import { format } from "date-fns";
@@ -36,11 +35,11 @@ const DecreeFormModal = ({ open, onClose, decreeId = null }) => {
     return (
         <Modal data-i-doc={isEditing ? "modal:decree-update" : "modal:decree-create"} open={open} handler={onClose} size="md">
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                     {isEditing
                         ? <>Редагувати указ: {decree?.code} {decree?.date ? <span>від {format(decree.date, "dd.MM.yyyy")}</span> : ""}</>
                         : "Створити указ"}
-                </Typography>
+                </h3>
             </ModalHeader>
             <ModalBody className="h-[32rem] overflow-y-auto">
                 {isEditing &&
@@ -94,7 +93,7 @@ const DecreeFormModal = ({ open, onClose, decreeId = null }) => {
                 <Input tag="textarea" error={errors?.comment} placeholder="" label="Коментар"
                        value={form.comment} name="comment" disabled={isLocked}
                        onChange={vm.changeInput}/>
-                <Typography variant="h5" className="dark:text-gray-200">Указ:</Typography>
+                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">Указ:</h4>
                 <div className="flex  gap-x-2 max-w-md">
                     <Input disabled placeholder="Відсутній файл" error={errors?.decreeFile}
                            value={decreeFile?.name}/>
@@ -108,12 +107,12 @@ const DecreeFormModal = ({ open, onClose, decreeId = null }) => {
                     )}
                 </div>
                 {Boolean(decreeFile) &&
-                    <Typography variant="small" color="blue">
+                    <div className="text-sm text-gray-700 dark:text-gray-300">
                         <span className="mr-1">Назва файлу буде змінена на:</span>
                         <span>{renamedTo}</span>
-                    </Typography>
+                    </div>
                 }
-                <Typography variant="h5" className="dark:text-gray-200">Додати додатки:</Typography>
+                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">Додати додатки:</h4>
                 <UploadFileList
                     errors={errors}
                     data={isEditing ? decree : form}

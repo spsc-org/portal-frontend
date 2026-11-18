@@ -7,6 +7,8 @@ import { IdentifierDetailsViewModel } from "../viewmodel/DictionaryViewModels.js
 import { Spinner, Tab, TabPanel, Tabs, TabsBody, TabsHeader, Tooltip } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
+import { DetailGrid, DetailItem } from "../../../components/DetailFields.jsx";
+import { KIT_TAB, KIT_TAB_ACTIVE, KIT_TAB_PANEL, KIT_TABS_HEADER } from "../../../components/tabsStyles.js";
 import {useMemo} from "react";
 import Table from "../../../components/Table/Table.jsx";
 import {createColumnHelper} from "@tanstack/react-table";
@@ -218,106 +220,60 @@ const IdentifyDetailsModal = ({open, id, onClose, dictionary, dictionaries}) => 
     const handlePageChange = vm.setVersionsPage;
 
     return (
-        <Modal data-i-doc="modal:dictionary-identify-details-modal" open={open} size="xl" handler={onClose}>
+        <Modal data-i-doc="modal:dictionary-identify-details-modal" open={open} size="xl" onClose={onClose}>
             <ModalHeader>
-                <span className="mr-5">Детальна інформація {details?.code}</span>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
+                    Ідентифікатор{details?.code ? <span className="ml-2 normal-case text-blue-600 dark:text-blue-400">{details.code}</span> : null}
+                </h3>
             </ModalHeader>
-            <ModalBody className="max-h-[calc(100vh-12rem)] overflow-y-auto">
+            <ModalBody>
                 {isFetching ?
-                    <div className="flex flex-row justify-center w-full">
+                    <div className="flex w-full justify-center py-10">
                         <Spinner className="h-12 w-12"/>
                     </div>
                     :
                     <Tabs value={tab}>
-                        <TabsHeader className="bg-transparent" indicatorProps={{
-                            className: "bg-gray-900/10 dark:bg-blue-900/50 shadow-none !text-gray-900",
-                        }}>
-                            <Tab value="info" className="dark:text-gray-50">Загальна інформація</Tab>
-                            <Tab value="history" className="dark:text-gray-50">
+                        <TabsHeader {...KIT_TABS_HEADER}>
+                            <Tab value="info" className={KIT_TAB} activeClassName={KIT_TAB_ACTIVE}>Загальна інформація</Tab>
+                            <Tab value="history" className={KIT_TAB} activeClassName={KIT_TAB_ACTIVE}>
                                 <div className="flex flex-row items-center gap-x-2">
                                     Версії змін
-                                    <div
-                                        className="relative h-[20px] w-[20px] align-middle bg-gray-950 dark:bg-neutral-900 rounded-[50%]">
-                                        <span
-                                            className="absolute text-sm left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-white">{versions?.length}</span>
-                                    </div>
+                                    <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gray-200 px-1.5 text-xs font-semibold text-gray-700 dark:bg-neutral-700 dark:text-gray-200">
+                                        {versions?.length ?? 0}
+                                    </span>
                                 </div>
                             </Tab>
                         </TabsHeader>
                         <TabsBody>
-                            <TabPanel data-i-doc="tab:dictionary-identify-info" value="info">
-                                <div className="grid grid-cols-2 gap-2">
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">ID:</p>
-                                        <p className="dark:text-gray-400 ">{details?.id}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Код:</p>
-                                        <p className="dark:text-gray-400">{details?.code}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:dark:text-gray-400 font-bold ">Група:</p>
-                                        <p className="dark:text-gray-400 ">{details?.group}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Паттерн:</p>
-                                        {details?.pattern &&
-                                            <pre><code
-                                                className="bg-gray-800 dark:bg-neutral-900 px-2 py-1.5 rounded-md text-green-500 dark:text-green-700">{details?.pattern}</code></pre>
-                                        }
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Назва українською:</p>
-                                        <p className="dark:text-gray-400 ">{details?.name_uk}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Опис українською:</p>
-                                        <p className="dark:text-gray-400 ">{details?.description_uk}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Виводити як:</p>
-                                        <p className="dark:text-gray-400 ">{details?.name_doc}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Опис англійською:</p>
-                                        <p className="dark:text-gray-400 ">{details?.description_en}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Назва англійською:</p>
-                                        <p className="dark:text-gray-400 ">{details?.name_en}</p>
-                                    </div>
+                            <TabPanel data-i-doc="tab:dictionary-identify-info" value="info" className={KIT_TAB_PANEL}>
+                                <DetailGrid>
+                                    <DetailItem label="ID" value={details?.id}/>
+                                    <DetailItem label="Код" value={details?.code}/>
+                                    <DetailItem label="Група" value={details?.group}/>
+                                    <DetailItem label="Паттерн">
+                                        {details?.pattern
+                                            ? <code className="block break-words rounded-md border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-xs text-gray-800 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-200">{details.pattern}</code>
+                                            : <span className="text-gray-500">—</span>}
+                                    </DetailItem>
+                                    <DetailItem label="Назва українською" value={details?.name_uk}/>
+                                    <DetailItem label="Опис українською" value={details?.description_uk}/>
+                                    <DetailItem label="Виводити як" value={details?.name_doc}/>
+                                    <DetailItem label="Опис англійською" value={details?.description_en}/>
+                                    <DetailItem label="Назва англійською" value={details?.name_en}/>
 
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Коментар:</p>
-                                        <p className="dark:text-gray-400 ">{details?.comment}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Тип суб'єкта:</p>
-                                        <p className="dark:text-gray-400 ">{details?.subjectType?.caption}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Країна:</p>
-                                        <p className="dark:text-gray-400 ">{details?.belongCountry?.caption}</p>
-                                    </div>
+                                    <DetailItem label="Коментар" value={details?.comment}/>
+                                    <DetailItem label="Тип суб'єкта" value={details?.subjectType?.caption}/>
+                                    <DetailItem label="Країна" value={details?.belongCountry?.caption}/>
 
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Створено:</p>
-                                        <p className="dark:text-gray-400 ">{data?.data?.createdAt}</p>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2">
-                                        <p className="dark:text-gray-400 font-bold ">Останнє оновлення:</p>
-                                        <p className="dark:text-gray-400 ">{data?.data?.updatedAt}</p>
-                                    </div>
-                                </div>
+                                    <DetailItem label="Створено" value={data?.data?.createdAt}/>
+                                    <DetailItem label="Останнє оновлення" value={data?.data?.updatedAt}/>
+                                </DetailGrid>
                             </TabPanel>
-                            <TabPanel data-i-doc="tab:dictionary-identify-history" value="history">
-                                <p className="mb-2 font-bold text-lg dark:text-gray-200">
-                                    Версії
-                                </p>
+                            <TabPanel data-i-doc="tab:dictionary-identify-history" value="history" className={KIT_TAB_PANEL}>
+                                <h4 className="mb-3 text-sm font-bold text-gray-800 dark:text-gray-200">Версії</h4>
                                 <Table
                                     loading={versionsIsLoading}
                                     canChangeVisibility={false}
-                                    canChangeResize={false}
                                     textSize="xs"
                                     pagination={{
                                         onLimitChange: handleLimit,
@@ -334,8 +290,8 @@ const IdentifyDetailsModal = ({open, id, onClose, dictionary, dictionaries}) => 
                 }
             </ModalBody>
             <ModalFooter>
-                <Button onClick={onClose} color="gray">
-                    <span>Закрити</span>
+                <Button color="secondary" onClick={onClose}>
+                    Закрити
                 </Button>
             </ModalFooter>
         </Modal>

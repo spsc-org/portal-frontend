@@ -4,7 +4,6 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Tooltip } from "@material-tailwind/react"
 import Button from "../../../components/Buttons/Button.jsx"
 import Table from "../../../components/Table/Table.jsx";
-import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import SingleSelect from "../../../components/fields/SingleSelect.jsx";
 import ConfirmModal from "../../../components/Modal/ConfirmModal.jsx";
@@ -18,7 +17,6 @@ import UserFormModal from "./UserFormModal.jsx";
 import BulkActionsModal from "./BulkActionsModal.jsx";
 
 const columnHelper = createColumnHelper();
-const savedSize = (key, fallback = 100) => loadColumnSizes()?.find((item) => item.column === key)?.size || fallback;
 const DateCell = ({ value }) => (value ? <Tooltip content={value}>{convertDate(value)}</Tooltip> : " ---- ");
 
 const RowActions = observer(({ vm, row }) => {
@@ -54,19 +52,19 @@ const RowActions = observer(({ vm, row }) => {
 function useAdminColumns(vm) {
     const moduleKeys = vm.data.moduleSchemaKeys;
     return useMemo(() => [
-        columnHelper.accessor("name", { id: "name", size: savedSize("name"), header: () => "ПІБ" }),
-        columnHelper.accessor("initials", { id: "initials", size: savedSize("initials"), header: () => "Ініціали" }),
-        columnHelper.accessor("email", { id: "email", size: savedSize("email"), header: () => "Email", enableSorting: false }),
-        columnHelper.accessor("unit", { id: "unit", size: savedSize("unit"), header: () => "Підрозділ", cell: (info) => info.getValue() || " --- " }),
+        columnHelper.accessor("name", { id: "name", size: 100, header: () => "ПІБ" }),
+        columnHelper.accessor("initials", { id: "initials", size: 100, header: () => "Ініціали" }),
+        columnHelper.accessor("email", { id: "email", size: 100, header: () => "Email", enableSorting: false }),
+        columnHelper.accessor("unit", { id: "unit", size: 100, header: () => "Підрозділ", cell: (info) => info.getValue() || " --- " }),
         columnHelper.accessor("isResponsible", {
             id: "isResponsible",
-            size: savedSize("isResponsible"),
+            size: 100,
             header: () => "Відповідальна особа",
             cell: (info) => (info.getValue() ? "Так" : "Ні"),
         }),
         columnHelper.accessor((row) => row?.permissions?.pages, {
             id: "accessModules",
-            size: savedSize("accessModules", 220),
+            size: 220,
             header: () => "Доступи",
             enableSorting: false,
             cell: ({ getValue }) => <AccessModulesCell schemaPages={moduleKeys} userPages={getValue() ?? {}}/>,
@@ -106,7 +104,7 @@ const AdminUsersView = ({ vm }) => {
     const canUpdate = vm.can("update");
 
     return (
-        <AdminLayout data-i-doc="page:admin" active="users">
+        <AdminLayout data-i-doc="page:admin">
             <PageHeader
                 title="Користувачі"
                 actions={
@@ -158,7 +156,6 @@ const AdminUsersView = ({ vm }) => {
                     rowSelection={vm.rowSelection}
                     onSelectRow={vm.setRowSelection}
                     canChangeVisibility
-                    canChangeResize
                     textSize="xs"
                     pagination={vm.pagination}
                     data={vm.rows}

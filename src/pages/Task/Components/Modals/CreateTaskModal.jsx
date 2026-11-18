@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { CreateTaskViewModel } from "../../viewmodel/TaskViewModels.js";
-import { Spinner, Switch, Typography } from "@material-tailwind/react"
+import { Spinner, Switch } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import SingleSelect from "../../../../Components/fields/SingleSelect.jsx";
 import DatePicker from "../../../../Components/fields/DatePicker.jsx";
@@ -60,13 +60,13 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
     return (
         <Modal open={open} handler={handleCancel} size="md">
             <ModalHeader className="flex flex-row justify-between items-center">
-                <Typography variant="h5" className="dark:text-gray-200">
+                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">
                     Створити задачу
-                </Typography>
+                </h4>
                 <div className="flex items-center gap-2 bg-gray-100 dark:bg-neutral-700 px-2 py-1 rounded-lg border dark:border-neutral-700">
-                    <Typography variant="small" className="text-gray-600 dark:text-gray-400 font-medium">
+                    <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
                         Розширений режим
-                    </Typography>
+                    </div>
                     <Switch
                         id="advanced-mode"
                         ripple={false}

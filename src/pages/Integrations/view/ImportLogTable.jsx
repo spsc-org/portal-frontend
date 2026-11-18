@@ -1,9 +1,12 @@
 import { observer } from "mobx-react-lite";
-import { Card, Input, Spinner, Tooltip, Typography } from "@material-tailwind/react"
+import { Spinner, Tooltip } from "@material-tailwind/react"
+import SearchInput from "../../../components/fields/SearchInput.jsx"
 import IconButton from "../../../components/Buttons/IconButton.jsx"
 import ImportLogDetailsDialog from "./ImportLogDetailsDialog.jsx";
 import { convertDate } from "../../../lib/utils.js";
 import { formatBytes, formatDuration, getImportTypeIcon, PaginationFooter, StatusChip } from "./ImportLogShared.jsx";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
 const COLUMNS = ['', 'Датасет', 'Статус', 'Користувач', 'Дата', 'Тривалість', 'Записи', 'Файл', 'Розмір', ''];
 
@@ -23,94 +26,86 @@ const ImportLogTable = ({ list }) => {
     const handleSearchChange = (e) => list.setSearch(e.target.value);
 
     return (
-        <div className="bg-white dark:bg-neutral-700 p-6 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-4 dark:text-gray-200">Журнал імпорту</h2>
+        <div className="bg-white dark:bg-neutral-800 p-6 rounded-xl border border-gray-200 dark:border-neutral-700">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Журнал імпорту</h2>
 
-            <div className="w-full md:w-72 mb-4">
-                <Input
-                    label="Пошук по назві датасету або помилці"
-                    icon={<i className="fa-solid fa-magnifying-glass" />}
+            <div className="mb-3 w-full md:w-80">
+                <SearchInput
+                    size="xs"
+                    name="import-log-search"
                     value={search}
                     onChange={handleSearchChange}
-                    className="dark:text-white"
-                    labelProps={{
-                        className: "dark:!text-gray-400 dark:peer-focus:!text-blue-300",
-                    }}
+                    placeholder="Пошук по назві датасету або помилці"
+                    icon="fa-regular fa-magnifying-glass"
                 />
             </div>
 
-            <Card className="w-full overflow-auto dark:bg-neutral-700 shadow-none">
+            <div className={TABLE_WRAP}>
                 {isLoading && !logData ? (
                     <div className="flex justify-center items-center h-48">
                         <Spinner className="h-12 w-12" />
                     </div>
                 ) : isError ? (
-                    <p className="p-4 text-red-500">
+                    <p className="p-4 text-sm text-red-600 dark:text-red-400">
                         Помилка завантаження логів: {error.message}
                     </p>
                 ) : (
-                    <table className="w-full table-auto text-left">
+                    <table className={twMerge(TABLE, "w-full table-auto text-left")}>
                         <thead>
                             <tr>
                                 {COLUMNS.map((head, i) => (
-                                    <th key={i} className="border-b border-blue-gray-100 dark:border-neutral-700 bg-blue-gray-50 dark:bg-neutral-800 p-3">
-                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70 dark:text-gray-400">
-                                            {head}
-                                        </Typography>
-                                    </th>
+                                    <th key={i} className={TH}>{head}</th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody>
-                            {logs.map((log, index) => {
-                                const isLast = index === logs.length - 1;
-                                const classes = isLast ? 'p-3' : 'p-3 border-b border-blue-gray-50 dark:border-neutral-700';
+                            {logs.map((log) => {
 
                                 return (
-                                    <tr key={log.id} className="even:bg-blue-gray-50/50 dark:even:bg-neutral-600/30 hover:bg-blue-gray-50 dark:hover:bg-neutral-600/50">
-                                        <td className={classes}>{getImportTypeIcon(log.import_type)}</td>
-                                        <td className={classes}>
-                                            <Typography variant="small" color="blue-gray" className="font-normal dark:text-gray-300">
+                                    <tr key={log.id} className={TR}>
+                                        <td className={TD}>{getImportTypeIcon(log.import_type)}</td>
+                                        <td className={TD}>
+                                            <div>
                                                 {log.dataset_name}
-                                            </Typography>
+                                            </div>
                                         </td>
-                                        <td className={classes}><StatusChip {...log} /></td>
-                                        <td className={classes}>
-                                            <Typography variant="small" color="blue-gray" className="font-normal dark:text-gray-300">
+                                        <td className={TD}><StatusChip {...log} /></td>
+                                        <td className={TD}>
+                                            <div>
                                                 {log.user?.name || 'Система'}
-                                            </Typography>
+                                            </div>
                                         </td>
-                                        <td className={classes}>
-                                            <Typography variant="small" color="blue-gray" className="font-normal dark:text-gray-300">
+                                        <td className={TD}>
+                                            <div>
                                                 {convertDate(log.started_at)}
-                                            </Typography>
+                                            </div>
                                         </td>
-                                        <td className={classes}>
-                                            <Typography variant="small" color="blue-gray" className="font-normal dark:text-gray-300">
+                                        <td className={TD}>
+                                            <div>
                                                 {formatDuration(log.duration_seconds)}
-                                            </Typography>
+                                            </div>
                                         </td>
-                                        <td className={classes}>
+                                        <td className={TD}>
                                             <Tooltip content={`До: ${log.records_before}, Після: ${log.records_after}, Різниця: ${log.records_difference}`}>
-                                                <Typography variant="small" color="blue-gray" className="font-normal cursor-help dark:text-gray-300">
+                                                <div className="cursor-help">
                                                     {`${log.records_processed} / ${log.records_processed + (log.records_failed || 0)}`}
-                                                </Typography>
+                                                </div>
                                             </Tooltip>
                                         </td>
-                                        <td className={classes}>
-                                            <Typography variant="small" color="blue-gray" className="font-normal dark:text-gray-300">
+                                        <td className={TD}>
+                                            <div>
                                                 {log.file_name || 'N/A'}
-                                            </Typography>
+                                            </div>
                                         </td>
-                                        <td className={classes}>
-                                            <Typography variant="small" color="blue-gray" className="font-normal dark:text-gray-300">
+                                        <td className={TD}>
+                                            <div>
                                                 {formatBytes(log.file_size) || 'N/A'}
-                                            </Typography>
+                                            </div>
                                         </td>
-                                        <td className={classes}>
+                                        <td className={TD}>
                                             <Tooltip content="Детальна інформація">
-                                                <IconButton variant="text" size="sm" onClick={() => handleOpenDetails({ logId: log.id })} className="dark:text-gray-400 dark:hover:text-gray-200">
-                                                    <i className="fa-solid fa-circle-info text-lg text-blue-gray-500 dark:text-gray-400" />
+                                                <IconButton variant="text" size="sm" onClick={() => handleOpenDetails({ logId: log.id })} >
+                                                    <i className="fa-solid fa-circle-info text-lg text-gray-600 dark:text-gray-400" />
                                                 </IconButton>
                                             </Tooltip>
                                         </td>
@@ -120,7 +115,7 @@ const ImportLogTable = ({ list }) => {
                         </tbody>
                     </table>
                 )}
-            </Card>
+            </div>
 
             <PaginationFooter pagination={pagination} page={page} onPageChange={setPage} />
 

@@ -1,6 +1,8 @@
 import {Tooltip, Typography} from "@material-tailwind/react";
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from "@tanstack/react-table";
 import {Fragment, useMemo} from "react";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH } from "../../../components/Table/tableStyles.js";
 
 
 const columnHelper = createColumnHelper()
@@ -63,15 +65,15 @@ const TableValidationV2 = ({data = [], headers = [], validation = null, warnings
                 </p>
             </div>
             <div className="rounded border border-gray-300 bg-gray-100 text-[10px] shadow-sm dark:border-neutral-700 dark:bg-neutral-700 sm:text-[11px]">
-                <div className="max-h-[68vh] overflow-auto">
+                <div className={twMerge(TABLE_WRAP, "max-h-[68vh] overflow-auto")}>
                     <table
-                        className="min-w-[980px] w-full border-collapse bg-gray-100 text-left text-gray-700 dark:bg-transparent dark:text-gray-300">
+                        className={twMerge(TABLE, "min-w-[980px] w-full text-left")}>
                     <thead>
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map(header => (
                                 <th key={header.id}
-                                    className="sticky text-xs top-0 z-10 border-b border-gray-300 bg-gray-200 px-1 py-1 font-semibold text-[10px] leading-none tracking-[0.02em] text-gray-800 dark:border-neutral-700 dark:bg-neutral-600/70 dark:text-gray-200 sm:text-[11px]">
+                                    className={twMerge(TH, "sticky top-0 z-10")}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(
@@ -85,7 +87,7 @@ const TableValidationV2 = ({data = [], headers = [], validation = null, warnings
                     </thead>
                     <tbody>
                     {table.getRowModel().rows.map(row => (
-                        <tr key={row.id} className="border-b border-gray-300 odd:bg-gray-100 even:bg-gray-50 hover:bg-gray-200/70 dark:border-neutral-700/60 dark:odd:bg-neutral-800/20 dark:even:bg-neutral-800/20 dark:hover:bg-neutral-600/40">
+                        <tr key={row.id}>
                             {row.getVisibleCells().map(cell => (
                                 <Fragment key={cell.id}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -98,7 +100,7 @@ const TableValidationV2 = ({data = [], headers = [], validation = null, warnings
                     {table.getFooterGroups().map(footerGroup => (
                         <tr key={footerGroup.id}>
                             {footerGroup.headers.map(header => (
-                                <th key={header.id}>
+                                <th className={TH} key={header.id}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(
@@ -204,8 +206,7 @@ const TableCell = ({validation, warnings, info, value, ...props}) => {
 
     const cell = (
         <td
-            className={`border px-1 py-[3px] leading-tight text-gray-800 ${getStateClasses()} min-w-[30px] align-top relative dark:border-neutral-700 dark:text-gray-200`}
-        >
+            className={twMerge(TD, `border px-1 py-[3px] leading-tight text-gray-800 ${getStateClasses()} min-w-[30px] align-top relative dark:border-neutral-700 dark:text-gray-200`)}>
             <div
                 className="inline-block w-full max-w-[130px] max-h-[74px] overflow-y-auto break-words pr-0.5 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600"
             >

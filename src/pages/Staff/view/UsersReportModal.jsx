@@ -5,6 +5,8 @@ import { Chip, } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody } from "../../../components/Modal/Modal.jsx"
 import CloseButton from "../../../components/Buttons/CloseButton.jsx"
 import SearchInput from "../../../components/fields/SearchInput.jsx";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
 const STATUS_OPTIONS = [
     ["all", "Всі"],
@@ -72,26 +74,26 @@ const UsersReportModalInner = observer(({open, onClose, users = [], assignmentsQ
                     </div>
                 </div>
 
-                <div className="overflow-y-auto rounded-lg border border-gray-200 dark:border-neutral-700">
-                    <table className="w-full table-auto text-left text-sm text-gray-600 dark:text-gray-400">
+                <div className={twMerge(TABLE_WRAP, "overflow-y-auto")}>
+                    <table className={twMerge(TABLE, "w-full table-auto text-left")}>
                         <thead>
-                            <tr className="sticky top-0 bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-gray-400">
-                                <th className="px-3 py-2 font-normal">Ім'я</th>
-                                <th className="px-3 py-2 font-normal">Функції</th>
+                            <tr className="sticky top-0">
+                                <th className={TH}>Ім'я</th>
+                                <th className={TH}>Функції</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200 bg-white dark:divide-neutral-700 dark:bg-neutral-800">
+                        <tbody>
                             {!isLoading && filtered.length === 0 &&
-                                <tr>
-                                    <td colSpan={2} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">
+                                <tr className={TR}>
+                                    <td colSpan={2} className={twMerge(TD, "text-center")}>
                                         Нікого не знайдено
                                     </td>
                                 </tr>
                             }
                             {filtered.map(({user, entries}) => (
-                                <tr key={user.id}>
-                                    <td className="whitespace-nowrap px-3 py-2 font-semibold text-gray-800 dark:text-gray-200">{user.name}</td>
-                                    <td className="px-3 py-2">
+                                <tr className={TR} key={user.id}>
+                                    <td className={twMerge(TD, "whitespace-nowrap font-semibold")}>{user.name}</td>
+                                    <td className={TD}>
                                         {entries.length === 0
                                             ? <span className="text-xs text-gray-600 dark:text-gray-500">—</span>
                                             : (

@@ -13,7 +13,7 @@ import {
 export const SIDEBAR_UI = {
   collapse: 'Згорнути',
   expand: 'Розгорнути',
-  onlineUsers: 'Користувачі онлайн',
+  onlineUsers: 'Зараз онлайн',
   feedback: 'Залишити відгук',
 }
 

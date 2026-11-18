@@ -264,7 +264,9 @@ const DuplicateProjectsModal = ({open, onClose, dictionaries = {}, ...props}) =>
 
     return (
         <Modal open={open} handler={onClose} size="xl">
-            <ModalHeader>Дублікати</ModalHeader>
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Дублікати</h3>
+            </ModalHeader>
             <ModalBody className="h-[42rem] overflow-y-auto">
                 <div
                     className="mb-3 flex flex-wrap gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2 dark:border-neutral-700 dark:bg-neutral-800/60">
@@ -296,7 +298,6 @@ const DuplicateProjectsModal = ({open, onClose, dictionaries = {}, ...props}) =>
                 <Table
                     loading={isLoading}
                     canChangeVisibility
-                    canChangeResize
                     textSize="xs"
                     pagination={{
                         onLimitChange: handleLimit,

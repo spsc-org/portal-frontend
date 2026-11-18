@@ -3,7 +3,6 @@ import { observer } from "mobx-react-lite";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Tooltip } from "@material-tailwind/react";
 import Table from "../../../components/Table/Table.jsx";
-import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
 import DateRangePicker from "../../../components/fields/DateRangePicker.jsx";
@@ -12,28 +11,26 @@ import { convertDate } from "../../../lib/utils.js";
 import AuditDetailModal from "./AuditDetailModal.jsx";
 
 const columnHelper = createColumnHelper();
-const savedSize = (key, fallback) => loadColumnSizes()?.find((c) => c.column === key)?.size || fallback;
 
 /** Колонки — суто View (react-table), дані/лейбли — з VM. */
 function useAuditColumns(vm) {
-    const { entity } = vm;
     return useMemo(() => [
-        columnHelper.accessor('id', { header: 'ID', size: savedSize(`${entity}-id`, 70) }),
-        columnHelper.accessor('entityId', { header: 'Entity ID', size: savedSize(`${entity}-entityId`, 90) }),
-        columnHelper.accessor('action', { header: 'Дія', size: savedSize(`${entity}-action`, 150) }),
+        columnHelper.accessor('id', { header: 'ID', size: 70 }),
+        columnHelper.accessor('entityId', { header: 'Entity ID', size: 90 }),
+        columnHelper.accessor('action', { header: 'Дія', size: 150 }),
         columnHelper.accessor('userId', {
             header: 'Користувач',
-            size: savedSize(`${entity}-userId`, 160),
+            size: 160,
             cell: ({ getValue }) => vm.userName(getValue()),
         }),
         columnHelper.accessor('createdAt', {
             header: 'Дата',
-            size: savedSize(`${entity}-createdAt`, 150),
+            size: 150,
             cell: ({ getValue }) => getValue()
                 ? <Tooltip content={getValue()}>{convertDate(getValue())}</Tooltip>
                 : '—',
         }),
-    ], [vm, entity]);
+    ], [vm]);
 }
 
 const AuditTable = ({ vm }) => {
@@ -84,7 +81,6 @@ const AuditTable = ({ vm }) => {
             <Table
                 loading={vm.isFetching}
                 canChangeVisibility
-                canChangeResize
                 textSize="xs"
                 data={vm.rows}
                 columns={columns}

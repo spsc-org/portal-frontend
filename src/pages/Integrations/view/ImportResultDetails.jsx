@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Alert, Card, CardBody, Typography, Collapse } from "@material-tailwind/react"
 import Button from "../../../components/Buttons/Button.jsx"
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
 const ImportResultDetails = ({ result }) => {
     // Хук — до раннього return (у Inertia-версії викликався умовно).
@@ -66,19 +68,19 @@ const ImportResultDetails = ({ result }) => {
                         )}
 
                         <Collapse open={openSkipped}>
-                            <div className="mt-2 max-h-60 overflow-y-auto bg-white dark:bg-neutral-800 rounded border border-amber-100 dark:border-amber-900/50 p-2 text-xs">
-                                <table className="w-full text-left border-collapse">
+                            <div className={twMerge(TABLE_WRAP, "mt-2 max-h-60 overflow-y-auto")}>
+                                <table className={twMerge(TABLE, "w-full text-left")}>
                                     <thead>
-                                        <tr className="border-b border-gray-200 dark:border-neutral-700">
-                                            <th className="p-1 font-semibold text-gray-600 dark:text-gray-400">ID</th>
-                                            <th className="p-1 font-semibold text-gray-600 dark:text-gray-400">Причина</th>
+                                        <tr>
+                                            <th className={TH}>ID</th>
+                                            <th className={TH}>Причина</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {skipped_records_report.details.map((record, idx) => (
-                                            <tr key={idx} className="border-b border-gray-100 dark:border-neutral-700 last:border-0 hover:bg-gray-50 dark:hover:bg-neutral-700/50">
-                                                <td className="p-1 font-mono text-gray-800 dark:text-gray-300">{record.id}</td>
-                                                <td className="p-1 text-gray-600 dark:text-gray-400">{record.reason}</td>
+                                            <tr key={idx} className={TR}>
+                                                <td className={twMerge(TD, "font-mono")}>{record.id}</td>
+                                                <td className={TD}>{record.reason}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -95,7 +97,7 @@ const ImportResultDetails = ({ result }) => {
             )}
 
             {/* Загальний JSON (для налагодження або інших деталей) */}
-            <Card className="w-full dark:bg-neutral-700 border border-gray-200 dark:border-neutral-700">
+            <Card className="w-full dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700">
                 <CardBody className="p-0">
                     <div className="p-3 border-b border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800/50 rounded-t">
                         <Typography variant="small" className="font-bold text-gray-700 dark:text-gray-300">

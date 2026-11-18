@@ -1,6 +1,8 @@
 import { observer } from "mobx-react-lite";
 import { useVM } from "../../../shared/mvvm/index.js";
 import { RULE_CATEGORIES } from "../viewmodel/PersonalReasonRulesViewModel.js";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
 /** Спільна оболонка модалок сторінки (Portal UI kit: rounded-xl, border, header/footer). */
 const DialogShell = ({ title, icon, onClose, children, footer, width = "max-w-3xl", testId }) => (
@@ -76,9 +78,9 @@ const SettingsModal = observer(() => {
 });
 
 const ScopeRow = observer(({ title, items, selected, onToggle, onAll, disabled }) => (
-    <tr className="align-top">
-        <td className="whitespace-nowrap py-1 pr-2 text-sm text-gray-600 dark:text-gray-400">{title}:</td>
-        <td className="py-1">
+    <tr className={twMerge(TR, "align-top")}>
+        <td className={twMerge(TD, "whitespace-nowrap")}>{title}:</td>
+        <td className={TD}>
             <div className="flex flex-wrap gap-x-3 gap-y-1">
                 {items.map((item) => (
                     <label key={item.id} className="flex cursor-pointer items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300">
@@ -88,7 +90,7 @@ const ScopeRow = observer(({ title, items, selected, onToggle, onAll, disabled }
                 ))}
             </div>
         </td>
-        <td className="py-1 pl-2">
+        <td className={TD}>
             <button type="button" disabled={disabled} className="rounded-lg border border-gray-200 bg-white px-2 py-1 disabled:opacity-50 text-sm text-gray-900 hover:bg-gray-100 hover:text-blue-700 dark:border-neutral-600 dark:bg-neutral-800 dark:text-gray-300 dark:hover:bg-neutral-700" onClick={onAll}>
                 усі
             </button>
@@ -120,53 +122,53 @@ const ProposalFilterModal = observer(() => {
                 </span>
                 On
             </label>
-            <table className="mb-3 w-full">
+            <table className={twMerge(TABLE, "mb-3 w-full")}>
                 <tbody>
                     <ScopeRow title="Субʼєкт подання" items={vm.issuers} selected={extended.settings.issuer} onToggle={vm.toggleIssuer} onAll={vm.allIssuers} disabled={vm.isLoading} />
                     <ScopeRow title="Стан" items={vm.states} selected={extended.settings.state} onToggle={vm.toggleState} onAll={vm.allStates} disabled={vm.isLoading} />
                 </tbody>
             </table>
-            <div className="max-h-[60vh] overflow-y-auto">
-                <table className="w-full text-sm">
-                    <thead className="sticky top-0 bg-blue-100 text-xs uppercase text-gray-600 dark:bg-blue-900/40 dark:text-gray-300">
+            <div className={twMerge(TABLE_WRAP, "max-h-[60vh] overflow-y-auto")}>
+                <table className={twMerge(TABLE, "w-full")}>
+                    <thead className="sticky top-0 bg-blue-100 dark:bg-blue-900/40">
                         <tr>
-                            <th className="px-2 py-1 text-left">id</th>
-                            <th className="px-2 py-1" />
-                            <th className="px-2 py-1 text-left">Субʼєкт подання</th>
-                            <th className="px-2 py-1 text-left">Стан</th>
-                            <th className="px-2 py-1 text-left">Назва</th>
-                            <th className="px-2 py-1 text-left">Реєстр.номер</th>
+                            <th className={twMerge(TH, "text-left")}>id</th>
+                            <th className={TH} />
+                            <th className={twMerge(TH, "text-left")}>Субʼєкт подання</th>
+                            <th className={twMerge(TH, "text-left")}>Стан</th>
+                            <th className={twMerge(TH, "text-left")}>Назва</th>
+                            <th className={twMerge(TH, "text-left")}>Реєстр.номер</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 text-gray-700 dark:divide-neutral-700 dark:text-gray-300">
+                    <tbody>
                         {vm.isLoading && (
-                            <tr>
-                                <td colSpan={6} className="py-3 text-center text-gray-600">
+                            <tr className={TR}>
+                                <td colSpan={6} className={twMerge(TD, "text-center")}>
                                     <i className="fa-solid fa-spinner fa-spin mr-2" />
                                     Завантаження подань…
                                 </td>
                             </tr>
                         )}
                         {!vm.isLoading && vm.visible.length === 0 && (
-                            <tr>
-                                <td colSpan={6} className="py-3 text-center text-gray-600">
+                            <tr className={TR}>
+                                <td colSpan={6} className={twMerge(TD, "text-center")}>
                                     Оберіть субʼєкти подання і стани, щоб побачити подання
                                 </td>
                             </tr>
                         )}
                         {vm.visible.map((row) => (
-                            <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-neutral-700/50">
-                                <td className="px-2 py-1">{row.id}</td>
-                                <td className="px-2 py-1">
+                            <tr key={row.id} className={TR}>
+                                <td className={TD}>{row.id}</td>
+                                <td className={TD}>
                                     <input type="checkbox" className={CHECKBOX} checked={vm.isChecked(row.id)} onChange={() => vm.toggleRow(row.id)} />
                                 </td>
-                                <td className="px-2 py-1">{row.issuerCaption}</td>
-                                <td className="whitespace-nowrap px-2 py-1">
+                                <td className={TD}>{row.issuerCaption}</td>
+                                <td className={twMerge(TD, "whitespace-nowrap")}>
                                     {row.stateIcon && <i className={`${row.stateIcon} mr-1`} title={row.stateCaption} />}
                                     {row.stateCaption}
                                 </td>
-                                <td className="px-2 py-1">{row.caption}</td>
-                                <td className="whitespace-nowrap px-2 py-1 text-xs">
+                                <td className={TD}>{row.caption}</td>
+                                <td className={twMerge(TD, "whitespace-nowrap")}>
                                     {row.outgoingNumber ?? ""}
                                     <br />
                                     {row.outgoingDate ?? ""}
@@ -182,7 +184,6 @@ const ProposalFilterModal = observer(() => {
 
 const categoryOf = (id) => RULE_CATEGORIES.find((category) => category.id === id) ?? RULE_CATEGORIES[0];
 const INLINE_SELECT = "w-full cursor-pointer rounded border border-transparent bg-transparent px-2 py-1 text-xs hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-300 dark:bg-neutral-900 dark:hover:border-neutral-600";
-const TH = "px-4 py-2 font-medium";
 
 const PersonalRules = observer(() => {
     const vm = useVM().reasonRules;
@@ -226,21 +227,21 @@ const PersonalRules = observer(() => {
                     Додати
                 </button>
             </form>
-            <table className="w-full text-left">
-                <thead className="bg-gray-100 text-xs uppercase text-gray-600 dark:bg-neutral-900">
+            <table className={twMerge(TABLE, "w-full text-left")}>
+                <thead>
                     <tr>
-                        <th className={`${TH} w-[30%]`}>Фраза</th>
-                        <th className={`${TH} w-[120px]`}>Категорія</th>
-                        <th className={`${TH} w-[140px]`}>Країна</th>
-                        <th className={`${TH} w-[80px] text-center`}>Регістр</th>
-                        <th className={`${TH} w-[80px] text-center`}>Активне</th>
-                        <th className={`${TH} w-[60px] text-right`}>Дії</th>
+                        <th className={twMerge(TH, `${TH} w-[30%]`)}>Фраза</th>
+                        <th className={twMerge(TH, `${TH} w-[120px]`)}>Категорія</th>
+                        <th className={twMerge(TH, `${TH} w-[140px]`)}>Країна</th>
+                        <th className={twMerge(TH, `${TH} w-[80px] text-center`)}>Регістр</th>
+                        <th className={twMerge(TH, `${TH} w-[80px] text-center`)}>Активне</th>
+                        <th className={twMerge(TH, `${TH} w-[60px] text-right`)}>Дії</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-neutral-700">
+                <tbody>
                     {vm.personal.map((rule) => (
-                        <tr key={rule.id} className={`transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700/50 ${rule.is_active ? "" : "opacity-60"}`}>
-                            <td className="px-4 py-2">
+                        <tr key={rule.id} className={twMerge(TR, `transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700/50 ${rule.is_active ? "" : "opacity-60"}`)}>
+                            <td className={TD}>
                                 <input
                                     type="text"
                                     defaultValue={rule.phrase}
@@ -249,7 +250,7 @@ const PersonalRules = observer(() => {
                                     className="w-full border-0 border-b border-transparent bg-transparent px-0 py-1 font-mono text-sm text-gray-800 hover:border-gray-300 focus:border-blue-400 focus:outline-none focus:ring-0 dark:text-gray-200"
                                 />
                             </td>
-                            <td className="px-4 py-2">
+                            <td className={TD}>
                                 <select className={INLINE_SELECT} value={rule.category} onChange={(event) => vm.update(rule.id, { category: event.target.value })}>
                                     {RULE_CATEGORIES.map((category) => (
                                         <option key={category.id} value={category.id}>
@@ -258,7 +259,7 @@ const PersonalRules = observer(() => {
                                     ))}
                                 </select>
                             </td>
-                            <td className="px-4 py-2">
+                            <td className={TD}>
                                 <select className={INLINE_SELECT} value={rule.target_country_id ?? ""} onChange={(event) => vm.update(rule.id, { target_country_id: event.target.value || null })}>
                                     <option value="">(Будь-яка)</option>
                                     {vm.countries.map((country) => (
@@ -268,10 +269,10 @@ const PersonalRules = observer(() => {
                                     ))}
                                 </select>
                             </td>
-                            <td className="px-4 py-2 text-center">
+                            <td className={twMerge(TD, "text-center")}>
                                 <input type="checkbox" className="h-4 w-4 cursor-pointer" checked={Boolean(rule.is_case_sensitive)} onChange={(event) => vm.update(rule.id, { is_case_sensitive: event.target.checked })} />
                             </td>
-                            <td className="px-4 py-2 text-center">
+                            <td className={twMerge(TD, "text-center")}>
                                 <button
                                     type="button"
                                     title={rule.is_active ? "Вимкнути" : "Увімкнути"}
@@ -281,7 +282,7 @@ const PersonalRules = observer(() => {
                                     <i className={`fa-solid ${rule.is_active ? "fa-toggle-on" : "fa-toggle-off"}`} />
                                 </button>
                             </td>
-                            <td className="px-4 py-2 text-right">
+                            <td className={twMerge(TD, "text-right")}>
                                 <button type="button" title="Видалити" onClick={() => vm.remove(rule.id)} className="p-1 text-gray-600 transition-colors hover:text-red-500">
                                     <i className="fa-solid fa-trash-can" />
                                 </button>
@@ -299,30 +300,30 @@ const GlobalRules = observer(() => {
     const vm = useVM().reasonRules;
     return (
         <>
-            <table className="w-full text-left">
-                <thead className="bg-gray-100 text-xs uppercase text-gray-600 dark:bg-neutral-900">
+            <table className={twMerge(TABLE, "w-full text-left")}>
+                <thead>
                     <tr>
-                        <th className={`${TH} w-[35%]`}>Фраза</th>
-                        <th className={`${TH} w-[120px]`}>Категорія</th>
-                        <th className={`${TH} w-[150px]`}>Країна</th>
-                        <th className={`${TH} w-[100px] text-center`}>Регістр</th>
+                        <th className={twMerge(TH, `${TH} w-[35%]`)}>Фраза</th>
+                        <th className={twMerge(TH, `${TH} w-[120px]`)}>Категорія</th>
+                        <th className={twMerge(TH, `${TH} w-[150px]`)}>Країна</th>
+                        <th className={twMerge(TH, `${TH} w-[100px] text-center`)}>Регістр</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-neutral-700">
+                <tbody>
                     {vm.global.map((rule) => {
                         const category = categoryOf(rule.category);
                         return (
-                            <tr key={rule.id} className="hover:bg-gray-50 dark:hover:bg-neutral-700/50">
-                                <td className="px-4 py-2 font-mono text-sm text-gray-800 dark:text-gray-200">{rule.phrase}</td>
-                                <td className="px-4 py-2">
+                            <tr key={rule.id} className={TR}>
+                                <td className={twMerge(TD, "font-mono")}>{rule.phrase}</td>
+                                <td className={TD}>
                                     <span className={`inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs ${category.badge}`}>
                                         <i className={`fa-solid ${category.icon}`} /> {category.caption}
                                     </span>
                                 </td>
-                                <td className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
+                                <td className={TD}>
                                     {rule.target_country_id ? vm.countryName(rule.target_country_id) : <span className="italic text-gray-600">Будь-яка</span>}
                                 </td>
-                                <td className="px-4 py-2 text-center">{rule.is_case_sensitive ? <i className="fa-solid fa-check text-blue-500" /> : <span className="text-gray-300">—</span>}</td>
+                                <td className={twMerge(TD, "text-center")}>{rule.is_case_sensitive ? <i className="fa-solid fa-check text-blue-500" /> : <span className="text-gray-300">—</span>}</td>
                             </tr>
                         );
                     })}

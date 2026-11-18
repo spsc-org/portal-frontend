@@ -24,7 +24,7 @@ const IdentifyV2Modal = ({open, onClose, id, dictionaries}) => {
     return (
         <Modal data-i-doc="modal:dictionary-identify-v2-modal" open={open} size="lg" handler={onClose}>
             <ModalHeader>
-                <span>{id ? `Редагування: ${data?.data?.code}` : "Додати"}</span>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase"><span>{id ? `Редагування: ${data?.data?.code}` : "Додати"}</span></h3>
             </ModalHeader>
             <ModalBody className="max-h-[calc(100vh-12rem)] overflow-y-auto">
                 <div className="grid grid-cols-2 gap-2">

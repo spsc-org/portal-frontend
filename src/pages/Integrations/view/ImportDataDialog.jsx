@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
-import { Alert, Input, Spinner, Typography } from "@material-tailwind/react"
+import { Alert, Input, Spinner } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import Button from "../../../components/Buttons/Button.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
@@ -20,7 +20,7 @@ const ImportDataDialog = ({ open, onClose, dataset, page }) => {
             return (
                 <div className="flex flex-col items-center justify-center h-48 gap-4">
                     <Spinner className="h-12 w-12" />
-                    <Typography className="dark:text-gray-200">Йде імпорт, будь ласка, зачекайте…</Typography>
+                    <p className="text-sm text-gray-700 dark:text-gray-200">Йде імпорт, будь ласка, зачекайте…</p>
                 </div>
             );
         }
@@ -35,13 +35,13 @@ const ImportDataDialog = ({ open, onClose, dataset, page }) => {
         return (
             <>
                 {error && <Alert color="red" className="mb-4">{error}</Alert>}
-                <Typography variant="h6" className="dark:text-gray-200 mb-2">
+                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-2">
                     Імпорт для: <span className="font-bold">{dataset.caption || dataset.name}</span>
-                </Typography>
-                <Typography className="dark:text-gray-300 mb-4">
+                </h4>
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
                     Очікуваний формат файлу:{' '}
                     <span className="font-bold text-blue-500">{dataset.format.toUpperCase()}</span>.
-                </Typography>
+                </p>
 
                 {requiresFile ? (
                     <Input
@@ -67,15 +67,15 @@ const ImportDataDialog = ({ open, onClose, dataset, page }) => {
     return (
         <Modal open={open} handler={handleClose} size="md">
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                     Імпорт консолідованих даних
-                </Typography>
+                </h3>
             </ModalHeader>
 
             <ModalBody>{renderBody()}</ModalBody>
 
             <ModalFooter>
-                <Button variant="text" color="blue-gray" onClick={handleClose} className="mr-1 dark:text-gray-300 dark:hover:bg-neutral-600">
+                <Button color="secondary" onClick={handleClose}>
                     Закрити
                 </Button>
                 {!isSettled && (

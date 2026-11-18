@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
-import { Checkbox } from "@material-tailwind/react"
 import Button from "../../components/Buttons/Button.jsx"
 import { useSession } from '../../stores/storeHooks.js'
 import { ApiError } from '../../lib/api.js'
@@ -44,16 +43,17 @@ export default function Login() {
   }
 
   return (
-    <AuthLayout title="Вхід">
+    <AuthLayout title="Вхід до системи" subtitle="Використовуйте робочий обліковий запис.">
       <StatusAlert status={status} />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <FormField
-          label="Email"
+          label="Електронна пошта"
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           error={fieldError(errors, 'email')}
+          placeholder="name@company.ua"
           required
           autoFocus
           autoComplete="username"
@@ -65,24 +65,27 @@ export default function Login() {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           error={fieldError(errors, 'password')}
+          placeholder="••••••••"
           required
           autoComplete="current-password"
+          labelAside={
+            <Link to="/forgot-password" className="text-[13px] text-blue-600 no-underline hover:text-blue-700 hover:underline">
+              Забули пароль?
+            </Link>
+          }
         />
 
-        <div className="flex items-center justify-between">
-          <Checkbox
-            label="Запам'ятати мене"
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
             checked={remember}
             onChange={(event) => setRemember(event.target.checked)}
-            containerProps={{ className: 'p-0' }}
+            className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-300"
           />
+          Запам'ятати мене на цьому пристрої
+        </label>
 
-          <Link to="/forgot-password" className="text-sm text-gray-600 hover:underline">
-            Забули пароль?
-          </Link>
-        </div>
-
-        <Button type="submit" disabled={submitting} fullWidth>
+        <Button type="submit" disabled={submitting} fullWidth size="lg" className="h-11 rounded-lg text-sm">
           {submitting ? 'Вхід…' : 'Увійти'}
         </Button>
       </form>

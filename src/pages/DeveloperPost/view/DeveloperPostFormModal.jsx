@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { observer } from "mobx-react-lite";
-import { Spinner, Switch, Typography } from "@material-tailwind/react"
+import { Spinner, Switch } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import AttachmentsGallery from "../../../components/AttachmentsGallery.jsx";
@@ -49,9 +49,9 @@ const DeveloperPostFormModal = ({ board = null, post = null, onClose, onCreated 
     return (
         <Modal data-i-doc="modal:developer-post-create" open handler={vm.cancel} size="md">
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                     {isEditing ? "Редагування поста" : "Новий пост"}
-                </Typography>
+                </h3>
             </ModalHeader>
             <ModalBody className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto">
                 {vm.isPreparingDraft ? (

@@ -24,7 +24,7 @@ const IdentifyModal = ({open, onClose, id, dictionaries}) => {
     return (
         <Modal open={open} size="lg" handler={onClose}>
             <ModalHeader>
-                <span>{id ? `Редагування: ${data?.data?.current_version?.code}` : "Додати"}</span>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase"><span>{id ? `Редагування: ${data?.data?.current_version?.code}` : "Додати"}</span></h3>
             </ModalHeader>
             <ModalBody className="max-h-[calc(100vh-12rem)] overflow-y-auto">
                 <div className="grid grid-cols-2 gap-2">

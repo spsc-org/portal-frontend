@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 const NotificationToolsView = ({ vm }) => (
     <div data-i-doc="page:develop-notifications" className="p-6 max-w-2xl mx-auto">
 
-        <div className="bg-white dark:bg-neutral-700 shadow-md rounded-lg p-6 space-y-4">
+        <div className="bg-white dark:bg-neutral-800 rounded-xl p-6 space-y-4 border border-gray-200 dark:border-neutral-700">
             <p className="text-gray-600 dark:text-gray-400">
                 Генерує тестову нотифікацію обраному юзеру (actor = ви, хто натиснув кнопку).
                 Payload мінімальний — посилання будує фронтенд за <code>type</code> + <code>entity_id</code>.

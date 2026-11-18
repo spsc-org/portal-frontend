@@ -4,7 +4,9 @@ import { TaskAuditViewModel } from "../../viewmodel/TaskViewModels.js";
 import { Spinner } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
+import AuditPager from "../../../../components/Audit/AuditPager.jsx";
 import {useState} from "react";
+import { AUDIT_BODY, AUDIT_CARD, AUDIT_EMPTY, AUDIT_HEAD, AUDIT_META, AUDIT_USER, DIFF_FIELD, DIFF_FROM, DIFF_HEAD_ROW, DIFF_TABLE, DIFF_TH, DIFF_TO, DIFF_TR } from "../../../../components/Audit/auditStyles.js";
 
 // Історія змін задачі (повні знімки + diff) — той самий UI-патерн, що
 // вкладка «Історія» в InventoryDetailsModal, але окремою модалкою з картки.
@@ -78,7 +80,7 @@ const AuditEntry = ({entry, users}) => {
 
     const formatValue = (value) => {
         if (value === null || value === undefined || value === '') {
-            return <span className="text-gray-600 italic">—</span>;
+            return <span className="italic text-gray-600 dark:text-gray-400">—</span>;
         }
         if (typeof value === 'object') {
             return String(value.name ?? value.fileName ?? value.label ?? JSON.stringify(value));
@@ -106,38 +108,38 @@ const AuditEntry = ({entry, users}) => {
             );
         }
         if (diffEntries.length > 0) {
-            return <span className="text-xs text-gray-600">({diffEntries.length} зм.)</span>;
+            return <span className={AUDIT_META}>({diffEntries.length} зм.)</span>;
         }
         return null;
     })();
 
     return (
-        <div className="mb-2 overflow-hidden rounded-lg border dark:border-gray-600">
+        <div className={AUDIT_CARD}>
             <button
                 type="button"
                 onClick={() => setOpen((o) => !o)}
-                className="flex w-full items-center justify-between bg-gray-50 px-3 py-2 text-left hover:bg-gray-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+                className={AUDIT_HEAD}
             >
                 <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
                     <ActionBadge action={entry.action}/>
-                    <span className="text-xs text-gray-600 dark:text-gray-400">{entry.createdAt}</span>
-                    <span className="text-xs dark:text-gray-300">{userName}</span>
+                    <span className={AUDIT_META}>{entry.createdAt}</span>
+                    <span className={AUDIT_USER}>{userName}</span>
                     {contextHint}
                 </div>
                 <i className={`fa-regular fa-chevron-${open ? 'up' : 'down'} text-xs text-gray-600`}/>
             </button>
 
             {open && (
-                <div className="px-3 py-2 dark:bg-neutral-800/60">
+                <div className={AUDIT_BODY}>
                     {entry.context?.fileName ? (
-                        <p className="text-xs dark:text-gray-300">
+                        <p className={AUDIT_USER}>
                             Файл:&nbsp;
                             <span className="font-medium text-blue-700 dark:text-blue-300">
                                 {entry.context.fileName}
                             </span>
                         </p>
                     ) : entry.action === 'merge' && entry.context?.donorId ? (
-                        <p className="text-xs dark:text-gray-300">
+                        <p className={AUDIT_USER}>
                             Донор:&nbsp;
                             <span className="font-medium text-teal-700 dark:text-teal-300">
                                 #{entry.context.donorId}
@@ -149,26 +151,26 @@ const AuditEntry = ({entry, users}) => {
                             {entry.context?.comment}
                         </p>
                     ) : diffEntries.length === 0 ? (
-                        <p className="text-xs italic text-gray-600">Немає змін у відстежуваних полях</p>
+                        <p className={AUDIT_EMPTY}>Немає змін у відстежуваних полях</p>
                     ) : (
-                        <table className="w-full text-xs">
+                        <table className={DIFF_TABLE}>
                             <thead>
-                            <tr className="text-left text-gray-600 dark:text-gray-400">
-                                <th className="w-1/4 pb-1">Поле</th>
-                                <th className="w-[37.5%] pb-1">Було</th>
-                                <th className="w-[37.5%] pb-1">Стало</th>
+                            <tr className={DIFF_HEAD_ROW}>
+                                <th className={`${DIFF_TH} w-1/4`}>Поле</th>
+                                <th className={`${DIFF_TH} w-[37.5%]`}>Було</th>
+                                <th className={`${DIFF_TH} w-[37.5%]`}>Стало</th>
                             </tr>
                             </thead>
                             <tbody>
                             {diffEntries.map(([field, {from, to}]) => (
-                                <tr key={field} className="border-t dark:border-neutral-700">
-                                    <td className="py-1 font-medium dark:text-gray-300">
+                                <tr key={field} className={DIFF_TR}>
+                                    <td className={DIFF_FIELD}>
                                         {fieldLabel(field)}
                                     </td>
-                                    <td className="py-1 text-red-500 dark:text-red-400">
+                                    <td className={DIFF_FROM}>
                                         {formatValue(from)}
                                     </td>
-                                    <td className="py-1 text-green-600 dark:text-green-400">
+                                    <td className={DIFF_TO}>
                                         {formatValue(to)}
                                     </td>
                                 </tr>
@@ -188,26 +190,22 @@ const TaskAuditModal = ({taskId, users = [], onClose}) => {
     const setPage = vm.setPage;
 
     return (
-        <Modal open handler={onClose} size="md">
-            <ModalHeader className="flex items-center justify-between text-base">
-                <span>Історія змін{taskId ? ` · #${taskId}` : ''}</span>
-                {total > 0 && (
-                    <span className="text-xs font-normal text-gray-600 dark:text-gray-400">
-                        {total} запис.
-                    </span>
-                )}
+        <Modal open onClose={onClose} size="md">
+            <ModalHeader>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">Історія змін{taskId ? ` · #${taskId}` : ''}</h3>
+                {total > 0 && <span className="ml-auto shrink-0 text-xs font-normal text-gray-600 dark:text-gray-400">{total} запис.</span>}
             </ModalHeader>
-            <ModalBody className="max-h-[70vh] overflow-y-auto pt-0">
+            <ModalBody>
                 {isFetching && history.length === 0 ? (
                     <div className="flex justify-center py-10">
                         <Spinner className="h-8 w-8"/>
                     </div>
                 ) : isError ? (
-                    <p className="py-6 text-center text-sm text-red-500">
+                    <p className="py-6 text-center text-sm text-red-600 dark:text-red-400">
                         Не вдалося завантажити історію
                     </p>
                 ) : history.length === 0 ? (
-                    <p className="py-6 text-center text-sm text-gray-600">
+                    <p className="py-6 text-center text-sm text-gray-600 dark:text-gray-400">
                         Записів аудиту ще немає
                     </p>
                 ) : (
@@ -215,34 +213,12 @@ const TaskAuditModal = ({taskId, users = [], onClose}) => {
                         {history.map((entry) => (
                             <AuditEntry key={entry.id} entry={entry} users={users}/>
                         ))}
-                        {pages > 1 && (
-                            <div className="mt-3 flex items-center justify-center gap-3">
-                                <Button
-                                    size="sm"
-                                    variant="outlined"
-                                    disabled={page <= 1 || isFetching}
-                                    onClick={() => setPage((p) => p - 1)}>
-                                    Назад
-                                </Button>
-                                <span className="text-xs text-gray-600 dark:text-gray-400">
-                                    {page} / {pages}
-                                </span>
-                                <Button
-                                    size="sm"
-                                    variant="outlined"
-                                    disabled={page >= pages || isFetching}
-                                    onClick={() => setPage((p) => p + 1)}>
-                                    Далі
-                                </Button>
-                            </div>
-                        )}
+                        <AuditPager page={page} pages={pages} onChange={setPage} disabled={isFetching} prevLabel="‹ Назад" nextLabel="Далі ›"/>
                     </>
                 )}
             </ModalBody>
             <ModalFooter>
-                <Button variant="text" onClick={onClose} className="dark:text-gray-200">
-                    Закрити
-                </Button>
+                <Button color="secondary" onClick={onClose}>Закрити</Button>
             </ModalFooter>
         </Modal>
     );

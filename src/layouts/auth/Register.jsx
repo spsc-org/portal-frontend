@@ -41,7 +41,7 @@ export default function Register() {
 
   return (
     <AuthLayout title="Реєстрація">
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <FormField
           label="Ім'я"
           value={form.name}

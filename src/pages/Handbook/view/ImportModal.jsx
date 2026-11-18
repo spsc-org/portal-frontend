@@ -1,10 +1,12 @@
 import { useRef } from "react";
 import { observer } from "mobx-react-lite";
-import { Checkbox, Switch, Tooltip, Typography } from "@material-tailwind/react"
+import { Checkbox, Switch, Tooltip } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { ImportViewModel } from "../viewmodel/ImportViewModel.js";
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../components/Table/tableStyles.js";
 
 // Двокроковий імпорт з Excel-заготовки (вибір файлу → перегляд розпарсених
 // рядків із чекбоксами → підтвердження обраних) — використовується лише
@@ -37,7 +39,7 @@ const ImportModal = ({ onClose, title, templateUrl, columns, previewSpec, commit
     return (
         <Modal data-i-doc={iDoc} open handler={onClose} size={step === "preview" ? "lg" : "sm"} className="flex max-h-[90vh] flex-col">
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">{title}</Typography>
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">{title}</h3>
             </ModalHeader>
             <ModalBody className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto">
                 {step === "pick" ? (
@@ -86,34 +88,34 @@ const ImportModal = ({ onClose, title, templateUrl, columns, previewSpec, commit
                         }
                         {rows.length > 0 &&
                         <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-neutral-700">
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left text-xs">
-                                    <thead className="bg-gray-50 dark:bg-neutral-700">
+                            <div className={twMerge(TABLE_WRAP, "")}>
+                                <table className={twMerge(TABLE, "w-full text-left")}>
+                                    <thead>
                                         <tr>
-                                            <th className="w-8 px-2 py-1.5"></th>
-                                            <th className="px-2 py-1.5 text-gray-600 dark:text-gray-400">Рядок</th>
+                                            <th className={twMerge(TH, "w-8")}></th>
+                                            <th className={TH}>Рядок</th>
                                             {columns.map((col) => (
-                                                <th key={col.key} className="whitespace-nowrap px-2 py-1.5 text-gray-600 dark:text-gray-400">{col.label}</th>
+                                                <th key={col.key} className={twMerge(TH, "whitespace-nowrap")}>{col.label}</th>
                                             ))}
-                                            <th className="w-8 px-2 py-1.5"></th>
+                                            <th className={twMerge(TH, "w-8")}></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {rows.map((row, index) => (
                                             <tr key={index}
-                                                className={`border-t border-gray-100 dark:border-neutral-700 ${!row.valid ? "bg-red-50/50 dark:bg-red-900/10" : ""}`}>
-                                                <td className="px-2 py-1.5">
+                                                className={twMerge(TR, `border-t border-gray-100 dark:border-neutral-700 ${!row.valid ? "bg-red-50/50 dark:bg-red-900/10" : ""}`)}>
+                                                <td className={TD}>
                                                     <Checkbox checked={Boolean(selected[index])} onChange={() => vm.toggleRow(index)} className="dark:border-gray-600"/>
                                                 </td>
-                                                <td className="px-2 py-1.5 text-gray-600">{row.row}</td>
+                                                <td className={TD}>{row.row}</td>
                                                 {columns.map((col) => (
-                                                    <td key={col.key} className="px-2 py-1.5 text-gray-700 dark:text-gray-300">
+                                                    <td key={col.key} className={TD}>
                                                         {col.render
                                                             ? col.render(row)
                                                             : (row[col.key] || <span className="text-gray-300 dark:text-gray-600">—</span>)}
                                                     </td>
                                                 ))}
-                                                <td className="px-2 py-1.5">
+                                                <td className={TD}>
                                                     {!row.valid &&
                                                         <Tooltip content={(row.errors || []).join("; ")}>
                                                             <span className="text-red-500"><i className="fa-solid fa-triangle-exclamation"></i></span>

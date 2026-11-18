@@ -3,6 +3,8 @@ import { Card, Typography } from "@material-tailwind/react"
 import Button from "../../../../components/Buttons/Button.jsx"
 import { format, parseISO, differenceInDays } from 'date-fns';
 import { ABSENCE_STATUS_CONFIG } from '../../constants/attendanceConfig.js';
+import { twMerge } from "tailwind-merge";
+import { TABLE, TABLE_WRAP, TD, TH, TR } from "../../../../components/Table/tableStyles.js";
 
 const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocuments, absenceTypes }) => {
     if (isLoading) {
@@ -42,25 +44,25 @@ const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocument
 
     return (
         <Card data-i-doc="view:staff-attendance-table-view" className="overflow-hidden border border-gray-200 dark:border-neutral-700 dark:bg-neutral-900 shadow-none rounded-2xl mt-2">
-            <div className="overflow-x-auto">
-                <table className="w-full">
+            <div className={twMerge(TABLE_WRAP, "")}>
+                <table className={twMerge(TABLE, "w-full")}>
                     <thead>
-                        <tr className="bg-gray-50/50 dark:bg-neutral-800/50 border-b border-gray-200 dark:border-neutral-700">
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Співробітник</th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Тип</th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Початок</th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Кінець</th>
-                            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Днів</th>
-                            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">На дорогу</th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Статус</th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Примітка</th>
-                            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Дії</th>
+                        <tr>
+                            <th className={twMerge(TH, "text-left")}>Співробітник</th>
+                            <th className={twMerge(TH, "text-left")}>Тип</th>
+                            <th className={twMerge(TH, "text-left")}>Початок</th>
+                            <th className={twMerge(TH, "text-left")}>Кінець</th>
+                            <th className={twMerge(TH, "text-center")}>Днів</th>
+                            <th className={twMerge(TH, "text-center")}>На дорогу</th>
+                            <th className={twMerge(TH, "text-left")}>Статус</th>
+                            <th className={twMerge(TH, "text-left")}>Примітка</th>
+                            <th className={twMerge(TH, "text-center")}>Дії</th>
                         </tr>
                     </thead>
                     <tbody>
                         {allAbsences.length === 0 ? (
-                            <tr>
-                                <td colSpan={7} className="px-4 py-12 text-center text-gray-600">
+                            <tr className={TR}>
+                                <td colSpan={7} className={twMerge(TD, "text-center")}>
                                     Немає записів
                                 </td>
                             </tr>
@@ -71,9 +73,9 @@ const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocument
                                 const duration = differenceInDays(endDate, startDate) + 1;
 
                                 return (
-                                    <tr key={abs.id} className="border-b border-gray-200 dark:border-neutral-700 hover:bg-blue-50 dark:hover:bg-blue-900/25 transition-colors cursor-pointer" onDoubleClick={() => onEdit(abs)}>
-                                        <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">{abs.full_name}</td>
-                                        <td className="px-4 py-3 text-sm">
+                                    <tr key={abs.id} className={twMerge(TR, "hover:bg-blue-50 dark:hover:bg-blue-900/25 transition-colors cursor-pointer")} onDoubleClick={() => onEdit(abs)}>
+                                        <td className={TD}>{abs.full_name}</td>
+                                        <td className={TD}>
                                             <div className="flex items-center gap-2">
                                                 <span
                                                     className="w-3 h-3 rounded-sm"
@@ -82,31 +84,31 @@ const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocument
                                                 <span className="text-gray-900 dark:text-gray-100">{getTypeName(abs.type_slug)}</span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
+                                        <td className={TD}>
                                             {format(startDate, 'dd.MM.yyyy')}
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
+                                        <td className={TD}>
                                             {abs.end_date ? format(endDate, 'dd.MM.yyyy') : <span className="italic">без дати</span>}
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-center text-gray-900 dark:text-gray-100 font-medium">
+                                        <td className={twMerge(TD, "text-center font-medium")}>
                                             {duration}
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-center">
+                                        <td className={twMerge(TD, "text-center")}>
                                             {abs.travel_days > 0 ? (
                                                 <span className="text-gray-900 dark:text-gray-100 font-medium">+{abs.travel_days}</span>
                                             ) : (
                                                 <span className="text-gray-600">—</span>
                                             )}
                                         </td>
-                                        <td className="px-4 py-3 text-sm">
+                                        <td className={TD}>
                                             <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusBadgeColor(abs.status_slug)}`}>
                                                 {getStatusLabel(abs.status_slug)}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 max-w-xs truncate">
+                                        <td className={twMerge(TD, "max-w-xs truncate")}>
                                             {abs.reason || '—'}
                                         </td>
-                                        <td className="px-4 py-3 text-sm">
+                                        <td className={TD}>
                                             <div className="flex items-center justify-center gap-2">
                                                 <Button
                                                     variant="text"

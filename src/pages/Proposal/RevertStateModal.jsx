@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { RevertStateViewModel } from "./viewmodel/ProposalViewModels.js";
 import { useProposalProps } from "./viewmodel/useProposalProps.js";
-import { Typography } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
 import Button from "../../components/Buttons/Button.jsx"
 import SingleSelect from "../../components/fields/SingleSelect.jsx";
@@ -22,9 +21,9 @@ const RevertStateModal = ({open = false, selectedId: id, onClose}) => {
     return (
         <Modal open={open} handler={onClose} size="xs">
             <ModalHeader>
-                <Typography variant="h5" className="dark:text-gray-200">
+                <h3 className="min-w-0 truncate text-base font-bold uppercase">
                     Зняти зафіксований стан
-                </Typography>
+                </h3>
             </ModalHeader>
             <ModalBody className="h-[16rem] relative overflow-y-auto">
                 <SingleSelect closeMenuOnSelect error={errors?.stateId}
