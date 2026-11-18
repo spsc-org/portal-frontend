@@ -44,14 +44,14 @@ const SelectedProjectsTab = ({ cart }) => {
         <div className="flex flex-col">
             <div className="flex items-center justify-between gap-3 border-b border-gray-200 bg-gray-50 px-4 py-3 dark:border-neutral-600 dark:bg-neutral-750">
                 <div className="relative w-72">
-                    <i className="fas fa-search pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 dark:text-gray-500" />
+                    <i className="fas fa-search pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 dark:text-gray-500" />
                     <input
                         type="text"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Пошук по списку..."
                         autoComplete="off"
-                        className="w-full rounded-md border border-gray-300 bg-white py-1.5 pl-8 pr-3 text-sm text-gray-900 placeholder-gray-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-800 dark:text-gray-100 dark:placeholder-gray-500"
+                        className="w-full rounded-md border border-gray-200 bg-white py-1.5 pl-8 pr-3 text-sm text-gray-900 placeholder-gray-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100 dark:placeholder-gray-500"
                     />
                 </div>
                 <button
@@ -68,7 +68,7 @@ const SelectedProjectsTab = ({ cart }) => {
             <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-sm">
                     <thead>
-                        <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:border-neutral-600 dark:bg-neutral-700 dark:text-gray-400">
+                        <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 dark:border-neutral-600 dark:bg-neutral-700 dark:text-gray-400">
                             <th className="whitespace-nowrap px-3 py-2">ID</th>
                             <th className="whitespace-nowrap px-3 py-2">Дія</th>
                             <th className="whitespace-nowrap px-3 py-2">Тип</th>
@@ -84,10 +84,10 @@ const SelectedProjectsTab = ({ cart }) => {
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-neutral-700">
                         {isLoading && (
-                            <tr><td colSpan={11} className="px-3 py-6 text-center text-gray-400 dark:text-gray-500">Завантаження…</td></tr>
+                            <tr><td colSpan={11} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">Завантаження…</td></tr>
                         )}
                         {!isLoading && filtered.length === 0 && (
-                            <tr><td colSpan={11} className="px-3 py-6 text-center text-gray-400 dark:text-gray-500">Список порожній</td></tr>
+                            <tr><td colSpan={11} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">Список порожній</td></tr>
                         )}
                         {filtered.map((row) => {
                             const precomputedData = parsePrecomputedData(row.precomputedData);
@@ -118,7 +118,7 @@ const SelectedProjectsTab = ({ cart }) => {
                                             type="button"
                                             onClick={() => cart.remove(row.id)}
                                             title="Прибрати зі списку"
-                                            className="text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-400"
+                                            className="text-gray-600 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-400"
                                         >
                                             <i className="fas fa-xmark" />
                                         </button>

@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { ResponsibleFunctionFormViewModel } from "../viewmodel/ResponsibleViewModels.js";
-import {Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import {LabeledInput, LabeledTextarea} from "../../../components/fields/LabeledField.jsx";
 
@@ -14,9 +14,9 @@ const ResponsibleFunctionModalInner = observer(({open, onClose, func = null}) =>
     const handleSave = () => vm.save(() => onClose());
 
     return (
-        <Dialog data-i-doc="modal:staff-responsible-function" open={open} handler={onClose} size="sm">
-            <DialogHeader>{isEditing ? "Редагувати функцію" : "Нова функція"}</DialogHeader>
-            <DialogBody className="flex flex-col gap-3">
+        <Modal data-i-doc="modal:staff-responsible-function" open={open} handler={onClose} size="sm">
+            <ModalHeader>{isEditing ? "Редагувати функцію" : "Нова функція"}</ModalHeader>
+            <ModalBody className="flex flex-col gap-3">
                 <LabeledInput
                     label="Назва"
                     value={name}
@@ -30,16 +30,16 @@ const ResponsibleFunctionModalInner = observer(({open, onClose, func = null}) =>
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
                 />
-            </DialogBody>
-            <DialogFooter className="gap-2">
+            </ModalBody>
+            <ModalFooter className="gap-2">
                 <LoadingButton variant="outlined" color="blue-gray" onClick={onClose} disabled={isPending}>
                     Скасувати
                 </LoadingButton>
                 <LoadingButton color="blue" onClick={handleSave} isLoading={isPending} disabled={!name.trim()}>
                     Зберегти
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 });
 

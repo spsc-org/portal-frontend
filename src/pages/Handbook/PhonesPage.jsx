@@ -25,7 +25,7 @@ const IMPORT_COLUMNS = [
                 {(row.phones || []).map((p, i) => (
                     <span key={i}>
                         {p.phone}
-                        {p.note && <span className="ml-1 text-slate-400">({p.note})</span>}
+                        {p.note && <span className="ml-1 text-gray-600">({p.note})</span>}
                     </span>
                 ))}
             </div>
@@ -40,7 +40,7 @@ const PhonesView = observer(({ vm }) => {
     if (!vm.canRead) {
         return (
             <HandbookLayout active="phones">
-                <div className="flex min-h-[50vh] items-center justify-center text-slate-400 dark:text-slate-600">
+                <div className="flex min-h-[50vh] items-center justify-center text-gray-600 dark:text-gray-600">
                     <i className="fa-solid fa-lock mr-2"></i>Немає доступу до довідників.
                 </div>
             </HandbookLayout>

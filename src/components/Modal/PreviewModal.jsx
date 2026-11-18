@@ -1,26 +1,26 @@
-import {Button, Dialog, DialogBody, DialogFooter} from "@material-tailwind/react";
+import { Modal, ModalBody, ModalFooter } from "./Modal.jsx"
+import Button from "../Buttons/Button.jsx"
+
 
 const PreviewModal = ({open, onClose, source = undefined}) => {
     return (
-        <Dialog open={open} handler={onClose} size="md">
-            <DialogBody className="h-fit max-h-[calc(100vh-150px)] overflow-y-auto p-0">
+        <Modal open={open} handler={onClose} size="md">
+            <ModalBody className="h-fit max-h-[calc(100vh-150px)] overflow-y-auto p-0">
                 <img
                     className="h-fit  w-full rounded-lg object-contain object-center shadow-xl shadow-blue-gray-900/50"
                     src={source}
                     alt="preview"
                 />
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
-                    className="mr-1"
-                >
+                    className="mr-1">
                     <span>Закрити</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

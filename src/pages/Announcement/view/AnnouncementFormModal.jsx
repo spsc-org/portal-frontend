@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
-import { Checkbox, Dialog, DialogBody, DialogFooter, DialogHeader, Tooltip, Typography } from "@material-tailwind/react";
+import { Checkbox, Tooltip, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import AttachmentsGallery from "../../../components/AttachmentsGallery.jsx";
 import { LabeledInput, LabeledTextarea } from "../../../components/fields/LabeledField.jsx";
@@ -18,13 +19,13 @@ const AnnouncementFormModal = ({ board = null, announcement = null, onClose, onC
     const isEditing = vm.isEditing;
 
     return (
-        <Dialog data-i-doc="modal:announcement-create" open handler={onClose} size="md">
-            <DialogHeader>
-                <Typography variant="h5" className="dark:text-slate-200">
+        <Modal data-i-doc="modal:announcement-create" open handler={onClose} size="md">
+            <ModalHeader>
+                <Typography variant="h5" className="dark:text-gray-200">
                     {isEditing ? "Редагування оголошення" : "Нове оголошення"}
                 </Typography>
-            </DialogHeader>
-            <DialogBody className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto">
+            </ModalHeader>
+            <ModalBody className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto">
                 <LabeledInput
                     autoFocus
                     label="Заголовок"
@@ -44,7 +45,7 @@ const AnnouncementFormModal = ({ board = null, announcement = null, onClose, onC
 
                 {isEditing ? (
                     <div>
-                        <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
+                        <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
                             Файли{vm.attachments.length ? ` (${vm.attachments.length})` : ""}
                         </label>
                         <AttachmentsGallery
@@ -77,15 +78,15 @@ const AnnouncementFormModal = ({ board = null, announcement = null, onClose, onC
                             checked={vm.requiresAcknowledgement}
                             disabled={vm.audienceType === "selected"}
                             onChange={(e) => vm.setRequiresAcknowledgement(e.target.checked)}
-                            className="dark:border-slate-600"
+                            className="dark:border-gray-600"
                         />
-                        <span className="text-sm text-slate-700 dark:text-slate-300">
+                        <span className="text-sm text-gray-700 dark:text-gray-300">
                             Потребує свідомого підтвердження прочитання
                         </span>
                     </label>
                 </Tooltip>
-            </DialogBody>
-            <DialogFooter className="gap-x-2">
+            </ModalBody>
+            <ModalFooter className="gap-x-2">
                 <button type="button" onClick={onClose}
                         className="rounded px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-900/20">
                     Скасувати
@@ -107,8 +108,8 @@ const AnnouncementFormModal = ({ board = null, announcement = null, onClose, onC
                         </LoadingButton>
                     </>
                 )}
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

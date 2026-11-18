@@ -1,15 +1,16 @@
 import { Fragment } from "react";
 import { observer } from "mobx-react-lite";
-import { Card, IconButton, Switch } from "@material-tailwind/react";
+import { Card, Switch } from "@material-tailwind/react"
+import IconButton from "../../../../components/Buttons/IconButton.jsx"
 import PermissionValueToggle from "./PermissionValueToggle.jsx";
 
 /** Значення прав модуля (рядок "дія → false/individual/true"). */
 export const PermissionActions = ({ actions, values, disabled, onChange }) => (
-    <Card className={`${disabled ? "pointer-events-none opacity-25" : ""} w-full overflow-hidden border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900 p-2 shadow-none transition`}>
+    <Card className={`${disabled ? "pointer-events-none opacity-25" : ""} w-full overflow-hidden border border-gray-200 bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800 p-2 shadow-none transition`}>
         <div className="grid grid-cols-[5rem_minmax(0,1fr)] items-center gap-x-2 gap-y-1.5">
             {Object.entries(actions || {}).map(([key, options]) => (
                 <Fragment key={key}>
-                    <p className="truncate text-[11px] font-medium text-slate-600 dark:text-slate-300" title={key}>{key}</p>
+                    <p className="truncate text-[11px] font-medium text-gray-600 dark:text-gray-300" title={key}>{key}</p>
                     <PermissionValueToggle options={options} value={values?.[key]} onChange={(value) => onChange(key, value)}/>
                 </Fragment>
             ))}
@@ -23,7 +24,7 @@ const PermissionsGrid = ({ vm, className = "grid grid-cols-1 gap-4 md:grid-cols-
         {vm.schemaEntries.map(([category, actions]) => {
             const selfLock = vm.isSelfAdminLock(category);
             return (
-                <div key={category} className="rounded-lg border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800/30">
+                <div key={category} className="rounded-lg border border-gray-200 bg-white p-3 dark:border-neutral-700 dark:bg-neutral-700/30">
                     <div className="flex justify-center pb-2">
                         <Switch
                             color="green"

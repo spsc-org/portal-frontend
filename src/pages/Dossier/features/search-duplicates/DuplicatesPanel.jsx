@@ -12,7 +12,7 @@ import {criteriaChipClasses, criteriaList} from "../../entities/dossierConnectio
 const scoreColorClasses = (score) => {
     if (score >= 0.95) return "text-green-600 dark:text-green-400";
     if (score >= 0.7) return "text-blue-600 dark:text-blue-400";
-    return "text-gray-400";
+    return "text-gray-600";
 };
 
 // Inline-панель "Кандидати-дублікати" (за макетом): форма джерела-драфта →
@@ -34,7 +34,7 @@ const DuplicatesPanel = ({onClose, canLink}) => {
     const candidates = vm.candidates;
 
     return (
-        <div data-i-doc="component:sanction-profiles-duplicates-panel" className="mt-4 bg-white border border-indigo-200 rounded-[14px] shadow-sm overflow-hidden dark:bg-gray-900 dark:border-indigo-800">
+        <div data-i-doc="component:sanction-profiles-duplicates-panel" className="mt-4 bg-white border border-indigo-200 rounded-[14px] shadow-sm overflow-hidden dark:bg-neutral-800 dark:border-indigo-800">
             <div className="flex items-center gap-2.5 px-5 py-[15px] bg-indigo-50 border-b border-indigo-100 dark:bg-indigo-900/60 dark:border-indigo-900">
                 <i className="fa-solid fa-clone text-indigo-700 dark:text-indigo-300"></i>
                 <div className="flex-1">
@@ -52,11 +52,11 @@ const DuplicatesPanel = ({onClose, canLink}) => {
                 </button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 px-5 py-3 border-b border-gray-100 dark:border-gray-800">
+            <div className="flex flex-wrap items-center gap-2 px-5 py-3 border-b border-gray-100 dark:border-neutral-700">
                 <select
                     value={modelClass}
                     onChange={(e) => setModelClass(e.target.value)}
-                    className="h-9 px-2.5 border border-gray-300 rounded-lg bg-white text-[12.5px] text-gray-900 outline-none focus:border-indigo-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200"
+                    className="h-9 px-2.5 border border-gray-200 rounded-lg bg-white text-[12.5px] text-gray-900 outline-none focus:border-indigo-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
                 >
                     {MODEL_CLASS_OPTIONS.map((option) => (
                         <option key={option.id} value={option.id}>{option.caption}</option>
@@ -68,7 +68,7 @@ const DuplicatesPanel = ({onClose, canLink}) => {
                     value={modelId}
                     onChange={(e) => setModelId(e.target.value)}
                     placeholder="model_id драфта…"
-                    className="h-9 w-40 px-3 border border-gray-300 rounded-lg text-[12.5px] text-gray-900 outline-none focus:border-indigo-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200"
+                    className="h-9 w-40 px-3 border border-gray-200 rounded-lg text-[12.5px] text-gray-900 outline-none focus:border-indigo-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
                 />
                 <button
                     type="button"
@@ -84,7 +84,7 @@ const DuplicatesPanel = ({onClose, canLink}) => {
                 <div className="flex justify-center py-6"><Spinner className="h-7 w-7"/></div>
             )}
             {duplicatesSearch.isSuccess && candidates.length === 0 && (
-                <div className="px-5 py-4 text-[12.5px] text-gray-400">Ймовірних дублікатів не знайдено.</div>
+                <div className="px-5 py-4 text-[12.5px] text-gray-600">Ймовірних дублікатів не знайдено.</div>
             )}
 
             {candidates.map((candidate) => {
@@ -92,7 +92,7 @@ const DuplicatesPanel = ({onClose, canLink}) => {
                 const type = subjectType(profile?.subject_type_id);
                 const criteria = criteriaList(candidate.matched_criteria);
                 return (
-                    <div key={candidate.profile_id} className="flex items-center gap-3.5 px-5 py-3.5 border-b border-gray-100 dark:border-gray-800">
+                    <div key={candidate.profile_id} className="flex items-center gap-3.5 px-5 py-3.5 border-b border-gray-100 dark:border-neutral-700">
                         <div className={`flex-none w-10 h-10 rounded-full flex items-center justify-center text-[15px] ${type.avatarClasses}`}>
                             <i className={type.icon}></i>
                         </div>
@@ -114,7 +114,7 @@ const DuplicatesPanel = ({onClose, canLink}) => {
                             <div className={`text-base font-bold ${scoreColorClasses(candidate.score ?? 0)}`}>
                                 {(candidate.score ?? 0).toFixed(2)}
                             </div>
-                            <div className="text-[10px] text-gray-400">score</div>
+                            <div className="text-[10px] text-gray-600">score</div>
                         </div>
                         {canLink && (
                             <button
@@ -130,7 +130,7 @@ const DuplicatesPanel = ({onClose, canLink}) => {
                 );
             })}
 
-            <div className="px-5 py-[11px] text-[11px] text-slate-400 bg-slate-50 dark:bg-gray-800/60">
+            <div className="px-5 py-[11px] text-[11px] text-gray-600 bg-gray-50 dark:bg-neutral-700/60">
                 <i className="fa-solid fa-circle-info mr-1.5"></i>
                 «Прив'язати» → POST connection (origin=manual, confirmed_by=Auth::id()). Точний drs_id-збіг
                 score=1.00, решта — релевантність FULLTEXT.

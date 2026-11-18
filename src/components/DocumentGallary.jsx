@@ -1,7 +1,8 @@
 import {observer} from "mobx-react-lite";
 import {Gallery} from "react-photoswipe-gallery";
 import ImageUploading from "react-images-uploading";
-import {IconButton, Spinner, Typography} from "@material-tailwind/react";
+import { Spinner, Typography } from "@material-tailwind/react"
+import IconButton from "./Buttons/IconButton.jsx"
 import {useViewModel} from "../shared/mvvm/useViewModel.js";
 import {FileDownloadViewModel} from "../entities/file/FileDownloadViewModel.js";
 import LoadingButton from "./Buttons/LoadingButton.jsx";
@@ -45,7 +46,7 @@ const DocumentGallery = ({
                         <div key={attachment.id}
                              className="relative transition flex flex-col justify-center flex-wrap items-center gap-1 rounded-lg bg-gray-300 py-10 group">
                             {getIconByExtension(attachment?.fileUrl.split(".")[1])}
-                            <span className="text-xs text-slate-600">{attachment?.fileName}</span>
+                            <span className="text-xs text-gray-600">{attachment?.fileName}</span>
                             <div
                                 onClick={() => downloads.download(attachment)}
                                 title="Завантажити"
@@ -92,15 +93,15 @@ const DocumentGallery = ({
                                 <div>
                                     {
                                         isLoading ? <Spinner className="h-20 w-20"/> :
-                                            <i className="dark:text-slate-400 text-4xl fa-solid fa-file-import"></i>
+                                            <i className="dark:text-gray-400 text-4xl fa-solid fa-file-import"></i>
                                     }
                                 </div>
                                 {!data.length  &&
-                                    <Typography variant="h5" className="dark:text-slate-400">Додатки
+                                    <Typography variant="h5" className="dark:text-gray-400">Додатки
                                         відсутні</Typography>
                                 }
                                 <span
-                                    className={`${isLoading && 'opacity-0'} dark:text-slate-400`}>Натисніть, вставте або
+                                    className={`${isLoading && 'opacity-0'} dark:text-gray-400`}>Натисніть, вставте або
                                     перенесіть додаток сюди</span>
                             </div>
                         </div>

@@ -9,8 +9,8 @@ import DeveloperPostFormModal from "./view/DeveloperPostFormModal.jsx";
 
 const NoAccess = () => (
     <DeveloperLayout active="posts">
-        <div className="flex h-full items-center justify-center bg-gray-100 dark:bg-gray-900">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+        <div className="flex h-full items-center justify-center bg-gray-100 dark:bg-neutral-800">
+            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-400">
                 <i className="fa-solid fa-lock mb-2 text-xl"></i>
                 <p>Немає доступу до блогу розробників.</p>
             </div>
@@ -33,7 +33,7 @@ const DeveloperPostBoard = observer(({ vm }) => {
 
     return (
         <DeveloperLayout data-i-doc="page:developer-post" active="posts">
-            <div className="flex h-full overflow-hidden bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+            <div className="flex h-full overflow-hidden bg-gray-100 text-gray-900 dark:bg-neutral-800 dark:text-gray-100">
                 <DeveloperPostList vm={vm} onSelect={select}/>
                 <DeveloperPostDetailPane vm={vm} onDeleted={() => select(null)}/>
                 {vm.createOpen && <DeveloperPostFormModal onClose={vm.closeCreate} onCreated={select}/>}

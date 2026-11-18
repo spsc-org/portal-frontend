@@ -8,7 +8,7 @@ const ImageSkeleton = () => {
                     viewBox="0 0 24 24"
                     strokeWidth={2}
                     stroke="currentColor"
-                    className="h-12 w-12 text-gray-500"
+                    className="h-12 w-12 text-gray-600"
                 >
                     <path
                         strokeLinecap="round"

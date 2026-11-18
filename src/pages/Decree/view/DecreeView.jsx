@@ -1,14 +1,16 @@
 import { useMemo } from "react";
 import { observer } from "mobx-react-lite";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Button, Tooltip } from "@material-tailwind/react";
+import { Tooltip } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import { format } from "date-fns";
 import Page from "../../../components/Page.jsx";
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import SingleSelect from "../../../components/fields/SingleSelect.jsx";
 import DateRangePicker from "../../../components/fields/DateRangePicker.jsx";
 import CollapsibleSection from "../../../components/CollapsibleSection.jsx";
-import Table, { loadColumnSizes } from "../../../components/Table/Table.jsx";
+import Table from "../../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import { confirmToast } from "../../../components/confirmToast.jsx";
 import { BOOLEANS, convertDate, SANC_DECREE_TYPES } from "../../../lib/utils.js";
 import DecreeModal from "./DecreeModal.jsx";
@@ -106,7 +108,7 @@ const DecreeView = ({ vm }) => {
                 <CollapsibleSection
                     title="Фільтри"
                     showHiddenAppliedBadge
-                    className="mb-4 rounded-xl border border-gray-200 bg-gray-50/80 p-3 shadow-md dark:border-gray-700 dark:bg-gray-900/60 sm:p-4"
+                    className="mb-4 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800"
                 >
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
                         <div className="min-w-0" data-filter-active={filters?.typeId?.value !== undefined ? "true" : "false"}>
@@ -131,7 +133,7 @@ const DecreeView = ({ vm }) => {
                                           value={filters.isActive}
                                           onChange={vm.changeOption('isActive')}/>
                         </div>
-                        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-gray-200 pt-2 dark:border-gray-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
+                        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-gray-200 pt-2 dark:border-neutral-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
                             <Tooltip content="Скинути фільтри">
                                 <Button size="sm" className="h-9 px-3" onClick={vm.clearFilters}>
                                     <i className="fa-regular fa-filter-slash mr-1"></i>

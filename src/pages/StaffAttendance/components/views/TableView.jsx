@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { Card, Typography, Button } from "@material-tailwind/react";
+import { Card, Typography } from "@material-tailwind/react"
+import Button from "../../../../components/Buttons/Button.jsx"
 import { format, parseISO, differenceInDays } from 'date-fns';
 import { ABSENCE_STATUS_CONFIG } from '../../constants/attendanceConfig.js';
 
@@ -28,7 +29,7 @@ const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocument
         });
 
     const getStatusBadgeColor = (status) => {
-        return ABSENCE_STATUS_CONFIG[status]?.badge || 'bg-slate-100 text-slate-800';
+        return ABSENCE_STATUS_CONFIG[status]?.badge || 'bg-gray-100 text-gray-800';
     };
 
     const getStatusLabel = (status) => {
@@ -40,26 +41,26 @@ const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocument
     };
 
     return (
-        <Card data-i-doc="view:staff-attendance-table-view" className="overflow-hidden border border-slate-200 dark:border-slate-800 dark:bg-slate-950 shadow-none rounded-2xl mt-2">
+        <Card data-i-doc="view:staff-attendance-table-view" className="overflow-hidden border border-gray-200 dark:border-neutral-700 dark:bg-neutral-900 shadow-none rounded-2xl mt-2">
             <div className="overflow-x-auto">
                 <table className="w-full">
                     <thead>
-                        <tr className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800">
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-300">Співробітник</th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-300">Тип</th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-300">Початок</th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-300">Кінець</th>
-                            <th className="px-4 py-3 text-center text-sm font-semibold text-slate-700 dark:text-slate-300">Днів</th>
-                            <th className="px-4 py-3 text-center text-sm font-semibold text-slate-700 dark:text-slate-300">На дорогу</th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-300">Статус</th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700 dark:text-slate-300">Примітка</th>
-                            <th className="px-4 py-3 text-center text-sm font-semibold text-slate-700 dark:text-slate-300">Дії</th>
+                        <tr className="bg-gray-50/50 dark:bg-neutral-800/50 border-b border-gray-200 dark:border-neutral-700">
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Співробітник</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Тип</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Початок</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Кінець</th>
+                            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Днів</th>
+                            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">На дорогу</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Статус</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Примітка</th>
+                            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Дії</th>
                         </tr>
                     </thead>
                     <tbody>
                         {allAbsences.length === 0 ? (
                             <tr>
-                                <td colSpan={7} className="px-4 py-12 text-center text-slate-500">
+                                <td colSpan={7} className="px-4 py-12 text-center text-gray-600">
                                     Немає записів
                                 </td>
                             </tr>
@@ -70,31 +71,31 @@ const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocument
                                 const duration = differenceInDays(endDate, startDate) + 1;
 
                                 return (
-                                    <tr key={abs.id} className="border-b border-slate-200 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/25 transition-colors cursor-pointer" onDoubleClick={() => onEdit(abs)}>
-                                        <td className="px-4 py-3 text-sm text-slate-900 dark:text-slate-100">{abs.full_name}</td>
+                                    <tr key={abs.id} className="border-b border-gray-200 dark:border-neutral-700 hover:bg-blue-50 dark:hover:bg-blue-900/25 transition-colors cursor-pointer" onDoubleClick={() => onEdit(abs)}>
+                                        <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">{abs.full_name}</td>
                                         <td className="px-4 py-3 text-sm">
                                             <div className="flex items-center gap-2">
                                                 <span
                                                     className="w-3 h-3 rounded-sm"
                                                     style={{ backgroundColor: absenceTypes.find(t => t.value === abs.type_slug)?.color || '#ccc' }}
                                                 />
-                                                <span className="text-slate-900 dark:text-slate-100">{getTypeName(abs.type_slug)}</span>
+                                                <span className="text-gray-900 dark:text-gray-100">{getTypeName(abs.type_slug)}</span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-400">
+                                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                                             {format(startDate, 'dd.MM.yyyy')}
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-400">
+                                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                                             {abs.end_date ? format(endDate, 'dd.MM.yyyy') : <span className="italic">без дати</span>}
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-center text-slate-900 dark:text-slate-100 font-medium">
+                                        <td className="px-4 py-3 text-sm text-center text-gray-900 dark:text-gray-100 font-medium">
                                             {duration}
                                         </td>
                                         <td className="px-4 py-3 text-sm text-center">
                                             {abs.travel_days > 0 ? (
-                                                <span className="text-slate-900 dark:text-slate-100 font-medium">+{abs.travel_days}</span>
+                                                <span className="text-gray-900 dark:text-gray-100 font-medium">+{abs.travel_days}</span>
                                             ) : (
-                                                <span className="text-slate-400">—</span>
+                                                <span className="text-gray-600">—</span>
                                             )}
                                         </td>
                                         <td className="px-4 py-3 text-sm">
@@ -102,7 +103,7 @@ const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocument
                                                 {getStatusLabel(abs.status_slug)}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-400 max-w-xs truncate">
+                                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 max-w-xs truncate">
                                             {abs.reason || '—'}
                                         </td>
                                         <td className="px-4 py-3 text-sm">
@@ -113,8 +114,7 @@ const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocument
                                                     size="sm"
                                                     className="px-2"
                                                     onClick={() => onEdit(abs)}
-                                                    title="Редагувати"
-                                                >
+                                                    title="Редагувати">
                                                     <i className="fa-solid fa-pen text-xs"></i>
                                                 </Button>
                                                 <Button
@@ -123,8 +123,7 @@ const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocument
                                                     size="sm"
                                                     className="px-2"
                                                     onClick={() => onManageDocuments(abs)}
-                                                    title="Документи"
-                                                >
+                                                    title="Документи">
                                                     <i className="fa-solid fa-paperclip text-xs"></i>
                                                 </Button>
                                                 <Button
@@ -133,8 +132,7 @@ const TableView = ({ calendarData, isLoading, onEdit, onDelete, onManageDocument
                                                     size="sm"
                                                     className="px-2"
                                                     onClick={() => onDelete(abs)}
-                                                    title="Видалити"
-                                                >
+                                                    title="Видалити">
                                                     <i className="fa-solid fa-trash text-xs"></i>
                                                 </Button>
                                             </div>

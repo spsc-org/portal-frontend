@@ -25,11 +25,11 @@ export const getImportTypeIcon = (type) => {
         xls:  { icon: 'fa-file-excel', color: 'text-green-500' },
         xlsx: { icon: 'fa-file-excel', color: 'text-green-500' },
         csv:  { icon: 'fa-file-csv',   color: 'text-blue-500' },
-        raw:  { icon: 'fa-file-lines', color: 'text-gray-500 dark:text-gray-400' },
+        raw:  { icon: 'fa-file-lines', color: 'text-gray-600 dark:text-gray-400' },
         xml:  { icon: 'fa-file-code',  color: 'text-purple-500' },
         json: { icon: 'fa-file-code',  color: 'text-orange-500' },
     };
-    const { icon, color } = iconMap[type?.toLowerCase()] ?? { icon: 'fa-file', color: 'text-blue-gray-500 dark:text-slate-400' };
+    const { icon, color } = iconMap[type?.toLowerCase()] ?? { icon: 'fa-file', color: 'text-blue-gray-500 dark:text-gray-400' };
     return <i className={`fa-solid ${icon} text-lg ${color} w-5 text-center`} />;
 };
 
@@ -48,7 +48,7 @@ export const StatusChip = ({ status, status_label, has_warnings, warnings_count,
                 variant="ghost"
                 value={status_label || status}
                 color={colorMap[status] ?? 'gray'}
-                className="cursor-pointer hover:bg-opacity-20 transition-colors dark:text-slate-200"
+                className="cursor-pointer hover:bg-opacity-20 transition-colors dark:text-gray-200"
             />
             {has_warnings && (
                 <Tooltip content={`Кількість попереджень: ${warnings_count}`}>
@@ -68,20 +68,20 @@ export const PaginationFooter = ({ pagination, page, onPageChange }) => {
     if (!pagination || pagination.total === 0) return null;
 
     return (
-        <div className="flex items-center justify-between border-t border-blue-gray-50 dark:border-slate-700 pt-4 mt-4">
-            <span className="text-sm text-blue-gray-600 dark:text-slate-400">
+        <div className="flex items-center justify-between border-t border-blue-gray-50 dark:border-neutral-700 pt-4 mt-4">
+            <span className="text-sm text-blue-gray-600 dark:text-gray-400">
                 Сторінка {pagination.current_page} з {pagination.last_page} (Всього: {pagination.total})
             </span>
             <div className="flex gap-2">
                 <button
-                    className="text-sm px-3 py-1 border border-blue-gray-300 dark:border-slate-600 rounded disabled:opacity-40 dark:text-slate-300 dark:hover:bg-slate-700"
+                    className="text-sm px-3 py-1 border border-blue-gray-300 dark:border-gray-600 rounded disabled:opacity-40 dark:text-gray-300 dark:hover:bg-neutral-600"
                     onClick={() => onPageChange(page - 1)}
                     disabled={page === 1}
                 >
                     Попередня
                 </button>
                 <button
-                    className="text-sm px-3 py-1 border border-blue-gray-300 dark:border-slate-600 rounded disabled:opacity-40 dark:text-slate-300 dark:hover:bg-slate-700"
+                    className="text-sm px-3 py-1 border border-blue-gray-300 dark:border-gray-600 rounded disabled:opacity-40 dark:text-gray-300 dark:hover:bg-neutral-600"
                     onClick={() => onPageChange(page + 1)}
                     disabled={page === pagination.last_page}
                 >

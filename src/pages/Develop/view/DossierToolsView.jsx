@@ -4,7 +4,7 @@ const LOG_COLORS = {
     error: "text-red-400",
     success: "text-green-400",
     warning: "text-yellow-400",
-    info: "text-gray-400",
+    info: "text-gray-600",
 };
 // Чистий React-порт розробницької сторінки /develop/dossier (раніше resources/views/develop/dossier.blade.php,
 // плейн Blade + vanilla JS) — 2026-08-05, за проханням користувача, з посиланням із /developer-debug.
@@ -16,14 +16,14 @@ const cardButtonClasses = (color) =>
     `cmd-btn ${color} text-white font-bold py-2 px-4 rounded inline-flex items-center shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed`;
 
 const ToolCard = ({step, color, icon, title, description, children, onRun, isRunning, disabled}) => (
-    <div data-i-doc="page:develop-dossier" className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
+    <div data-i-doc="page:develop-dossier" className="bg-white dark:bg-neutral-700 shadow-md rounded-lg p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2">
             <span className={`flex-none min-w-[1.5rem] h-6 px-1 rounded-full ${color} text-white text-xs font-bold flex items-center justify-center`}>
                 {step}
             </span>
             <i className={`fas ${icon}`}></i> {title}
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4" dangerouslySetInnerHTML={{__html: description}}/>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4" dangerouslySetInnerHTML={{__html: description}}/>
 
         {children}
 
@@ -39,8 +39,8 @@ const NumberField = ({id, label, value, onChange, min, hint}) => (
         <label htmlFor={id} className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">{label}</label>
         <input type="number" id={id} value={value} min={min}
                onChange={(e) => onChange(e.target.value)}
-               className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded px-3 py-2 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-blue-400"/>
-        {hint && <span className="block text-[11px] text-gray-400 mt-1">{hint}</span>}
+               className="border border-gray-200 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100 rounded px-3 py-2 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-blue-400"/>
+        {hint && <span className="block text-[11px] text-gray-600 mt-1">{hint}</span>}
     </div>
 );
 
@@ -50,7 +50,7 @@ const DossierToolsView = ({ vm }) => {
     return (
         <div className="p-6 max-w-5xl mx-auto">
 
-            <h2 className="text-sm font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-3">Поточні інструменти</h2>
+            <h2 className="text-sm font-bold uppercase tracking-wide text-gray-600 dark:text-gray-500 mb-3">Поточні інструменти</h2>
 
             {/* Крок 1: Import Truth Source */}
             <ToolCard step="1" color="bg-blue-600" icon="fa-database text-blue-500"
@@ -65,7 +65,7 @@ const DossierToolsView = ({ vm }) => {
                     <div>
                         <label htmlFor="importType" className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Тип</label>
                         <select id="importType" value={form.importType} onChange={(e) => vm.setField("importType", e.target.value)}
-                                className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                className="border border-gray-200 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100 rounded px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-blue-400">
                             <option value="">Усі (p, l, vessel)</option>
                             <option value="p">Фізособи (p)</option>
                             <option value="l">Юрособи (l)</option>
@@ -133,7 +133,7 @@ const DossierToolsView = ({ vm }) => {
                             <span>2. Через легасі project.subjectId</span>
                         </label>
                     </div>
-                    <p className="text-xs text-gray-400 mt-2">
+                    <p className="text-xs text-gray-600 mt-2">
                         Позначення "застарілих" звʼязків (reconcileStale) виконується лише коли проходи 1 і 2 обидва увімкнені.
                     </p>
                 </div>
@@ -184,7 +184,7 @@ const DossierToolsView = ({ vm }) => {
                     <div>
                         <label htmlFor="updateType" className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Тип</label>
                         <select id="updateType" value={form.updateType} onChange={(e) => vm.setField("updateType", e.target.value)}
-                                className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-green-400">
+                                className="border border-gray-200 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100 rounded px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-green-400">
                             <option value="">Усі (p, l, vessel)</option>
                             <option value="p">Фізособи (p)</option>
                             <option value="l">Юрособи (l)</option>
@@ -199,14 +199,14 @@ const DossierToolsView = ({ vm }) => {
             {/* Легасі */}
             <div className="mt-10 mb-6">
                 <button type="button" onClick={vm.toggleLegacy}
-                        className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                        className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-gray-600 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
                     <i className={`fas fa-chevron-right text-xs transition-transform ${vm.showLegacy ? "rotate-90" : ""}`}></i>
                     Легасі (застаріле, не для звичайного використання)
                 </button>
             </div>
 
             {vm.showLegacy &&
-                <div className="bg-gray-50 dark:bg-gray-900/50 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 mb-6">
+                <div className="bg-gray-50 dark:bg-neutral-800/50 border border-dashed border-gray-300 dark:border-neutral-700 rounded-lg p-6 mb-6">
                     <div className="flex items-start gap-3 mb-4 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded p-3">
                         <i className="fas fa-triangle-exclamation mt-0.5"></i>
                         <p className="text-sm">
@@ -219,9 +219,9 @@ const DossierToolsView = ({ vm }) => {
                     </div>
 
                     <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2">
-                        <i className="fas fa-link text-gray-400"></i> Обробка драфт-проєктів (застаріле)
+                        <i className="fas fa-link text-gray-500"></i> Обробка драфт-проєктів (застаріле)
                     </h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                         Обробка драфт-проєктів через AutoLinker — привʼязка до існуючих профілів АБО створення нових.
                     </p>
 
@@ -251,7 +251,7 @@ const DossierToolsView = ({ vm }) => {
                     <div className="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-sm overflow-x-auto whitespace-pre-wrap max-h-[600px] overflow-y-auto">
                         {vm.log.map((entry) => (
                             <div key={entry.id} className="mb-4 border-b border-gray-700 pb-2 last:border-0 last:pb-0 last:mb-0">
-                                <div className={`text-xs ${LOG_COLORS[entry.type] ?? "text-gray-400"} mb-1`}>[{entry.time}]</div>
+                                <div className={`text-xs ${LOG_COLORS[entry.type] ?? "text-gray-600"} mb-1`}>[{entry.time}]</div>
                                 <div dangerouslySetInnerHTML={{__html: entry.html}}/>
                             </div>
                         ))}

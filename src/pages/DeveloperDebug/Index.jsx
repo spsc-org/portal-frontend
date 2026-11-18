@@ -53,17 +53,17 @@ class DeveloperDebugViewModel {
 const LINK_CLASS = "inline-flex items-center rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600 transition hover:bg-blue-100 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30";
 
 const ToolCard = ({ title, description, children, last = false }) => (
-    <div className={`${last ? "" : "mb-4 "}rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900`}>
-        <h2 className="mb-1 text-sm font-semibold text-slate-700 dark:text-slate-200">{title}</h2>
-        <p className="mb-3 text-xs text-slate-400 dark:text-slate-500">{description}</p>
+    <div className={`${last ? "" : "mb-4 "}rounded-lg border border-gray-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800`}>
+        <h2 className="mb-1 text-sm font-semibold text-gray-700 dark:text-gray-200">{title}</h2>
+        <p className="mb-3 text-xs text-gray-600 dark:text-gray-500">{description}</p>
         {children}
     </div>
 );
 
 const NoAccess = () => (
     <DeveloperLayout active="debug">
-        <div className="flex h-full items-center justify-center bg-gray-100 dark:bg-gray-900">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+        <div className="flex h-full items-center justify-center bg-gray-100 dark:bg-neutral-800">
+            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-400">
                 <i className="fa-solid fa-lock mb-2 text-xl"></i>
                 <p>Немає доступу до інструментів розробника.</p>
             </div>

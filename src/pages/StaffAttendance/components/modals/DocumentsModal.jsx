@@ -1,22 +1,21 @@
 import PropTypes from 'prop-types';
-import { Dialog, DialogHeader } from "@material-tailwind/react";
+import { Modal, ModalHeader } from "../../../../components/Modal/Modal.jsx"
+import CloseButton from "../../../../components/Buttons/CloseButton.jsx"
 import DocumentManager from '../DocumentManager.jsx';
 
 const DocumentsModal = ({ isOpen, onClose, absence }) => {
     return (
-        <Dialog data-i-doc="modal:staff-attendance-documents" open={isOpen} handler={onClose} size="md">
-            <DialogHeader className="flex justify-between items-center">
+        <Modal data-i-doc="modal:staff-attendance-documents" open={isOpen} handler={onClose} size="md">
+            <ModalHeader hideClose className="flex justify-between items-center">
                 Документи — {absence?.user}
-                <button onClick={onClose} className="text-slate-500 hover:text-slate-700">
-                    <i className="fa-solid fa-times"></i>
-                </button>
-            </DialogHeader>
+                <CloseButton onClick={onClose} />
+            </ModalHeader>
             {absence && (
                 <div className="p-4">
                     <DocumentManager key={absence.id} absenceId={absence.id} documents={absence.documents || []} />
                 </div>
             )}
-        </Dialog>
+        </Modal>
     );
 };
 

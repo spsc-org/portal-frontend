@@ -1,7 +1,9 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { AssignmentFormViewModel } from "../viewmodel/ResponsibleViewModels.js";
-import {Dialog, DialogBody, DialogFooter, DialogHeader, IconButton, Spinner, Tooltip} from "@material-tailwind/react";
+import { Spinner, Tooltip } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import {format} from "date-fns";
 import {uk} from "date-fns/locale";
 import UserAvatars from "../../../components/UserAvatars.jsx";
@@ -28,9 +30,9 @@ const AssignmentModalInner = observer(({open, onClose, assignment = null, functi
     const handleSave = () => vm.save(onClose);
 
     return (
-        <Dialog data-i-doc="modal:staff-responsible-assignment" open={open} handler={onClose} size="sm">
-            <DialogHeader>{isEditing ? "Редагувати призначення" : "Нове призначення"}</DialogHeader>
-            <DialogBody className="flex flex-col gap-3">
+        <Modal data-i-doc="modal:staff-responsible-assignment" open={open} handler={onClose} size="sm">
+            <ModalHeader>{isEditing ? "Редагувати призначення" : "Нове призначення"}</ModalHeader>
+            <ModalBody className="flex flex-col gap-3">
                 <SingleSelect id="assignment-function" label="Функція" options={functionOptions} value={func} onChange={setFunc}/>
                 <MultiSelect id="assignment-users" label="Користувачі" options={userOptions} value={selectedUsers} onChange={setSelectedUsers}/>
                 <LabeledInput label="Підстава (необов'язково)" value={reason} onChange={(e) => setReason(e.target.value)}
@@ -39,8 +41,8 @@ const AssignmentModalInner = observer(({open, onClose, assignment = null, functi
                 {isEditing &&
                     <DatePicker label="Дата закінчення (необов'язково)" value={endedAt} onChange={setEndedAt}/>
                 }
-            </DialogBody>
-            <DialogFooter className="gap-2">
+            </ModalBody>
+            <ModalFooter className="gap-2">
                 <LoadingButton variant="outlined" color="blue-gray" onClick={onClose} disabled={isPending}>
                     Скасувати
                 </LoadingButton>
@@ -48,8 +50,8 @@ const AssignmentModalInner = observer(({open, onClose, assignment = null, functi
                                 disabled={!func || selectedUsers.length === 0 || !startedAt}>
                     Зберегти
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 });
 
@@ -71,7 +73,7 @@ const ResponsibleAssignmentsTable = ({vm, auth}) => {
 
     return (
         <div data-i-doc="widget:staff-responsible-assignments">
-            <div className="mb-3 flex flex-wrap items-center gap-1.5 border-b border-slate-200 bg-white px-1 py-2 dark:border-slate-700 dark:bg-neutral-900">
+            <div className="mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800">
                 <ChipToggle active={onlyActive} onClick={() => setOnlyActive((prev) => !prev)}
                             icon="fa-regular fa-circle-check" label="Лише діючі"/>
                 <ChipResetButton onClick={() => setOnlyActive(false)} hasActive={hasActive} label="Скинути"/>
@@ -85,10 +87,10 @@ const ResponsibleAssignmentsTable = ({vm, auth}) => {
                 }
             </div>
 
-            <div className="max-w-full overflow-x-auto rounded-lg bg-white shadow-md dark:bg-gray-800">
-                <table className="w-full table-auto text-left text-sm text-gray-500 dark:text-gray-400">
+            <div className="max-w-full overflow-x-auto rounded-lg bg-white shadow-md dark:bg-neutral-700">
+                <table className="w-full table-auto text-left text-sm text-gray-600 dark:text-gray-400">
                     <thead>
-                        <tr className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-400">
+                        <tr className="bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-gray-400">
                             <th className="px-3 py-2 font-normal">Функція</th>
                             <th className="px-3 py-2 font-normal">Користувачі</th>
                             <th className="px-3 py-2 font-normal">Підстава</th>
@@ -101,7 +103,7 @@ const ResponsibleAssignmentsTable = ({vm, auth}) => {
                     <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
                         {!isLoading && filtered.length === 0 &&
                             <tr>
-                                <td colSpan={7} className="px-3 py-6 text-center text-gray-400 dark:text-slate-500">
+                                <td colSpan={7} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">
                                     {selectedFunctionId != null ? "У цієї функції ще немає призначень" : "Нічого не знайдено"}
                                 </td>
                             </tr>
@@ -111,8 +113,8 @@ const ResponsibleAssignmentsTable = ({vm, auth}) => {
                             const isEnded = Boolean(row.ended_at);
                             return (
                                 <tr key={row.id}
-                                    className={`${isEnded ? "opacity-60" : ""} bg-neutral-100 hover:bg-neutral-200 dark:bg-gray-900 dark:hover:bg-neutral-700`}>
-                                    <td className="px-3 py-2 font-semibold text-gray-800 dark:text-slate-200">{row.function?.name || "—"}</td>
+                                    className={`${isEnded ? "opacity-60" : ""} bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700`}>
+                                    <td className="px-3 py-2 font-semibold text-gray-800 dark:text-gray-200">{row.function?.name || "—"}</td>
                                     <td className="px-3 py-2">
                                         <UserAvatars users={row.users || []}/>
                                     </td>
@@ -125,7 +127,7 @@ const ResponsibleAssignmentsTable = ({vm, auth}) => {
                                     </td>
                                     <td className="px-3 py-2 whitespace-nowrap">
                                         {isEnded
-                                            ? <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                                            ? <span className="rounded-full bg-gray-200 px-2 py-0.5 text-[10px] font-bold text-gray-600 dark:bg-neutral-600 dark:text-gray-300">
                                                 Скасовано
                                             </span>
                                             : <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900/40 dark:text-green-300">
@@ -138,7 +140,7 @@ const ResponsibleAssignmentsTable = ({vm, auth}) => {
                                             <div className="flex items-center gap-1">
                                                 <Tooltip content="Редагувати">
                                                     <IconButton size="sm" variant="text" onClick={() => setEditingAssignment(row)}>
-                                                        <i className="fa-regular fa-pen text-slate-500"></i>
+                                                        <i className="fa-regular fa-pen text-gray-600"></i>
                                                     </IconButton>
                                                 </Tooltip>
                                                 {!isEnded &&

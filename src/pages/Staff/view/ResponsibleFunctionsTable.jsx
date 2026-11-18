@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
-import {Chip, IconButton, Tooltip} from "@material-tailwind/react";
+import { Chip, Tooltip } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import MultiSelectChip from "../../../components/fields/MultiSelectChip.jsx";
 import ChipToggle from "../../../components/fields/ChipToggle.jsx";
@@ -21,7 +22,7 @@ const ResponsibleFunctionsTable = ({vm, isLoading}) => {
 
     return (
         <div data-i-doc="widget:staff-responsible-functions">
-            <div className="mb-3 flex flex-wrap items-center gap-1.5 border-b border-slate-200 bg-white px-1 py-2 dark:border-slate-700 dark:bg-neutral-900">
+            <div className="mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800">
                 <div className="w-56">
                     <SearchInput size="xs" name="q" value={q} onChange={(e) => setQ(e.target.value || "")}
                                  placeholder="Пошук функцій…" icon="fa-regular fa-magnifying-glass"/>
@@ -45,10 +46,10 @@ const ResponsibleFunctionsTable = ({vm, isLoading}) => {
                 }
             </div>
 
-            <div className="max-w-full overflow-x-auto rounded-lg bg-white shadow-md dark:bg-gray-800">
-                <table className="w-full table-auto text-left text-sm text-gray-500 dark:text-gray-400">
+            <div className="max-w-full overflow-x-auto rounded-lg bg-white shadow-md dark:bg-neutral-700">
+                <table className="w-full table-auto text-left text-sm text-gray-600 dark:text-gray-400">
                     <thead>
-                        <tr className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-400">
+                        <tr className="bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-gray-400">
                             <th className="px-3 py-2 font-normal">Назва</th>
                             <th className="px-3 py-2 font-normal">Опис</th>
                             <th className="px-3 py-2 font-normal">Відповідальні</th>
@@ -58,7 +59,7 @@ const ResponsibleFunctionsTable = ({vm, isLoading}) => {
                     <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
                         {!isLoading && filtered.length === 0 &&
                             <tr>
-                                <td colSpan={canManage ? 4 : 3} className="px-3 py-6 text-center text-gray-400 dark:text-slate-500">
+                                <td colSpan={canManage ? 4 : 3} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">
                                     Нічого не знайдено
                                 </td>
                             </tr>
@@ -68,8 +69,8 @@ const ResponsibleFunctionsTable = ({vm, isLoading}) => {
                             return (
                                 <tr key={func.id}
                                     onClick={onSelectFunction ? () => onSelectFunction(isSelected ? null : func.id) : undefined}
-                                    className={`${isSelected ? "bg-blue-100/80 dark:bg-blue-900/40" : "bg-neutral-100 dark:bg-gray-900"} ${onSelectFunction ? "cursor-pointer" : ""} hover:bg-neutral-200 dark:hover:bg-neutral-700`}>
-                                    <td className="px-3 py-2 font-semibold text-gray-800 dark:text-slate-200">{func.name}</td>
+                                    className={`${isSelected ? "bg-blue-100/80 dark:bg-blue-900/40" : "bg-neutral-100 dark:bg-neutral-800"} ${onSelectFunction ? "cursor-pointer" : ""} hover:bg-neutral-200 dark:hover:bg-neutral-700`}>
+                                    <td className="px-3 py-2 font-semibold text-gray-800 dark:text-gray-200">{func.name}</td>
                                     <td className="px-3 py-2">{func.description || "—"}</td>
                                     <td className="px-3 py-2">
                                         <div className="flex flex-wrap gap-1">
@@ -78,7 +79,7 @@ const ResponsibleFunctionsTable = ({vm, isLoading}) => {
                                                       className="rounded-full text-[10px] py-0.5 px-2"/>
                                             )))}
                                             {(func.active_assignments || []).every((a) => (a.users || []).length === 0) &&
-                                                <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                                                <span className="text-xs text-gray-600 dark:text-gray-500">—</span>
                                             }
                                         </div>
                                     </td>
@@ -91,7 +92,7 @@ const ResponsibleFunctionsTable = ({vm, isLoading}) => {
                                                                     e.stopPropagation();
                                                                     setEditingFunction(func);
                                                                 }}>
-                                                        <i className="fa-regular fa-pen text-slate-500"></i>
+                                                        <i className="fa-regular fa-pen text-gray-600"></i>
                                                     </IconButton>
                                                 </Tooltip>
                                                 <Tooltip content="Видалити функцію">

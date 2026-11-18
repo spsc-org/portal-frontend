@@ -20,7 +20,7 @@ const SharePicker = ({ value = [], onChange, disabled = false }) => {
 
     return (
         <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
                 Розшарити з групами
             </label>
             <MultiSelect
@@ -35,14 +35,14 @@ const SharePicker = ({ value = [], onChange, disabled = false }) => {
 
             {!disabled && vm.canManageGroups &&
                 (vm.showCreate ? (
-                    <div className="mt-2 flex flex-col gap-2 rounded-md border border-slate-200 p-2 dark:border-slate-700">
+                    <div className="mt-2 flex flex-col gap-2 rounded-md border border-gray-200 p-2 dark:border-neutral-700">
                         <input
                             autoFocus
                             type="text"
                             value={vm.newGroupName}
                             onChange={(e) => vm.setNewGroupName(e.target.value)}
                             placeholder="Назва групи…"
-                            className="w-full rounded-md border border-slate-200 bg-white p-1.5 text-xs text-slate-900 focus:border-blue-300 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                            className="w-full rounded-md border border-gray-200 bg-white p-1.5 text-xs text-gray-900 focus:border-blue-300 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100"
                         />
                         <MultiSelect
                             size="xs"
@@ -53,7 +53,7 @@ const SharePicker = ({ value = [], onChange, disabled = false }) => {
                         />
                         <div className="flex justify-end gap-1.5">
                             <button type="button" onClick={() => vm.setShowCreate(false)}
-                                    className="rounded px-2 py-1 text-[11px] font-medium text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800">
+                                    className="rounded px-2 py-1 text-[11px] font-medium text-gray-600 transition hover:bg-gray-100 dark:hover:bg-neutral-700">
                                 Скасувати
                             </button>
                             <LoadingButton size="sm" color="green" isLoading={vm.cmd.createGroup.isPending}

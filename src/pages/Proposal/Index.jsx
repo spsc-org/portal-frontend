@@ -6,9 +6,11 @@ import { ProposalListViewModel } from "./viewmodel/ProposalViewModels.js";
 import {createColumnHelper} from "@tanstack/react-table";
 import {Link} from "react-router";
 import {useMemo} from "react";
-import {Button, Popover, PopoverContent, PopoverHandler, Switch, Tooltip} from "@material-tailwind/react";
+import { Popover, PopoverContent, PopoverHandler, Switch, Tooltip } from "@material-tailwind/react"
+import Button from "../../components/Buttons/Button.jsx"
 import {format} from "date-fns";
-import Table, {loadColumnSizes} from "../../components/Table/Table.jsx";
+import Table from "../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../components/Table/columnSizes.js";
 import Page from "../../components/Page.jsx";
 import SearchInput from "../../components/fields/SearchInput.jsx";
 import CreateProposalModal from "./CreateProposalModal.jsx";
@@ -130,7 +132,7 @@ const IndexContent = observer(({ vm }) => {
                                 className="inline-flex w-full cursor-pointer max-w-[150px] hover:underline">{displayText}</span>
                         </PopoverHandler>
                         <PopoverContent
-                            className="bg-white dark:bg-gray-800 shadow-md max-w-lg max-h-80 overflow-auto font-normal text-xs text-slate-600 dark:text-slate-200">
+                            className="bg-white dark:bg-neutral-700 shadow-md max-w-lg max-h-80 overflow-auto font-normal text-xs text-gray-600 dark:text-gray-200">
                             {rawValue}
                         </PopoverContent>
                     </Popover> : <span>{info.getValue()}</span>
@@ -199,7 +201,7 @@ const IndexContent = observer(({ vm }) => {
                                 className="inline-flex w-full cursor-pointer max-w-[150px] hover:underline">{displayText}</span>
                         </PopoverHandler>
                         <PopoverContent
-                            className="bg-white dark:bg-gray-800 shadow-md max-w-lg max-h-80 overflow-auto font-normal text-xs text-slate-600 dark:text-slate-200">
+                            className="bg-white dark:bg-neutral-700 shadow-md max-w-lg max-h-80 overflow-auto font-normal text-xs text-gray-600 dark:text-gray-200">
                             {rawValue}
                         </PopoverContent>
                     </Popover> : <span>{info.getValue()}</span>
@@ -293,7 +295,7 @@ const IndexContent = observer(({ vm }) => {
                 <CollapsibleSection
                     title="Фільтри"
                     showHiddenAppliedBadge
-                    className="mt-2 mb-4 rounded-xl border border-gray-200 bg-gray-50/80 p-3 shadow-md dark:border-gray-700 dark:bg-gray-900/60 sm:p-4"
+                    className="mt-2 mb-4 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800"
                 >
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
                         <div className="min-w-0" data-filter-active={filters?.text?.trim() ? "true" : "false"}>
@@ -341,12 +343,12 @@ const IndexContent = observer(({ vm }) => {
                         </div>
 
                         <div
-                            className="flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 pt-2 dark:border-gray-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
+                            className="flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 pt-2 dark:border-neutral-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
                             <Tooltip content="Приховати видалені">
                                 <label
                                     htmlFor="hideDeleted"
                                     data-filter-active={filters.hideDeleted ? "true" : "false"}
-                                    className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:border-blue-300 dark:border-gray-600 dark:bg-gray-800 dark:text-slate-200"
+                                    className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:border-blue-300 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200"
                                 >
                                     <Switch
                                         id="hideDeleted"
@@ -364,8 +366,7 @@ const IndexContent = observer(({ vm }) => {
                                 <Button
                                     size="sm"
                                     className="h-9 px-3"
-                                    onClick={handleClearFilters}
-                                >
+                                    onClick={handleClearFilters}>
                                     <i className="fa-regular fa-filter-slash mr-1"></i>
                                     Скинути
                                 </Button>

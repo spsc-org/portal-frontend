@@ -19,7 +19,7 @@ const SubjectTable = ({columns = [], data = []}) => {
                             <Typography
                                 variant="small"
                                 color="blue-gray"
-                                className="font-medium leading-none dark:text-slate-100"
+                                className="font-medium leading-none dark:text-gray-100"
                             >
                                 {header.isPlaceholder
                                     ? null
@@ -44,7 +44,7 @@ const SubjectTable = ({columns = [], data = []}) => {
                     : table.getRowModel().rows.map(row => (
                         <tr key={row.id}>
                             {row.getVisibleCells().map(cell => (
-                                <td key={cell.id} className="font-light text-xs dark:text-slate-300 p-2 ">
+                                <td key={cell.id} className="font-light text-xs dark:text-gray-300 p-2 ">
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </td>
                             ))}

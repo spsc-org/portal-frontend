@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
-import { Checkbox, Dialog, DialogBody, DialogFooter, DialogHeader, Typography } from "@material-tailwind/react";
+import { Checkbox, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import { LabeledInput, LabeledTextarea } from "../../../components/fields/LabeledField.jsx";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
@@ -10,11 +11,11 @@ const BirthdayFormModal = ({ onClose, onCreated }) => {
     const vm = useViewModel((deps) => new BirthdayFormViewModel({ ...deps, onDone: onClose, onCreated }));
 
     return (
-        <Dialog data-i-doc="modal:handbook-birthday-create" open handler={onClose} size="sm">
-            <DialogHeader>
-                <Typography variant="h5" className="dark:text-slate-200">Новий запис</Typography>
-            </DialogHeader>
-            <DialogBody className="flex flex-col gap-4">
+        <Modal data-i-doc="modal:handbook-birthday-create" open handler={onClose} size="sm">
+            <ModalHeader>
+                <Typography variant="h5" className="dark:text-gray-200">Новий запис</Typography>
+            </ModalHeader>
+            <ModalBody className="flex flex-col gap-4">
                 <LabeledInput
                     autoFocus
                     label="Ім'я"
@@ -37,12 +38,12 @@ const BirthdayFormModal = ({ onClose, onCreated }) => {
                 />
                 {vm.canDefault &&
                     <label className="flex w-fit cursor-pointer items-center gap-2">
-                        <Checkbox checked={vm.isDefault} onChange={(e) => vm.setIsDefault(e.target.checked)} className="dark:border-slate-600"/>
-                        <span className="text-sm text-slate-700 dark:text-slate-300">Додати у спільний список (видно всім)</span>
+                        <Checkbox checked={vm.isDefault} onChange={(e) => vm.setIsDefault(e.target.checked)} className="dark:border-gray-600"/>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Додати у спільний список (видно всім)</span>
                     </label>
                 }
-            </DialogBody>
-            <DialogFooter className="gap-x-2">
+            </ModalBody>
+            <ModalFooter className="gap-x-2">
                 <button type="button" onClick={onClose}
                         className="rounded px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-900/20">
                     Скасувати
@@ -51,8 +52,8 @@ const BirthdayFormModal = ({ onClose, onCreated }) => {
                                color="green" onClick={vm.submit}>
                     Додати
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

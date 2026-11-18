@@ -1,17 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import {
-    Button,
-    Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
-    Typography,
-} from "@material-tailwind/react";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "./Modal.jsx"
+import Button from "../Buttons/Button.jsx"
 
 const ConfirmModal = ({ open, onClose, onConfirm, title, message, isLoading = false }) => {
     const confirmBtnRef = useRef(null);
+    // Актуальний onConfirm для обробника клавіатури (оновлюється після рендеру, не під час нього)
     const confirmRef = useRef(onConfirm);
-    confirmRef.current = onConfirm;
+    useEffect(() => {
+        confirmRef.current = onConfirm;
+    });
 
     useEffect(() => {
         if (!open) return;
@@ -39,35 +36,27 @@ const ConfirmModal = ({ open, onClose, onConfirm, title, message, isLoading = fa
     }, [open, onClose]);
 
     return (
-        <Dialog
+        <Modal
             open={open}
             handler={onClose}
             size="xs"
-            className="dark:bg-slate-900 border dark:border-slate-800"
-            overlayProps={{ className: "bg-black/20 backdrop-blur-none" }}
-        >
-            <DialogHeader className="dark:text-white">
-                <Typography variant="h5">{title || "Підтвердження"}</Typography>
-            </DialogHeader>
-            <DialogBody className="dark:text-gray-400 font-medium">
+            overlayProps={{ className: "bg-black/20 backdrop-blur-none" }}>
+            <ModalHeader title={title || "Підтвердження"} />
+            <ModalBody>
                 {message || "Ви впевнені, що хочете виконати цю дію?"}
-            </DialogBody>
-            <DialogFooter className="gap-2">
-                <Button variant="text" color="red" onClick={onClose} disabled={isLoading}>
+            </ModalBody>
+            <ModalFooter>
+                <Button color="secondary" onClick={onClose} disabled={isLoading}>
                     Скасувати
                 </Button>
                 <Button
                     ref={confirmBtnRef}
-                    variant="gradient"
-                    color="green"
                     onClick={onConfirm}
-                    className="outline-none focus:ring-2 focus:ring-green-500"
-                    disabled={isLoading}
-                >
+                    disabled={isLoading}>
                     {isLoading ? 'Видаляю...' : 'Підтвердити'}
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

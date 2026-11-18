@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import { observer } from "mobx-react-lite";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Tooltip } from "@material-tailwind/react";
-import Table, { loadColumnSizes } from "../../../components/Table/Table.jsx";
+import Table from "../../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
 import DateRangePicker from "../../../components/fields/DateRangePicker.jsx";
@@ -43,7 +44,7 @@ const AuditTable = ({ vm }) => {
 
     return (
         <>
-            <CollapsibleSection title="Фільтри" className="mb-4" headerClassName="mb-2" bodyClassName="pt-1">
+            <CollapsibleSection title="Фільтри" className="mb-4 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800" headerClassName="mb-2" bodyClassName="pt-1">
                 <div className="inline-flex flex-wrap gap-x-2 gap-y-2 items-end">
                     <div className="w-[120px]">
                         <SearchInput size="xs" name="entityId" value={filters.entityId} label="Entity ID" onChange={table.handleInput}/>
@@ -73,7 +74,7 @@ const AuditTable = ({ vm }) => {
                     </div>
                     <button
                         onClick={() => table.reset()}
-                        className="rounded-md border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-slate-200 dark:hover:bg-gray-700"
+                        className="rounded-md border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200 dark:hover:bg-neutral-600"
                     >
                         Очистити
                     </button>

@@ -1,5 +1,5 @@
 
-const TableRow = ({canSelect , children}) => {
+const TableRow = ({children}) => {
     return (
         <tr>
             {children}

@@ -7,10 +7,10 @@ import {sourceType} from "../../shared/config/sourceTypes.js";
 
 const DetailsSkeleton = () => (
     <div className="animate-pulse grid grid-cols-1 gap-2 md:grid-cols-2" aria-hidden="true">
-        <div className="h-9 w-full rounded-md bg-gray-300 dark:bg-slate-700"/>
-        <div className="h-9 w-full rounded-md bg-gray-300 dark:bg-slate-700"/>
-        <div className="h-9 w-3/4 rounded-md bg-gray-300 dark:bg-slate-700"/>
-        <div className="h-9 w-4/5 rounded-md bg-gray-300 dark:bg-slate-700"/>
+        <div className="h-9 w-full rounded-md bg-gray-300 dark:bg-neutral-600"/>
+        <div className="h-9 w-full rounded-md bg-gray-300 dark:bg-neutral-600"/>
+        <div className="h-9 w-3/4 rounded-md bg-gray-300 dark:bg-neutral-600"/>
+        <div className="h-9 w-4/5 rounded-md bg-gray-300 dark:bg-neutral-600"/>
     </div>
 );
 

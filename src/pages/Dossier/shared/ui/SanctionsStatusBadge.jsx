@@ -13,7 +13,7 @@ const BADGE_CLASSES = {
     expired: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800",
     // Не сірий/нейтральний навмисно — санкції реально БУЛИ (на відміну від "none"), просто скасовані.
     cancelled: "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/40 dark:text-violet-300 dark:border-violet-800",
-    none: "bg-gray-50 text-gray-400 border-gray-200 dark:bg-gray-800 dark:text-gray-500 dark:border-gray-700",
+    none: "bg-gray-50 text-gray-600 border-gray-200 dark:bg-neutral-700 dark:text-gray-500 dark:border-neutral-700",
 };
 
 // Щит завжди показує якийсь символ поруч (в обох варіантах — full і compact): число
@@ -66,7 +66,7 @@ const SanctionsStatusBadge = ({status, daysRemaining, onRefresh, isRefreshing = 
                     onClick={onRefresh}
                     disabled={isRefreshing}
                     title="Примусово перерахувати стан підсанкційності цього досьє"
-                    className={`inline-flex items-center justify-center rounded-full text-gray-400 hover:text-blue-600 hover:bg-blue-50 disabled:opacity-50 dark:hover:bg-blue-900/40 dark:hover:text-blue-400 ${
+                    className={`inline-flex items-center justify-center rounded-full text-gray-600 hover:text-blue-600 hover:bg-blue-50 disabled:opacity-50 dark:hover:bg-blue-900/40 dark:hover:text-blue-400 ${
                         isCompact ? "w-4 h-4" : "w-6 h-6"
                     }`}
                 >

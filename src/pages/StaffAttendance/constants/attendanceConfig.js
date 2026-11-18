@@ -37,13 +37,13 @@ export const ABSENCE_STATUS_CONFIG = {
         badge: 'bg-amber-100 text-amber-800',
         darkBadge: 'dark:bg-amber-900/30 dark:text-amber-200',
         label: 'Очікує',
-        borderClass: 'border-2 border-dashed border-slate-400',
+        borderClass: 'border-2 border-dashed border-gray-400',
     },
     approved: {
         badge: 'bg-green-100 text-green-800',
         darkBadge: 'dark:bg-green-900/30 dark:text-green-200',
         label: 'Затверджено',
-        borderClass: 'border border-slate-600',
+        borderClass: 'border border-gray-600',
     },
     rejected: {
         badge: 'bg-red-100 text-red-800',

@@ -22,12 +22,12 @@ const AssigneesEditor = ({assignedUsers = [], options = [], onAdd, onRemove, isP
                           className="rounded-full text-[10px] py-0.5 px-2"
                           onClose={canEdit && !isPending ? () => onRemove(user.id) : undefined}/>
                 ))}
-                {assignedUsers.length === 0 && !canEdit && <span className="text-xs text-slate-400 dark:text-slate-500">—</span>}
+                {assignedUsers.length === 0 && !canEdit && <span className="text-xs text-gray-600 dark:text-gray-500">—</span>}
                 {canEdit && !isAdding &&
                     <button type="button"
                             onClick={() => setIsAdding(true)}
                             disabled={isPending}
-                            className="rounded-full border border-dashed border-slate-300 px-2 py-0.5 text-[10px] text-slate-500 transition hover:border-blue-400 hover:text-blue-600 dark:border-slate-600 dark:text-slate-400 dark:hover:border-blue-500 dark:hover:text-blue-400">
+                            className="rounded-full border border-dashed border-gray-300 px-2 py-0.5 text-[10px] text-gray-600 transition hover:border-blue-400 hover:text-blue-600 dark:border-gray-600 dark:text-gray-400 dark:hover:border-blue-500 dark:hover:text-blue-400">
                         <i className="fa-regular fa-plus mr-1"></i>Учасник
                     </button>
                 }

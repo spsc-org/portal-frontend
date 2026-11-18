@@ -5,9 +5,9 @@ import DocumentationSidebar from "../../widgets/DocumentationSidebar/Documentati
 
 const Body = ({ vm }) => {
     if (vm.isLoading) return <Spinner className="h-6 w-6"/>;
-    if (vm.notFound) return <p className="dark:text-slate-400">Категорію «{vm.category}» не знайдено.</p>;
+    if (vm.notFound) return <p className="dark:text-gray-400">Категорію «{vm.category}» не знайдено.</p>;
     if (vm.content) return <MarkdownRenderer content={vm.content}/>;
-    return <p className="dark:text-slate-400">Оберіть категорію документації.</p>;
+    return <p className="dark:text-gray-400">Оберіть категорію документації.</p>;
 };
 
 const CategoryPage = ({ vm }) => (

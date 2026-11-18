@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { Button } from "@material-tailwind/react";
+import Button from "../../../components/Buttons/Button.jsx"
+
 
 const StatusToggle = ({ label, value, options, onChange }) => {
     return (
@@ -19,8 +20,7 @@ const StatusToggle = ({ label, value, options, onChange }) => {
                             color={value === s.value ? "blue" : "blue-gray"}
                             onClick={() => onChange(s.value)}
                             size="sm"
-                            className={`px-4 py-2 ${roundClass}`}
-                        >
+                            className={`px-4 py-2 ${roundClass}`}>
                             {s.caption}
                         </Button>
                     );

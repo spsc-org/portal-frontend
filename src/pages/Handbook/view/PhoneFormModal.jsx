@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
-import { Dialog, DialogBody, DialogFooter, DialogHeader, Typography } from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import { LabeledInput, LabeledTextarea } from "../../../components/fields/LabeledField.jsx";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
@@ -11,11 +12,11 @@ const PhoneFormModal = ({ entry = null, onClose, onCreated }) => {
     const vm = useViewModel((deps) => new PhoneFormViewModel({ ...deps, entry, onDone: onClose, onCreated }));
 
     return (
-        <Dialog data-i-doc={vm.isEditing ? "modal:handbook-phone-edit" : "modal:handbook-phone-create"} open handler={onClose} size="sm">
-            <DialogHeader>
-                <Typography variant="h5" className="dark:text-slate-200">{vm.isEditing ? "Редагування запису" : "Новий запис"}</Typography>
-            </DialogHeader>
-            <DialogBody className="flex max-h-[70vh] flex-col gap-4 overflow-y-auto">
+        <Modal data-i-doc={vm.isEditing ? "modal:handbook-phone-edit" : "modal:handbook-phone-create"} open handler={onClose} size="sm">
+            <ModalHeader>
+                <Typography variant="h5" className="dark:text-gray-200">{vm.isEditing ? "Редагування запису" : "Новий запис"}</Typography>
+            </ModalHeader>
+            <ModalBody className="flex max-h-[70vh] flex-col gap-4 overflow-y-auto">
                 <LabeledInput
                     autoFocus
                     label="Ім'я"
@@ -37,8 +38,8 @@ const PhoneFormModal = ({ entry = null, onClose, onCreated }) => {
                     value={vm.note}
                     onChange={(e) => vm.setNote(e.target.value)}
                 />
-            </DialogBody>
-            <DialogFooter className="gap-x-2">
+            </ModalBody>
+            <ModalFooter className="gap-x-2">
                 <button type="button" onClick={onClose}
                         className="rounded px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-900/20">
                     Скасувати
@@ -47,8 +48,8 @@ const PhoneFormModal = ({ entry = null, onClose, onCreated }) => {
                                color="green" onClick={vm.submit}>
                     {vm.isEditing ? "Зберегти" : "Додати"}
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

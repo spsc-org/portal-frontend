@@ -1,15 +1,15 @@
 import TableHeadCell from "./TableHeadCell.jsx";
 
-const TableHeadRow = ({canSelect, onSelectAll = false, columns = [], data = [], ...props}) => {
+const TableHeadRow = ({canSelect, columns = []}) => {
     return (
-        <thead className="bg-gray-50 dark:bg-gray-800">
+        <thead className="bg-gray-50 dark:bg-neutral-700">
         <tr>
             {columns.length > 0  &&
                 columns.map((cell, index) => {
                     if (index === 0 && canSelect) {
                         return (<TableHeadCell key={index}>
                             <input type="checkbox"
-                                   className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"/>
+                                   className="text-blue-500 border-gray-300 rounded dark:bg-neutral-800 dark:ring-offset-neutral-800 dark:border-neutral-700"/>
                             <span>{cell?.label}</span>
                         </TableHeadCell>)
                     } else {
@@ -24,12 +24,12 @@ const TableHeadRow = ({canSelect, onSelectAll = false, columns = [], data = [], 
 
 
             {/*<th scope="col"*/}
-            {/*    className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">*/}
+            {/*    className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-600 dark:text-gray-400">*/}
             {/*    /!*SORT BUTTON AND CHECKBOX*!/*/}
             {/*    <button className="flex items-center gap-x-3 focus:outline-none">*/}
             {/*        /!*Checkbox*!/*/}
             {/*        <input type="checkbox"*/}
-            {/*               className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"/>*/}
+            {/*               className="text-blue-500 border-gray-300 rounded dark:bg-neutral-800 dark:ring-offset-neutral-800 dark:border-neutral-700"/>*/}
             {/*        <span>Company</span>*/}
 
             {/*        <svg className="h-3" viewBox="0 0 10 11" fill="none"*/}

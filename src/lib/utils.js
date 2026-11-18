@@ -25,7 +25,7 @@ export const convertDate = (dateString) => {
         }
         // Return formatted date for other cases
         return format(normalizedDate, 'dd.MM.yyyy');
-    } catch (error) {
+    } catch {
         return "помилка форматування";
     }
 };

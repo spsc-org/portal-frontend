@@ -30,7 +30,7 @@ const CartModal = () => {
                     <h3 className="font-bold text-gray-800 dark:text-gray-200">
                         <i className="fa-solid fa-cart-shopping mr-2 text-blue-500" />Відібрані проєкти
                     </h3>
-                    <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                    <button type="button" onClick={onClose} className="text-gray-600 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
                         <i className="fas fa-xmark text-lg" />
                     </button>
                 </div>
@@ -45,7 +45,7 @@ const CartModal = () => {
                                 className={`rounded-t-lg border-2 border-b-0 px-5 py-2.5 text-sm font-medium transition-colors ${
                                     activeTab === tab.id
                                         ? "border-blue-500 bg-white text-blue-600 dark:border-blue-500 dark:bg-neutral-800 dark:text-blue-400"
-                                        : "border-gray-200 bg-gray-50 text-gray-500 hover:bg-gray-100 dark:border-neutral-600 dark:bg-neutral-700 dark:text-gray-400 dark:hover:bg-neutral-600"
+                                        : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100 dark:border-neutral-600 dark:bg-neutral-700 dark:text-gray-400 dark:hover:bg-neutral-600"
                                 }`}
                             >
                                 {tab.title}

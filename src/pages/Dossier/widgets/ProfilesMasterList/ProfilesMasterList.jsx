@@ -123,8 +123,8 @@ const ProfilesMasterList = ({
     useEffect(() => vm.setFilters(filters), [vm, filters]);
 
     return (
-        <section data-i-doc="view:sanction-profiles-master-list" className="flex-none w-[30%] bg-white border-r border-gray-200 flex flex-col min-w-0 dark:bg-gray-900 dark:border-gray-700">
-            <div className="px-5 pt-[18px] pb-3.5 border-b border-gray-100 dark:border-gray-800">
+        <section data-i-doc="view:sanction-profiles-master-list" className="flex-none w-[30%] bg-white border-r border-gray-200 flex flex-col min-w-0 dark:bg-neutral-800 dark:border-neutral-700">
+            <div className="px-5 pt-[18px] pb-3.5 border-b border-gray-100 dark:border-neutral-700">
                 <div className="flex items-baseline justify-between gap-2.5">
                     <SectionLabel>Реєстр досьє</SectionLabel>
                 </div>
@@ -155,7 +155,7 @@ const ProfilesMasterList = ({
                         onChange={(selected) => onUaSanctionsStatusFilterChange(selected.map((option) => option.id))}
                     />
                     <div
-                        className="inline-flex items-center gap-1 h-[30px] px-[9px] rounded-full border border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700"
+                        className="inline-flex items-center gap-1 h-[30px] px-[9px] rounded-full border border-gray-200 bg-white dark:bg-neutral-700 dark:border-neutral-700"
                         title="Потребують рішення щодо продовження найближчим часом"
                     >
                         <i className="fa-solid fa-hourglass-half text-amber-500 text-[10px]"></i>
@@ -167,7 +167,7 @@ const ProfilesMasterList = ({
                                 className={`rounded-full px-2 py-[3px] text-[10.5px] font-semibold transition ${
                                     filters.expiringWithinDays === days
                                         ? "bg-amber-600 text-white"
-                                        : "text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                                        : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-neutral-600"
                                 }`}
                             >
                                 {days}
@@ -178,7 +178,7 @@ const ProfilesMasterList = ({
                         type="button"
                         onClick={onResetFilters}
                         title="Скинути всі фільтри та пошук"
-                        className="inline-flex items-center gap-1.5 h-[30px] px-[11px] rounded-full text-xs font-semibold text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                        className="inline-flex items-center gap-1.5 h-[30px] px-[11px] rounded-full text-xs font-semibold text-gray-600 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-neutral-700 dark:hover:text-gray-200"
                     >
                         <i className="fa-solid fa-filter-circle-xmark text-[10px]"></i>Скинути
                     </button>
@@ -207,7 +207,7 @@ const ProfilesMasterList = ({
                         onChange={(selected) => onOriginFilterChange(selected.map((option) => option.id))}
                     />
                     <div
-                        className="inline-flex items-center gap-1 h-[30px] px-[9px] rounded-full border border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700"
+                        className="inline-flex items-center gap-1 h-[30px] px-[9px] rounded-full border border-gray-200 bg-white dark:bg-neutral-700 dark:border-neutral-700"
                         title="Фільтр за станом тікетів, привʼязаних до профілю"
                     >
                         <i className="fa-solid fa-ticket text-purple-500 text-[10px]"></i>
@@ -219,7 +219,7 @@ const ProfilesMasterList = ({
                                 className={`rounded-full px-2 py-[3px] text-[10.5px] font-semibold transition ${
                                     filters.ticketStatusFilter === id
                                         ? "bg-purple-600 text-white"
-                                        : "text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                                        : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-neutral-600"
                                 }`}
                             >
                                 {label}
@@ -234,7 +234,7 @@ const ProfilesMasterList = ({
                         label="Необхідно підтвердити"
                         title="Тимчасово вимкнено — фільтр працює некоректно"
                         activeClasses="bg-orange-600 text-white border-orange-600"
-                        idleClasses="bg-white text-orange-600 border-orange-200 hover:bg-orange-50 dark:bg-gray-800 dark:border-orange-800 dark:text-orange-400 dark:hover:bg-orange-900/40"
+                        idleClasses="bg-white text-orange-600 border-orange-200 hover:bg-orange-50 dark:bg-neutral-700 dark:border-orange-800 dark:text-orange-400 dark:hover:bg-orange-900/40"
                     />
                     <ToggleChip
                         active={filters.conflictOnly}
@@ -243,7 +243,7 @@ const ProfilesMasterList = ({
                         label="Конфліктні"
                         title="Той самий субʼєкт/проєкт веде на кілька різних досьє одночасно"
                         activeClasses="bg-red-600 text-white border-red-600"
-                        idleClasses="bg-white text-red-600 border-red-200 hover:bg-red-50 dark:bg-gray-800 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/40"
+                        idleClasses="bg-white text-red-600 border-red-200 hover:bg-red-50 dark:bg-neutral-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/40"
                     />
                     <NumberRangeFilter
                         icon="fa-solid fa-link"
@@ -255,13 +255,13 @@ const ProfilesMasterList = ({
                     />
                 </ModeratorBlock>
                 <div className="flex items-center justify-between mt-[11px]">
-                    <div className="text-[11.5px] font-semibold text-gray-400">
+                    <div className="text-[11.5px] font-semibold text-gray-600">
                         meta.total: <span className="text-blue-600 dark:text-blue-400">{total}</span> профілів
                     </div>
                     <div className="flex items-center gap-2">
                         <SortFieldMenu options={SORT_OPTIONS} value={filters.sort} onChange={onSortChange}/>
                         <SortDirectionButton direction={filters.direction} onToggle={onToggleDirection}/>
-                        <div className="flex items-center gap-0.5 rounded-md border border-gray-200 p-0.5 dark:border-gray-700"
+                        <div className="flex items-center gap-0.5 rounded-md border border-gray-200 p-0.5 dark:border-neutral-700"
                              title="Розмір сторінки завантаження">
                             {PAGE_SIZE_OPTIONS.map((size) => (
                                 <button
@@ -271,7 +271,7 @@ const ProfilesMasterList = ({
                                     className={`rounded px-[7px] py-[3px] text-[10.5px] font-semibold transition ${
                                         pageSize === size
                                             ? "bg-blue-600 text-white"
-                                            : "text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+                                            : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-neutral-700"
                                     }`}
                                 >
                                     {size}
@@ -282,7 +282,7 @@ const ProfilesMasterList = ({
                             type="button"
                             onClick={() => setIsCompact((prev) => !prev)}
                             title={isCompact ? "Звичайний вигляд" : "Компактний вигляд"}
-                            className="flex-none w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-800"
+                            className="flex-none w-6 h-6 flex items-center justify-center rounded text-gray-600 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-neutral-700"
                         >
                             <i className={`fa-solid ${isCompact ? "fa-list" : "fa-table-list"} text-[13px]`}></i>
                         </button>
@@ -295,7 +295,7 @@ const ProfilesMasterList = ({
                     <div className="flex justify-center py-10"><Spinner className="h-8 w-8"/></div>
                 )}
                 {!isFetching && !profiles.length && (
-                    <div className="py-10 text-center text-sm text-gray-400">Профілів не знайдено</div>
+                    <div className="py-10 text-center text-sm text-gray-600">Профілів не знайдено</div>
                 )}
                 {profiles.map((profile) => {
                     const isActive = profile.id === activeId;
@@ -305,10 +305,10 @@ const ProfilesMasterList = ({
                         <div
                             key={profile.id}
                             onClick={() => onSelect(profile.id)}
-                            className={`flex items-center gap-[13px] ${isCompact ? "px-[18px] py-2" : "px-[18px] py-3.5"} border-b border-gray-100 cursor-pointer border-l-[3px] transition-colors dark:border-b-gray-800 ${
+                            className={`flex items-center gap-[13px] ${isCompact ? "px-[18px] py-2" : "px-[18px] py-3.5"} border-b border-gray-100 cursor-pointer border-l-[3px] transition-colors dark:border-b-neutral-700 ${
                                 isActive
                                     ? "bg-blue-50 border-l-blue-600 dark:bg-blue-900/25"
-                                    : "bg-white border-l-transparent hover:bg-slate-50 dark:bg-gray-900 dark:hover:bg-gray-800"
+                                    : "bg-white border-l-transparent hover:bg-gray-50 dark:bg-neutral-800 dark:hover:bg-neutral-700"
                             }`}
                         >
                             <SubjectAvatar
@@ -337,7 +337,7 @@ const ProfilesMasterList = ({
                                     )}
                                 </div>
                                 {!isCompact && (
-                                    <div className="text-[11px] font-mono font-semibold text-gray-400 mt-[3px] truncate">
+                                    <div className="text-[11px] font-mono font-semibold text-gray-600 mt-[3px] truncate">
                                         <span
                                             role="button"
                                             tabIndex={0}
@@ -394,7 +394,7 @@ const ProfilesMasterList = ({
                         type="button"
                         disabled={isFetchingNextPage}
                         onClick={() => fetchNextPage()}
-                        className="w-full py-3 text-xs font-semibold text-blue-600 hover:bg-blue-50 disabled:opacity-50 dark:text-blue-400 dark:hover:bg-gray-800"
+                        className="w-full py-3 text-xs font-semibold text-blue-600 hover:bg-blue-50 disabled:opacity-50 dark:text-blue-400 dark:hover:bg-neutral-700"
                     >
                         {isFetchingNextPage ? "Завантаження…" : `Показати ще (${profiles.length} із ${total})`}
                     </button>

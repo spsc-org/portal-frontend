@@ -10,7 +10,7 @@ export const subjectType = (subjectTypeId) =>
     SUBJECT_TYPES[subjectTypeId] ?? {
         title: "Невідомий тип",
         icon: "fa-solid fa-circle-question",
-        avatarClasses: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400",
+        avatarClasses: "bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-gray-400",
     };
 
 export const TYPE_FILTERS = [

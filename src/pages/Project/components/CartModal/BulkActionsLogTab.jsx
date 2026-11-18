@@ -47,7 +47,7 @@ const BulkActionsLogTab = () => {
             <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-sm">
                     <thead>
-                        <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:border-neutral-600 dark:bg-neutral-700 dark:text-gray-400">
+                        <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 dark:border-neutral-600 dark:bg-neutral-700 dark:text-gray-400">
                             <th className="whitespace-nowrap px-3 py-2">ID</th>
                             <th className="whitespace-nowrap px-3 py-2">Операція</th>
                             <th className="whitespace-nowrap px-3 py-2">Причина</th>
@@ -59,10 +59,10 @@ const BulkActionsLogTab = () => {
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-neutral-700">
                         {isLoading && (
-                            <tr><td colSpan={7} className="px-3 py-6 text-center text-gray-400 dark:text-gray-500">Завантаження…</td></tr>
+                            <tr><td colSpan={7} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">Завантаження…</td></tr>
                         )}
                         {!isLoading && rows.length === 0 && (
-                            <tr><td colSpan={7} className="px-3 py-6 text-center text-gray-400 dark:text-gray-500">Журнал порожній</td></tr>
+                            <tr><td colSpan={7} className="px-3 py-6 text-center text-gray-600 dark:text-gray-500">Журнал порожній</td></tr>
                         )}
                         {rows.map((item) => {
                             const logLines = processLogText(item.log);

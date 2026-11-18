@@ -13,10 +13,33 @@ for "where does component X live" see `claude_design_kit.md` instead.
 - No raw hex colors (`#fde68a`) and no bare `px` literals in JSX — use Tailwind's
   scale (`bg-amber-300`, `p-4`, `gap-2`, …) or an existing token via `var()`.
 
+## Form fields
+
+- Every input / select / textarea: `bg-white dark:bg-neutral-900`, border
+  `border-gray-200 dark:border-neutral-600`, `rounded-md`, `h-9` at the default/compact
+  size, focus border `blue-500` / `dark:blue-400`; disabled `bg-gray-100 dark:bg-neutral-800`.
+  Light rest border is `gray-200` everywhere — forms and modals too, never `gray-300`;
+  never a `gray-900` focus border. Validation: `border-red-500` (error), `border-orange-400`
+  (warning). Select divider: full control height, `gray-200` / `neutral-600`.
+  react-select: `kitSelectClassNames()` (`src/components/fields/selectClassNames.js`);
+  MT `Input`/`Textarea`: themed in `src/lib/theme.js`.
+
+## Interaction
+
+- Every button and link has `cursor: pointer` — set globally in `src/index.css`
+  (`@layer base`, Tailwind v4 preflight resets it to `default`); disabled buttons get
+  `not-allowed`. Don't add `cursor-default` to clickable elements; clickable non-button
+  elements (`<div onClick>`, table rows, chips) need an explicit `cursor-pointer`.
+
 ## Typography
 
 - Font stack: **Roboto** (weights 300/400/500/700) as primary, **Open Sans**
   (400/600/700) as fallback, then system sans-serif.
+- Text color, light theme: never lighter than `text-gray-600` (kit `ink-muted`) —
+  `text-gray-500` and lighter blend into white / gray-200 surfaces. Icons: not lighter
+  than `text-gray-500`. Field adornments (placeholder, search icon, clear ×, select
+  chevron) stay gray-500. `text-gray-400` is not used in the light theme at all.
+  Dark theme muted text: `dark:text-gray-400`.
 
 ## Color vocabulary (component `color` prop)
 

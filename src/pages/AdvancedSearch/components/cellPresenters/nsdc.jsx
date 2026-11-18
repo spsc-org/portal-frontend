@@ -11,16 +11,16 @@ const ACTION_TYPE_CONFIG = {
 };
 
 const getActionTypeClass = (actionType) => {
-    if (!actionType) return 'bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-slate-400';
+    if (!actionType) return 'bg-gray-100 text-gray-600 dark:bg-neutral-600 dark:text-gray-400';
     const key = actionType.toLowerCase();
     for (const [pattern, cls] of Object.entries(ACTION_TYPE_CONFIG)) {
         if (key.includes(pattern)) return cls;
     }
-    return 'bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-slate-400';
+    return 'bg-gray-100 text-gray-600 dark:bg-neutral-600 dark:text-gray-400';
 };
 
 const DefaultRenderer = ({ value, highlightText, filters, columnId }) => {
-    if (!value) return <span className="text-gray-400 dark:text-slate-500">----</span>;
+    if (!value) return <span className="text-gray-600 dark:text-gray-500">----</span>;
 
     let displayedValue = value;
     if (columnId !== 'other' && value.length > 500) {
@@ -28,7 +28,7 @@ const DefaultRenderer = ({ value, highlightText, filters, columnId }) => {
     }
 
     return (
-        <div className="whitespace-pre-wrap dark:text-slate-300">
+        <div className="whitespace-pre-wrap dark:text-gray-300">
             {highlightText(displayedValue, filters.search)}
         </div>
     );
@@ -39,7 +39,7 @@ const IdentifiersRenderer = ({ row, highlightText, filters }) => {
     const od = row.original.original_data || {};
 
     const groups = [
-        { field: 'identity_docs', icon: 'fa-regular fa-id-card',      color: 'text-gray-500 dark:text-slate-400' },
+        { field: 'identity_docs', icon: 'fa-regular fa-id-card',      color: 'text-gray-600 dark:text-gray-400' },
         { field: 'reg_id',        icon: 'fa-solid fa-building',        color: 'text-blue-600 dark:text-blue-400' },
         { field: 'tax_id',        icon: 'fa-solid fa-sack-dollar',     color: 'text-green-600 dark:text-green-400' },
     ];
@@ -55,14 +55,14 @@ const IdentifiersRenderer = ({ row, highlightText, filters }) => {
         }
     }
 
-    if (items.length === 0) return <span className="text-gray-400 dark:text-slate-500">----</span>;
+    if (items.length === 0) return <span className="text-gray-600 dark:text-gray-500">----</span>;
 
     return (
         <div className="flex flex-col gap-1 text-xs">
             {items.map((item, idx) => (
                 <div key={idx} className="flex items-start gap-1.5">
                     <i className={`${item.icon} mt-0.5 text-[10px] flex-shrink-0 ${item.color}`}></i>
-                    <span className="leading-tight text-gray-800 dark:text-slate-200">
+                    <span className="leading-tight text-gray-800 dark:text-gray-200">
                         {highlightText(item.text, filters.search)}
                     </span>
                 </div>
@@ -84,7 +84,7 @@ const DecreeRenderer = ({ row, highlightText, filters }) => {
     const actionType    = od.action_type || null;
 
     if (!decreeNumber && !endDate && !status && !actionType) {
-        return <span className="text-gray-400 dark:text-slate-500">----</span>;
+        return <span className="text-gray-600 dark:text-gray-500">----</span>;
     }
 
     return (
@@ -107,7 +107,7 @@ const DecreeRenderer = ({ row, highlightText, filters }) => {
 
             {/* Статус (для sanc датасетів) */}
             {status && (
-                <span className="inline-flex w-fit text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-slate-300">
+                <span className="inline-flex w-fit text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-neutral-600 dark:text-gray-300">
                     {status}
                 </span>
             )}

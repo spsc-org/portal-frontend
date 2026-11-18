@@ -22,11 +22,11 @@ function Header({ actionsRef }) {
   return (
     <header
       data-i-doc="component:page-header"
-      className="sticky top-0 z-30 flex h-[50px] shrink-0 items-center justify-between gap-3 border-b border-gray-300 bg-white px-4 dark:border-gray-600 dark:bg-gray-800"
+      className="sticky top-0 z-30 flex h-[50px] shrink-0 items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 dark:border-neutral-700 dark:bg-neutral-800"
     >
       <div className="flex min-w-0 items-center gap-1.5">
         {breadcrumbs.length > 0 && (
-          <nav aria-label="Breadcrumbs" className="flex shrink-0 items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" data-testid="breadcrumbs">
+          <nav aria-label="Breadcrumbs" className="flex shrink-0 items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400" data-testid="breadcrumbs">
             {breadcrumbs.map((crumb, index) => (
               <Fragment key={`${crumb.label}-${index}`}>
                 {crumb.href ? (
@@ -42,7 +42,7 @@ function Header({ actionsRef }) {
           </nav>
         )}
         {title && (
-          <h1 className="min-w-0 truncate text-base font-semibold text-gray-800 dark:text-gray-100" data-testid="page-title">
+          <h1 className="min-w-0 truncate text-sm font-semibold text-gray-800 dark:text-gray-100" data-testid="page-title">
             {title}
           </h1>
         )}

@@ -19,7 +19,7 @@ const MenuItem = ({ item, onSelect }) => (
         onClick={() => onSelect(item)}
         className={`${ROW} ${item.disabled ? DISABLED : ENABLED}`}
     >
-        <i className={`fa-regular ${item.icon} w-4 text-gray-500 dark:text-gray-400`} aria-hidden="true" />
+        <i className={`fa-regular ${item.icon} w-4 text-gray-600 dark:text-gray-400`} aria-hidden="true" />
         <span>{shorten(item.caption, 60)}</span>
     </button>
 );
@@ -40,9 +40,9 @@ const MenuGroup = ({ group, onSelect }) => {
     return (
         <div className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
             <div className={`${ROW} ${ENABLED}`} role="menuitem" aria-haspopup="menu" aria-expanded={open}>
-                <i className={`fa-regular ${group.icon} w-4 text-gray-500 dark:text-gray-400`} aria-hidden="true" />
+                <i className={`fa-regular ${group.icon} w-4 text-gray-600 dark:text-gray-400`} aria-hidden="true" />
                 <span className="flex-1">{group.caption}</span>
-                <span className="text-[10px] text-gray-400">{group.count}</span>
+                <span className="text-[10px] text-gray-600">{group.count}</span>
                 <i className="fa-solid fa-chevron-right text-[10px]" aria-hidden="true" />
             </div>
             {open && (

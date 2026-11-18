@@ -2,7 +2,9 @@ import { observer } from 'mobx-react-lite';
 import { useViewModel } from '../../../../shared/mvvm/useViewModel.js';
 import { SummaryViewModel } from '../../viewmodel/AttendanceModalViewModels.js';
 import PropTypes from 'prop-types';
-import { Dialog, DialogHeader, Button } from '@material-tailwind/react';
+import { Modal, ModalHeader } from "../../../../components/Modal/Modal.jsx"
+import CloseButton from "../../../../components/Buttons/CloseButton.jsx"
+import Button from "../../../../components/Buttons/Button.jsx"
 import AdvancedSelectWithDefaults from '../../../../components/fields/AdvancedSelectWithDefaults.jsx';
 
 const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
@@ -24,24 +26,21 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
     const totals = summaryData.totals || {};
 
     return (
-        <Dialog data-i-doc="modal:staff-attendance-summary" open={isOpen} handler={onClose} size="xl">
-            <DialogHeader className="flex justify-between items-center">
+        <Modal data-i-doc="modal:staff-attendance-summary" open={isOpen} handler={onClose} size="xl">
+            <ModalHeader hideClose className="flex justify-between items-center">
                 <span>Зведена таблиця днів відсутності</span>
                 <div className="flex gap-2">
                     <Button
                         size="sm"
                         variant="outlined"
                         className="flex items-center gap-2"
-                        onClick={handlePrint}
-                    >
+                        onClick={handlePrint}>
                         <i className="fa-solid fa-print text-sm"></i>
                         <span className="text-xs">Друкувати</span>
                     </Button>
-                    <button onClick={onClose} className="text-slate-500 hover:text-slate-700">
-                        <i className="fa-solid fa-times"></i>
-                    </button>
+                    <CloseButton onClick={onClose} />
                 </div>
-            </DialogHeader>
+            </ModalHeader>
             <div className="p-4">
                 {/* Фільтри */}
                 <div className="mb-6 grid grid-cols-1 lg:grid-cols-12 gap-3 items-end">
@@ -51,7 +50,7 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                             type="date"
                             value={localFilters.startDate}
                             onChange={(e) => handleDateChange('startDate', e.target.value)}
-                            className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                            className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-md dark:bg-neutral-900 dark:border-neutral-600 dark:text-white"
                         />
                     </div>
                     <div className="lg:col-span-2">
@@ -60,7 +59,7 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                             type="date"
                             value={localFilters.endDate}
                             onChange={(e) => handleDateChange('endDate', e.target.value)}
-                            className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                            className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-md dark:bg-neutral-900 dark:border-neutral-600 dark:text-white"
                         />
                     </div>
                     <div className="lg:col-span-2">
@@ -106,14 +105,14 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                         </div>
                     </div>
                 ) : rows.length === 0 ? (
-                    <div className="py-8 text-center text-gray-500 dark:text-gray-400">
+                    <div className="py-8 text-center text-gray-600 dark:text-gray-400">
                         Немає даних для обраного періоду
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full border-collapse border border-gray-300 dark:border-gray-600">
                             <thead>
-                                <tr className="bg-gray-200 dark:bg-gray-800">
+                                <tr className="bg-gray-200 dark:bg-neutral-700">
                                     <th className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-left text-sm font-bold min-w-[200px]">
                                         Співробітник
                                     </th>
@@ -139,7 +138,7 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                             </thead>
                             <tbody>
                                 {rows.map((row) => (
-                                    <tr key={row.user_id} className="hover:bg-gray-50 dark:hover:bg-gray-900/30">
+                                    <tr key={row.user_id} className="hover:bg-gray-50 dark:hover:bg-neutral-800/30">
                                         <td className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm font-medium">
                                             {row.user_name}
                                         </td>
@@ -166,7 +165,7 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                                         })}
                                     </tr>
                                 ))}
-                                <tr className="bg-gray-200 dark:bg-gray-800 font-bold">
+                                <tr className="bg-gray-200 dark:bg-neutral-700 font-bold">
                                     <td className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm">
                                         Разом
                                     </td>
@@ -197,7 +196,7 @@ const SummaryModalInner = observer(({ isOpen, onClose, initialFilters }) => {
                     </div>
                 )}
             </div>
-        </Dialog>
+        </Modal>
     );
 });
 

@@ -3,7 +3,7 @@
 // Картка звʼязку) — одна каскадна структура (список → деталі) на двох рівнях сторінки,
 // тож підписи мають виглядати однаково, а не лише за назвою.
 const SectionLabel = ({children}) => (
-    <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+    <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500 mb-2">
         {children}
     </div>
 );

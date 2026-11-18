@@ -12,18 +12,18 @@ const DetailsLayout = ({project, vocabulary}) => {
         <Fragment>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24">
                 <div className="space-y-4">
-                    <Typography className="dark:text-slate-100" variant="h6">Загальна інформація</Typography>
-                    <Card className="p-2 bg-neutral-200 dark:bg-gray-900 grid grid-cols-3 gap-1">
+                    <Typography className="dark:text-gray-100" variant="h6">Загальна інформація</Typography>
+                    <Card className="p-2 bg-neutral-200 dark:bg-neutral-800 grid grid-cols-3 gap-1">
                         <div className="flex flex-col gap-1">
                             <Typography
                                 variant="h6"
-                                className="dark:text-slate-100"
+                                className="dark:text-gray-100"
                             >
                                 Тип суб'єкта:
                             </Typography>
                             <Typography
                                 variant="small"
-                                className={`dark:text-slate-200 ${project?.subjectTypeId === 2 ? "dark:text-yellow-600" : "dark:text-blue-600"}`}
+                                className={`dark:text-gray-200 ${project?.subjectTypeId === 2 ? "dark:text-yellow-600" : "dark:text-blue-600"}`}
                             >
                                 {project?.subjectTypeCaption}
                             </Typography>
@@ -31,7 +31,7 @@ const DetailsLayout = ({project, vocabulary}) => {
                         <div className="flex flex-col gap-1">
                             <Typography
                                 variant="h6"
-                                className="dark:text-slate-100"
+                                className="dark:text-gray-100"
                             >
                                 Задіяні країни:
                             </Typography>
@@ -53,14 +53,14 @@ const DetailsLayout = ({project, vocabulary}) => {
                         <div className="flex flex-col gap-1">
                             <Typography
                                 variant="h6"
-                                className="dark:text-slate-100"
+                                className="dark:text-gray-100"
                                 title="Ідентифікатор в реєстрі санкцій"
                             >
                                 <i className="text-green-600 fa-solid fa-solar-system"></i> Реєстр:
                             </Typography>
                             <Typography
                                 variant="small"
-                                className="dark:text-slate-200"
+                                className="dark:text-gray-200"
                             >
                                 {project?.drsId || <EmptyMessage size="xs"/>}
                             </Typography>
@@ -68,7 +68,7 @@ const DetailsLayout = ({project, vocabulary}) => {
                         <div className="flex flex-col gap-1">
                             <Typography
                                 variant="h6"
-                                className="dark:text-slate-100"
+                                className="dark:text-gray-100"
                             >
                                 {
                                     project?.subjectTypeId === 2 ? "Країни реєстрації" : "Громадянство"
@@ -93,14 +93,14 @@ const DetailsLayout = ({project, vocabulary}) => {
                         <div className="flex flex-col gap-1">
                             <Typography
                                 variant="h6"
-                                className="dark:text-slate-100"
+                                className="dark:text-gray-100"
                                 title="Ідентифікатор в реєстрі санкцій"
                             >
                                 Стан:
                             </Typography>
                             <Typography
                                 variant="small"
-                                className="dark:text-slate-200"
+                                className="dark:text-gray-200"
                             >
                                 {project?.state?.caption}
                             </Typography>
@@ -109,20 +109,20 @@ const DetailsLayout = ({project, vocabulary}) => {
                     {
                         project?.actionTypeId == 2 &&
                         <Fragment>
-                            <Typography className="dark:text-slate-100" variant="h6">
+                            <Typography className="dark:text-gray-100" variant="h6">
                                 Внесення змін
                             </Typography>
-                            <Card className="p-2 bg-neutral-200 dark:bg-gray-900 grid grid-cols-3 gap-1">
+                            <Card className="p-2 bg-neutral-200 dark:bg-neutral-800 grid grid-cols-3 gap-1">
                                 <div className="flex flex-col gap-1">
                                     <Typography
                                         variant="h6"
-                                        className="dark:text-slate-100"
+                                        className="dark:text-gray-100"
                                     >
                                         Ідентифікатор дії:
                                     </Typography>
                                     <Typography
                                         variant="small"
-                                        className="dark:text-slate-200"
+                                        className="dark:text-gray-200"
                                     >
                                         {project?.fix_action_id || <EmptyMessage size="xs"/>}
                                     </Typography>
@@ -130,13 +130,13 @@ const DetailsLayout = ({project, vocabulary}) => {
                                 <div className="flex flex-col gap-1">
                                     <Typography
                                         variant="h6"
-                                        className="dark:text-slate-100"
+                                        className="dark:text-gray-100"
                                     >
                                         Номер указу:
                                     </Typography>
                                     <Typography
                                         variant="small"
-                                        className="dark:text-slate-200"
+                                        className="dark:text-gray-200"
                                     >
                                         {project?.fix_decree || <EmptyMessage size="xs"/>}
                                     </Typography>
@@ -144,13 +144,13 @@ const DetailsLayout = ({project, vocabulary}) => {
                                 <div className="flex flex-col gap-1">
                                     <Typography
                                         variant="h6"
-                                        className="dark:text-slate-100"
+                                        className="dark:text-gray-100"
                                     >
                                         Номер додатку:
                                     </Typography>
                                     <Typography
                                         variant="small"
-                                        className="dark:text-slate-200"
+                                        className="dark:text-gray-200"
                                     >
                                         {project?.fix_annex || <EmptyMessage size="xs"/>}
                                     </Typography>
@@ -158,13 +158,13 @@ const DetailsLayout = ({project, vocabulary}) => {
                                 <div className="flex flex-col gap-1">
                                     <Typography
                                         variant="h6"
-                                        className="dark:text-slate-100"
+                                        className="dark:text-gray-100"
                                     >
                                         Позиція в додатку:
                                     </Typography>
                                     <Typography
                                         variant="small"
-                                        className="dark:text-slate-200"
+                                        className="dark:text-gray-200"
                                     >
                                         {project?.fix_index || <EmptyMessage size="xs"/>}
                                     </Typography>
@@ -175,58 +175,58 @@ const DetailsLayout = ({project, vocabulary}) => {
                     {
                         project?.actionTypeId !== 3 &&
                         <Fragment>
-                            <Typography className="dark:text-slate-100" variant="h6">
+                            <Typography className="dark:text-gray-100" variant="h6">
                                 {
                                     project?.subjectTypeId === 2 ? "Перелік імен" : "Перелік назв"
                                 }
                             </Typography>
                             <div className="space-y-1">
-                                <Card className="p-2  bg-neutral-200 dark:bg-gray-900">
+                                <Card className="p-2  bg-neutral-200 dark:bg-neutral-800">
                                     <Typography variant="small"
-                                                className=" dark:text-slate-100 text-xs">{project?.nameUk ||
+                                                className=" dark:text-gray-100 text-xs">{project?.nameUk ||
                                         <EmptyMessage size="xs"/>}</Typography>
                                 </Card>
-                                <Card className="p-2 bg-neutral-200 dark:bg-gray-900">
+                                <Card className="p-2 bg-neutral-200 dark:bg-neutral-800">
                                     <Typography variant="small"
-                                                className="dark:text-slate-100 text-xs">{project?.nameRu ||
+                                                className="dark:text-gray-100 text-xs">{project?.nameRu ||
                                         <EmptyMessage size="xs"/>}</Typography>
                                 </Card>
-                                <Card className="p-2 bg-neutral-200 dark:bg-gray-900">
+                                <Card className="p-2 bg-neutral-200 dark:bg-neutral-800">
                                     <Typography variant="small"
-                                                className="dark:text-slate-100 text-xs">{project?.nameEn ||
+                                                className="dark:text-gray-100 text-xs">{project?.nameEn ||
                                         <EmptyMessage size="xs"/>}</Typography>
                                 </Card>
                             </div>
                             {
                                 project?.subjectTypeId === 2 ?
                                     <Fragment>
-                                        <Typography className="dark:text-slate-100" variant="h6">Місцезнаходження юр
+                                        <Typography className="dark:text-gray-100" variant="h6">Місцезнаходження юр
                                             особи</Typography>
                                         <div className="space-y-1">
-                                            <Card className="p-2 bg-neutral-200 dark:bg-gray-900">
+                                            <Card className="p-2 bg-neutral-200 dark:bg-neutral-800">
                                                 <Typography variant="small"
-                                                            className="dark:text-slate-100 text-xs">{project?.adrUk ||
+                                                            className="dark:text-gray-100 text-xs">{project?.adrUk ||
                                                     <EmptyMessage/>}</Typography>
                                             </Card>
-                                            <Card className="p-2 bg-neutral-200 dark:bg-gray-900">
+                                            <Card className="p-2 bg-neutral-200 dark:bg-neutral-800">
                                                 <Typography variant="small"
-                                                            className="dark:text-slate-100 text-xs">{project?.adrRu ||
+                                                            className="dark:text-gray-100 text-xs">{project?.adrRu ||
                                                     <EmptyMessage/>}</Typography>
                                             </Card>
-                                            <Card className="p-2 bg-neutral-200 dark:bg-gray-900">
+                                            <Card className="p-2 bg-neutral-200 dark:bg-neutral-800">
                                                 <Typography variant="small"
-                                                            className="dark:text-slate-100">{project?.adrEn ||
+                                                            className="dark:text-gray-100">{project?.adrEn ||
                                                     <EmptyMessage/>}</Typography>
                                             </Card>
                                         </div>
                                     </Fragment>
                                     :
                                     <Fragment>
-                                        <Typography className="dark:text-slate-100" variant="h6">Дата
+                                        <Typography className="dark:text-gray-100" variant="h6">Дата
                                             народження</Typography>
-                                        <Card className="p-2 w-fit bg-neutral-200 dark:bg-gray-900">
+                                        <Card className="p-2 w-fit bg-neutral-200 dark:bg-neutral-800">
                                             <Typography variant="small"
-                                                        className="dark:text-slate-100 text-xs">{project?.birthDate ||
+                                                        className="dark:text-gray-100 text-xs">{project?.birthDate ||
                                                 <EmptyMessage size="xs"/>}</Typography>
                                         </Card>
 
@@ -235,16 +235,16 @@ const DetailsLayout = ({project, vocabulary}) => {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <Typography className="dark:text-slate-100" variant="h6">Ідентифікаційні
+                                    <Typography className="dark:text-gray-100" variant="h6">Ідентифікаційні
                                         дані</Typography>
-                                    <Card className="p-0.5 bg-neutral-200 dark:bg-gray-900">
+                                    <Card className="p-0.5 bg-neutral-200 dark:bg-neutral-800">
                                         <SubjectTable columns={IDENTIFIERS_HEADERS} data={project?.identifiers}/>
                                     </Card>
                                 </div>
                                 <div>
-                                    <Typography className="dark:text-slate-100" variant="h6">Додаткова
+                                    <Typography className="dark:text-gray-100" variant="h6">Додаткова
                                         інформація</Typography>
-                                    <Card className="p-0.5 bg-neutral-200 dark:bg-gray-900">
+                                    <Card className="p-0.5 bg-neutral-200 dark:bg-neutral-800">
                                         <SubjectTable columns={ATTRIBUTES_HEADERS} data={project?.attributes}/>
                                     </Card>
                                 </div>
@@ -256,22 +256,22 @@ const DetailsLayout = ({project, vocabulary}) => {
                 </div>
 
                 <div className="space-y-4">
-                    <Typography className="dark:text-slate-100" variant="h6">Первинна інформація</Typography>
-                    <Card className="p-2 bg-neutral-200 dark:bg-gray-900">
+                    <Typography className="dark:text-gray-100" variant="h6">Первинна інформація</Typography>
+                    <Card className="p-2 bg-neutral-200 dark:bg-neutral-800">
                         {
                             project?.sourceInfo ?
-                                <Typography variant="small" className="dark:text-slate-200 ">
+                                <Typography variant="small" className="dark:text-gray-200 ">
                                     {project?.sourceInfo}
                                 </Typography>
                                 :
                                 <EmptyMessage/>
                         }
                     </Card>
-                    <Typography className="dark:text-slate-100" variant="h6">Обгрунтування</Typography>
-                    <Card className="p-2 bg-neutral-200 dark:bg-gray-900 ">
+                    <Typography className="dark:text-gray-100" variant="h6">Обгрунтування</Typography>
+                    <Card className="p-2 bg-neutral-200 dark:bg-neutral-800 ">
                         {
                             project?.reasoning ?
-                                <Typography variant="small" className="dark:text-slate-200 ">
+                                <Typography variant="small" className="dark:text-gray-200 ">
                                     {project?.reasoning}
                                 </Typography>
                                 :
@@ -282,8 +282,8 @@ const DetailsLayout = ({project, vocabulary}) => {
                     {
                         project?.actionTypeId !== 3 &&
                         <Fragment>
-                            <Typography className="dark:text-slate-100" variant="h6">Обмеження</Typography>
-                            <Card className="p-2 bg-neutral-200 dark:bg-gray-900 ">
+                            <Typography className="dark:text-gray-100" variant="h6">Обмеження</Typography>
+                            <Card className="p-2 bg-neutral-200 dark:bg-neutral-800 ">
                                 <Constraints
                                     vocabulary={vocabulary?.restriction}
                                     subjectTypeId={project?.subjectTypeId}
@@ -295,17 +295,17 @@ const DetailsLayout = ({project, vocabulary}) => {
                     }
                 </div>
                 <div>
-                    <Typography className="dark:text-slate-100" variant="h6">Документи</Typography>
-                    <Card className="p-0.5 bg-neutral-200 dark:bg-gray-900">
+                    <Typography className="dark:text-gray-100" variant="h6">Документи</Typography>
+                    <Card className="p-0.5 bg-neutral-200 dark:bg-neutral-800">
                         <SubjectTable columns={DOCUMENTS_HEADERS} data={project?.documents}/>
                     </Card>
                     <div>
-                        <Typography className="dark:text-slate-100" variant="h6">Примітки та проблемні
+                        <Typography className="dark:text-gray-100" variant="h6">Примітки та проблемні
                             питання</Typography>
-                        <Card className="p-2 bg-neutral-200 dark:bg-gray-900">
+                        <Card className="p-2 bg-neutral-200 dark:bg-neutral-800">
                             {
                                 project?.notes ?
-                                    <Typography variant="small" className="dark:text-slate-200 ">
+                                    <Typography variant="small" className="dark:text-gray-200 ">
                                         {project?.notes}
                                     </Typography>
                                     :
@@ -317,21 +317,21 @@ const DetailsLayout = ({project, vocabulary}) => {
 
             </div>
 
-            <Typography className="dark:text-slate-100" variant="h6">Додаткова інформація</Typography>
-            <Card className="p-2 bg-neutral-200 dark:bg-gray-900">
+            <Typography className="dark:text-gray-100" variant="h6">Додаткова інформація</Typography>
+            <Card className="p-2 bg-neutral-200 dark:bg-neutral-800">
                 <div className="grid grid-cols-2 gap-2">
                     {
                         project?.actionTypeId !== 3 &&
                         <div className="flex flex-col gap-1">
                             <Typography
                                 variant="h6"
-                                className="dark:text-slate-100"
+                                className="dark:text-gray-100"
                             >
                                 Термін:
                             </Typography>
                             <Typography
                                 variant="small"
-                                className="dark:text-slate-200"
+                                className="dark:text-gray-200"
                             >
                                 {project?.term || <EmptyMessage/>}
                             </Typography>
@@ -341,14 +341,14 @@ const DetailsLayout = ({project, vocabulary}) => {
                     <div className="flex flex-col gap-1">
                         <Typography
                             variant="h6"
-                            className="dark:text-slate-100"
+                            className="dark:text-gray-100"
                             title="Ідентифікатор в реєстрі санкцій"
                         >
                             Субєкт подання:
                         </Typography>
                         <Typography
                             variant="small"
-                            className="dark:text-slate-200"
+                            className="dark:text-gray-200"
                         >
                             {project?.initiator || <EmptyMessage/>}
                         </Typography>
@@ -356,14 +356,14 @@ const DetailsLayout = ({project, vocabulary}) => {
                     <div className="flex flex-col gap-1">
                         <Typography
                             variant="h6"
-                            className="dark:text-slate-100"
+                            className="dark:text-gray-100"
                             title="Ідентифікатор в реєстрі санкцій"
                         >
                             Підстави:
                         </Typography>
                         <Typography
                             variant="small"
-                            className="dark:text-slate-200"
+                            className="dark:text-gray-200"
                         >
                             {project?.reasonCaption || <EmptyMessage/>}
                         </Typography>
@@ -371,7 +371,7 @@ const DetailsLayout = ({project, vocabulary}) => {
                     <div className="flex flex-col gap-1">
                         <Typography
                             variant="h6"
-                            className="dark:text-slate-100"
+                            className="dark:text-gray-100"
                             title="Ідентифікатор в реєстрі санкцій"
                         >
                             Основна діяльність:
@@ -394,7 +394,7 @@ const DetailsLayout = ({project, vocabulary}) => {
                     <div className="flex flex-col gap-1">
                         <Typography
                             variant="h6"
-                            className="dark:text-slate-100"
+                            className="dark:text-gray-100"
                             title="Ідентифікатор в реєстрі санкцій"
                         >
                             Протиправна діяльність:
@@ -417,7 +417,7 @@ const DetailsLayout = ({project, vocabulary}) => {
                     <div className="flex flex-col gap-1">
                         <Typography
                             variant="h6"
-                            className="dark:text-slate-100"
+                            className="dark:text-gray-100"
                             title="Ідентифікатор в реєстрі санкцій"
                         >
                             Додаткові категорії:
@@ -440,7 +440,7 @@ const DetailsLayout = ({project, vocabulary}) => {
                     <div className="flex flex-col gap-1">
                         <Typography
                             variant="h6"
-                            className="dark:text-slate-100"
+                            className="dark:text-gray-100"
                             title="Ідентифікатор в реєстрі санкцій"
                         >
                             Пакет:
@@ -463,14 +463,14 @@ const DetailsLayout = ({project, vocabulary}) => {
                     <div className="flex flex-col gap-1">
                         <Typography
                             variant="h6"
-                            className="dark:text-slate-100"
+                            className="dark:text-gray-100"
                             title="Ідентифікатор в реєстрі санкцій"
                         >
                             Виконавець:
                         </Typography>
                         <Typography
                             variant="small"
-                            className="dark:text-slate-200"
+                            className="dark:text-gray-200"
                         >
                             {project?.performer || <EmptyMessage/>}
                         </Typography>

@@ -50,6 +50,7 @@ const AddRestrictionsForm = ({ projectIds, userId, onDone }) => {
             disabled={codes.length === 0}
         >
             <MultiSelect
+                surface="form"
                 label="Виберіть обмеження"
                 id="cart-add-restrictions"
                 options={restrictions}

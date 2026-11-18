@@ -3,8 +3,10 @@ import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { VesselCallSignsViewModel } from "../viewmodel/DictionaryViewModels.js";
 import {useMemo} from 'react';
 import {createColumnHelper} from "@tanstack/react-table";
-import Table, {loadColumnSizes} from "../../../components/Table/Table.jsx";
-import {Button, Tooltip, Typography} from "@material-tailwind/react";
+import Table from "../../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
+import { Tooltip, Typography } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
 
 
@@ -82,7 +84,7 @@ const VesselCallSigns = ({ page }) => {
                 </Typography>
             </div>
 
-            <div className="flex flex-row items-end gap-x-2 mb-5">
+            <div className="mb-3 flex flex-row items-end gap-x-2 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800">
                 <div className="w-72">
                     <AdvancedSelect
                         size="xs"
@@ -95,7 +97,7 @@ const VesselCallSigns = ({ page }) => {
                     />
                 </div>
                 <Tooltip content="Скинути фільтри">
-                    <Button size="sm" className="h-10" disabled={!hasActiveFilter} onClick={handleClearFilters}>
+                    <Button size="sm" className="h-9" disabled={!hasActiveFilter} onClick={handleClearFilters}>
                         <i className="fa-regular fa-filter-slash"/>
                     </Button>
                 </Tooltip>

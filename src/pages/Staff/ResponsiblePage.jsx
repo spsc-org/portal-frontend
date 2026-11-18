@@ -18,7 +18,7 @@ const FullRegistry = observer(({ vm }) => (
         <button
           type="button"
           onClick={vm.openReport}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:border-blue-300 hover:text-blue-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-blue-500 dark:hover:text-blue-400"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-sm transition hover:border-blue-300 hover:text-blue-600 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:text-blue-400"
         >
           <i className="fa-regular fa-chart-simple"></i>
           Звіт по користувачах
@@ -28,7 +28,7 @@ const FullRegistry = observer(({ vm }) => (
 
     <div className="flex items-start gap-4">
       <div className="w-1/2 shrink-0">
-        <h2 className="mb-2 text-base font-bold text-slate-900 dark:text-slate-100">
+        <h2 className="mb-2 text-base font-bold text-gray-900 dark:text-gray-100">
           Функції
         </h2>
         <ResponsibleFunctionsTable
@@ -38,7 +38,7 @@ const FullRegistry = observer(({ vm }) => (
       </div>
 
       <div className="w-1/2 shrink-0">
-        <h2 className="mb-2 text-base font-bold text-slate-900 dark:text-slate-100">
+        <h2 className="mb-2 text-base font-bold text-gray-900 dark:text-gray-100">
           Призначення
         </h2>
         <ResponsibleAssignmentsTable vm={vm.assignmentsTable} auth={vm.auth} />

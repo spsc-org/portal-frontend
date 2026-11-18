@@ -2,7 +2,7 @@
 import FlagSanctionBadge from "../atoms/FlagSanctionBadge.jsx";
 
 const DefaultRenderer = ({ value, highlightText, filters, columnId }) => {
-    if (!value) return <span className="text-gray-400 dark:text-slate-500">----</span>;
+    if (!value) return <span className="text-gray-600 dark:text-gray-500">----</span>;
 
     let displayedValue = value;
     if (columnId !== 'other' && value.length > 500) {
@@ -10,7 +10,7 @@ const DefaultRenderer = ({ value, highlightText, filters, columnId }) => {
     }
 
     return (
-        <div className="whitespace-pre-wrap dark:text-slate-300">
+        <div className="whitespace-pre-wrap dark:text-gray-300">
             {highlightText(displayedValue, filters.search)}
         </div>
     );

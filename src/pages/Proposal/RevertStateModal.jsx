@@ -2,7 +2,9 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { RevertStateViewModel } from "./viewmodel/ProposalViewModels.js";
 import { useProposalProps } from "./viewmodel/useProposalProps.js";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
+import Button from "../../components/Buttons/Button.jsx"
 import SingleSelect from "../../components/fields/SingleSelect.jsx";
 import LoadingButton from "../../components/Buttons/LoadingButton.jsx";
 
@@ -18,34 +20,32 @@ const RevertStateModal = ({open = false, selectedId: id, onClose}) => {
     };
 
     return (
-        <Dialog open={open} handler={onClose} size="xs">
-            <DialogHeader>
-                <Typography variant="h5" className="dark:text-slate-200">
+        <Modal open={open} handler={onClose} size="xs">
+            <ModalHeader>
+                <Typography variant="h5" className="dark:text-gray-200">
                     Зняти зафіксований стан
                 </Typography>
-            </DialogHeader>
-            <DialogBody className="h-[16rem] relative overflow-y-auto">
+            </ModalHeader>
+            <ModalBody className="h-[16rem] relative overflow-y-auto">
                 <SingleSelect closeMenuOnSelect error={errors?.stateId}
                               info="Всі прив'язані проєкти стануть доступними для редагування, а також можливість змінювати зв'язок з
                     пакетами. Якщо указ прив'язаний то він залишаєтсья незмінним."
 
                               onChange={(option)=> setForm({state: option})} options={options} value={form.state} label="Оберіть стан"/>
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
-                    className="mr-1"
-                >
+                    className="mr-1">
                     <span>Закрити</span>
                 </Button>
                 <LoadingButton isLoading={revertState.isPending} variant="gradient" color="green" onClick={onSubmit}
                         disabled={revertState.isPending}>
                     Застосувати
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

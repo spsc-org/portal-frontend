@@ -1,16 +1,7 @@
 import { observer } from "mobx-react-lite";
-import {
-    Button,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Menu,
-    MenuHandler,
-    MenuItem,
-    MenuList,
-    Typography,
-} from "@material-tailwind/react";
+import { Menu, MenuHandler, MenuItem, MenuList, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
+import Button from "../../components/Buttons/Button.jsx"
 import { format } from "date-fns";
 import Input from "../../components/fields/Input.jsx";
 import SingleSelect from "../../components/fields/SingleSelect.jsx";
@@ -70,17 +61,17 @@ const DocumentFormModal = ({ open, onClose, mode = "create", documentId = null, 
 
     if (mode === "update") {
         return (
-            <Dialog data-i-doc="modal:document-update" open={open} handler={onClose} size="sm">
-                <DialogHeader>
-                    <Typography variant="h5" className="dark:text-slate-200">
+            <Modal data-i-doc="modal:document-update" open={open} handler={onClose} size="sm">
+                <ModalHeader>
+                    <Typography variant="h5" className="dark:text-gray-200">
                         Редагувати документ: {doc?.regNum} {doc?.regDate ?
                         <span>від {format(doc.regDate, "dd.MM.yyyy")}</span>
                         : ""}
                     </Typography>
-                </DialogHeader>
-                <DialogBody>
+                </ModalHeader>
+                <ModalBody>
                     <div className="mb-2">
-                        <label className="cursor-pointer text-slate-500 dark:text-slate-400">
+                        <label className="cursor-pointer text-gray-600 dark:text-gray-400">
                             <input
                                 type="checkbox"
                                 className="cursor-pointer form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-300"
@@ -110,25 +101,25 @@ const DocumentFormModal = ({ open, onClose, mode = "create", documentId = null, 
                         {fields}
                     </div>
                     {comments}
-                </DialogBody>
-                <DialogFooter>
-                    <Button variant="text" color="red" onClick={onClose} className="mr-1">
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="secondary" onClick={onClose} className="mr-1">
                         <span>Закрити</span>
                     </Button>
                     <Button variant="gradient" color="green" onClick={handleSubmit} disabled={vm.isPending}>
                         Редагувати
                     </Button>
-                </DialogFooter>
-            </Dialog>
+                </ModalFooter>
+            </Modal>
         );
     }
 
     return (
-        <Dialog data-i-doc="modal:document-create" open={open} handler={onClose} size="sm">
-            <DialogHeader>
+        <Modal data-i-doc="modal:document-create" open={open} handler={onClose} size="sm">
+            <ModalHeader>
                 Створити новий документ
-            </DialogHeader>
-            <DialogBody>
+            </ModalHeader>
+            <ModalBody>
                 <div className="grid grid-cols-2 gap-2">
                     <SingleSelect size="sm" closeMenuOnSelect error={errors?.typeId}
                                   options={types}
@@ -141,21 +132,21 @@ const DocumentFormModal = ({ open, onClose, mode = "create", documentId = null, 
                     {fields}
                 </div>
                 {comments}
-            </DialogBody>
-            <DialogFooter>
-                <Button variant="text" color="red" onClick={onClose} className="mr-1">
+            </ModalBody>
+            <ModalFooter>
+                <Button color="secondary" onClick={onClose} className="mr-1">
                     <span>Закрити</span>
                 </Button>
                 <Menu>
                     <MenuHandler>
                         <Button disabled={vm.isPending}>Створити</Button>
                     </MenuHandler>
-                    <MenuList className="z-[9999] p-1.5">
-                        <MenuItem onClick={handleSubmit} className="hover:bg-slate-200">Створити</MenuItem>
+                    <MenuList className="p-1.5">
+                        <MenuItem onClick={handleSubmit} className="hover:bg-gray-200">Створити</MenuItem>
                     </MenuList>
                 </Menu>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

@@ -17,7 +17,7 @@ export default function PageError() {
         Спробуйте оновити сторінку. Якщо помилка повторюється — повідомте про неї через «Залишити відгук» (Alt+B).
       </p>
       {import.meta.env.DEV && message && (
-        <pre className="max-w-2xl overflow-auto rounded-md bg-gray-100 p-3 text-left text-xs text-red-700 dark:bg-gray-800 dark:text-red-300">
+        <pre className="max-w-2xl overflow-auto rounded-md bg-gray-100 p-3 text-left text-xs text-red-700 dark:bg-neutral-700 dark:text-red-300">
           {message}
         </pre>
       )}

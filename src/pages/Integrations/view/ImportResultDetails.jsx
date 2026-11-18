@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Alert, Card, CardBody, Typography, Button, Collapse } from "@material-tailwind/react";
+import { Alert, Card, CardBody, Typography, Collapse } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 
 const ImportResultDetails = ({ result }) => {
     // Хук — до раннього return (у Inertia-версії викликався умовно).
@@ -57,7 +58,7 @@ const ImportResultDetails = ({ result }) => {
                         {skipped_records_report.reasons_summary && (
                             <div className="flex flex-wrap gap-2 mb-2">
                                 {Object.entries(skipped_records_report.reasons_summary).map(([reason, count]) => (
-                                    <span key={reason} className="px-2 py-1 bg-white dark:bg-slate-800 rounded text-xs font-medium border border-amber-100 dark:border-amber-900 text-amber-800 dark:text-amber-200">
+                                    <span key={reason} className="px-2 py-1 bg-white dark:bg-neutral-700 rounded text-xs font-medium border border-amber-100 dark:border-amber-900 text-amber-800 dark:text-amber-200">
                                         {reason}: {count}
                                     </span>
                                 ))}
@@ -65,25 +66,25 @@ const ImportResultDetails = ({ result }) => {
                         )}
 
                         <Collapse open={openSkipped}>
-                            <div className="mt-2 max-h-60 overflow-y-auto bg-white dark:bg-slate-900 rounded border border-amber-100 dark:border-amber-900/50 p-2 text-xs">
+                            <div className="mt-2 max-h-60 overflow-y-auto bg-white dark:bg-neutral-800 rounded border border-amber-100 dark:border-amber-900/50 p-2 text-xs">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="border-b border-gray-200 dark:border-slate-700">
-                                            <th className="p-1 font-semibold text-gray-600 dark:text-slate-400">ID</th>
-                                            <th className="p-1 font-semibold text-gray-600 dark:text-slate-400">Причина</th>
+                                        <tr className="border-b border-gray-200 dark:border-neutral-700">
+                                            <th className="p-1 font-semibold text-gray-600 dark:text-gray-400">ID</th>
+                                            <th className="p-1 font-semibold text-gray-600 dark:text-gray-400">Причина</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {skipped_records_report.details.map((record, idx) => (
-                                            <tr key={idx} className="border-b border-gray-100 dark:border-slate-800 last:border-0 hover:bg-gray-50 dark:hover:bg-slate-800/50">
-                                                <td className="p-1 font-mono text-gray-800 dark:text-slate-300">{record.id}</td>
-                                                <td className="p-1 text-gray-600 dark:text-slate-400">{record.reason}</td>
+                                            <tr key={idx} className="border-b border-gray-100 dark:border-neutral-700 last:border-0 hover:bg-gray-50 dark:hover:bg-neutral-700/50">
+                                                <td className="p-1 font-mono text-gray-800 dark:text-gray-300">{record.id}</td>
+                                                <td className="p-1 text-gray-600 dark:text-gray-400">{record.reason}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                                 {skipped_records_report.count > 100 && (
-                                    <div className="p-2 text-center text-gray-500 italic">
+                                    <div className="p-2 text-center text-gray-600 italic">
                                         ... показано перші 100 записів ...
                                     </div>
                                 )}
@@ -94,15 +95,15 @@ const ImportResultDetails = ({ result }) => {
             )}
 
             {/* Загальний JSON (для налагодження або інших деталей) */}
-            <Card className="w-full dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+            <Card className="w-full dark:bg-neutral-700 border border-gray-200 dark:border-neutral-700">
                 <CardBody className="p-0">
-                    <div className="p-3 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 rounded-t">
-                        <Typography variant="small" className="font-bold text-gray-700 dark:text-slate-300">
+                    <div className="p-3 border-b border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800/50 rounded-t">
+                        <Typography variant="small" className="font-bold text-gray-700 dark:text-gray-300">
                             Технічні деталі
                         </Typography>
                     </div>
-                    <div className="max-h-60 overflow-y-auto bg-white dark:bg-slate-900 p-3 text-xs font-mono rounded-b">
-                        <pre className="whitespace-pre-wrap break-all text-gray-600 dark:text-slate-400">
+                    <div className="max-h-60 overflow-y-auto bg-white dark:bg-neutral-800 p-3 text-xs font-mono rounded-b">
+                        <pre className="whitespace-pre-wrap break-all text-gray-600 dark:text-gray-400">
                             {JSON.stringify(data, (key, value) => {
                                 // Фільтруємо великі масиви, щоб не забивати екран
                                 if (key === 'skipped_records_report' || key === 'warnings') return undefined;

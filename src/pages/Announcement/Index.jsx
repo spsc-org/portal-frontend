@@ -7,8 +7,8 @@ import AnnouncementDetailPane from "./view/AnnouncementDetailPane.jsx";
 import AnnouncementFormModal from "./view/AnnouncementFormModal.jsx";
 
 const NoAccess = () => (
-    <div className="flex h-full items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+    <div className="flex h-full items-center justify-center bg-gray-100 dark:bg-neutral-800">
+        <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-400">
             <i className="fa-solid fa-lock mb-2 text-xl"></i>
             <p>Немає доступу до дошки оголошень.</p>
         </div>
@@ -31,7 +31,7 @@ const AnnouncementBoard = observer(({ vm }) => {
     if (!vm.canRead) return <NoAccess/>;
 
     return (
-        <div data-i-doc="page:announcement" className="flex h-full overflow-hidden bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+        <div data-i-doc="page:announcement" className="flex h-full overflow-hidden bg-gray-100 text-gray-900 dark:bg-neutral-800 dark:text-gray-100">
             <AnnouncementList vm={vm} onSelect={select}/>
             <AnnouncementDetailPane vm={vm} onDeleted={() => select(null)}/>
             {vm.createOpen && <AnnouncementFormModal onClose={vm.closeCreate} onCreated={select}/>}

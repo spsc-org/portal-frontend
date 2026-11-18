@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
-import { Card, Typography, IconButton, Popover, PopoverHandler, PopoverContent, Button } from "@material-tailwind/react";
+import { Card, Typography, Popover, PopoverHandler, PopoverContent } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import { format, addMonths, subMonths } from 'date-fns';
 import { uk } from 'date-fns/locale';
 import { DayPicker } from "react-day-picker";
@@ -21,24 +23,24 @@ const AttendanceFilters = ({ dateInterval, rangeType, setRangeType, filters, set
 
     return (
         <div className="flex flex-col gap-4 mb-6">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
-                <Card className="lg:col-span-4 p-2 border border-slate-200 dark:border-slate-800 dark:bg-slate-900 shadow-none rounded-xl flex flex-row items-center gap-2">
+            <div className="grid grid-cols-1 items-end gap-4 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800 lg:grid-cols-12">
+                <Card className="lg:col-span-4 p-2 border border-gray-200 dark:border-neutral-700 dark:bg-neutral-800 shadow-none rounded-xl flex flex-row items-center gap-2">
                     <IconButton variant="text" size="sm" onClick={handlePrev} className="dark:text-white"><i className="fa-solid fa-chevron-left text-xs"></i></IconButton>
                     <Popover placement="bottom">
                         <PopoverHandler>
-                            <div className="flex-1 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg py-1 transition-colors text-center">
+                            <div className="flex-1 cursor-pointer hover:bg-gray-50 dark:hover:bg-neutral-700 rounded-lg py-1 transition-colors text-center">
                                 <Typography variant="h6" className="capitalize dark:text-white text-[13px] font-bold">
                                     {format(dateInterval.start, 'd MMMM', { locale: uk })} - {format(dateInterval.end, 'd MMMM yyyy', { locale: uk })}
                                 </Typography>
                             </div>
                         </PopoverHandler>
-                        <PopoverContent className="z-[9999] p-0 border-none shadow-xl">
+                        <PopoverContent className="p-0 border-none shadow-xl">
                             <DayPicker mode="single" locale={uk} onSelect={(date) => date && setCurrentDate(date)} className="m-0" />
                         </PopoverContent>
                     </Popover>
                     <IconButton variant="text" size="sm" onClick={handleNext} className="dark:text-white"><i className="fa-solid fa-chevron-right text-xs"></i></IconButton>
                 </Card>
-                <Card className="lg:col-span-3 p-1.5 border border-slate-200 dark:border-slate-800 dark:bg-slate-900 shadow-none rounded-xl flex flex-row items-center justify-around">
+                <Card className="lg:col-span-3 p-1.5 border border-gray-200 dark:border-neutral-700 dark:bg-neutral-800 shadow-none rounded-xl flex flex-row items-center justify-around">
                     {RANGE_TYPES.map(r => (
                         <Button key={r} variant={rangeType === r ? 'filled' : 'text'} color={rangeType === r ? 'blue' : 'blue-gray'} size="sm" className="py-1.5 px-2 rounded-lg font-bold text-[10px]" onClick={() => setRangeType(r)}>{r}</Button>
                     ))}
@@ -50,7 +52,7 @@ const AttendanceFilters = ({ dateInterval, rangeType, setRangeType, filters, set
                     <AdvancedSelectWithDefaults size="xs" isMulti options={options.users} label="Співробітники" id="filter_users" selectedOptions={filters.users} onChange={(val) => setFilters(prev => ({...prev, users: val || []}))} />
                 </div>
                 <div className="lg:col-span-1 flex items-center">
-                    <label htmlFor="includeDeleted" data-filter-active={filters.include_deleted ? 'true' : 'false'} className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:border-blue-300 dark:border-gray-600 dark:bg-gray-800 dark:text-slate-200">
+                    <label htmlFor="includeDeleted" data-filter-active={filters.include_deleted ? 'true' : 'false'} className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:border-blue-300 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200">
                         <div className="inline-flex items-center">
                             <div className="relative inline-block w-8 h-4 cursor-pointer rounded-full">
                                 <input

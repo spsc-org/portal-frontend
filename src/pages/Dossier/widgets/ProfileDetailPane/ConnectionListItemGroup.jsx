@@ -29,11 +29,11 @@ const ConnectionListItemGroup = ({connections, isActive, onClick}) => {
         <div data-i-doc="component:sanction-profiles-connection-list-item-group" className="relative">
             <div
                 aria-hidden="true"
-                className="absolute inset-x-2 top-1.5 h-full rounded-lg border bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700"
+                className="absolute inset-x-2 top-1.5 h-full rounded-lg border bg-white border-gray-200 dark:bg-neutral-800 dark:border-neutral-700"
             />
             <div
                 aria-hidden="true"
-                className="absolute inset-x-1 top-[3px] h-full rounded-lg border bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700"
+                className="absolute inset-x-1 top-[3px] h-full rounded-lg border bg-white border-gray-200 dark:bg-neutral-800 dark:border-neutral-700"
             />
             <div
                 role="button"
@@ -43,7 +43,7 @@ const ConnectionListItemGroup = ({connections, isActive, onClick}) => {
                 className={`relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg border cursor-pointer transition ${
                     isActive
                         ? "bg-blue-50 border-blue-300 dark:bg-blue-900/25 dark:border-blue-700"
-                        : "bg-white border-gray-200 hover:bg-slate-50 dark:bg-gray-900 dark:border-gray-700 dark:hover:bg-gray-800"
+                        : "bg-white border-gray-200 hover:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:hover:bg-neutral-700"
                 }`}
             >
                 <span className={`flex-none inline-flex items-center justify-center w-7 h-7 rounded-md text-[12px] ${source.badgeClasses}`}>
@@ -56,7 +56,7 @@ const ConnectionListItemGroup = ({connections, isActive, onClick}) => {
                     <div className="flex items-center gap-2 flex-wrap mt-0.5">
                         {projectState && (
                             <div
-                                className={`inline-flex items-center gap-1 text-[10.5px] font-semibold ${projectState.style ?? "text-gray-500 dark:text-gray-400"}`}
+                                className={`inline-flex items-center gap-1 text-[10.5px] font-semibold ${projectState.style ?? "text-gray-600 dark:text-gray-400"}`}
                                 title="Стан проєкту"
                             >
                                 <i className={`${projectState.icon ?? "fa-solid fa-rectangle"} text-[8px]`}></i>{projectState.caption}

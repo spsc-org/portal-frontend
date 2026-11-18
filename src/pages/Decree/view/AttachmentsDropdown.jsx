@@ -2,7 +2,8 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { FileDownloadViewModel } from "../../../entities/file/FileDownloadViewModel.js";
 import { DecreeFilesViewModel } from "../viewmodel/DecreeViewModels.js";
-import {Button, Popover, PopoverContent, PopoverHandler, Spinner} from "@material-tailwind/react";
+import { Popover, PopoverContent, PopoverHandler, Spinner } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 /** Файли указу в рядку таблиці: запит лише після відкриття поповера. */
 const AttachmentsDropdown = ({id, count = 0}) => {
     const vm = useViewModel((deps) => new DecreeFilesViewModel({ ...deps, decreeId: id, lazy: true }));
@@ -24,8 +25,7 @@ const AttachmentsDropdown = ({id, count = 0}) => {
                     disabled={count === 0}
                     size="sm"
                     variant="filled"
-                    className="flex items-center gap-1 capitalize tracking-normal p-2"
-                >
+                    className="flex items-center gap-1 capitalize tracking-normal p-2">
                     {count} {" "}
                     <i className={`fa-regular text-xs fa-chevron-down transition-transform ${openMenu ? "rotate-180" : ""}`}></i>
                 </Button>

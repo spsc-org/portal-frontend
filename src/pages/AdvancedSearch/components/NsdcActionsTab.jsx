@@ -9,12 +9,12 @@ const ACTION_TYPE_CONFIG = {
 };
 
 const getActionTypeConfig = (actionType) => {
-    if (!actionType) return { color: 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-slate-300', icon: 'ti ti-file-text' };
+    if (!actionType) return { color: 'bg-gray-100 text-gray-700 dark:bg-neutral-600 dark:text-gray-300', icon: 'ti ti-file-text' };
     const key = actionType.toLowerCase();
     for (const [pattern, config] of Object.entries(ACTION_TYPE_CONFIG)) {
         if (key.includes(pattern)) return config;
     }
-    return { color: 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-slate-300', icon: 'ti ti-file-text' };
+    return { color: 'bg-gray-100 text-gray-700 dark:bg-neutral-600 dark:text-gray-300', icon: 'ti ti-file-text' };
 };
 
 const formatDate = (dateStr) => {
@@ -32,7 +32,7 @@ const formatDate = (dateStr) => {
 const NsdcActionsTab = ({ actions }) => {
     if (!actions || actions.length === 0) {
         return (
-            <div className="flex items-center justify-center h-32 text-gray-400 dark:text-slate-500">
+            <div className="flex items-center justify-center h-32 text-gray-600 dark:text-gray-500">
                 <Typography className="text-sm">Рішення відсутні</Typography>
             </div>
         );
@@ -50,7 +50,7 @@ const NsdcActionsTab = ({ actions }) => {
         <div className="space-y-2">
             <div className="flex items-center gap-2 mb-3">
                 <i className="ti ti-history text-blue-500 dark:text-blue-400 text-lg"></i>
-                <Typography variant="h6" className="text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-slate-300">
+                <Typography variant="h6" className="text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
                     Рішення РНБО ({actions.length})
                 </Typography>
             </div>
@@ -66,7 +66,7 @@ const NsdcActionsTab = ({ actions }) => {
                     return (
                         <div
                             key={action.id || idx}
-                            className="flex gap-3 p-3 rounded-lg border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800/50 hover:bg-gray-50 dark:hover:bg-slate-700/40 transition-colors"
+                            className="flex gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-neutral-700/50 hover:bg-gray-50 dark:hover:bg-neutral-600/40 transition-colors"
                         >
                             {/* Timeline dot */}
                             <div className="flex flex-col items-center gap-1 pt-0.5">
@@ -74,7 +74,7 @@ const NsdcActionsTab = ({ actions }) => {
                                     <i className={`${cfg.icon} text-sm`}></i>
                                 </div>
                                 {idx < sorted.length - 1 && (
-                                    <div className="w-px flex-1 min-h-2 bg-gray-200 dark:bg-slate-600"></div>
+                                    <div className="w-px flex-1 min-h-2 bg-gray-200 dark:bg-neutral-500"></div>
                                 )}
                             </div>
 
@@ -86,13 +86,13 @@ const NsdcActionsTab = ({ actions }) => {
                                         {od.action_type || 'Невідомо'}
                                     </span>
                                     {od.decree && (
-                                        <span className="inline-flex items-center gap-1 text-xs font-mono bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded">
+                                        <span className="inline-flex items-center gap-1 text-xs font-mono bg-gray-100 dark:bg-neutral-600 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded">
                                             <i className="ti ti-file-certificate text-xs"></i>
                                             {od.decree}
                                         </span>
                                     )}
                                     {od.decree_appendix && (
-                                        <span className="text-xs text-gray-500 dark:text-slate-400">
+                                        <span className="text-xs text-gray-600 dark:text-gray-400">
                                             дод. {od.decree_appendix}
                                             {od.position_in_appendix ? `, п. ${od.position_in_appendix}` : ''}
                                         </span>
@@ -101,25 +101,25 @@ const NsdcActionsTab = ({ actions }) => {
 
                                 {/* Captions */}
                                 {action.captions && (
-                                    <div className="text-sm text-gray-800 dark:text-slate-200 font-medium mb-1">
+                                    <div className="text-sm text-gray-800 dark:text-gray-200 font-medium mb-1">
                                         {action.captions}
                                     </div>
                                 )}
 
                                 {/* Identifiers */}
                                 {action.identifiers && (
-                                    <div className="text-xs text-gray-500 dark:text-slate-400 font-mono mb-2">
+                                    <div className="text-xs text-gray-600 dark:text-gray-400 font-mono mb-2">
                                         <i className="ti ti-id-badge mr-1"></i>
                                         {action.identifiers}
                                     </div>
                                 )}
 
                                 {/* Dates row */}
-                                <div className="flex flex-wrap gap-3 text-xs text-gray-500 dark:text-slate-400">
+                                <div className="flex flex-wrap gap-3 text-xs text-gray-600 dark:text-gray-400">
                                     {decreeDate && (
                                         <span className="flex items-center gap-1">
                                             <i className="ti ti-calendar-event"></i>
-                                            Дата рішення: <span className="font-medium text-gray-700 dark:text-slate-300">{decreeDate}</span>
+                                            Дата рішення: <span className="font-medium text-gray-700 dark:text-gray-300">{decreeDate}</span>
                                         </span>
                                     )}
                                     {term && (
@@ -131,14 +131,14 @@ const NsdcActionsTab = ({ actions }) => {
                                     {endDate && (
                                         <span className="flex items-center gap-1">
                                             <i className="ti ti-calendar-x"></i>
-                                            До: <span className="font-medium text-gray-700 dark:text-slate-300">{endDate}</span>
+                                            До: <span className="font-medium text-gray-700 dark:text-gray-300">{endDate}</span>
                                         </span>
                                     )}
                                 </div>
 
                                 {/* Sanctions list */}
                                 {od.sanctions && (
-                                    <div className="mt-1.5 text-xs text-gray-600 dark:text-slate-400 line-clamp-2">
+                                    <div className="mt-1.5 text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
                                         {od.sanctions}
                                     </div>
                                 )}
@@ -162,7 +162,7 @@ const NsdcActionsTab = ({ actions }) => {
                             {/* AID badge */}
                             {od.aid && (
                                 <div className="flex-shrink-0 text-right">
-                                    <span className="text-xs font-mono text-gray-400 dark:text-slate-500">
+                                    <span className="text-xs font-mono text-gray-600 dark:text-gray-500">
                                         #{od.aid}
                                     </span>
                                 </div>

@@ -2,7 +2,9 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { DossierOptionsViewModel } from "../../viewmodel/DossierViewModels.js";
 import {useState} from "react";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
+import Button from "../../../../components/Buttons/Button.jsx"
 import ProfileAutocomplete from "./ProfileAutocomplete.jsx";
 
 // Модальне вікно додавання profile-to-profile звʼязку (заміняє колишню
@@ -39,17 +41,17 @@ const AddRelationModal = ({open, excludeId, linkMutation, onClose}) => {
     };
 
     return (
-        <Dialog data-i-doc="modal:sanction-profiles-add-relation"
+        <Modal data-i-doc="modal:sanction-profiles-add-relation"
             open={open}
             handler={resetAndClose}
             size="sm"
-            className="dark:bg-slate-900 border dark:border-slate-800"
-            overlayProps={{className: "bg-black/20 backdrop-blur-none"}}
-        >
-            <DialogHeader className="dark:text-white">
+            className="border"
+            overlayProps={{className: "bg-black/20 backdrop-blur-none"}}>
+            <ModalHeader>
                 <Typography variant="h5">Додати пов'язаний профіль</Typography>
-            </DialogHeader>
-            <DialogBody className="flex flex-col gap-3.5">
+            </ModalHeader>
+            {/* overflow-visible: випадаючий список ProfileAutocomplete (absolute) інакше обрізається тілом модалки */}
+            <ModalBody className="flex flex-col gap-3.5 overflow-visible">
                 <div>
                     <div className="text-[12px] font-semibold text-gray-600 mb-1.5 dark:text-gray-400">Профіль</div>
                     <ProfileAutocomplete selected={relatedProfile} onSelect={setRelatedProfile} excludeId={excludeId}/>
@@ -59,7 +61,7 @@ const AddRelationModal = ({open, excludeId, linkMutation, onClose}) => {
                     <select
                         value={connectionTypeId}
                         onChange={(e) => setConnectionTypeId(e.target.value)}
-                        className="w-full h-10 px-2.5 border border-gray-300 rounded-lg bg-white text-[12.5px] text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200"
+                        className="w-full h-10 px-2.5 border border-gray-200 rounded-lg bg-white text-[12.5px] text-gray-900 outline-none focus:border-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
                     >
                         {connectionTypes.map((type) => (
                             <option key={type.id} value={type.id}>{type.caption}</option>
@@ -74,27 +76,26 @@ const AddRelationModal = ({open, excludeId, linkMutation, onClose}) => {
                         maxLength={1000}
                         placeholder="Нотатка (опційно, напр. «за даними ЗМІ»)…"
                         rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[12.5px] text-gray-900 placeholder:text-gray-400 outline-none focus:border-blue-500 resize-none dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[12.5px] text-gray-900 placeholder:text-gray-500 outline-none focus:border-blue-500 resize-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
                     />
                 </div>
                 {!relatedProfile && (
-                    <div className="text-[11.5px] text-gray-400">Оберіть профіль, щоб додати звʼязок.</div>
+                    <div className="text-[11.5px] text-gray-600">Оберіть профіль, щоб додати звʼязок.</div>
                 )}
-            </DialogBody>
-            <DialogFooter className="gap-2">
-                <Button variant="text" color="red" onClick={resetAndClose} disabled={linkMutation.isPending}>
+            </ModalBody>
+            <ModalFooter className="gap-2">
+                <Button color="secondary" onClick={resetAndClose} disabled={linkMutation.isPending}>
                     Скасувати
                 </Button>
                 <Button
                     variant="gradient"
                     color="blue"
                     onClick={handleSubmit}
-                    disabled={!canSubmit || linkMutation.isPending}
-                >
+                    disabled={!canSubmit || linkMutation.isPending}>
                     {linkMutation.isPending ? "Додавання…" : "Додати"}
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

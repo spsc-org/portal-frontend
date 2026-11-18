@@ -3,7 +3,8 @@ import ImageUploading from "react-images-uploading";
 import {Gallery, Item} from "react-photoswipe-gallery";
 import "photoswipe/dist/photoswipe.css";
 import {useImageSize} from "../hooks/useImageSize.jsx";
-import {IconButton, Spinner, Typography} from "@material-tailwind/react";
+import { Spinner, Typography } from "@material-tailwind/react"
+import IconButton from "./Buttons/IconButton.jsx"
 import ImageSkeleton from "./Sekeleton/ImageSkeleton.jsx";
 
 export default function ImageGallery({
@@ -85,15 +86,15 @@ export default function ImageGallery({
                                 <div>
                                     {
                                         isLoading ? <Spinner className="h-20 w-20"/> :
-                                            <i className="dark:text-slate-400 text-4xl fa-solid fa-file-import"></i>
+                                            <i className="dark:text-gray-400 text-4xl fa-solid fa-file-import"></i>
                                     }
                                 </div>
                                 {!data.length &&
-                                    <Typography variant="h5" className="dark:text-slate-400">Зображення
+                                    <Typography variant="h5" className="dark:text-gray-400">Зображення
                                         відсутні</Typography>
                                 }
                                 <span
-                                    className={`${isLoading && 'opacity-0'} dark:text-slate-400`}> Натисніть, вставте або
+                                    className={`${isLoading && 'opacity-0'} dark:text-gray-400`}> Натисніть, вставте або
                                     перенесіть зображення сюди</span>
                             </div>
                         </div>

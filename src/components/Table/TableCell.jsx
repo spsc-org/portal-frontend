@@ -1,4 +1,4 @@
-const TableCell = ({canSelect = false, columns = [], index, row = {}}) => {
+const TableCell = ({canSelect = false, columns = [], row = {}}) => {
     return columns.map((column, index) => {
         return (
             <td key={index} className="px-2 py-2 text-xs font-medium text-gray-700 whitespace-break-spaces">
@@ -6,10 +6,10 @@ const TableCell = ({canSelect = false, columns = [], index, row = {}}) => {
                     {
                         canSelect &&
                         <input type="checkbox"
-                               className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"/>
+                               className="text-blue-500 border-gray-300 rounded dark:bg-neutral-800 dark:ring-offset-neutral-800 dark:border-neutral-700"/>
                     }
                     <div className="flex items-center gap-x-2">
-                        {column.hasOwnProperty('render') ? column.render(row) : row[column.key]}
+                        {Object.hasOwn(column, 'render') ? column.render(row) : row[column.key]}
                     </div>
                 </div>
             </td>

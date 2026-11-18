@@ -129,7 +129,7 @@ export const STATUS_CONFIG = {
   valid: { icon: 'fas fa-check-circle', color: 'text-green-600 dark:text-green-400', box: 'bg-green-50 border-green-200 text-green-800 dark:bg-[#262524] dark:border-green-700 dark:text-green-200', title: 'Успішно перевірено' },
   invalid: { icon: 'fas fa-times-circle', color: 'text-red-600 dark:text-red-400', box: 'bg-red-50 border-red-200 text-red-800 dark:bg-[#262524] dark:border-red-700 dark:text-red-200', title: 'Знайдені помилки' },
   warning: { icon: 'fas fa-exclamation-triangle', color: 'text-yellow-600 dark:text-yellow-400', box: 'bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-[#262524] dark:border-yellow-700 dark:text-yellow-200', title: 'Потребує уваги' },
-  'not-checked': { icon: 'fas fa-question-circle', color: 'text-gray-500 dark:text-gray-400', box: 'bg-gray-50 border-gray-200 text-gray-800 dark:bg-[#262524] dark:border-gray-700 dark:text-gray-200', title: 'Не перевірено' },
+  'not-checked': { icon: 'fas fa-question-circle', color: 'text-gray-600 dark:text-gray-400', box: 'bg-gray-50 border-gray-200 text-gray-800 dark:bg-[#262524] dark:border-neutral-700 dark:text-gray-200', title: 'Не перевірено' },
 }
 export const statusConfig = (status) => STATUS_CONFIG[status] ?? STATUS_CONFIG['not-checked']
 
@@ -138,7 +138,7 @@ export const LAYER_CONFIG = {
   failed: { icon: 'fas fa-times-circle', color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30' },
   warning: { icon: 'fas fa-exclamation-triangle', color: 'text-yellow-600 dark:text-yellow-400', bg: 'bg-yellow-100 dark:bg-yellow-900/30' },
 }
-export const layerConfig = (status) => LAYER_CONFIG[status] ?? { icon: 'fas fa-question-circle', color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-900/30' }
+export const layerConfig = (status) => LAYER_CONFIG[status] ?? { icon: 'fas fa-question-circle', color: 'text-gray-600 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-neutral-800/30' }
 
 const FIELD_NAMES = { drsId: 'DRS ID', nameUk: 'Назва (укр)', nameRu: 'Назва (рос)', nameEn: 'Назва (англ)', birthDate: 'Дата народження', identifier: 'Ідентифікатор', attribute: 'Атрибут', reasoning: 'Обґрунтування' }
 export const fieldDisplayName = (field) => FIELD_NAMES[field] ?? field

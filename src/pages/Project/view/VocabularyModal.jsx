@@ -98,17 +98,17 @@ const VocabularyModal = () => {
             <form onSubmit={vm.submit} className="m-3 flex w-full max-w-lg flex-col rounded-xl border border-gray-200 bg-white shadow-xl dark:border-neutral-700 dark:bg-neutral-800">
                 <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-neutral-700">
                     <h3 className="font-bold uppercase text-gray-800 dark:text-gray-300">{vm.title}</h3>
-                    <button type="button" onClick={vm.close} aria-label="Закрити" className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                    <button type="button" onClick={vm.close} aria-label="Закрити" className="text-gray-600 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
                         <i className="fas fa-xmark text-lg" />
                     </button>
                 </div>
                 <div className="flex flex-col gap-3 px-4 py-3">
-                    {vm.kind !== "category" && <p className="text-xs font-bold text-gray-500 dark:text-gray-400">Зірочкою позначені поля, обов'язкові до заповнення.</p>}
+                    {vm.kind !== "category" && <p className="text-xs font-bold text-gray-600 dark:text-gray-400">Зірочкою позначені поля, обов'язкові до заповнення.</p>}
                     <VocabularyFields />
                     {vm.general.length > 0 && <div className="text-sm text-red-600 dark:text-red-400">{vm.general.join(" ")}</div>}
                 </div>
                 <div className="flex items-center justify-end gap-2 border-t border-gray-200 px-4 py-3 dark:border-neutral-700">
-                    {vm.saving && <i className="fa-solid fa-spinner fa-spin text-gray-400" />}
+                    {vm.saving && <i className="fa-solid fa-spinner fa-spin text-gray-500" />}
                     <button type="button" onClick={vm.close} className="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-neutral-600 dark:text-gray-300 dark:hover:bg-neutral-700">
                         Скасувати
                     </button>

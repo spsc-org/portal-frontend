@@ -43,7 +43,7 @@ const AccessModulesCell = ({schemaPages = [], userPages = {}}) => {
         : Object.keys(userPages ?? {});
 
     if (!pages.length) {
-        return <span className="text-[10px] text-slate-400">—</span>;
+        return <span className="text-[10px] text-gray-600">—</span>;
     }
 
     return (
@@ -57,7 +57,7 @@ const AccessModulesCell = ({schemaPages = [], userPages = {}}) => {
                             className={`inline-flex h-4 w-4 items-center justify-center rounded-[3px] border text-[8px] leading-none transition ${
                                 on
                                     ? "border-emerald-400/70 bg-emerald-100 text-emerald-700 dark:border-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300"
-                                    : "border-slate-200 bg-transparent text-slate-300 dark:border-slate-700 dark:text-slate-600"
+                                    : "border-gray-200 bg-transparent text-gray-300 dark:border-neutral-700 dark:text-gray-600"
                             }`}
                         >
                             <i className={moduleIcon(page)}></i>

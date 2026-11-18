@@ -61,7 +61,7 @@ const TypePanel = observer(() => {
                 checked={form.subjectTypeId === type.id}
                 onChange={() => vm.setSubjectType(type.id)}
               />
-              <i className={`${type.icon} text-gray-500 dark:text-gray-400`} />
+              <i className={`${type.icon} text-gray-600 dark:text-gray-400`} />
             </label>
           ))}
         </div>
@@ -205,14 +205,14 @@ const CitizenPanel = observer(() => {
         </span>
         <div className="flex flex-wrap gap-x-4 gap-y-1 px-1">
           {vm.rowCountryOptions.length === 0 ? (
-            <span className="rounded bg-white p-1 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+            <span className="rounded bg-white p-1 text-gray-700 dark:bg-neutral-600 dark:text-gray-300">
               Після вибору задіяних країн тут з'являться елементи
             </span>
           ) : (
             vm.rowCountryOptions.map((country) => (
               <label
                 key={country.id}
-                className={`flex cursor-pointer items-center gap-1 text-sm ${missing.has(country.id) ? "text-red-600" : "text-gray-700 dark:text-slate-400"}`}
+                className={`flex cursor-pointer items-center gap-1 text-sm ${missing.has(country.id) ? "text-red-600" : "text-gray-700 dark:text-gray-400"}`}
               >
                 <input
                   type="checkbox"
@@ -236,7 +236,7 @@ const BirthPanel = observer(() => {
     <div className="mb-5">
       <span className="mb-1.5 block">
         <span className={LABEL}>Дата народження</span>
-        <span className="ml-1 text-xs font-normal text-gray-400 normal-case dark:text-gray-500">
+        <span className="ml-1 text-xs font-normal text-gray-600 normal-case dark:text-gray-500">
           "01.01.1980" / "1980" / "01.00.1980"
         </span>
       </span>
@@ -288,7 +288,7 @@ const RemoveRowButton = ({ onClick }) => (
     type="button"
     title="Видалити"
     onClick={onClick}
-    className="inline-flex items-center rounded border border-gray-200 bg-white p-1 text-gray-500 hover:bg-red-50 hover:text-red-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-400 dark:hover:bg-red-900/20"
+    className="inline-flex items-center rounded border border-gray-200 bg-white p-1 text-gray-600 hover:bg-red-50 hover:text-red-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-400 dark:hover:bg-red-900/20"
   >
     <i className="fa-solid fa-trash-can pointer-events-none" />
   </button>
@@ -329,10 +329,10 @@ const IdentifiersTable = observer(() => {
       <div className="mb-1.5 flex items-center justify-between">
         <span className={LABEL}>Ідентифікаційні дані</span>
         <a
-          href="/dictionary"
+          href="/dictionary/identify-v2"
           target="_blank"
           rel="noreferrer"
-          className="p-1 text-gray-400 transition-colors hover:text-blue-500"
+          className="p-1 text-gray-600 transition-colors hover:text-blue-500"
           title="Словник"
         >
           <i className="fa-duotone fa-book-font" />

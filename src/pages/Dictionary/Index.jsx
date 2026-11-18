@@ -1,71 +1,69 @@
-import { useSearchParams } from "react-router";
+import { Link, Navigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
-import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from "@material-tailwind/react";
 import Page from "../../components/Page.jsx";
+import ComingSoonPlaceholder from "../../components/SecondaryNav/ComingSoonPlaceholder.jsx";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { usePageTitle } from "../../shared/hooks/usePageTitle.js";
 import { DictionaryPageViewModel } from "./viewmodel/DictionaryViewModels.js";
-import DictionaryIdentify from "./view/DictionaryIdentify.jsx";
 import DictionaryIdentifyV2 from "./view/DictionaryIdentifyV2.jsx";
 import VesselCallSigns from "./view/VesselCallSigns.jsx";
 
-const TABS = [
-    { disabled: false, value: "identify", label: "Ідентифікатори", Component: DictionaryIdentify },
-    { disabled: false, value: "identify-v2", label: "Ідентифікатори v2", Component: DictionaryIdentifyV2 },
-    { disabled: false, value: "subgroup", label: "Позивні сигнали судна", Component: VesselCallSigns },
-    // "Атрибути" — заглушка, вкладка вимкнена (як в Inertia-версії).
-    { disabled: true, value: "attributes", label: "Атрибути", Component: () => <div/> },
-];
+// "Атрибути" — заглушка (в Inertia-версії вкладка була вимкнена)
+const AttributesPlaceholder = () => (
+    <ComingSoonPlaceholder icon="fa-solid fa-tags" title="Атрибути" description="Словник атрибутів ще не реалізований." />
+);
 
-/** Маршрут /dictionary (pageAccess). Словники countries/subjectTypes — /api/spa/pages/dictionary/options. */
-const DictionaryPage = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const vm = useViewModel((deps) => new DictionaryPageViewModel({ ...deps, initialTab: searchParams.get("tab") }));
-    // Назва — активна вкладка, breadcrumb — "Словники" (кнопки дає вкладка через PageHeader)
-    const activeTab = TABS.find((tab) => tab.value === vm.tab);
-    usePageTitle(activeTab?.label ?? "Словники", { breadcrumbs: activeTab ? [{ label: "Словники", href: "/dictionary" }] : null, documentTitle: "Словники" });
+/** Розділи словників — окремі сторінки /dictionary/{section} (посилання — у підменю сайдбару). */
+/**
+ * /dictionary/identify — легасі-довідник ідентифікаторів (v1), замінений "Ідентифікатори v2".
+ * Доступ закрито на рівні UI: дані не вантажаться, лише пояснення й перехід на v2.
+ */
+const LegacyIdentifiers = () => (
+    <section className="mx-auto mt-6 flex max-w-xl flex-col items-center rounded-2xl border border-amber-200 bg-white p-8 text-center shadow-sm dark:border-amber-800/60 dark:bg-neutral-800/70" data-testid="legacy-page">
+        <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300">
+            <i className="fa-solid fa-lock text-lg" />
+        </span>
+        <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">Сторінка застаріла</h2>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            «Ідентифікатори» (v1) — легасі-довідник. Перегляд і редагування тут закрито, щоб дані не
+            розходились із новою версією. Користуйтеся розділом «Ідентифікатори v2».
+        </p>
+        <Link
+            to="/dictionary/identify-v2"
+            className="mt-5 inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+        >
+            Перейти до «Ідентифікатори v2»
+            <i className="fa-solid fa-arrow-right text-xs" />
+        </Link>
+    </section>
+);
 
-    const handleTabChange = (value) => {
-        vm.setTab(value);
-        setSearchParams((params) => {
-            params.set("tab", value);
-            return params;
-        }, { replace: true });
-    };
-
-    return (
-        <Page>
-            <Tabs value={vm.tab}>
-                <div data-i-doc="page:dictionary" className="bg-white dark:bg-slate-800 w-8/12 mx-auto rounded-lg shadow-lg mb-5">
-                    <TabsHeader
-                        className="rounded-none text-xs border-blue-gray-50 bg-transparent p-0 z-0"
-                        indicatorProps={{
-                            className: "bg-transparent border-b-2 border-gray-900  shadow-none rounded-none",
-                        }}
-                    >
-                        {TABS.map(({ label, disabled, value }) => (
-                            <Tab
-                                key={value}
-                                value={value}
-                                disabled={disabled}
-                                onClick={() => handleTabChange(value)}
-                                className={`${vm.tab === value ? "text-gray-900 dark:text-slate-100" : ""} text-sm p-0  dark:text-slate-400`}
-                            >
-                                {label}
-                            </Tab>
-                        ))}
-                    </TabsHeader>
-                </div>
-                <TabsBody>
-                    {TABS.map(({ value, Component }) => (
-                        <TabPanel className="p-1 bg-white dark:bg-slate-800" key={value} value={value}>
-                            <Component page={vm}/>
-                        </TabPanel>
-                    ))}
-                </TabsBody>
-            </Tabs>
-        </Page>
-    );
+const DICTIONARY_SECTIONS = {
+    identify: { label: "Ідентифікатори (легасі)", Component: LegacyIdentifiers },
+    "identify-v2": { label: "Ідентифікатори v2", Component: DictionaryIdentifyV2 },
+    subgroup: { label: "Позивні сигнали судна", Component: VesselCallSigns },
+    attributes: { label: "Атрибути", Component: AttributesPlaceholder },
 };
 
-export default observer(DictionaryPage);
+const DictionarySection = observer(({ section }) => {
+    const vm = useViewModel((deps) => new DictionaryPageViewModel({ ...deps, section }));
+    const { label, Component } = DICTIONARY_SECTIONS[section];
+    usePageTitle(label, { breadcrumbs: [{ label: "Словники", href: "/dictionary" }], documentTitle: `Словники: ${label}` });
+    return (
+        <Page>
+            <div data-i-doc="page:dictionary" className="p-1">
+                <Component page={vm} />
+            </div>
+        </Page>
+    );
+});
+
+/** Маршрут /dictionary/:section (pageAccess). Словники countries/subjectTypes — /api/spa/pages/dictionary/options. */
+const DictionaryPage = () => {
+    const { section } = useParams();
+    if (!DICTIONARY_SECTIONS[section]) return <Navigate to="/dictionary/identify-v2" replace />;
+    // Новий VM на кожен розділ
+    return <DictionarySection key={section} section={section} />;
+};
+
+export default DictionaryPage;

@@ -1,3 +1,21 @@
 @import "tailwindcss";
 @import "./assets/app.css";
 @config "../tailwind.config.js";
+
+/* Portal UI kit: усі кнопки й посилання — cursor: pointer.
+   Tailwind v4 preflight скинув його для <button> до cursor: default. У @layer base,
+   тож утиліти (cursor-default, cursor-not-allowed) на окремих елементах перебивають. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  input:is([type="button"], [type="submit"], [type="reset"]):not(:disabled),
+  a,
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  input:is([type="button"], [type="submit"], [type="reset"]):disabled {
+    cursor: not-allowed;
+  }
+}

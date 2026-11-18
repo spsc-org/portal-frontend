@@ -1,4 +1,5 @@
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
+import Button from "../../components/Buttons/Button.jsx"
 import {useMemo} from "react";
 import { observer } from "mobx-react-lite";
 import Table from "../../components/Table/Table.jsx";
@@ -262,12 +263,11 @@ const DuplicateProjectsModal = ({open, onClose, dictionaries = {}, ...props}) =>
 
 
     return (
-        <Dialog open={open} handler={onClose} size="xl">
-            <DialogHeader
-                className="dark:text-gray-200">Дублікати</DialogHeader>
-            <DialogBody className="h-[42rem] overflow-y-auto">
+        <Modal open={open} handler={onClose} size="xl">
+            <ModalHeader>Дублікати</ModalHeader>
+            <ModalBody className="h-[42rem] overflow-y-auto">
                 <div
-                    className="mb-3 flex flex-wrap gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2 dark:border-gray-700 dark:bg-gray-900/60">
+                    className="mb-3 flex flex-wrap gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2 dark:border-neutral-700 dark:bg-neutral-800/60">
                     {TABS.map(({label, disabled, value}) => (
                         <button
                             key={value}
@@ -277,7 +277,7 @@ const DuplicateProjectsModal = ({open, onClose, dictionaries = {}, ...props}) =>
                             className={`group inline-flex min-w-[11rem] flex-1 items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors
                             ${tab === value
                                 ? "border-blue-500 bg-blue-600 text-white shadow-sm dark:border-blue-400 dark:bg-blue-500 dark:text-gray-900"
-                                : "border-gray-200 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-blue-400 dark:hover:bg-gray-700"}
+                                : "border-gray-200 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50 dark:border-neutral-700 dark:bg-neutral-700 dark:text-gray-200 dark:hover:border-blue-400 dark:hover:bg-neutral-600"}
                             ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
                         >
                             <div className="flex items-center gap-2">
@@ -285,8 +285,8 @@ const DuplicateProjectsModal = ({open, onClose, dictionaries = {}, ...props}) =>
                                 <div
                                     className={`inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1 text-xs font-semibold
                                     ${tab === value
-                                        ? "bg-white/25 text-white dark:bg-gray-900/25 dark:text-gray-900"
-                                        : "bg-gray-900 text-white dark:bg-gray-200 dark:text-gray-900"}`}>
+                                        ? "bg-white/25 text-white dark:bg-neutral-800/25 dark:text-gray-900"
+                                        : "bg-gray-900 text-white dark:bg-neutral-100 dark:text-gray-900"}`}>
                                     {props?.[value]?.length ? props?.[value]?.length : 0}
                                 </div>
                             </div>
@@ -306,13 +306,13 @@ const DuplicateProjectsModal = ({open, onClose, dictionaries = {}, ...props}) =>
                         totalCount: projects?.total,
                     }} data={projects?.data || []} columns={columns}
                 />
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button variant="gradient" color="green" onClick={onClose}>
                     <span>Ок</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

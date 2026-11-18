@@ -1,3 +1,4 @@
+import { avatarInitials } from "../../../../../../lib/avatarInitials.js";
 
 
 // Порт TicketManager.renderCellTickets(): компактний чіп + попап з діями на hover.
@@ -10,10 +11,10 @@ const STATE = {
 const Avatar = ({ user, size = "h-5 w-5 text-[10px]", className = "" }) =>
     user ? (
         <span
-            className={`flex flex-shrink-0 items-center justify-center rounded-full bg-gray-100 font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-200 ${size} ${className}`}
+            className={`flex flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 font-semibold text-gray-700 dark:bg-neutral-600 dark:text-gray-200 ${size} ${className}`}
             title={user.caption}
         >
-            {user.initials}
+            {avatarInitials(user.initials, user.caption)}
         </span>
     ) : null;
 
@@ -46,7 +47,7 @@ const TicketsList = ({ projectId, tickets, users, commands }) => {
                         >
                             <Avatar user={createdUser} />
                             <span className="truncate leading-none text-gray-700 dark:text-gray-300">{text}</span>
-                            {Boolean(isAttachment) && <i className="fa-solid fa-paperclip flex-shrink-0 text-[10px] text-gray-400" />}
+                            {Boolean(isAttachment) && <i className="fa-solid fa-paperclip flex-shrink-0 text-[10px] text-gray-500" />}
                         </div>
 
                         <div
@@ -60,12 +61,12 @@ const TicketsList = ({ projectId, tickets, users, commands }) => {
                                 <span className="break-words leading-snug text-gray-900 dark:text-gray-100">{text}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-gray-400 dark:text-gray-500">ticket#{id}</span>
+                                <span className="text-gray-600 dark:text-gray-500">ticket#{id}</span>
                                 {commands.canAct && (
                                     <div className="flex gap-0.5">
                                         {stateId === -1 ? (
                                             <>
-                                                <TicketAction title="Позначити реалізованим" icon="fa-solid fa-check text-gray-500" onClick={() => commands.onSetTicketState(id, 0)} />
+                                                <TicketAction title="Позначити реалізованим" icon="fa-solid fa-check text-gray-600" onClick={() => commands.onSetTicketState(id, 0)} />
                                                 <TicketAction
                                                     title="Позначити реалізованим та корисним"
                                                     icon="fa-solid fa-check-double text-green-500"
@@ -77,7 +78,7 @@ const TicketsList = ({ projectId, tickets, users, commands }) => {
                                         ) : (
                                             <TicketAction
                                                 title="Відмінити позначку"
-                                                icon="fa-solid fa-arrow-rotate-left text-gray-500"
+                                                icon="fa-solid fa-arrow-rotate-left text-gray-600"
                                                 onClick={() => commands.onSetTicketState(id, -1)}
                                             />
                                         )}
@@ -89,7 +90,7 @@ const TicketsList = ({ projectId, tickets, users, commands }) => {
                                                 title="Переглянути вкладення"
                                                 className="rounded-full bg-white p-1 text-xs hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700"
                                             >
-                                                <i className="fa-solid fa-paperclip pointer-events-none text-gray-500" />
+                                                <i className="fa-solid fa-paperclip pointer-events-none text-gray-600" />
                                             </a>
                                         )}
                                     </div>

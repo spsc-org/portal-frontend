@@ -64,21 +64,21 @@ const SearchInput = ({
         <div className="relative w-full">
             {Boolean(label) &&
                 <label htmlFor={name}
-                       className={`block text-${size} text-gray-600 dark:text-gray-300`}>{label}
+                       className={`mb-0.5 block truncate text-${size} text-gray-600 dark:text-gray-400`}>{label}
                 </label>
             }
             <div className="relative">
                 {Boolean(icon) &&
-                    <i className={`${icon} pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[11px] text-gray-400 dark:text-gray-500`}></i>
+                    <i className={`${icon} pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[11px] text-gray-500 dark:text-gray-500`}></i>
                 }
                 <input ref={inputRef} onInput={sendChange} disabled={disabled} type={type} defaultValue={value} placeholder={placeholder}
                        name={name} {...rest}
-                       className={`w-full rounded-md border bg-white py-2 leading-5 text-${size} text-gray-800 placeholder:text-gray-500 shadow-sm transition duration-300 ease focus:outline-none focus:ring-1 disabled:bg-gray-200 dark:disabled:bg-gray-900 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:placeholder:text-gray-400 ${icon ? 'pl-8' : 'pl-3'} ${hasValue ? 'pr-8' : 'pr-3'} ${error ? 'border-red-500 focus:border-red-600 focus:ring-red-300 dark:border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-blue-300 dark:focus:border-blue-300'}`}/>
+                       className={`w-full rounded-md border bg-white ${size === "xs" ? "h-9 py-0" : "py-2 leading-5"} text-${size} text-gray-800 placeholder:text-gray-500 shadow-sm transition duration-300 ease focus:outline-none focus:ring-1 disabled:bg-gray-200 dark:disabled:bg-neutral-800 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-300 dark:placeholder:text-gray-400 ${icon ? 'pl-8' : 'pl-3'} ${hasValue ? 'pr-8' : 'pr-3'} ${error ? 'border-red-500 focus:border-red-600 focus:ring-red-300 dark:border-red-500' : 'border-gray-200 hover:border-gray-400 focus:border-blue-500 focus:ring-blue-300 dark:focus:border-blue-300'}`}/>
                 {hasValue && !disabled &&
                     <button type="button"
                             onClick={handleClear}
                             title="Очистити"
-                            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 transition hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 transition hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300">
                         <i className="fa-solid fa-xmark text-xs"></i>
                     </button>
                 }

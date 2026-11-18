@@ -6,7 +6,7 @@ export default function NotFound() {
   const isNotFound = !error || (isRouteErrorResponse(error) && error.status === 404)
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-gray-50 px-4 text-center dark:bg-gray-950">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-gray-50 px-4 text-center dark:bg-neutral-900">
       <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">404</p>
       <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
         {isNotFound ? 'Такої сторінки не існує' : 'Сталася непередбачена помилка'}

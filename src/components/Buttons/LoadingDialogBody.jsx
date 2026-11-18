@@ -1,15 +1,16 @@
 import {forwardRef} from "react";
-import {DialogBody, Spinner} from "@material-tailwind/react";
+import { Spinner } from "@material-tailwind/react"
+import { ModalBody } from "../Modal/Modal.jsx"
 
 export const LoadingDialogBody = forwardRef(({isLoading = false, children, ...props}, ref) => {
     return (
-        <DialogBody ref={ref} disabled={isLoading} {...props} >
+        <ModalBody ref={ref} disabled={isLoading} {...props}>
             <span className={isLoading ? "invisible" : "visible"}>{children}</span>
             {isLoading && (
                 <span className="absolute">
                     <Spinner />
                 </span>
             )}
-        </DialogBody>
+        </ModalBody>
     );
 });

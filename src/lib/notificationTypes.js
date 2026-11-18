@@ -79,8 +79,8 @@ export const NOTIFICATION_CATEGORIES = {
 const SYSTEM_CATEGORY = {
     key: 'system',
     label: 'Системні',
-    dotClass: 'bg-slate-400 dark:bg-slate-500',
-    borderClass: 'border-l-slate-300 dark:border-l-slate-600',
+    dotClass: 'bg-gray-400 dark:bg-neutral-400',
+    borderClass: 'border-l-gray-300 dark:border-l-gray-600',
 };
 
 export function notificationCategory(notification) {

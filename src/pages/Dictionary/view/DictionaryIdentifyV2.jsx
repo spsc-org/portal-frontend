@@ -6,10 +6,12 @@ import { IdentifierListViewModel } from "../viewmodel/DictionaryViewModels.js";
 import {useMemo} from "react";
 import PageHeader from "../../../layouts/app/PageHeader.jsx";
 import { HeaderButton } from "../../../layouts/app/HeaderButtons.jsx";
-import Table, {loadColumnSizes} from "../../../components/Table/Table.jsx";
+import Table from "../../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import {createColumnHelper} from "@tanstack/react-table";
 import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
-import {Button, Switch, Tooltip} from "@material-tailwind/react";
+import { Switch, Tooltip } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import {convertDate} from "../../../lib/utils.js";
 import IdentifyV2DetailsModal from "./IdentifyV2DetailsModal.jsx";
 import IdentifyV2Modal from "./IdentifyV2Modal.jsx";
@@ -177,8 +179,8 @@ const DictionaryIdentifyV2 = ({ page }) => {
 
     return (
         <span data-i-doc="tab:dictionary-identify-v2" style={{display: "contents"}}>
-            <div className="flex flex-row justify-between items-center">
-                <div className="grid grid-cols-8 gap-x-2 mb-5">
+            <div className="mb-3 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800">
+                <div className="grid grid-cols-8 items-end gap-x-2">
                     <SearchInput size="xs" name="code" value={filters.code} label="Код"
                                  onChange={handleChangeFilters}/>
                     <SearchInput size="xs" name="name" value={filters.name} label="Назва"
@@ -208,7 +210,7 @@ const DictionaryIdentifyV2 = ({ page }) => {
                         }
                         <div className="flex items-center mt-4">
                             <Tooltip content="Скинути фільтри">
-                                <Button size="sm" className="h-10" disabled={!hasNonEmptyFilter()}
+                                <Button size="sm" className="h-9" disabled={!hasNonEmptyFilter()}
                                         onClick={handleClearFilters}>
                                     <i className="fa-regular fa-filter-slash"/>
                                 </Button>
@@ -226,7 +228,7 @@ const DictionaryIdentifyV2 = ({ page }) => {
                     />
                 )}
             </div>
-            <div className="mt-6 mx-2">
+            <div className="mx-2">
                 <Table
                     onRowClick={(row) => {
                         if (auth?.user?.permissions?.pages?.dictionary?.read && !row?.original?.deletedAt) {

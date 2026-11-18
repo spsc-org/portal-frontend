@@ -1,16 +1,9 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { ExportLinkedProjectsViewModel } from "../viewmodel/ProposalViewModels.js";
-import {
-    Button,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Switch,
-    Textarea,
-    Typography
-} from "@material-tailwind/react";
+import { Switch, Textarea, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
 import {MAPPED_RESTRICTIONS, RESTRICTIONS} from "../../../lib/utils.js";
@@ -52,12 +45,12 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
     const handleChangeOptions = (key = '') => (selected) => setForm(prev => ({...prev, [key]: selected}));
 
     return (
-        <Dialog open={open} handler={onClose} size="md">
-            <DialogHeader className="dark:text-gray-200 space-x-5">
+        <Modal open={open} handler={onClose} size="md">
+            <ModalHeader className="space-x-5">
                 <span>Експорт</span>
-            </DialogHeader>
-            <DialogBody className="overflow-y-auto max-h-[calc(100vh-200px)]">
-                <Typography variant="h5" component="p" className="dark:text-slate-400">
+            </ModalHeader>
+            <ModalBody className="overflow-y-auto max-h-[calc(100vh-200px)]">
+                <Typography variant="h5" component="p" className="dark:text-gray-400">
                     Обмеження
                 </Typography>
                 <div className="flex flex-col space-y-4">
@@ -79,7 +72,7 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
                             name="restrictionsSeparateProcessingNum24"
                             checked={form.restrictionsSeparateProcessingNum24}
                             onChange={toggleSwitch}/>
-                    <Typography variant="h5" component="p" className="dark:text-slate-400">
+                    <Typography variant="h5" component="p" className="dark:text-gray-400">
                         Додаткова інформація
                     </Typography>
 
@@ -101,9 +94,9 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
                             label="Переносити адреси в додаткову інформацію"
                             name="moveAddressesToAdditionalInfo"
                             checked={form.moveAddressesToAdditionalInfo}
-                            className="dark:text-slate-400"
+                            className="dark:text-gray-400"
                             onChange={toggleSwitch}/>
-                    <Typography variant="h5" component="p" className="dark:text-slate-400">
+                    <Typography variant="h5" component="p" className="dark:text-gray-400">
                         Ідентифікатори
                     </Typography>
                     <AdvancedSelect isMulti
@@ -112,7 +105,7 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
                                     id="skipIdentifierTypes"
                                     selectedOptions={form.skipIdentifierTypes}
                                     onChange={handleChangeOptions('skipIdentifierTypes')}/>
-                    <Typography variant="h5" component="p" className="dark:text-slate-400 mt-2">
+                    <Typography variant="h5" component="p" className="dark:text-gray-400 mt-2">
                         Атрибути
                     </Typography>
                     <AdvancedSelect isMulti
@@ -121,7 +114,7 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
                                     id="skipAttributeTypes"
                                     selectedOptions={form.skipAttributeTypes}
                                     onChange={handleChangeOptions('skipAttributeTypes')}/>
-                    <Typography variant="h5" component="p" className="dark:text-slate-400">
+                    <Typography variant="h5" component="p" className="dark:text-gray-400">
                         Інше
                     </Typography>
                     <Switch ripple={true}
@@ -154,35 +147,34 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
                                 label="Макрос обгрунтування"
                                 value={form.reasoningMacro}
                                 onChange={(e) => setForm(prevState => ({...prevState, reasoningMacro: e.target.value}))}
-                                className="dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 dark:placeholder:text-gray-400 dark:focus:border-blue-300"
-                                labelProps={{className: "dark:text-slate-200"}}
+                                className="dark:bg-neutral-800 dark:text-gray-300 dark:border-gray-600 dark:placeholder:text-gray-400 dark:focus:border-blue-300"
+                                labelProps={{className: "dark:text-gray-200"}}
                             />
-                            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <div className="p-2 bg-gray-50 dark:bg-neutral-700 rounded-lg border border-gray-200 dark:border-neutral-700">
                                 <Typography variant="small" className="font-bold mb-1 dark:text-gray-300">
                                     Доступні плейсхолдери:
                                 </Typography>
                                 <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[reasoning] <span className="text-gray-500 dark:text-gray-400">- обгрунтування</span></span>
-                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[notes] <span className="text-gray-500 dark:text-gray-400">- примітки</span></span>
-                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[id] <span className="text-gray-500 dark:text-gray-400">- ID проєкту</span></span>
-                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[drsId] <span className="text-gray-500 dark:text-gray-400">- ID в ДРС</span></span>
-                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[nameUk] <span className="text-gray-500 dark:text-gray-400">- назва (Укр)</span></span>
-                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[adrUk] <span className="text-gray-500 dark:text-gray-400">- адреса (Укр)</span></span>
-                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[birthDate] <span className="text-gray-500 dark:text-gray-400">- дата народж.</span></span>
-                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[actionType] <span className="text-gray-500 dark:text-gray-400">- тип дії</span></span>
+                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[reasoning] <span className="text-gray-600 dark:text-gray-400">- обгрунтування</span></span>
+                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[notes] <span className="text-gray-600 dark:text-gray-400">- примітки</span></span>
+                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[id] <span className="text-gray-600 dark:text-gray-400">- ID проєкту</span></span>
+                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[drsId] <span className="text-gray-600 dark:text-gray-400">- ID в ДРС</span></span>
+                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[nameUk] <span className="text-gray-600 dark:text-gray-400">- назва (Укр)</span></span>
+                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[adrUk] <span className="text-gray-600 dark:text-gray-400">- адреса (Укр)</span></span>
+                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[birthDate] <span className="text-gray-600 dark:text-gray-400">- дата народж.</span></span>
+                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">[actionType] <span className="text-gray-600 dark:text-gray-400">- тип дії</span></span>
                                 </div>
-                                <Typography variant="small" className="text-gray-500 dark:text-gray-400 mt-2 italic text-[10px]">
+                                <Typography variant="small" className="text-gray-600 dark:text-gray-400 mt-2 italic text-[10px]">
                                     * Плейсхолдери будуть замінені на відповідні значення з бази даних для кожного запису.
                                 </Typography>
                             </div>
                         </div>
                     )}
                 </div>
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
                     className="mr-1">
                     <span>Закрити</span>
@@ -193,8 +185,8 @@ const ExportLinkedProjectsModal = ({open = false, onClose, identifierTypes = [],
                     onClick={handleExport}>
                     <span>Експорт</span>
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

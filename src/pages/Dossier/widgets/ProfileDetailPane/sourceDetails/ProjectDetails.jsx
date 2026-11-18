@@ -14,7 +14,7 @@ const AttachmentValue = ({attachment}) => (
     >
         <i className={`fa-solid ${attachment.isImage ? "fa-image" : "fa-file"} text-xs`}></i>
         {attachment.originalName ?? attachment.filename}
-        <span className="text-gray-400 dark:text-gray-500">({attachment.formattedSize})</span>
+        <span className="text-gray-600 dark:text-gray-500">({attachment.formattedSize})</span>
     </a>
 );
 
@@ -22,14 +22,14 @@ const DecreeValue = ({decree}) => {
     if (!decree) {
         return null;
     }
-    const iconColor = decree.isActive ? "text-red-500 dark:text-red-400" : "text-gray-400 dark:text-gray-500";
+    const iconColor = decree.isActive ? "text-red-500 dark:text-red-400" : "text-gray-600 dark:text-gray-500";
     const date = decree.date ? decree.date.substring(0, 10) : null;
 
     return (
         <span className="inline-flex items-center gap-1.5">
             <i className={`fa-solid fa-file-certificate ${iconColor}`}></i>
             {decree.code}
-            {date && <span className="text-xs text-gray-500 dark:text-gray-400">{date}</span>}
+            {date && <span className="text-xs text-gray-600 dark:text-gray-400">{date}</span>}
         </span>
     );
 };

@@ -1,16 +1,9 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { GenerateDossiersViewModel } from "../viewmodel/ProposalViewModels.js";
-import {
-    Button,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Radio,
-    Switch,
-    Typography
-} from "@material-tailwind/react";
+import { Radio, Switch, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 
 const GenerateDossiersModal = ({open = false, onClose, ...dialogProps}) => {
@@ -21,12 +14,12 @@ const GenerateDossiersModal = ({open = false, onClose, ...dialogProps}) => {
     const setOption = (key, value) => () => vm.setForm(prev => ({...prev, [key]: value}));
 
     return (
-        <Dialog data-i-doc="modal:proposal-view-generate-dossiers" open={open} handler={onClose} size="sm">
-            <DialogHeader className="dark:text-gray-200">
+        <Modal data-i-doc="modal:proposal-view-generate-dossiers" open={open} handler={onClose} size="sm">
+            <ModalHeader>
                 <span>Згенерувати досьє</span>
-            </DialogHeader>
-            <DialogBody className="overflow-y-auto max-h-[calc(100vh-200px)]">
-                <Typography variant="small" className="dark:text-slate-400 mb-2">
+            </ModalHeader>
+            <ModalBody className="overflow-y-auto max-h-[calc(100vh-200px)]">
+                <Typography variant="small" className="dark:text-gray-400 mb-2">
                     Генерація досьє для готових проєктів подання (зі станами «Готово» та «Є питання»).
                 </Typography>
                 <div className="flex flex-col space-y-4">
@@ -55,7 +48,7 @@ const GenerateDossiersModal = ({open = false, onClose, ...dialogProps}) => {
                             checked={form.includeNotes}
                             onChange={toggleSwitch}/>
                     <div className="flex flex-col gap-2">
-                        <Typography variant="small" className="font-medium dark:text-slate-300">
+                        <Typography variant="small" className="font-medium dark:text-gray-300">
                             Формат виводу
                         </Typography>
                         <div className="flex gap-4">
@@ -70,11 +63,10 @@ const GenerateDossiersModal = ({open = false, onClose, ...dialogProps}) => {
                         </div>
                     </div>
                 </div>
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
                     className="mr-1">
                     <span>Закрити</span>
@@ -85,8 +77,8 @@ const GenerateDossiersModal = ({open = false, onClose, ...dialogProps}) => {
                     onClick={handleGenerate}>
                     <span>Згенерувати</span>
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

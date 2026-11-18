@@ -15,11 +15,11 @@ export default function SidebarNavSkeleton({ open }) {
         <div key={index} className="my-1 flex items-center gap-1">
           <div className="flex-1 rounded-md border border-transparent px-2 py-1">
             <span className="flex min-w-0 items-center">
-              <Typography as="div" variant="small" className="h-3 w-3 shrink-0 rounded-full bg-gray-300 dark:bg-slate-700">
+              <Typography as="div" variant="small" className="h-3 w-3 shrink-0 rounded-full bg-gray-300 dark:bg-neutral-600">
                 &nbsp;
               </Typography>
               {open && (
-                <Typography as="div" variant="small" className={`mx-2 h-3 ${width} rounded-full bg-gray-300 dark:bg-slate-700`}>
+                <Typography as="div" variant="small" className={`mx-2 h-3 ${width} rounded-full bg-gray-300 dark:bg-neutral-600`}>
                   &nbsp;
                 </Typography>
               )}

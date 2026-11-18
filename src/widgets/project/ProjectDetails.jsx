@@ -1,7 +1,9 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { ProjectDetailsViewModel } from "./ProjectDetailsViewModel.js";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Spinner, Typography} from "@material-tailwind/react";
+import { Spinner, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
+import Button from "../../components/Buttons/Button.jsx"
 import DetailsLayout from "./DetailsLayout.jsx";
 
 /** Модалка перегляду проєкту (спільна: подання, досьє, етап 6 — /project). */
@@ -11,11 +13,11 @@ const ProjectDetails = ({open, onClose, id}) => {
     const isFetching = vm.isFetching;
 
     return (
-        <Dialog open={open} handler={onClose} size="xxl">
-            <DialogHeader>
+        <Modal open={open} handler={onClose} size="xxl">
+            <ModalHeader>
                 <div className="flex flex-col gap-1">
                     <div className="flex space-x-1">
-                        <Typography variant="h4" className="dark:text-slate-200">
+                        <Typography variant="h4" className="dark:text-gray-200">
                             Проєкт: {project?.actionType}
                         </Typography>
                         {/*{*/}
@@ -29,8 +31,8 @@ const ProjectDetails = ({open, onClose, id}) => {
                     </div>
                     <Typography variant="small">ID: {project?.id}</Typography>
                 </div>
-            </DialogHeader>
-            <DialogBody className="relative overflow-y-auto">
+            </ModalHeader>
+            <ModalBody className="relative overflow-y-auto">
                 {
                     isFetching ?
                         <div className="flex justify-center">
@@ -38,18 +40,16 @@ const ProjectDetails = ({open, onClose, id}) => {
                         </div>
                         : <DetailsLayout project={project} vocabulary={vm.vocabulary}/>
                 }
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
-                    className="mr-1"
-                >
+                    className="mr-1">
                     <span>Закрити</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

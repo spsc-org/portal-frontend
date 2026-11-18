@@ -49,24 +49,24 @@ const OrphansPanel = ({canManage, onClose}) => {
     };
 
     return (
-        <div data-i-doc="view:sanction-profiles-orphans-panel" className="h-full flex flex-col overflow-hidden bg-white dark:bg-gray-900">
-            <div className="flex-none px-4 pt-[18px] pb-3.5 border-b border-gray-100 dark:border-gray-800">
+        <div data-i-doc="view:sanction-profiles-orphans-panel" className="h-full flex flex-col overflow-hidden bg-white dark:bg-neutral-800">
+            <div className="flex-none px-4 pt-[18px] pb-3.5 border-b border-gray-100 dark:border-neutral-700">
                 <div className="flex items-baseline justify-between gap-2.5">
                     <SectionLabel>Список сирот</SectionLabel>
                     <button
                         type="button"
                         onClick={onClose}
                         title="Закрити"
-                        className="flex-none w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-800"
+                        className="flex-none w-6 h-6 flex items-center justify-center rounded text-gray-600 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-neutral-700"
                     >
                         <i className="fa-solid fa-xmark text-[13px]"></i>
                     </button>
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                    <div className="text-[11.5px] font-semibold text-gray-400">
+                    <div className="text-[11.5px] font-semibold text-gray-600">
                         meta.total: <span className="text-blue-600 dark:text-blue-400">{total}</span> проєктів
                     </div>
-                    <div className="flex items-center gap-0.5 rounded-md border border-gray-200 p-0.5 dark:border-gray-700"
+                    <div className="flex items-center gap-0.5 rounded-md border border-gray-200 p-0.5 dark:border-neutral-700"
                          title="Розмір сторінки завантаження">
                         {PAGE_SIZE_OPTIONS.map((size) => (
                             <button
@@ -76,7 +76,7 @@ const OrphansPanel = ({canManage, onClose}) => {
                                 className={`rounded px-[7px] py-[3px] text-[10.5px] font-semibold transition ${
                                     pageSize === size
                                         ? "bg-blue-600 text-white"
-                                        : "text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+                                        : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-neutral-700"
                                 }`}
                             >
                                 {size}
@@ -149,7 +149,7 @@ const OrphansPanel = ({canManage, onClose}) => {
                         <div className="flex justify-center py-10"><Spinner className="h-8 w-8"/></div>
                     )}
                     {!isFetching && !orphans.length && (
-                        <div className="py-10 text-center text-sm text-gray-400">Сиріт не знайдено</div>
+                        <div className="py-10 text-center text-sm text-gray-600">Сиріт не знайдено</div>
                     )}
                     {orphans.map((project) => (
                         <OrphanRow
@@ -167,7 +167,7 @@ const OrphansPanel = ({canManage, onClose}) => {
                             type="button"
                             disabled={isFetchingNextPage}
                             onClick={() => fetchNextPage()}
-                            className="w-full py-3 text-xs font-semibold text-blue-600 hover:bg-blue-50 disabled:opacity-50 dark:text-blue-400 dark:hover:bg-gray-800 rounded-lg"
+                            className="w-full py-3 text-xs font-semibold text-blue-600 hover:bg-blue-50 disabled:opacity-50 dark:text-blue-400 dark:hover:bg-neutral-700 rounded-lg"
                         >
                             {isFetchingNextPage ? "Завантаження…" : `Показати ще (${orphans.length} із ${total})`}
                         </button>

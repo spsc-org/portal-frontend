@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { observer } from "mobx-react-lite";
-import { Dialog, DialogBody, DialogFooter, DialogHeader, Spinner, Switch, Typography } from "@material-tailwind/react";
+import { Spinner, Switch, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import AttachmentsGallery from "../../../components/AttachmentsGallery.jsx";
 import { LabeledInput, LabeledTextarea } from "../../../components/fields/LabeledField.jsx";
@@ -46,13 +47,13 @@ const DeveloperPostFormModal = ({ board = null, post = null, onClose, onCreated 
     };
 
     return (
-        <Dialog data-i-doc="modal:developer-post-create" open handler={vm.cancel} size="md">
-            <DialogHeader>
-                <Typography variant="h5" className="dark:text-slate-200">
+        <Modal data-i-doc="modal:developer-post-create" open handler={vm.cancel} size="md">
+            <ModalHeader>
+                <Typography variant="h5" className="dark:text-gray-200">
                     {isEditing ? "Редагування поста" : "Новий пост"}
                 </Typography>
-            </DialogHeader>
-            <DialogBody className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto">
+            </ModalHeader>
+            <ModalBody className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto">
                 {vm.isPreparingDraft ? (
                     <div className="flex items-center justify-center py-10">
                         <Spinner className="h-8 w-8"/>
@@ -101,7 +102,7 @@ const DeveloperPostFormModal = ({ board = null, post = null, onClose, onCreated 
                         />
 
                         <div>
-                            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
+                            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
                                 Вкладення{vm.attachments.length ? ` (${vm.attachments.length})` : ""}
                             </label>
                             <AttachmentsGallery
@@ -121,7 +122,7 @@ const DeveloperPostFormModal = ({ board = null, post = null, onClose, onCreated 
                                             type="button"
                                             onClick={handleInsertImage(attachment)}
                                             title={`Вставити «${attachment.fileName}» у текст (курсор)`}
-                                            className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-600 transition hover:border-blue-300 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-blue-600 dark:hover:text-blue-400"
+                                            className="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-xs text-gray-600 transition hover:border-blue-300 hover:text-blue-600 dark:border-neutral-700 dark:bg-neutral-700 dark:text-gray-300 dark:hover:border-blue-600 dark:hover:text-blue-400"
                                         >
                                             <i className="fa-regular fa-image"></i>
                                             Вставити «{attachment.fileName}»
@@ -138,15 +139,15 @@ const DeveloperPostFormModal = ({ board = null, post = null, onClose, onCreated 
                                     checked={vm.notify}
                                     onChange={(e) => vm.setNotify(e.target.checked)}
                                     label={
-                                        <span className="text-sm text-slate-700 dark:text-slate-300">
+                                        <span className="text-sm text-gray-700 dark:text-gray-300">
                                             Відправити сповіщення всім користувачам при публікації
                                         </span>
                                     }
                                 />
                                 <label className="flex w-fit cursor-pointer items-center gap-2">
                                     <input type="checkbox" checked={vm.scheduleMode} onChange={(e) => vm.setScheduleMode(e.target.checked)}
-                                           className="dark:border-slate-600"/>
-                                    <span className="text-sm text-slate-700 dark:text-slate-300">Запланувати публікацію на майбутній час</span>
+                                           className="dark:border-gray-600"/>
+                                    <span className="text-sm text-gray-700 dark:text-gray-300">Запланувати публікацію на майбутній час</span>
                                 </label>
                                 {vm.scheduleMode &&
                                     <input
@@ -154,15 +155,15 @@ const DeveloperPostFormModal = ({ board = null, post = null, onClose, onCreated 
                                         value={vm.publishAt}
                                         onChange={(e) => vm.setPublishAt(e.target.value)}
                                         min={vm.minPublishAt}
-                                        className="w-full rounded-md border border-slate-200 bg-white p-2 text-sm text-slate-900 focus:border-blue-300 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                                        className="w-full rounded-md border border-gray-200 bg-white p-2 text-sm text-gray-900 focus:border-blue-300 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100"
                                     />
                                 }
                             </>
                         }
                     </>
                 )}
-            </DialogBody>
-            <DialogFooter className="gap-x-2">
+            </ModalBody>
+            <ModalFooter className="gap-x-2">
                 <button type="button" onClick={vm.cancel}
                         className="rounded px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-900/20">
                     Скасувати
@@ -191,8 +192,8 @@ const DeveloperPostFormModal = ({ board = null, post = null, onClose, onCreated 
                         )}
                     </>
                 )}
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

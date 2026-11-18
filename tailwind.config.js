@@ -1,4 +1,5 @@
 import withMT from "@material-tailwind/react/utils/withMT"
+import forms from "@tailwindcss/forms"
 
 const config = withMT({
   content: ["./index.html", "./src/**/*.{js,jsx}"],
@@ -9,26 +10,14 @@ const config = withMT({
         default: 400,
       },
       keyframes: {
+        // Portal UI kit: "щойно змінено" — бурштиновий спалах, що згасає (amber-200 / amber-800)
         highlight: {
-          '0%': { backgroundColor: 'initial' },
-          '30%': { backgroundColor: 'rgb(203 213 225)' },
-          '70%': { backgroundColor: 'rgb(203 213 225)' },
-          '100%': { backgroundColor: 'initial' }
+          '0%': { backgroundColor: '#fde68a' },
+          '100%': { backgroundColor: 'transparent' }
         },
         darkHighlight: {
-          '0%': { backgroundColor: 'initial' },
-          '30%': { backgroundColor: 'rgb(113 113 122)'},
-          '70%': { backgroundColor: 'rgb(113 113 122)'},
-          '100%': { backgroundColor: 'initial' }
-        },
-        // /project: рядок, змінений іншим користувачем (live-оновлення), м'яко "блимає"
-        rowUpdated: {
-          '0%, 100%': { backgroundColor: 'transparent' },
-          '40%': { backgroundColor: 'rgb(254 243 199)' },
-        },
-        rowUpdatedDark: {
-          '0%, 100%': { backgroundColor: 'transparent' },
-          '40%': { backgroundColor: 'rgba(120, 53, 15, 0.4)' },
+          '0%': { backgroundColor: '#92400e' },
+          '100%': { backgroundColor: 'transparent' }
         },
         spin: {
           from: {transform: 'rotate(0deg)'},
@@ -39,10 +28,8 @@ const config = withMT({
         'left-right': '0% 50%',
       },
       animation: {
-        highlight: 'highlight 3s ease-in-out',
-        darkHighlight: 'darkHighlight 3s ease-in-out',
-        rowUpdated: 'rowUpdated 1.5s ease-in-out',
-        rowUpdatedDark: 'rowUpdatedDark 1.5s ease-in-out',
+        highlight: 'highlight 3s ease',
+        darkHighlight: 'darkHighlight 3s ease',
         spin: 'spin 1s linear infinite',
       }
     },
@@ -52,7 +39,7 @@ const config = withMT({
   // in src/) generates a `:root` utility selector that Tailwind v4's stricter
   // engine rejects outright — breaks the whole build, not just one page.
   plugins: [
-    require('@tailwindcss/forms'),
+    forms,
   ],
 })
 
@@ -64,7 +51,16 @@ const config = withMT({
 // …), move MT's colors into theme.extend.colors instead so Tailwind's
 // built-in defaults come back, with MT's extra names (blue-gray, light-blue,
 // deep-orange, …) still available as additions.
-config.theme.extend.colors = config.theme.colors
+//
+// But extend.colors with the SAME names (gray, blue, green, red, amber, …)
+// still overrides Tailwind's defaults — gray-600 was MT's #757575 instead of
+// Tailwind's #4b5563 that the Portal UI kit tokens are defined in. Keep only
+// the MT names Tailwind doesn't have; everything else is stock Tailwind,
+// matching the design system (tokens.json).
+const MT_ONLY_COLORS = ["blue-gray", "brown", "deep-orange", "light-green", "light-blue", "deep-purple"]
+config.theme.extend.colors = Object.fromEntries(
+  MT_ONLY_COLORS.filter((name) => config.theme.colors?.[name]).map((name) => [name, config.theme.colors[name]]),
+)
 delete config.theme.colors
 
 export default config

@@ -88,7 +88,7 @@ const BulkActionsTab = ({ projectIds, userId, onActionDone, cart }) => {
                 <textarea
                     readOnly
                     value={JSON.stringify(projectIds)}
-                    className="w-full resize-y rounded-lg border border-gray-300 bg-gray-100 p-3 text-sm text-gray-600 focus:outline-none dark:border-neutral-600 dark:bg-neutral-950 dark:text-gray-400"
+                    className="w-full resize-y rounded-lg border border-gray-200 bg-gray-100 p-3 text-sm text-gray-600 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-400"
                 />
             </div>
 
@@ -104,7 +104,7 @@ const BulkActionsTab = ({ projectIds, userId, onActionDone, cart }) => {
                     value={loadListText}
                     onChange={(e) => setLoadListText(e.target.value)}
                     placeholder="Вставте JSON-масив ID: [123, 456, 789]"
-                    className="w-full resize-y rounded-lg border border-gray-300 bg-white p-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
+                    className="w-full resize-y rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
                 />
                 {loadListError && <p className="text-sm text-red-600 dark:text-red-400">{loadListError}</p>}
             </div>

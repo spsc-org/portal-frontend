@@ -1,4 +1,6 @@
 import Select from 'react-select';
+import { selectMenuProps, useSelectMenuPortal } from "./selectMenuPortal.js";
+import { kitSelectClassNames } from "./selectClassNames.js";
 
 const AdvancedSelectWithDefaults = ({
                             options = [],
@@ -45,10 +47,12 @@ const AdvancedSelectWithDefaults = ({
         }
     };
 
+    const { anchorRef, menuPortalTarget } = useSelectMenuPortal();
+
     return (
-        <div style={{width: width}}>
+        <div ref={anchorRef} style={{width: width}}>
             <label htmlFor={id}
-                   className={`block text-${size} text-gray-500 dark:text-gray-300`}>{label}</label>
+                   className={`mb-0.5 block truncate text-${size} text-gray-600 dark:text-gray-400`}>{label}</label>
             <Select
                 id={id}
                 isMulti={isMulti}
@@ -57,23 +61,13 @@ const AdvancedSelectWithDefaults = ({
                 name={label}
                 {...props}
                 options={mappedOptions}
-                menuPosition="fixed"
-                styles={{
-                    menuPortal: (base) => ({...base, zIndex: 9999}),
-                    menu: (base) => ({...base, zIndex: 9999}),
-                }}
+                {...selectMenuProps(menuPortalTarget)}
                 closeMenuOnSelect={closeMenuOnSelect}
                 hideSelectedOptions={false}
                 placeholder="Оберіть"
                 noOptionsMessage={() => <span>Не знайдено</span>}
-                classNames={{
-                    container: () => `bg-grey-500 text-${size} z-1  dark:text-gray-300`,
-                    control: () => 'bg-grey-500  dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300',
-                    input: () => 'dark:text-gray-300',
-                    menuList: () => 'dark:text-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300',
-                    singleValue: () => 'dark:text-gray-300',
-                    option: (state,) => state.isFocused && 'dark:text-gray-300 dark:bg-gray-500',
-                }}
+                unstyled
+                classNames={kitSelectClassNames({ size })}
             />
         </div>
     );

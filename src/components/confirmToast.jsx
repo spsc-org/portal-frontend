@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { Button } from "@material-tailwind/react";
+import Button from "./Buttons/Button.jsx"
 
 /**
  * Підтвердження дії тостом (як в Inertia-версії указів): "Скасувати" / "Видалити".
@@ -25,6 +25,6 @@ export function confirmToast(message, onConfirm, { confirmText = "Видалит
         {
             duration: 10000,
             position: 'top-center',
-            style: { background: 'dark:dark:bg-slate-800', color: 'text-slate-400' },
+            style: { background: 'dark:dark:bg-neutral-700', color: 'text-gray-600' },
         });
 }

@@ -10,7 +10,7 @@ const CATEG_CLASS = {
 const CategoriesCell = ({ precomputedData }) => {
     const categories = precomputedData?.categories;
     if (!Array.isArray(categories) || categories.length === 0) {
-        return <span className="italic text-gray-400">Немає категорій</span>;
+        return <span className="italic text-gray-600">Немає категорій</span>;
     }
 
     return categories.map(({ typeId, caption }, i) => (

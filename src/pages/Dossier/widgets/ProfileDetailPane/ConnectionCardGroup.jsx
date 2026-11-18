@@ -44,7 +44,7 @@ const ConnectionCardGroup = ({connections, canManage, currentUserId, onConfirm, 
     });
 
     return (
-        <div data-i-doc="component:sanction-profiles-connection-card-group" className="bg-white border border-gray-200 border-l-4 border-l-blue-400 rounded-xl shadow-sm px-[18px] py-4 dark:bg-gray-900 dark:border-gray-700">
+        <div data-i-doc="component:sanction-profiles-connection-card-group" className="bg-white border border-gray-200 border-l-4 border-l-blue-400 rounded-xl shadow-sm px-[18px] py-4 dark:bg-neutral-800 dark:border-neutral-700">
             <div className="flex items-center gap-[9px] flex-wrap">
                 <span className={`flex-none inline-flex items-center gap-[7px] text-[11.5px] font-semibold px-[11px] py-[5px] rounded-lg ${source.badgeClasses}`}>
                     <i className={`${source.icon} text-[11px]`}></i>{source.label}
@@ -97,8 +97,8 @@ const ConnectionCardGroup = ({connections, canManage, currentUserId, onConfirm, 
             <SearchIndexToggle value={primary.search_index}/>
             <ConnectionSourceDetails modelClass={primary.model_class} modelId={primary.model_id}/>
 
-            <div className="mt-[13px] pt-[13px] border-t border-gray-100 dark:border-gray-800">
-                <div className="text-[10.5px] font-semibold text-gray-400 mb-2">
+            <div className="mt-[13px] pt-[13px] border-t border-gray-100 dark:border-neutral-700">
+                <div className="text-[10.5px] font-semibold text-gray-600 mb-2">
                     Складові звʼязки ({connections.length}):
                 </div>
                 <div className="flex flex-col gap-2">
@@ -112,7 +112,7 @@ const ConnectionCardGroup = ({connections, canManage, currentUserId, onConfirm, 
                         return (
                             <div
                                 key={connection.id}
-                                className="px-3 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-800/60"
+                                className="px-3 py-2.5 rounded-lg bg-gray-50 dark:bg-neutral-700/60"
                             >
                                 <div className="flex items-center gap-2.5 flex-wrap">
                                     <span className="text-[10.5px] font-mono text-gray-300 dark:text-gray-500">
@@ -124,7 +124,7 @@ const ConnectionCardGroup = ({connections, canManage, currentUserId, onConfirm, 
                                         </span>
                                     ))}
                                     {matchedValue(connection) && (
-                                        <span className="text-[10.5px] font-mono text-gray-500 dark:text-gray-400" title="Значення, яке збіглося">
+                                        <span className="text-[10.5px] font-mono text-gray-600 dark:text-gray-400" title="Значення, яке збіглося">
                                             = {matchedValue(connection)}
                                         </span>
                                     )}
@@ -173,7 +173,7 @@ const ConnectionCardGroup = ({connections, canManage, currentUserId, onConfirm, 
                                                 disabled={isPending || !canVoid(connection)}
                                                 onClick={() => onVoid(connection)}
                                                 title={canVoid(connection) ? "Позначити звʼязок нікчемним (помилковим)" : "Звʼязок підтверджено — спершу скасуйте підтвердження"}
-                                                className={`${iconActionButton} border border-gray-300 bg-white text-gray-600 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300`}
+                                                className={`${iconActionButton} border border-gray-300 bg-white text-gray-600 dark:bg-neutral-700 dark:border-gray-600 dark:text-gray-300`}
                                             >
                                                 <i className="fa-solid fa-ban text-[11px]"></i>
                                             </button>
@@ -183,7 +183,7 @@ const ConnectionCardGroup = ({connections, canManage, currentUserId, onConfirm, 
                                             disabled={isPending || !isDeletable}
                                             onClick={() => onUnlink(connection)}
                                             title={isDeletable ? "Вилучити звʼязок" : "Видалити може лише той, хто створив цей звʼязок"}
-                                            className={`${iconActionButton} border border-red-200 bg-white text-red-600 dark:bg-gray-800 dark:border-red-800 dark:text-red-400`}
+                                            className={`${iconActionButton} border border-red-200 bg-white text-red-600 dark:bg-neutral-700 dark:border-red-800 dark:text-red-400`}
                                         >
                                             <i className="fa-solid fa-link-slash text-[11px]"></i>
                                         </button>

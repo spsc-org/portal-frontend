@@ -52,6 +52,7 @@ const AddProposalForm = ({ projectIds, userId, onDone }) => {
             disabled={proposalIds.length === 0}
         >
             <MultiSelect
+                surface="form"
                 label="Оберіть подання"
                 id="cart-add-proposal"
                 options={proposals}

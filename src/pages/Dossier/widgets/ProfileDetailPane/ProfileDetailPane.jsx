@@ -28,7 +28,7 @@ import TicketsButton from "../TicketsModal/TicketsButton.jsx";
 import {ENTITY_PROFILE} from "../../entities/dossierTicket/model.js";
 import DossierAuditModal from "./DossierAuditModal.jsx";
 
-const metaChip = "text-[11px] font-medium font-mono text-slate-600 bg-slate-100 px-[9px] py-1 rounded-[7px] dark:bg-slate-800 dark:text-slate-300";
+const metaChip = "text-[11px] font-medium font-mono text-gray-600 bg-gray-100 px-[9px] py-1 rounded-[7px] dark:bg-neutral-700 dark:text-gray-300";
 
 // Ключ localStorage per-профіль — при зміні досьє (інший profileId) вибір звʼязку
 // природно "скидається", бо ключ інший; персиста жодного ручного reset-ефекту не треба.
@@ -64,8 +64,8 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
     if (!profileId) {
         return (
             <main
-                className="flex-auto min-w-0 flex flex-col items-center justify-center gap-3.5 text-gray-400 bg-gray-100 dark:bg-gray-900">
-                <i className="fa-solid fa-hand-pointer text-[34px] text-slate-300 dark:text-slate-600"></i>
+                className="flex-auto min-w-0 flex flex-col items-center justify-center gap-3.5 text-gray-600 bg-gray-100 dark:bg-neutral-800">
+                <i className="fa-solid fa-hand-pointer text-[34px] text-gray-300 dark:text-gray-600"></i>
                 <div className="text-sm font-semibold">Оберіть профіль зі списку зліва</div>
             </main>
         );
@@ -73,7 +73,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
 
     if (isFetching && !profile) {
         return (
-            <main className="flex-auto min-w-0 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+            <main className="flex-auto min-w-0 flex items-center justify-center bg-gray-100 dark:bg-neutral-800">
                 <Spinner className="h-10 w-10"/>
             </main>
         );
@@ -95,12 +95,12 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
     const selectedGroup = connectionGroups.find((group) => group.some((c) => c.id === selectedConnectionId)) ?? [];
 
     return (
-        <main data-i-doc="view:sanction-profiles-detail-pane" className="flex-auto min-w-0 flex flex-col overflow-hidden bg-gray-100 dark:bg-gray-900">
+        <main data-i-doc="view:sanction-profiles-detail-pane" className="flex-auto min-w-0 flex flex-col overflow-hidden bg-gray-100 dark:bg-neutral-800">
             {/* Картка профілю — завжди вгорі (не прокручується разом з контентом нижче) */}
             <div className="flex-none w-full max-w-[1240px] mx-auto px-3 pt-[26px]">
                 <SectionLabel>Картка досьє</SectionLabel>
                 <div
-                    className="bg-white border border-gray-200 rounded-[14px] shadow-sm px-6 py-[22px] dark:bg-gray-900 dark:border-gray-700">
+                    className="bg-white border border-gray-200 rounded-[14px] shadow-sm px-6 py-[22px] dark:bg-neutral-800 dark:border-neutral-700">
                     <div className="flex items-start gap-4">
                         <div className="flex-none w-[54px] h-[54px]">
                             <SubjectAvatar
@@ -123,7 +123,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                     type="button"
                                     onClick={handleCopyLink}
                                     title="Скопіювати посилання на цю картку"
-                                    className="inline-flex items-center justify-center w-6 h-6 rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-blue-600 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-blue-400"
+                                    className="inline-flex items-center justify-center w-6 h-6 rounded-md text-gray-600 transition hover:bg-gray-100 hover:text-blue-600 dark:text-gray-500 dark:hover:bg-neutral-700 dark:hover:text-blue-400"
                                 >
                                     <i className="fa-regular fa-link text-[13px]"></i>
                                 </button>
@@ -141,14 +141,14 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                     <div>
                                         {Object.keys(profile?.identity_data ?? {}).length > 0 && (
                                             <>
-                                                <div className="text-[9.5px] font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1.5">
+                                                <div className="text-[9.5px] font-bold uppercase tracking-wide text-gray-600 dark:text-gray-500 mb-1.5">
                                                     Ідентифікатори
                                                 </div>
                                                 <div className="flex flex-wrap gap-[7px]">
                                                     {Object.entries(profile.identity_data).map(([key, entry]) => (
                                                         <span key={key} className={metaChip}>
                                                             {identifierLabel(key)}: {entry?.value ?? "—"}
-                                                            <span className="text-slate-400 dark:text-slate-500 font-normal">
+                                                            <span className="text-gray-600 dark:text-gray-500 font-normal">
                                                                 {" "}· {(entry?.sources ?? []).map(sourceLabel).join(", ") || "—"}
                                                             </span>
                                                         </span>
@@ -160,7 +160,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                     <div>
                                         {profile?.source_files?.length > 0 && (
                                             <>
-                                                <div className="text-[9.5px] font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1.5">
+                                                <div className="text-[9.5px] font-bold uppercase tracking-wide text-gray-600 dark:text-gray-500 mb-1.5">
                                                     Файли
                                                 </div>
                                                 <div className="flex flex-wrap gap-[7px]">
@@ -171,7 +171,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             title={`Проєкт #${file.project_id}`}
-                                                            className={`${metaChip} inline-flex items-center gap-[6px] hover:bg-slate-200 dark:hover:bg-slate-700`}
+                                                            className={`${metaChip} inline-flex items-center gap-[6px] hover:bg-gray-200 dark:hover:bg-neutral-600`}
                                                         >
                                                             <i className={`fa-solid ${file.is_image ? "fa-image" : "fa-file"}`}></i>
                                                             {file.original_name ?? `файл (проєкт #${file.project_id})`}
@@ -200,7 +200,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                         type="button"
                                         onClick={() => setShowAuditModal(true)}
                                         title="Історія змін досьє"
-                                        className="inline-flex items-center justify-center w-[34px] h-[34px] rounded-full border border-purple-200 bg-white text-purple-700 cursor-pointer transition hover:bg-purple-50 dark:bg-gray-800 dark:border-purple-800 dark:text-purple-300"
+                                        className="inline-flex items-center justify-center w-[34px] h-[34px] rounded-full border border-purple-200 bg-white text-purple-700 cursor-pointer transition hover:bg-purple-50 dark:bg-neutral-700 dark:border-purple-800 dark:text-purple-300"
                                     >
                                         <i className="fa-regular fa-clock-rotate-left text-[13px]"></i>
                                     </button>
@@ -224,7 +224,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                 type="button"
                                 onClick={() => setIsAddConnectionOpen(true)}
                                 title="Прикріпити до цього досьє відомий проєкт чи ДРС-сутність"
-                                className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-blue-300 bg-white text-blue-700 cursor-pointer transition hover:bg-blue-50 dark:bg-gray-800 dark:border-blue-700 dark:text-blue-300"
+                                className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-blue-300 bg-white text-blue-700 cursor-pointer transition hover:bg-blue-50 dark:bg-neutral-700 dark:border-blue-700 dark:text-blue-300"
                             >
                                 <i className="fa-solid fa-link text-[12px]"></i>
                             </button>
@@ -239,7 +239,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                 type="button"
                                 onClick={() => setIsEditProfileOpen(true)}
                                 title="Редагувати назву й примітку"
-                                className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-blue-300 bg-white text-blue-700 cursor-pointer transition hover:bg-blue-50 dark:bg-gray-800 dark:border-blue-700 dark:text-blue-300"
+                                className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-blue-300 bg-white text-blue-700 cursor-pointer transition hover:bg-blue-50 dark:bg-neutral-700 dark:border-blue-700 dark:text-blue-300"
                             >
                                 <i className="fa-solid fa-pencil text-[12px]"></i>
                             </button>
@@ -247,7 +247,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                 type="button"
                                 onClick={() => refreshStatusMutation.mutate()}
                                 disabled={refreshStatusMutation.isPending}
-                                className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-blue-300 bg-white text-blue-700 cursor-pointer transition hover:bg-blue-50 disabled:opacity-50 dark:bg-gray-800 dark:border-blue-700 dark:text-blue-300"
+                                className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-blue-300 bg-white text-blue-700 cursor-pointer transition hover:bg-blue-50 disabled:opacity-50 dark:bg-neutral-700 dark:border-blue-700 dark:text-blue-300"
                                 title="Оновити стан підсанкційності — примусово перерахувати"
                             >
                                 <i className={`fa-solid fa-rotate text-[12px] ${refreshStatusMutation.isPending ? "fa-spin" : ""}`}></i>
@@ -257,7 +257,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                     type="button"
                                     disabled
                                     title="Видалити профіль — тимчасово заблоковано: легасі-логіка видалення визнана небезпечною, потребує перегляду"
-                                    className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-red-200 bg-white text-red-300 cursor-not-allowed opacity-60 dark:bg-gray-800 dark:border-red-900 dark:text-red-700"
+                                    className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-red-200 bg-white text-red-300 cursor-not-allowed opacity-60 dark:bg-neutral-700 dark:border-red-900 dark:text-red-700"
                                 >
                                     <i className="fa-solid fa-trash text-[12px]"></i>
                                 </button>
@@ -295,7 +295,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
 
                 <Tabs value={activeTab}>
                     <TabsHeader
-                        className="rounded-none border-b border-gray-200 !bg-transparent p-0 mt-[22px] dark:border-gray-700"
+                        className="rounded-none border-b border-gray-200 !bg-transparent p-0 mt-[22px] dark:border-neutral-700"
                         indicatorProps={{
                             className: "bg-transparent border-b-2 border-blue-600 shadow-none rounded-none",
                         }}
@@ -305,13 +305,13 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                             value="connections"
                             onClick={() => setActiveTab("connections")}
                             className={`flex-none w-auto px-1 py-2.5 text-[13px] ${
-                                activeTab === "connections" ? "text-blue-700 font-semibold dark:text-blue-400" : "text-gray-500 dark:text-gray-400"
+                                activeTab === "connections" ? "text-blue-700 font-semibold dark:text-blue-400" : "text-gray-600 dark:text-gray-400"
                             }`}
                         >
                             <span className="flex items-center gap-2">
                                 <i className="fa-solid fa-link text-xs"></i>
                                 Зв'язки
-                                <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-gray-100 text-[11px] font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                                <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-gray-100 text-[11px] font-semibold text-gray-600 dark:bg-neutral-700 dark:text-gray-300">
                                     {connectionGroups.length}
                                 </span>
                             </span>
@@ -321,13 +321,13 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                             value="relations"
                             onClick={() => setActiveTab("relations")}
                             className={`flex-none w-auto px-1 py-2.5 text-[13px] ${
-                                activeTab === "relations" ? "text-blue-700 font-semibold dark:text-blue-400" : "text-gray-500 dark:text-gray-400"
+                                activeTab === "relations" ? "text-blue-700 font-semibold dark:text-blue-400" : "text-gray-600 dark:text-gray-400"
                             }`}
                         >
                             <span className="flex items-center gap-2">
                                 <i className="fa-solid fa-people-arrows text-xs"></i>
                                 Пов'язані профілі
-                                <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-gray-100 text-[11px] font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                                <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-gray-100 text-[11px] font-semibold text-gray-600 dark:bg-neutral-700 dark:text-gray-300">
                                     {relations.length}
                                 </span>
                             </span>
@@ -337,7 +337,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                     <TabsBody>
                         <TabPanel value="connections" className="p-0 pt-[15px]">
                             {!dedupConnections.length ? (
-                                <div className="py-6 text-center text-sm text-gray-400">Джерела ще не привʼязані.</div>
+                                <div className="py-6 text-center text-sm text-gray-600">Джерела ще не привʼязані.</div>
                             ) : (
                                 <div className="flex items-start gap-4">
                                     {/* Реєстр звʼязків — короткий перелік, клік відкриває картку праворуч.
@@ -345,7 +345,7 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                         sticky top-0 — лишається на місці, коли гортаєш довгу картку
                                         звʼязку праворуч (сама stick-точка — верх зони прокрутки під
                                         карткою досьє, бо саме ця зона тут scroll-контейнер). */}
-                                    <div className="flex-none w-[calc(50%-8px)] sticky top-0 bg-gray-100 dark:bg-gray-900">
+                                    <div className="flex-none w-[calc(50%-8px)] sticky top-0 bg-gray-100 dark:bg-neutral-800">
                                         <SectionLabel>Реєстр звʼязків</SectionLabel>
                                         <div className="flex flex-col gap-1.5 max-h-[calc(100vh-260px)] overflow-y-auto pr-1">
                                             {connectionGroups.map((group) => (
@@ -398,8 +398,8 @@ const ProfileDetailPane = ({profileId, canManage, canDeleteProfile, canReadAudit
                                                 isPending={isPending}
                                             />
                                         ) : (
-                                            <div className="flex flex-col items-center justify-center gap-2 py-16 text-gray-400 border border-dashed border-gray-200 rounded-xl dark:border-gray-700">
-                                                <i className="fa-solid fa-hand-pointer text-2xl text-slate-300 dark:text-slate-600"></i>
+                                            <div className="flex flex-col items-center justify-center gap-2 py-16 text-gray-600 border border-dashed border-gray-200 rounded-xl dark:border-neutral-700">
+                                                <i className="fa-solid fa-hand-pointer text-2xl text-gray-300 dark:text-gray-600"></i>
                                                 <div className="text-sm font-medium">Оберіть звʼязок зі списку зліва</div>
                                             </div>
                                         )}

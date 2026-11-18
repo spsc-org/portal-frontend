@@ -3,14 +3,15 @@ import { useViewModel } from '../../../shared/mvvm/useViewModel.js';
 import { AbsenceDetailsViewModel } from '../viewmodel/AttendanceModalViewModels.js';
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Card, Typography, IconButton } from "@material-tailwind/react";
+import { Card, Typography } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
 
 const AbsenceDetailsCard = observer(({ absence, onEdit, onDelete, onManageDocuments, hide }) => {
     const vm = useViewModel((deps) => new AbsenceDetailsViewModel({ ...deps, absenceId: absence.id }));
     const { data, isLoading } = vm;
 
     return (
-        <Card className="p-3 text-xs flex flex-col gap-2 w-64 shadow-2xl pointer-events-auto border border-slate-200 dark:border-slate-800">
+        <Card className="p-3 text-xs flex flex-col gap-2 w-64 shadow-2xl pointer-events-auto border border-gray-200 dark:border-neutral-700">
             {isLoading ? (
                 <div className="p-2 text-center">Завантаження...</div>
             ) : data ? (
@@ -36,9 +37,9 @@ const AbsenceDetailsCard = observer(({ absence, onEdit, onDelete, onManageDocume
                                 <div className="flex flex-col gap-1 ml-2">
                                     {data.documents.map(doc => (
                                         <div key={doc.id} className="text-[9px]">
-                                            <div className="font-semibold text-slate-700 dark:text-slate-300">№ {doc.document_number}</div>
-                                            <div className="text-slate-600 dark:text-slate-400">{doc.document_date} • {doc.added_by}</div>
-                                            {doc.description && <div className="text-slate-600 dark:text-slate-400">{doc.description}</div>}
+                                            <div className="font-semibold text-gray-700 dark:text-gray-300">№ {doc.document_number}</div>
+                                            <div className="text-gray-600 dark:text-gray-400">{doc.document_date} • {doc.added_by}</div>
+                                            {doc.description && <div className="text-gray-600 dark:text-gray-400">{doc.description}</div>}
                                         </div>
                                     ))}
                                 </div>

@@ -5,7 +5,8 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // public/ — статичні вендорні файли (FontAwesome тощо), не наш код
+  globalIgnores(['dist', 'public']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -20,6 +21,8 @@ export default defineConfig([
     rules: {
       // MVVM-View експортуються як `export default observer(Component)`.
       'react-refresh/only-export-components': ['error', { extraHOCs: ['observer'] }],
+      // Деструктуризація, щоб прибрати проп із `...rest` (не DOM-атрибут), — не "невикористана змінна"
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^_', ignoreRestSiblings: true }],
       // Inertia прибрано (етап 7): сторінки — MVVM на react-router + MobX.
       'no-restricted-imports': ['error', {
         patterns: [{

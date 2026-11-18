@@ -1,5 +1,6 @@
 import React, {useMemo} from "react";
-import {Button, Spinner, Tooltip} from "@material-tailwind/react";
+import { Spinner, Tooltip } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import UserAvatars from "../../../components/UserAvatars.jsx";
 import PhoneNumberBadge from "./PhoneNumberBadge.jsx";
 import {canUpdatePhoneEntry} from "../shared/lib/permissions.js";
@@ -35,7 +36,7 @@ const PhoneList = ({entries = [], loading = false, selectedId, onSelect, onEdit,
 
     if (loading && !entries.length) {
         return (
-            <div className="flex items-center justify-center rounded-xl border border-slate-200 bg-white py-16 dark:border-slate-800 dark:bg-gray-900">
+            <div className="flex items-center justify-center rounded-xl border border-gray-200 bg-white py-16 dark:border-neutral-700 dark:bg-neutral-800">
                 <Spinner className="h-8 w-8"/>
             </div>
         );
@@ -43,7 +44,7 @@ const PhoneList = ({entries = [], loading = false, selectedId, onSelect, onEdit,
 
     if (!entries.length) {
         return (
-            <div className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white py-16 text-slate-400 dark:border-slate-800 dark:bg-gray-900">
+            <div className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white py-16 text-gray-600 dark:border-neutral-700 dark:bg-neutral-800">
                 <i className="fa-regular fa-phone text-2xl"></i>
                 <span className="text-sm">Записів не знайдено</span>
             </div>
@@ -51,12 +52,12 @@ const PhoneList = ({entries = [], loading = false, selectedId, onSelect, onEdit,
     }
 
     return (
-        <div data-i-doc="view:handbook-phone-list" className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-gray-900">
+        <div data-i-doc="view:handbook-phone-list" className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
             {groups.map((group) => (
                 <div key={group.dept}>
-                    <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50/80 px-3 py-1.5 dark:border-slate-800 dark:bg-slate-800/60">
-                        <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{group.dept}</span>
-                        <span className="text-[11px] text-slate-400">{group.entries.length}</span>
+                    <div className="flex items-center gap-2 border-b border-gray-100 bg-gray-50/80 px-3 py-1.5 dark:border-neutral-700 dark:bg-neutral-700/60">
+                        <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">{group.dept}</span>
+                        <span className="text-[11px] text-gray-600">{group.entries.length}</span>
                     </div>
                     {group.entries.map((entry) => {
                         const isSelected = entry.id === selectedId;
@@ -64,9 +65,9 @@ const PhoneList = ({entries = [], loading = false, selectedId, onSelect, onEdit,
                         return (
                             <div key={entry.id}
                                  onClick={() => onSelect(entry.id)}
-                                 className={`group grid cursor-pointer grid-cols-[1.25rem_3fr_3fr_4fr_7rem_2.5rem_2rem] items-center gap-2.5 border-b border-slate-100 px-3 py-2 transition dark:border-slate-800 ${isSelected
+                                 className={`group grid cursor-pointer grid-cols-[1.25rem_3fr_3fr_4fr_7rem_2.5rem_2rem] items-center gap-2.5 border-b border-gray-100 px-3 py-2 transition dark:border-neutral-700 ${isSelected
                                      ? "bg-blue-50 dark:bg-blue-900/25"
-                                     : "hover:bg-slate-50 dark:hover:bg-slate-800/50"}`}>
+                                     : "hover:bg-gray-50 dark:hover:bg-neutral-700/50"}`}>
                                 {Boolean(onToggleFavorite) &&
                                     <button type="button"
                                             onClick={(e) => {
@@ -76,7 +77,7 @@ const PhoneList = ({entries = [], loading = false, selectedId, onSelect, onEdit,
                                             title={entry.is_favorite ? "Прибрати з обраного" : "Додати в обране"}
                                             className={`transition ${entry.is_favorite
                                                 ? "text-amber-400"
-                                                : "text-slate-300 opacity-0 hover:text-amber-400 group-hover:opacity-100 dark:text-slate-600"}`}>
+                                                : "text-gray-300 opacity-0 hover:text-amber-400 group-hover:opacity-100 dark:text-gray-600"}`}>
                                         <i className={`${entry.is_favorite ? "fa-solid" : "fa-regular"} fa-star text-xs`}></i>
                                     </button>
                                 }
@@ -84,7 +85,7 @@ const PhoneList = ({entries = [], loading = false, selectedId, onSelect, onEdit,
                                     {entry.phones?.length
                                         ? entry.phones.map((p, i) => (
                                             <React.Fragment key={p.id ?? i}>
-                                                {i > 0 && <span className="text-slate-300 dark:text-slate-600">, </span>}
+                                                {i > 0 && <span className="text-gray-300 dark:text-gray-600">, </span>}
                                                 <PhoneNumberBadge phone={p.phone} note={p.note}
                                                                   confirmationsCount={p.confirmations_count}
                                                                   latestConfirmation={p.latest_confirmation}/>
@@ -92,10 +93,10 @@ const PhoneList = ({entries = [], loading = false, selectedId, onSelect, onEdit,
                                         ))
                                         : "—"}
                                 </span>
-                                <span className="min-w-0 truncate text-sm text-slate-800 dark:text-slate-200">
+                                <span className="min-w-0 truncate text-sm text-gray-800 dark:text-gray-200">
                                     {entry.name}
                                 </span>
-                                <span className="min-w-0 truncate text-[11px] text-slate-400 dark:text-slate-500">
+                                <span className="min-w-0 truncate text-[11px] text-gray-600 dark:text-gray-500">
                                     {entry.note || ""}
                                 </span>
                                 <span className="flex items-center gap-1 justify-self-start">
@@ -104,11 +105,11 @@ const PhoneList = ({entries = [], loading = false, selectedId, onSelect, onEdit,
                                     }
                                     {showStatusBadge && entry.status === "archived" &&
                                         <Tooltip content="Архівна">
-                                            <i className="fa-solid fa-box-archive text-[10px] text-slate-400 dark:text-slate-500"></i>
+                                            <i className="fa-solid fa-box-archive text-[10px] text-gray-500 dark:text-gray-500"></i>
                                         </Tooltip>
                                     }
                                 </span>
-                                <span className="inline-flex items-center gap-2 text-[10px] text-slate-400 dark:text-slate-500">
+                                <span className="inline-flex items-center gap-2 text-[10px] text-gray-600 dark:text-gray-500">
                                     <Tooltip content={`Переглядів: ${entry.views_count ?? 0}`}>
                                         <span className="inline-flex items-center gap-1">
                                             <i className="fa-regular fa-eye"></i>{entry.views_count ?? 0}

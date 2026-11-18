@@ -42,14 +42,14 @@ const CalendarView = observer(({ days, calendarData, isLoading, getTypeColor, on
     };
 
     return (
-        <Card data-i-doc="view:staff-attendance-calendar-view" className="overflow-hidden border border-slate-200 dark:border-slate-800 dark:bg-slate-950 shadow-none rounded-2xl mt-2">
-            <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700">
+        <Card data-i-doc="view:staff-attendance-calendar-view" className="overflow-hidden border border-gray-200 dark:border-neutral-700 dark:bg-neutral-900 shadow-none rounded-2xl mt-2">
+            <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700">
                 <table className="w-full table-fixed text-left border-collapse border-hidden">
                     <thead>
-                        <tr className="bg-slate-50/50 dark:bg-slate-900/50">
-                            <th className="sticky left-0 z-30 bg-slate-50 dark:bg-slate-900 p-2" style={{ width: `${EMPLOYEE_NAME_COLUMN_WIDTH}px` }}>Співробітник</th>
+                        <tr className="bg-gray-50/50 dark:bg-neutral-800/50">
+                            <th className="sticky left-0 z-30 bg-gray-50 dark:bg-neutral-800 p-2" style={{ width: `${EMPLOYEE_NAME_COLUMN_WIDTH}px` }}>Співробітник</th>
                             {days.map(day => (
-                                <th key={day.toString()} className={`p-1 border border-slate-200 text-center text-[10px] w-[36px] ${!isWorkingDay(day) ? 'bg-slate-200/50 dark:bg-slate-800/80' : ''} ${isSameDay(day, today) ? 'border-r-2 border-r-blue-500' : ''}`}>
+                                <th key={day.toString()} className={`p-1 border border-gray-200 text-center text-[10px] w-[36px] ${!isWorkingDay(day) ? 'bg-gray-200/50 dark:bg-neutral-700/80' : ''} ${isSameDay(day, today) ? 'border-r-2 border-r-blue-500' : ''}`}>
                                     {isFirstDayOfMonth(day) ? (
                                         <div className="flex flex-col items-center">
                                             <span className="font-bold text-[9px] text-blue-600">{format(day, 'MMM', { locale: uk })}</span>
@@ -65,7 +65,7 @@ const CalendarView = observer(({ days, calendarData, isLoading, getTypeColor, on
                     <tbody>
                         {isLoading ? <tr><td colSpan={days.length + 1} className="p-12 text-center">Завантаження...</td></tr> : calendarData.map((row) => (
                             <tr key={row.employee_id} className="group relative h-7 hover:bg-blue-50 dark:hover:bg-blue-900/25">
-                                <td className="sticky left-0 z-20 bg-white dark:bg-slate-900 group-hover:bg-blue-50 dark:group-hover:bg-slate-800 p-1 border border-slate-200 dark:border-slate-800 flex items-center gap-1 text-[10px] h-7 transition-colors">
+                                <td className="sticky left-0 z-20 bg-white dark:bg-neutral-800 group-hover:bg-blue-50 dark:group-hover:bg-neutral-700 p-1 border border-gray-200 dark:border-neutral-700 flex items-center gap-1 text-[10px] h-7 transition-colors">
                                     <input
                                         type="checkbox"
                                         checked={zpValue(row)}
@@ -78,7 +78,7 @@ const CalendarView = observer(({ days, calendarData, isLoading, getTypeColor, on
                                 {days.map(day => (
                                     <td
                                         key={day.toString()}
-                                        className={`p-0 border dark:border-slate-800 h-7 cursor-pointer group-hover:bg-blue-50 dark:group-hover:bg-blue-900/25 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors relative ${!isWorkingDay(day) ? 'bg-slate-100 dark:bg-slate-800/40' : ''} ${isSameDay(day, today) ? 'border-r-2 border-r-blue-500' : ''}`}
+                                        className={`p-0 border dark:border-neutral-700 h-7 cursor-pointer group-hover:bg-blue-50 dark:group-hover:bg-blue-900/25 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors relative ${!isWorkingDay(day) ? 'bg-gray-100 dark:bg-neutral-700/40' : ''} ${isSameDay(day, today) ? 'border-r-2 border-r-blue-500' : ''}`}
                                         onClick={() => onCellClick(row.employee_id, day)}
                                         onMouseEnter={() => setHoveredCell(`${row.employee_id}-${day.toString()}`)}
                                         onMouseLeave={() => setHoveredCell(null)}
@@ -115,13 +115,13 @@ const CalendarView = observer(({ days, calendarData, isLoading, getTypeColor, on
                                     const getBorderClass = () => {
                                         switch(abs.status_slug) {
                                             case 'pending':
-                                                return 'border-2 border-dashed border-slate-400';
+                                                return 'border-2 border-dashed border-gray-400';
                                             case 'approved':
-                                                return 'border border-slate-600';
+                                                return 'border border-gray-600';
                                             case 'rejected':
                                                 return 'border-2 border-red-500';
                                             default:
-                                                return 'border border-slate-400';
+                                                return 'border border-gray-400';
                                         }
                                     };
 
@@ -144,12 +144,12 @@ const CalendarView = observer(({ days, calendarData, isLoading, getTypeColor, on
                                                             return (
                                                                 <>
                                                                     {durationDays > 1 && (
-                                                                        <span className="bg-white/40 text-[8px] px-0.5 rounded-full font-black text-slate-900 border border-black/10 leading-none py-0.5" title="Тривалість">
+                                                                        <span className="bg-white/40 text-[8px] px-0.5 rounded-full font-black text-gray-900 border border-black/10 leading-none py-0.5" title="Тривалість">
                                                                             {durationDays}д
                                                                         </span>
                                                                     )}
                                                                     {abs.travel_days > 0 && (
-                                                                        <span className="bg-white/40 text-[8px] px-0.5 rounded-full font-black text-slate-900 border border-black/10 leading-none py-0.5" title="Днів на дорогу">
+                                                                        <span className="bg-white/40 text-[8px] px-0.5 rounded-full font-black text-gray-900 border border-black/10 leading-none py-0.5" title="Днів на дорогу">
                                                                             +{abs.travel_days}
                                                                         </span>
                                                                     )}
@@ -163,7 +163,7 @@ const CalendarView = observer(({ days, calendarData, isLoading, getTypeColor, on
                                                             const typeName = absenceTypes.find(t => t.value === abs.type_slug)?.caption || '';
                                                             return (
                                                                 <div className="flex-1 flex items-center justify-center px-1">
-                                                                    <span className="truncate text-slate-700 text-[9px]" title={typeName}>
+                                                                    <span className="truncate text-gray-700 text-[9px]" title={typeName}>
                                                                         {typeName}
                                                                     </span>
                                                                 </div>
@@ -179,8 +179,8 @@ const CalendarView = observer(({ days, calendarData, isLoading, getTypeColor, on
                                                                 onManageDocuments(abs);
                                                             }}
                                                         >
-                                                            <i className="fa-solid fa-paperclip text-slate-900 text-[7px]"></i>
-                                                            {abs.documents.length > 1 && <span className="text-slate-900 text-[7px] font-bold">{abs.documents.length}</span>}
+                                                            <i className="fa-solid fa-paperclip text-gray-900 text-[7px]"></i>
+                                                            {abs.documents.length > 1 && <span className="text-gray-900 text-[7px] font-bold">{abs.documents.length}</span>}
                                                         </span>
                                                     )}
                                                 </div>

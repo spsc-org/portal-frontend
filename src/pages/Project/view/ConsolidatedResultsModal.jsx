@@ -3,8 +3,8 @@ import { useVM } from "../../../shared/mvvm/index.js";
 import { HighlightedText } from "./liveAnalysis/AnalysisText.jsx";
 import { PROJECTS_DATASET_ID, TYPE_BADGES, fieldLabel, portalLinks, queryWords } from "../model/consolidatedSearchModel.js";
 
-const CELL = "border-b border-gray-100 px-2 py-1.5 align-top text-[11px] dark:border-gray-700/60";
-const TH = "sticky top-0 z-10 bg-gray-50 px-2 py-1.5 text-left text-[11px] font-semibold uppercase text-gray-500 dark:bg-neutral-900 dark:text-gray-400";
+const CELL = "border-b border-gray-100 px-2 py-1.5 align-top text-[11px] dark:border-neutral-700/60";
+const TH = "sticky top-0 z-10 bg-gray-50 px-2 py-1.5 text-left text-[11px] font-semibold uppercase text-gray-600 dark:bg-neutral-900 dark:text-gray-400";
 
 const Highlight = ({ text, query }) => <HighlightedText text={text ?? ""} items={queryWords(query)} />;
 
@@ -19,10 +19,10 @@ const SourceCell = ({ record }) => {
             {type && <span className={`inline-block rounded-full px-1.5 text-[10px] font-medium leading-4 ${type.className}`}>{type.label}</span>}
             {links && (
                 <div className="mt-1.5 flex items-center gap-2">
-                    <a href={links.card} target="_blank" rel="noreferrer" title="Переглянути картку проєкту" className="inline-flex h-6 w-6 items-center justify-center rounded border border-gray-300 bg-white text-gray-500 transition-colors hover:border-blue-400 hover:text-blue-600 dark:border-gray-600 dark:bg-gray-800">
+                    <a href={links.card} target="_blank" rel="noreferrer" title="Переглянути картку проєкту" className="inline-flex h-6 w-6 items-center justify-center rounded border border-gray-300 bg-white text-gray-600 transition-colors hover:border-blue-400 hover:text-blue-600 dark:border-gray-600 dark:bg-neutral-700">
                         <i className="fa-regular fa-rectangle-history text-[11px]" />
                     </a>
-                    <a href={links.edit} target="_blank" rel="noreferrer" title="Редагувати проєкт" className="inline-flex h-6 w-6 items-center justify-center rounded border border-gray-300 bg-white text-gray-500 transition-colors hover:border-orange-400 hover:text-orange-600 dark:border-gray-600 dark:bg-gray-800">
+                    <a href={links.edit} target="_blank" rel="noreferrer" title="Редагувати проєкт" className="inline-flex h-6 w-6 items-center justify-center rounded border border-gray-300 bg-white text-gray-600 transition-colors hover:border-orange-400 hover:text-orange-600 dark:border-gray-600 dark:bg-neutral-700">
                         <i className="fa-solid fa-pen-to-square text-[11px]" />
                     </a>
                 </div>
@@ -40,8 +40,8 @@ const RecordCells = ({ record, query }) => (
         <td className={`${CELL} text-gray-600 dark:text-gray-400`}>
             <Highlight text={record.identifiers} query={query} />
         </td>
-        <td className={`${CELL} text-gray-500 dark:text-gray-400`}>{record.decree || ""}</td>
-        <td className={`${CELL} whitespace-pre-line text-gray-500 dark:text-gray-400`}>
+        <td className={`${CELL} text-gray-600 dark:text-gray-400`}>{record.decree || ""}</td>
+        <td className={`${CELL} whitespace-pre-line text-gray-600 dark:text-gray-400`}>
             <Highlight text={record.other} query={query} />
         </td>
     </>
@@ -73,23 +73,23 @@ const ConsolidatedResultsModal = () => {
                         <i className={`fa-solid ${isAll ? "fa-layer-group text-violet-500" : "fa-globe text-blue-500"}`} />
                         {isAll ? "Всі збіги в консолідованій базі" : "Збіги в консолідованій базі"}
                         {!isAll && (
-                            <span className="truncate text-sm font-normal text-gray-500 dark:text-gray-400">
+                            <span className="truncate text-sm font-normal text-gray-600 dark:text-gray-400">
                                 {fieldLabel(field.key) ? `[${fieldLabel(field.key)}] ` : ""}
                                 {field.query}
                             </span>
                         )}
                     </h3>
-                    <div className="flex shrink-0 items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="flex shrink-0 items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
                         <span>{isAll ? `${rows.length} унікальних` : `${rows.length} знахідок`}</span>
                         {!isAll && field.time ? <span>{field.time} с</span> : null}
-                        <button type="button" onClick={search.closeModal} aria-label="Закрити" className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                        <button type="button" onClick={search.closeModal} aria-label="Закрити" className="text-gray-600 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
                             <i className="fas fa-xmark text-lg" />
                         </button>
                     </div>
                 </div>
                 <div className="min-h-0 flex-1 overflow-y-auto">
                     {rows.length === 0 ? (
-                        <p className="py-10 text-center text-sm text-gray-400">Збігів не знайдено</p>
+                        <p className="py-10 text-center text-sm text-gray-600">Збігів не знайдено</p>
                     ) : (
                         <table className="w-full border-collapse">
                             <thead>
@@ -118,7 +118,7 @@ const ConsolidatedResultsModal = () => {
                                                       {matches.map((match, index) => (
                                                           <div key={index}>
                                                               <span className="inline-block rounded bg-violet-100 px-1 py-0.5 text-[10px] font-medium text-violet-700 dark:bg-violet-900/40 dark:text-violet-300">{match.label}</span>
-                                                              <span className="ml-0.5 text-gray-500 dark:text-gray-400">{match.query}</span>
+                                                              <span className="ml-0.5 text-gray-600 dark:text-gray-400">{match.query}</span>
                                                           </div>
                                                       ))}
                                                   </td>

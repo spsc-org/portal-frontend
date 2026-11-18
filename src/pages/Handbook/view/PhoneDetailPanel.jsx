@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
-import { Chip, IconButton, Spinner, Tooltip } from "@material-tailwind/react";
+import { Chip, Spinner, Tooltip } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
 import { format } from "date-fns";
 import ConfirmModal from "../../../components/Modal/ConfirmModal.jsx";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
@@ -29,7 +30,7 @@ const PhoneDetailPanel = ({ entryId, onClose, onDeleted }) => {
 
     if (!entry) {
         return (
-            <aside className="flex w-[24rem] shrink-0 items-center justify-center self-start rounded-xl border border-slate-200 bg-white py-16 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <aside className="flex w-[24rem] shrink-0 items-center justify-center self-start rounded-xl border border-gray-200 bg-white py-16 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
                 <Spinner className="h-8 w-8"/>
             </aside>
         );
@@ -38,16 +39,16 @@ const PhoneDetailPanel = ({ entryId, onClose, onDeleted }) => {
     const handleDelete = () => vm.remove().then((deleted) => deleted && onDeleted?.());
 
     return (
-        <aside data-i-doc="widget:handbook-phone-detail-panel" className="w-[24rem] shrink-0 sticky top-14 self-start max-h-[calc(100vh-4.5rem)] flex flex-col overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
-            <div className="flex items-center justify-between gap-2 border-b border-slate-200 px-4 py-2.5 dark:border-slate-700">
+        <aside data-i-doc="widget:handbook-phone-detail-panel" className="w-[24rem] shrink-0 sticky top-14 self-start max-h-[calc(100vh-4.5rem)] flex flex-col overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+            <div className="flex items-center justify-between gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-neutral-700">
                 <div className="flex items-center gap-1.5">
                     {entry.is_archived &&
-                        <Chip size="sm" variant="ghost" color="gray" className="py-0.5 text-[9px] dark:!bg-slate-500/20 dark:!text-slate-300" value="Архів"/>
+                        <Chip size="sm" variant="ghost" color="gray" className="py-0.5 text-[9px] dark:!bg-neutral-400/20 dark:!text-gray-300" value="Архів"/>
                     }
                 </div>
                 <div className="flex items-center gap-1">
                     <IconButton size="sm" variant="text" disabled={vm.cmd.toggleFavorite.isPending}
-                                className={entry.is_favorite ? "text-amber-400" : "dark:text-slate-300"}
+                                className={entry.is_favorite ? "text-amber-400" : "dark:text-gray-300"}
                                 onClick={vm.toggleFavorite}
                                 title={entry.is_favorite ? "Прибрати з обраного" : "Додати в обране"}>
                         <i className={`${entry.is_favorite ? "fa-solid" : "fa-regular"} fa-star`}></i>
@@ -93,7 +94,7 @@ const PhoneDetailPanel = ({ entryId, onClose, onDeleted }) => {
             </div>
 
             <div className="flex-1 p-4">
-                <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">{entry.name}</h2>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{entry.name}</h2>
                 <div className="mt-1 flex flex-col gap-1.5">
                     {(entry.phones || []).map((p) => {
                         const count = p.confirmations_count || 0;
@@ -106,7 +107,7 @@ const PhoneDetailPanel = ({ entryId, onClose, onDeleted }) => {
                                 <div className="min-w-0">
                                     <PhoneNumberBadge phone={p.phone} note={p.note}/>
                                     {p.note &&
-                                        <span className="block pl-5 font-sans text-xs text-slate-400 dark:text-slate-500">{p.note}</span>
+                                        <span className="block pl-5 font-sans text-xs text-gray-600 dark:text-gray-500">{p.note}</span>
                                     }
                                 </div>
                                 <Tooltip content={confirmTooltip}>
@@ -114,7 +115,7 @@ const PhoneDetailPanel = ({ entryId, onClose, onDeleted }) => {
                                             onClick={() => vm.confirmNumber(p.id)}
                                             className={`shrink-0 flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] transition ${count > 0
                                                 ? "border-green-200 text-green-600 dark:border-green-900/50 dark:text-green-400"
-                                                : "border-slate-200 text-slate-400 hover:border-green-300 hover:text-green-600 dark:border-slate-700 dark:text-slate-500"}`}>
+                                                : "border-gray-200 text-gray-600 hover:border-green-300 hover:text-green-600 dark:border-neutral-700 dark:text-gray-500"}`}>
                                         <i className="fa-regular fa-circle-check"></i>
                                         {count > 0 && count}
                                     </button>
@@ -124,16 +125,16 @@ const PhoneDetailPanel = ({ entryId, onClose, onDeleted }) => {
                     })}
                 </div>
                 {entry.department &&
-                    <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                    <p className="mt-1 text-xs text-gray-600 dark:text-gray-500">
                         <i className="fa-regular fa-building mr-1.5"></i>{entry.department}
                     </p>
                 }
                 {entry.note &&
-                    <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                    <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-gray-700 dark:text-gray-300">
                         {entry.note}
                     </p>
                 }
-                <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
+                <p className="mt-3 text-xs text-gray-600 dark:text-gray-500">
                     Власник: {entry.owner?.name || "—"}
                     <span className="ml-3"><i className="fa-regular fa-eye mr-1"></i>{entry.views_count ?? 0}</span>
                 </p>

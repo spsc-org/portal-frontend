@@ -10,7 +10,7 @@ const CountriesCell = ({ precomputedData }) => {
             {countries.map((country) => (
                 <span
                     key={country.iso}
-                    className="inline-block h-4 w-6 cursor-help rounded-sm border border-gray-300 bg-cover bg-center dark:border-gray-500"
+                    className="inline-block h-4 w-6 cursor-help rounded-sm border border-gray-300 bg-cover bg-center dark:border-neutral-500"
                     style={{ backgroundImage: `url('/flag-svg/${String(country.iso).toLowerCase()}.svg')` }}
                     title={country.name}
                 />

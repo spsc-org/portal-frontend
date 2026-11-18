@@ -29,13 +29,13 @@ const Pagination = ({
     }
 
     return (
-        <div className="flex flex-wrap shadow-md items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-2 dark:border-gray-700 dark:bg-gray-900/60">
-            <div className="text-xs font-semibold text-gray-700 dark:text-slate-300">
+        <div className="flex flex-wrap shadow-md items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-2 dark:border-neutral-700 dark:bg-neutral-800/60">
+            <div className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                 <span>Знайдено: {totalCount}</span>
             </div>
 
             <div className="flex items-center gap-2">
-                <label htmlFor="selectLimit" className="whitespace-nowrap text-xs font-semibold text-gray-700 dark:text-slate-300">
+                <label htmlFor="selectLimit" className="whitespace-nowrap text-xs font-semibold text-gray-700 dark:text-gray-300">
                     На сторінці
                 </label>
                 <div className="relative">
@@ -43,7 +43,7 @@ const Pagination = ({
                         id="selectLimit"
                         value={pageSize}
                         onChange={handleChangeLimit}
-                        className="h-8 w-[4.5rem] rounded-md border border-gray-300 bg-white pl-2.5 pr-7 text-sm font-medium leading-none text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-slate-200 dark:focus:border-blue-400"
+                        className="h-8 w-[4.5rem] rounded-md border border-gray-200 bg-white pl-2.5 pr-7 text-sm font-medium leading-none text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200 dark:focus:border-blue-400"
                         style={{appearance: "none", WebkitAppearance: "none", MozAppearance: "none"}}
                     >
                         <option value="10">10</option>
@@ -58,7 +58,7 @@ const Pagination = ({
                 {
                     paginationRange.length > 2 &&
                     <button onClick={onPrevious} disabled={currentPage === 1}
-                            className="inline-flex h-7 items-center gap-1 rounded-md border border-gray-300 bg-white px-2 text-xs font-medium text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:bg-gray-700">
+                            className="inline-flex h-7 items-center gap-1 rounded-md border border-gray-300 bg-white px-2 text-xs font-medium text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200 dark:hover:border-blue-400 dark:hover:bg-neutral-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5"
                                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -70,14 +70,14 @@ const Pagination = ({
                 {
                     paginationRange.map((pageNumber, index) => {
                         if (pageNumber === DOTS) {
-                            return <span key={index + 1} className="px-1 text-xs text-gray-500 dark:text-gray-400">&#8230;</span>;
+                            return <span key={index + 1} className="px-1 text-xs text-gray-600 dark:text-gray-400">&#8230;</span>;
                         }
                         return (
                             <button key={index + 1} onClick={() => onPageChange(pageNumber)}
                                     className={`inline-flex h-7 min-w-[1.75rem] items-center justify-center rounded-md border px-2 text-xs font-semibold transition-colors
                                     ${currentPage === pageNumber
                                         ? "border-blue-500 bg-blue-600 text-white dark:border-blue-400 dark:bg-blue-500 dark:text-gray-900"
-                                        : "border-gray-300 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-blue-400 dark:hover:bg-gray-700"}`}>
+                                        : "border-gray-300 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200 dark:hover:border-blue-400 dark:hover:bg-neutral-600"}`}>
                                 {pageNumber}
                             </button>
                         )
@@ -86,7 +86,7 @@ const Pagination = ({
                 {
                     paginationRange.length > 2 &&
                     <button onClick={onNext} disabled={currentPage === lastPage}
-                            className="inline-flex h-7 items-center gap-1 rounded-md border border-gray-300 bg-white px-2 text-xs font-medium text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:bg-gray-700">
+                            className="inline-flex h-7 items-center gap-1 rounded-md border border-gray-300 bg-white px-2 text-xs font-medium text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200 dark:hover:border-blue-400 dark:hover:bg-neutral-600">
                             <span>Далі</span>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5"
                                  fill="none" viewBox="0 0 24 24" stroke="currentColor">

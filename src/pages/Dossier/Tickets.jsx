@@ -34,8 +34,8 @@ const Tickets = () => {
 
     if (!canView) {
         return (
-            <div className="flex h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
-                <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+            <div className="flex h-screen items-center justify-center bg-gray-100 dark:bg-neutral-800">
+                <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-400">
                     <i className="fa-solid fa-lock mb-2 text-xl"></i>
                     <p>Немає доступу до тікетів досьє.</p>
                 </div>
@@ -44,10 +44,10 @@ const Tickets = () => {
     }
 
     return (
-        <div data-i-doc="page:dossier-tickets" className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <div data-i-doc="page:dossier-tickets" className="min-h-screen bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
             <div className="max-w-[1200px] mx-auto px-4 py-6">
                 {/* Sticky-панель фільтрів — той самий принцип, що й TaskFilters на /task */}
-                <div className="sticky top-[50px] z-20 -mx-1 mb-3 flex flex-wrap items-center gap-1.5 bg-gray-100/90 px-1 py-2 backdrop-blur dark:bg-gray-900/90">
+                <div className="sticky top-[50px] z-20 mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800">
                     <MultiSelectChip
                         label="Стан"
                         icon="fa-regular fa-circle-half-stroke"
@@ -68,7 +68,7 @@ const Tickets = () => {
                             setPage(1);
                         }}
                     />
-                    <div className="flex items-center gap-0.5 rounded-lg border border-slate-200 p-0.5 dark:border-slate-700"
+                    <div className="flex items-center gap-0.5 rounded-lg border border-gray-200 p-0.5 dark:border-neutral-700"
                          title="Тип привʼязаної сутності">
                         <button
                             type="button"
@@ -79,7 +79,7 @@ const Tickets = () => {
                             className={`rounded-md px-2.5 py-1 text-[11px] font-medium transition ${
                                 filters.entityType === null
                                     ? "bg-blue-500 text-white"
-                                    : "text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-neutral-700"
                             }`}
                         >
                             Усі
@@ -95,7 +95,7 @@ const Tickets = () => {
                                 className={`rounded-md px-2.5 py-1 text-[11px] font-medium transition ${
                                     filters.entityType === option.id
                                         ? "bg-blue-500 text-white"
-                                        : "text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                                        : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-neutral-700"
                                 }`}
                             >
                                 {option.caption}
@@ -110,13 +110,13 @@ const Tickets = () => {
                         className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium transition ${
                             hasActive
                                 ? "border-red-200 text-red-500 hover:border-red-400 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-900/20"
-                                : "cursor-default border-slate-200 text-slate-300 dark:border-slate-800 dark:text-slate-600"
+                                : "cursor-default border-gray-200 text-gray-300 dark:border-neutral-700 dark:text-gray-600"
                         }`}
                     >
                         <i className="fa-regular fa-filter-slash text-[10px]"></i>Скинути
                     </button>
                     {Boolean(meta) && (
-                        <span className="text-[11px] text-slate-400">
+                        <span className="text-[11px] text-gray-600">
                             {meta.total} {meta.total === 1 ? "тікет" : "тікетів"}
                         </span>
                     )}
@@ -129,12 +129,12 @@ const Tickets = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                    <div className="flex-1 min-w-0 rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-gray-900">
+                    <div className="flex-1 min-w-0 rounded-xl border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
                         {isFetching && (
                             <div className="flex justify-center py-10"><Spinner className="h-7 w-7"/></div>
                         )}
                         {!isFetching && tickets.length === 0 && (
-                            <div className="py-10 text-center text-sm text-slate-400 dark:text-slate-500">Тікетів немає</div>
+                            <div className="py-10 text-center text-sm text-gray-600 dark:text-gray-500">Тікетів немає</div>
                         )}
                         {!isFetching && tickets.map((ticket) => (
                             <TicketListRow
@@ -146,21 +146,21 @@ const Tickets = () => {
                         ))}
 
                         {meta && meta.pages > 1 && (
-                            <div className="flex items-center justify-center gap-2 border-t border-slate-100 py-3 dark:border-slate-800">
+                            <div className="flex items-center justify-center gap-2 border-t border-gray-100 py-3 dark:border-neutral-700">
                                 <button
                                     type="button"
                                     disabled={page <= 1}
                                     onClick={() => setPage((p) => Math.max(1, p - 1))}
-                                    className="rounded-md px-2.5 py-1 text-[12px] font-semibold text-blue-600 transition hover:bg-blue-50 disabled:cursor-default disabled:opacity-40 dark:text-blue-400 dark:hover:bg-slate-800"
+                                    className="rounded-md px-2.5 py-1 text-[12px] font-semibold text-blue-600 transition hover:bg-blue-50 disabled:cursor-default disabled:opacity-40 dark:text-blue-400 dark:hover:bg-neutral-700"
                                 >
                                     ← Назад
                                 </button>
-                                <span className="text-[12px] text-slate-500 dark:text-slate-400">{meta.page} / {meta.pages}</span>
+                                <span className="text-[12px] text-gray-600 dark:text-gray-400">{meta.page} / {meta.pages}</span>
                                 <button
                                     type="button"
                                     disabled={page >= meta.pages}
                                     onClick={() => setPage((p) => Math.min(meta.pages, p + 1))}
-                                    className="rounded-md px-2.5 py-1 text-[12px] font-semibold text-blue-600 transition hover:bg-blue-50 disabled:cursor-default disabled:opacity-40 dark:text-blue-400 dark:hover:bg-slate-800"
+                                    className="rounded-md px-2.5 py-1 text-[12px] font-semibold text-blue-600 transition hover:bg-blue-50 disabled:cursor-default disabled:opacity-40 dark:text-blue-400 dark:hover:bg-neutral-700"
                                 >
                                     Вперед →
                                 </button>

@@ -2,8 +2,10 @@ import {useMemo} from 'react';
 import { observer } from "mobx-react-lite";
 import AdvancedSelectWithDefaults from "../../components/fields/AdvancedSelectWithDefaults.jsx";
 import {createColumnHelper} from "@tanstack/react-table";
-import Table, {loadColumnSizes} from "../../components/Table/Table.jsx";
-import {Button, Tooltip} from "@material-tailwind/react";
+import Table from "../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../components/Table/columnSizes.js";
+import { Tooltip } from "@material-tailwind/react"
+import Button from "../../components/Buttons/Button.jsx"
 import Page from "../../components/Page.jsx";
 import AdvancedSearchInput from "../../components/fields/AdvancedSearchInput.jsx";
 import DetailsDialog from "./components/DetailsDialog.jsx";
@@ -58,8 +60,7 @@ const AddToBasketButton = observer(({record}) => {
                 variant={isAdded ? "filled" : "text"}
                 color={isAdded ? "amber" : "blue-gray"}
                 className="p-2 rounded-full w-8 h-8 flex items-center justify-center"
-                onClick={() => toggleItem(record)}
-            >
+                onClick={() => toggleItem(record)}>
                 <i className={`fa-${isAdded ? 'solid' : 'regular'} fa-star text-sm`}></i>
             </Button>
         </Tooltip>
@@ -137,7 +138,7 @@ const IndexContent = observer(({ vm }) => {
                         <div className="text-center">
                             <div className="font-semibold">{groupCaption}</div>
                             <div className="text-xs text-gray-300">{datasetName}</div>
-                            <div className="text-xs text-gray-400">ID запису: {recordId}</div>
+                            <div className="text-xs text-gray-600">ID запису: {recordId}</div>
                         </div>
                     }>
                         <span className={`font-bold ${colorClass} cursor-help`}>{groupCaption}</span>
@@ -190,7 +191,7 @@ const IndexContent = observer(({ vm }) => {
                         {methods.map(method => (
                             <span
                                 key={method}
-                                className={`w-fit text-[10px] px-1.5 py-0.5 rounded border font-medium ${methodColors[method] || 'bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600'}`}
+                                className={`w-fit text-[10px] px-1.5 py-0.5 rounded border font-medium ${methodColors[method] || 'bg-gray-100 text-gray-700 border-gray-200 dark:bg-neutral-600 dark:text-gray-200 dark:border-gray-600'}`}
                             >
                                 {method === 'meilisearch' ? 'Meili' : method}
                             </span>
@@ -280,7 +281,7 @@ const IndexContent = observer(({ vm }) => {
                 <CollapsibleSection
                     title="Фільтри"
                     showHiddenAppliedBadge
-                    className="mb-4 rounded-xl border border-gray-200 bg-gray-50/80 p-3 shadow-md dark:border-gray-700 dark:bg-gray-900/60 sm:p-4"
+                    className="mb-4 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800"
                 >
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
                         <div className="min-w-0" data-filter-active={filters?.search?.trim() ? "true" : "false"}>
@@ -332,7 +333,7 @@ const IndexContent = observer(({ vm }) => {
                             />
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-gray-200 pt-2 dark:border-gray-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
+                        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-gray-200 pt-2 dark:border-neutral-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
                             <Tooltip content="Скинути фільтри">
                                 <Button
                                     size="sm"

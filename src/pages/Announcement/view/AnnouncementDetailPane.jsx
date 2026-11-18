@@ -19,7 +19,7 @@ const AnnouncementDetailPane = ({ vm, onDeleted }) => {
 
     if (!vm.activeId) {
         return (
-            <div className="flex h-full flex-1 items-center justify-center text-slate-400 dark:text-slate-600">
+            <div className="flex h-full flex-1 items-center justify-center text-gray-600 dark:text-gray-600">
                 <div className="text-center">
                     <i className="fa-regular fa-bullhorn mb-2 text-3xl"></i>
                     <p className="text-sm">Оберіть оголошення зі списку</p>
@@ -39,21 +39,21 @@ const AnnouncementDetailPane = ({ vm, onDeleted }) => {
     const handleDelete = () => vm.deleteActive().then((deleted) => deleted && onDeleted?.());
 
     return (
-        <div data-i-doc="widget:announcement-detail-pane" className="flex h-full flex-1 flex-col overflow-y-auto bg-white dark:bg-slate-900">
-            <div className="flex items-start justify-between gap-3 border-b border-slate-200 p-5 dark:border-slate-800">
+        <div data-i-doc="widget:announcement-detail-pane" className="flex h-full flex-1 flex-col overflow-y-auto bg-white dark:bg-neutral-800">
+            <div className="flex items-start justify-between gap-3 border-b border-gray-200 p-5 dark:border-neutral-700">
                 <div className="min-w-0 flex-1">
-                    <h1 className="flex items-center gap-2 text-lg font-bold text-slate-900 dark:text-slate-100">
+                    <h1 className="flex items-center gap-2 text-lg font-bold text-gray-900 dark:text-gray-100">
                         {announcement.title}
                         {announcement.is_draft &&
-                            <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                            <span className="rounded-full bg-gray-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-600 dark:bg-neutral-600 dark:text-gray-300">
                                 Чернетка
                             </span>
                         }
                     </h1>
-                    <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                    <p className="mt-1 text-xs text-gray-600 dark:text-gray-500">
                         {announcement.author?.name || "—"} · {announcement.created_at ? format(new Date(announcement.created_at), "d MMMM yyyy, HH:mm", {locale: uk}) : ""}
                     </p>
-                    <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                    <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600 dark:bg-neutral-700 dark:text-gray-400">
                         <i className={`fa-solid ${announcement.audience_type === "selected" ? "fa-user-check" : "fa-users"}`}></i>
                         {announcement.audience_type === "selected"
                             ? `Адресати: ${(announcement.recipients || []).map((r) => r.name).join(", ") || "нікого не обрано"}`
@@ -70,11 +70,11 @@ const AnnouncementDetailPane = ({ vm, onDeleted }) => {
                             </LoadingButton>
                         }
                         <button type="button" onClick={vm.openEdit} title="Редагувати"
-                                className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-500 transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">
+                                className="rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs text-gray-600 transition hover:bg-gray-100 dark:border-neutral-700 dark:hover:bg-neutral-700">
                             <i className="fa-regular fa-pen"></i>
                         </button>
                         <button type="button" onClick={vm.askDelete} title="Видалити"
-                                className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-red-500 transition hover:bg-red-50 dark:border-slate-700 dark:hover:bg-red-900/20">
+                                className="rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs text-red-500 transition hover:bg-red-50 dark:border-neutral-700 dark:hover:bg-red-900/20">
                             <i className="fa-regular fa-trash"></i>
                         </button>
                     </div>
@@ -101,21 +101,21 @@ const AnnouncementDetailPane = ({ vm, onDeleted }) => {
                     </div>
                 }
 
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700 dark:text-gray-300">
                     {announcement.details}
                 </p>
 
                 <div className="mt-6">
-                    <p className="mb-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+                    <p className="mb-1.5 text-xs font-medium text-gray-600 dark:text-gray-400">
                         Вкладення{announcement.attachments?.length ? ` (${announcement.attachments.length})` : ""}
                     </p>
                     <AttachmentsGallery data={announcement.attachments || []} isDisabled/>
                 </div>
 
                 {!announcement.is_draft &&
-                <div className="mt-6 border-t border-slate-100 pt-4 dark:border-slate-800">
+                <div className="mt-6 border-t border-gray-100 pt-4 dark:border-neutral-700">
                     <div className="mb-1.5 flex items-center gap-2">
-                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                        <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
                             Прочитали{announcement.reads_count ? ` (${announcement.reads_count})` : ""}
                         </p>
                         {announcement.recipients_count > 0 &&
@@ -124,7 +124,7 @@ const AnnouncementDetailPane = ({ vm, onDeleted }) => {
                                     <i className="fa-solid fa-check-double"></i>Прочитали всі адресати
                                 </span>
                             ) : (
-                                <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">
+                                <span className="text-[10px] font-medium text-gray-600 dark:text-gray-500">
                                     Адресати: {announcement.recipients_read_count}/{announcement.recipients_count}
                                 </span>
                             ))

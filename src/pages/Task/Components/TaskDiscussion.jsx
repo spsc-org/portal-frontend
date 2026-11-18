@@ -1,7 +1,8 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { TaskDiscussionViewModel } from "../viewmodel/TaskViewModels.js";
-import {IconButton, Spinner} from "@material-tailwind/react";
+import { Spinner } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
 import {useEffect, useRef} from "react";
 import {format} from "date-fns";
 
@@ -25,13 +26,13 @@ const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth}) => {
     }, [comments.length]);
 
     return (
-        <div className="mt-4 border-t border-slate-200 pt-3 dark:border-slate-700">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+        <div className="mt-4 border-t border-gray-200 pt-3 dark:border-neutral-700">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
                 Обговорення{comments.length > 0 ? ` (${comments.length})` : ""}
             </p>
             <div className="flex max-h-72 flex-col gap-1.5 overflow-y-auto pr-1">
                 {comments.length === 0 &&
-                    <p className="py-2 text-center text-xs text-slate-400 dark:text-slate-500">
+                    <p className="py-2 text-center text-xs text-gray-600 dark:text-gray-500">
                         Ще немає повідомлень
                     </p>
                 }
@@ -41,20 +42,20 @@ const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth}) => {
                         <div key={comment.id}
                              className={`max-w-[85%] rounded-lg px-2.5 py-1.5 ${isOwn
                                  ? "self-end bg-blue-50 dark:bg-blue-900/30"
-                                 : "self-start bg-slate-100 dark:bg-slate-800"}`}>
+                                 : "self-start bg-gray-100 dark:bg-neutral-700"}`}>
                             <div className="flex items-center gap-1.5">
                                 {Boolean(comment.userAvatar) &&
                                     <img src={`/files?path=${comment.userAvatar}`} alt=""
                                          className="h-4 w-4 shrink-0 rounded-full object-cover"/>
                                 }
-                                <span className="text-[11px] font-semibold text-slate-700 dark:text-slate-200">
+                                <span className="text-[11px] font-semibold text-gray-700 dark:text-gray-200">
                                     {isOwn ? "Ви" : comment.userName}
                                 </span>
-                                <span className="text-[9px] text-slate-400 dark:text-slate-500">
+                                <span className="text-[9px] text-gray-600 dark:text-gray-500">
                                     {comment.created_at ? format(comment.created_at, "yyyy-MM-dd HH:mm") : ""}
                                 </span>
                             </div>
-                            <p className="whitespace-pre-wrap text-xs leading-relaxed text-slate-800 dark:text-slate-300">
+                            <p className="whitespace-pre-wrap text-xs leading-relaxed text-gray-800 dark:text-gray-300">
                                 {comment.body}
                             </p>
                         </div>
@@ -79,7 +80,7 @@ const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth}) => {
                                 e.stopPropagation();
                             }
                         }}
-                        className="flex-1 resize-none rounded-md border border-slate-200 bg-white p-2 text-xs leading-relaxed text-slate-700 focus:border-blue-300 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                        className="flex-1 resize-none rounded-md border border-gray-200 bg-white p-2 text-xs leading-relaxed text-gray-700 focus:border-blue-300 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-300"
                     />
                     <IconButton size="sm" color="blue"
                                 disabled={addCommentMutation.isPending || !commentDraft.trim()}
@@ -91,7 +92,7 @@ const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth}) => {
                     </IconButton>
                 </div>
             ) : (
-                <p className="mt-1 text-[10px] text-slate-400 dark:text-slate-500">
+                <p className="mt-1 text-[10px] text-gray-600 dark:text-gray-500">
                     Писати можуть власник задачі та учасники
                 </p>
             )}

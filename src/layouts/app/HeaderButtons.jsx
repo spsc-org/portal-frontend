@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 const BASE =
   'inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:cursor-not-allowed disabled:opacity-50'
 const TONES = {
-  primary: 'bg-blue-600 px-3 font-medium text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500',
+  primary: 'bg-blue-600 px-3 font-medium text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700',
   default:
     'border border-gray-200 bg-white px-3 text-gray-700 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-300 dark:hover:border-blue-400 dark:hover:bg-neutral-700 dark:hover:text-blue-300',
 }

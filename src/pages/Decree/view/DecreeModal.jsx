@@ -2,7 +2,9 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { FileDownloadViewModel } from "../../../entities/file/FileDownloadViewModel.js";
 import { DecreeFilesViewModel } from "../viewmodel/DecreeViewModels.js";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import {format} from "date-fns";
 import {BOOLEANS, SANC_DECREE_TYPES} from "../../../lib/utils.js";
 
@@ -26,8 +28,8 @@ const DecreeModal = ({selectedId, open = false, onClose}) => {
 
     }
 
-    return (<Dialog data-i-doc="modal:decree-details" open={open} handler={onClose} size="md">
-        <DialogHeader className="dark:text-gray-200">
+    return (<Modal data-i-doc="modal:decree-details" open={open} handler={onClose} size="md">
+        <ModalHeader>
                 <span className="mr-5">Указ: {decree?.code}
                     <span>{decree?.date ? ` від ${format(decree?.date, "dd.MM.yyyy")}` : null}</span>
                 </span>
@@ -38,53 +40,53 @@ const DecreeModal = ({selectedId, open = false, onClose}) => {
                     <i className="fa-regular fa-arrow-up-right-from-square"></i>
                 </Button>
             </a>}
-        </DialogHeader>
-        <DialogBody className="h-[26rem] overflow-y-auto">
+        </ModalHeader>
+        <ModalBody className="h-[26rem] overflow-y-auto">
             <div className="grid grid-cols-2 mb-2">
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">Код:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.code}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.code}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">Тип:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.typeId ? SANC_DECREE_TYPES.find(i => i.value === decree?.typeId)?.label : ""}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.typeId ? SANC_DECREE_TYPES.find(i => i.value === decree?.typeId)?.label : ""}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">Дата:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.date ? format(decree?.date, "dd.MM.yyyy") : "-"}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.date ? format(decree?.date, "dd.MM.yyyy") : "-"}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">Діючий:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.isActive ? BOOLEANS.find(i => parseInt(i.value) === decree?.isActive).label : ""}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.isActive ? BOOLEANS.find(i => parseInt(i.value) === decree?.isActive).label : ""}</p>
                 </div>
 
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">rnboId:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.rnboId}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.rnboId}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">Створив:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.createdUserId}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.createdUserId}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">Дата створення:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.created_at ? format(decree?.created_at, "dd.MM.yyyy") : "-"}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.created_at ? format(decree?.created_at, "dd.MM.yyyy") : "-"}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">Змінив:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.updatedUserId}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.updatedUserId}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">Дата зміни:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.updated_at ? format(decree?.updated_at, "dd.MM.yyyy") : "-"}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.updated_at ? format(decree?.updated_at, "dd.MM.yyyy") : "-"}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">Дата видалення:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.deleted_at ? format(decree?.deleted_at, "dd.MM.yyyy") : "-"}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.deleted_at ? format(decree?.deleted_at, "dd.MM.yyyy") : "-"}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                     <p className="font-bold dark:text-gray-50">Коментар:</p>
-                    <p className="font-normal dark:text-slate-400">{decree?.comment}</p>
+                    <p className="font-normal dark:text-gray-400">{decree?.comment}</p>
                 </div>
             </div>
             <Typography variant="h5" className="dark:text-gray-50">Указ:</Typography>
@@ -104,7 +106,7 @@ const DecreeModal = ({selectedId, open = false, onClose}) => {
                         </Button>
                     {/*</a>*/}
                 </div> : <Typography variant="paragraph"
-                                     className="font-normal dark:text-slate-400"
+                                     className="font-normal dark:text-gray-400"
                 >Указ відсутній</Typography>}
             </div>
             <Typography variant="h5" className="dark:text-gray-50">Додатки:</Typography>
@@ -112,7 +114,7 @@ const DecreeModal = ({selectedId, open = false, onClose}) => {
                 {attachmentFiles.length ?
                     <div className="flex flex-col gap-2"> {attachmentFiles.map((file, index) => {
                         return (<div key={index} className="inline-flex gap-x-2">
-                            <span className="font-normal dark:text-slate-400">{index + 1}.</span>
+                            <span className="font-normal dark:text-gray-400">{index + 1}.</span>
                             <div className="inline-flex min-w-80 p-2 rounded-md bg-gray-200">
                                 <Typography variant="small"
                                             className="w-full leading-none">{file?.name}</Typography>
@@ -126,21 +128,20 @@ const DecreeModal = ({selectedId, open = false, onClose}) => {
                             </Button>
                         </div>)
                     })}</div> : <Typography variant="paragraph"
-                                            className="font-normal dark:text-slate-400"
+                                            className="font-normal dark:text-gray-400"
                     >Додатки відсутні</Typography>}
             </div>
 
-        </DialogBody>
-        <DialogFooter>
+        </ModalBody>
+        <ModalFooter>
             <Button
-                variant="text"
-                color="red"
+                color="secondary"
                 onClick={onClose}
                 className="mr-1">
                 <span>Закрити</span>
             </Button>
-        </DialogFooter>
-    </Dialog>);
+        </ModalFooter>
+    </Modal>);
 };
 
 export default observer(DecreeModal);

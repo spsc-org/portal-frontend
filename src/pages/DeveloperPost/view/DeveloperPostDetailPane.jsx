@@ -19,7 +19,7 @@ const DeveloperPostDetailPane = ({ vm, onDeleted }) => {
 
     if (!vm.activeId) {
         return (
-            <div className="flex h-full flex-1 items-center justify-center text-slate-400 dark:text-slate-600">
+            <div className="flex h-full flex-1 items-center justify-center text-gray-600 dark:text-gray-600">
                 <div className="text-center">
                     <i className="fa-regular fa-code-branch mb-2 text-3xl"></i>
                     <p className="text-sm">Оберіть пост зі списку</p>
@@ -43,12 +43,12 @@ const DeveloperPostDetailPane = ({ vm, onDeleted }) => {
     const handleDelete = () => vm.deleteActive().then((deleted) => deleted && onDeleted?.());
 
     return (
-        <div data-i-doc="widget:developer-post-detail-pane" className="flex h-full flex-1 flex-col overflow-y-auto bg-white dark:bg-slate-900">
-            <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+        <div data-i-doc="widget:developer-post-detail-pane" className="flex h-full flex-1 flex-col overflow-y-auto bg-white dark:bg-neutral-800">
+            <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-gray-200 bg-white p-5 dark:border-neutral-700 dark:bg-neutral-800">
                 <div className="min-w-0 flex-1">
-                    <h1 className="flex flex-wrap items-center gap-2 text-lg font-bold text-slate-900 dark:text-slate-100">
+                    <h1 className="flex flex-wrap items-center gap-2 text-lg font-bold text-gray-900 dark:text-gray-100">
                         {post.title}
-                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-bold text-gray-600 dark:bg-neutral-700 dark:text-gray-400">
                             v{post.version}
                         </span>
                         {postTags.map((t) => {
@@ -64,7 +64,7 @@ const DeveloperPostDetailPane = ({ vm, onDeleted }) => {
                             </span>
                         }
                     </h1>
-                    <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                    <p className="mt-1 text-xs text-gray-600 dark:text-gray-500">
                         {post.author?.name || "—"} · {post.created_at ? format(new Date(post.created_at), "d MMMM yyyy, HH:mm", {locale: uk}) : ""}
                     </p>
                     {post.status === "scheduled" && post.publish_at &&
@@ -84,11 +84,11 @@ const DeveloperPostDetailPane = ({ vm, onDeleted }) => {
                             </LoadingButton>
                         }
                         <button type="button" onClick={vm.openEdit} title="Редагувати"
-                                className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-500 transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">
+                                className="rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs text-gray-600 transition hover:bg-gray-100 dark:border-neutral-700 dark:hover:bg-neutral-700">
                             <i className="fa-regular fa-pen"></i>
                         </button>
                         <button type="button" onClick={vm.askDelete} title="Видалити"
-                                className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-red-500 transition hover:bg-red-50 dark:border-slate-700 dark:hover:bg-red-900/20">
+                                className="rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs text-red-500 transition hover:bg-red-50 dark:border-neutral-700 dark:hover:bg-red-900/20">
                             <i className="fa-regular fa-trash"></i>
                         </button>
                     </div>
@@ -98,7 +98,7 @@ const DeveloperPostDetailPane = ({ vm, onDeleted }) => {
             <div className="flex-1 p-5">
                 {/* @tailwindcss/typography не підключений у проєкті (prose-класи без
                     ефекту) — стилізуємо markdown-теги вручну через arbitrary variants. */}
-                <div className="max-w-none text-sm leading-relaxed text-slate-700 dark:text-slate-300
+                <div className="max-w-none text-sm leading-relaxed text-gray-700 dark:text-gray-300
                     [&_h1]:mb-2 [&_h1]:mt-4 [&_h1]:text-lg [&_h1]:font-bold [&_h1]:first:mt-0
                     [&_h2]:mb-2 [&_h2]:mt-4 [&_h2]:text-base [&_h2]:font-bold [&_h2]:first:mt-0
                     [&_h3]:mb-1.5 [&_h3]:mt-3 [&_h3]:text-sm [&_h3]:font-bold
@@ -106,21 +106,21 @@ const DeveloperPostDetailPane = ({ vm, onDeleted }) => {
                     [&_strong]:font-semibold [&_em]:italic
                     [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-5
                     [&_a]:text-blue-600 [&_a]:underline dark:[&_a]:text-blue-400
-                    [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs dark:[&_code]:bg-slate-800
-                    [&_img]:my-3 [&_img]:max-w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-slate-200 dark:[&_img]:border-slate-700
-                    [&_blockquote]:my-3 [&_blockquote]:border-l-2 [&_blockquote]:border-slate-300 [&_blockquote]:pl-3 [&_blockquote]:text-slate-500 dark:[&_blockquote]:border-slate-600 dark:[&_blockquote]:text-slate-400">
+                    [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs dark:[&_code]:bg-gray-800
+                    [&_img]:my-3 [&_img]:max-w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-gray-200 dark:[&_img]:border-gray-700
+                    [&_blockquote]:my-3 [&_blockquote]:border-l-2 [&_blockquote]:border-gray-300 [&_blockquote]:pl-3 [&_blockquote]:text-gray-600 dark:[&_blockquote]:border-gray-600 dark:[&_blockquote]:text-gray-600">
                     <MarkdownRenderer content={post.body || ""}/>
                 </div>
 
                 <div className="mt-6">
-                    <p className="mb-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+                    <p className="mb-1.5 text-xs font-medium text-gray-600 dark:text-gray-400">
                         Вкладення{post.attachments?.length ? ` (${post.attachments.length})` : ""}
                     </p>
                     <AttachmentsGallery data={post.attachments || []} isDisabled/>
                 </div>
 
                 {isPublished &&
-                    <p className="mt-6 border-t border-slate-100 pt-4 text-xs text-slate-400 dark:border-slate-800 dark:text-slate-500">
+                    <p className="mt-6 border-t border-gray-100 pt-4 text-xs text-gray-600 dark:border-neutral-700 dark:text-gray-500">
                         Переглянули: {post.reads_count || 0}
                     </p>
                 }

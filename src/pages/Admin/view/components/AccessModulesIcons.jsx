@@ -15,23 +15,23 @@ const MODULE_META = {
     inventory: {icon: "fa-solid fa-boxes-stacked", label: "inventory", tone: "bg-lime-100 text-lime-700 dark:bg-lime-900/40 dark:text-lime-300"},
     dictionary: {icon: "fa-solid fa-book", label: "dictionary", tone: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300"},
     handbook: {icon: "fa-solid fa-address-book", label: "handbook", tone: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300"},
-    "admin-groups": {icon: "fa-solid fa-people-group", label: "admin-groups", tone: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"},
+    "admin-groups": {icon: "fa-solid fa-people-group", label: "admin-groups", tone: "bg-gray-100 text-gray-700 dark:bg-neutral-700 dark:text-gray-300"},
     document: {icon: "fa-solid fa-file-lines", label: "document", tone: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300"},
     decree: {icon: "fa-solid fa-gavel", label: "decree", tone: "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300"},
     staff: {icon: "fa-solid fa-users", label: "staff", tone: "bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-900/40 dark:text-fuchsia-300"},
     integrations: {icon: "fa-solid fa-plug", label: "integrations", tone: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"},
-    audit: {icon: "fa-solid fa-clipboard-list", label: "audit", tone: "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300"},
+    audit: {icon: "fa-solid fa-clipboard-list", label: "audit", tone: "bg-gray-200 text-gray-600 dark:bg-neutral-600 dark:text-gray-300"},
     report: {icon: "fa-solid fa-chart-column", label: "report", tone: "bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300"},
     statistic: {icon: "fa-solid fa-chart-pie", label: "statistic", tone: "bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300"},
-    search: {icon: "fa-solid fa-magnifying-glass", label: "search", tone: "bg-stone-200 text-stone-600 dark:bg-stone-700 dark:text-stone-300"},
+    search: {icon: "fa-solid fa-magnifying-glass", label: "search", tone: "bg-gray-200 text-gray-600 dark:bg-neutral-600 dark:text-gray-300"},
 };
 
 const FALLBACK = {
     icon: "fa-solid fa-cube",
-    tone: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+    tone: "bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-gray-300",
 };
 
-const OFF_TONE = "bg-transparent text-slate-300 dark:text-slate-600";
+const OFF_TONE = "bg-transparent text-gray-300 dark:text-gray-600";
 
 /**
  * Графічний індикатор модулів: фіксована смуга іконок у стабільному порядку схеми.
@@ -50,7 +50,7 @@ const AccessModulesIcons = ({pages = {}, schemaKeys = []}) => {
     const keys = [...orderedKeys, ...extraEnabled];
 
     if (!keys.length) {
-        return <span className="text-[11px] text-slate-400">—</span>;
+        return <span className="text-[11px] text-gray-600">—</span>;
     }
 
     return (

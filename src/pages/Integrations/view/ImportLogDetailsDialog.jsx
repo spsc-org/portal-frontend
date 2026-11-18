@@ -1,32 +1,20 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { ImportLogDetailsViewModel } from "../viewmodel/IntegrationsViewModels.js";
-import {
-    Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
-    Button,
-    Typography,
-    Spinner,
-    Tabs,
-    TabsHeader,
-    TabsBody,
-    Tab,
-    TabPanel,
-
-} from "@material-tailwind/react";
+import { Typography, Spinner, Tabs, TabsHeader, TabsBody, Tab, TabPanel } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import {convertDate} from "../../../lib/utils.js";
 import { StatusChip } from "./ImportLogShared.jsx";
 
 
 const DetailItem = ({label, value, children}) => (
     <div className="mb-2">
-        <Typography color="blue-gray" className="font-semibold text-sm dark:text-slate-400">{label}:</Typography>
+        <Typography color="blue-gray" className="font-semibold text-sm dark:text-gray-400">{label}:</Typography>
         {children ? (
-            <div className="text-sm text-blue-gray-800 dark:text-slate-200">{children}</div>
+            <div className="text-sm text-blue-gray-800 dark:text-gray-200">{children}</div>
         ) : (
-            <Typography variant="small" className="text-blue-gray-800 dark:text-slate-200">{value ?? 'N/A'}</Typography>
+            <Typography variant="small" className="text-blue-gray-800 dark:text-gray-200">{value ?? 'N/A'}</Typography>
         )}
     </div>
 );
@@ -45,7 +33,7 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
             return <div className="p-4 text-red-500">Помилка завантаження даних: {error.message}</div>;
         }
         if (!log) {
-            return <div className="p-4 text-blue-gray-500 dark:text-slate-400">Немає даних для відображення.</div>;
+            return <div className="p-4 text-blue-gray-500 dark:text-gray-400">Немає даних для відображення.</div>;
         }
 
         const tabsData = [
@@ -56,7 +44,7 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
                     <div className="mt-4 space-y-8">
                         {/* --- Загальна інформація --- */}
                         <div>
-                            <Typography variant="h6" color="blue-gray" className="mb-3 border-b pb-1 dark:text-slate-200 dark:border-slate-700">Загальна інформація</Typography>
+                            <Typography variant="h6" color="blue-gray" className="mb-3 border-b pb-1 dark:text-gray-200 dark:border-neutral-700">Загальна інформація</Typography>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
                                 <DetailItem label="Датасет" value={log.dataset_name}/>
                                 <DetailItem label="Статус">
@@ -74,7 +62,7 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
 
                         {/* --- Статистика записів --- */}
                         <div>
-                            <Typography variant="h6" color="blue-gray" className="mb-3 border-b pb-1 dark:text-slate-200 dark:border-slate-700">Статистика записів</Typography>
+                            <Typography variant="h6" color="blue-gray" className="mb-3 border-b pb-1 dark:text-gray-200 dark:border-neutral-700">Статистика записів</Typography>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
                                 <DetailItem label="Оброблено успішно" value={log.records_processed}/>
                                 <DetailItem label="Записів з помилками" value={log.records_failed ?? 0}/>
@@ -86,7 +74,7 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
 
                         {/* --- Звіти та Повідомлення --- */}
                         <div>
-                            <Typography variant="h6" color="blue-gray" className="mb-3 border-b pb-1 dark:text-slate-200 dark:border-slate-700">Звіти та Повідомлення</Typography>
+                            <Typography variant="h6" color="blue-gray" className="mb-3 border-b pb-1 dark:text-gray-200 dark:border-neutral-700">Звіти та Повідомлення</Typography>
                             <div className="space-y-6">
                                 {log.error_message && (
                                     <DetailItem label="Повідомлення про помилку">
@@ -102,8 +90,8 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
                                 )}
                                 {log.integrity_report?.length > 0 && (
                                     <DetailItem label="Звіт про цілісність даних">
-                                        <table className="w-full text-sm text-left text-gray-500 dark:text-slate-400">
-                                            <thead className="text-xs text-gray-700 dark:text-slate-300 uppercase bg-gray-100 dark:bg-slate-700">
+                                        <table className="w-full text-sm text-left text-gray-600 dark:text-gray-400">
+                                            <thead className="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-100 dark:bg-neutral-600">
                                             <tr>
                                                 <th scope="col" className="px-4 py-2">Тип</th>
                                                 <th scope="col" className="px-4 py-2 text-right">До</th>
@@ -113,8 +101,8 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
                                             </thead>
                                             <tbody>
                                             {log.integrity_report.map(item => (
-                                                <tr key={item.type} className="bg-white dark:bg-slate-800 border-b dark:border-slate-700">
-                                                    <td className="px-4 py-2 font-medium text-gray-900 dark:text-slate-200">{item.type}</td>
+                                                <tr key={item.type} className="bg-white dark:bg-neutral-700 border-b dark:border-neutral-700">
+                                                    <td className="px-4 py-2 font-medium text-gray-900 dark:text-gray-200">{item.type}</td>
                                                     <td className="px-4 py-2 text-right">{item.before}</td>
                                                     <td className="px-4 py-2 text-right">{item.after}</td>
                                                     <td className={`px-4 py-2 text-right font-semibold ${item.difference > 0 ? 'text-green-600 dark:text-green-400' : item.difference < 0 ? 'text-red-600 dark:text-red-400' : ''}`}>
@@ -128,8 +116,8 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
                                 )}
                                 {log.field_usage_report?.length > 0 && (
                                     <DetailItem label="Звіт про використання полів">
-                                        <table className="w-full text-sm text-left text-gray-500 dark:text-slate-400">
-                                            <thead className="text-xs text-gray-700 dark:text-slate-300 uppercase bg-gray-100 dark:bg-slate-700">
+                                        <table className="w-full text-sm text-left text-gray-600 dark:text-gray-400">
+                                            <thead className="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-100 dark:bg-neutral-600">
                                             <tr>
                                                 <th scope="col" className="px-4 py-2">Поле</th>
                                                 <th scope="col" className="px-4 py-2 text-right">Кількість</th>
@@ -138,8 +126,8 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
                                             </thead>
                                             <tbody>
                                             {log.field_usage_report.map(item => (
-                                                <tr key={item.field} className="bg-white dark:bg-slate-800 border-b dark:border-slate-700">
-                                                    <td className="px-4 py-2 font-medium text-gray-900 dark:text-slate-200">{item.field}</td>
+                                                <tr key={item.field} className="bg-white dark:bg-neutral-700 border-b dark:border-neutral-700">
+                                                    <td className="px-4 py-2 font-medium text-gray-900 dark:text-gray-200">{item.field}</td>
                                                     <td className="px-4 py-2 text-right">{item.count}</td>
                                                     <td className="px-4 py-2 text-right">{item.percentage}%</td>
                                                 </tr>
@@ -149,7 +137,7 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
                                     </DetailItem>
                                 )}
                                 {!log.error_message && log.warnings?.length === 0 && log.integrity_report?.length === 0 && log.field_usage_report?.length === 0 && (
-                                    <Typography className="dark:text-slate-400">Помилок та звітів немає.</Typography>
+                                    <Typography className="dark:text-gray-400">Помилок та звітів немає.</Typography>
                                 )}
                             </div>
                         </div>
@@ -166,7 +154,7 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
                                 {JSON.stringify(log.full_import_report, null, 2)}
                             </pre>
                         ) : (
-                            <Typography className="dark:text-slate-400">Детальний звіт відсутній для цього запису.</Typography>
+                            <Typography className="dark:text-gray-400">Детальний звіт відсутній для цього запису.</Typography>
                         )}
                     </div>
                 )
@@ -176,13 +164,13 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
         return (
             <Tabs value="info">
                 <TabsHeader
-                    className="rounded-none border-b border-blue-gray-50 dark:border-slate-700 bg-transparent p-0"
+                    className="rounded-none border-b border-blue-gray-50 dark:border-neutral-700 bg-transparent p-0"
                     indicatorProps={{
-                        className: "bg-transparent border-b-2 border-gray-900 dark:border-slate-200 shadow-none rounded-none",
+                        className: "bg-transparent border-b-2 border-gray-900 dark:border-neutral-200 shadow-none rounded-none",
                     }}
                 >
                     {tabsData.map(({label, value}) => (
-                        <Tab key={value} value={value} className="dark:text-slate-300">
+                        <Tab key={value} value={value} className="dark:text-gray-300">
                             {label}
                         </Tab>
                     ))}
@@ -199,26 +187,25 @@ const ImportLogDetailsDialog = ({open, onClose, logId}) => {
     };
 
     return (
-        <Dialog open={open} handler={onClose} size="lg" className="dark:bg-slate-800">
-            <DialogHeader>
-                <Typography variant="h5" className="dark:text-slate-200">
+        <Modal open={open} handler={onClose} size="lg">
+            <ModalHeader>
+                <Typography variant="h5" className="dark:text-gray-200">
                     Деталі логу імпорту #{logId}
                 </Typography>
-            </DialogHeader>
-            <DialogBody className="!px-5 overflow-y-auto max-h-[70vh]">
+            </ModalHeader>
+            <ModalBody className="!px-5 overflow-y-auto max-h-[70vh]">
                 {renderContent()}
-            </DialogBody>
-            <DialogFooter className="dark:border-slate-700">
+            </ModalBody>
+            <ModalFooter>
                 <Button
                     variant="text"
                     color="blue-gray"
                     onClick={onClose}
-                    className="mr-1 dark:text-slate-300 dark:hover:bg-slate-700"
-                >
+                    className="mr-1 dark:text-gray-300 dark:hover:bg-neutral-600">
                     <span>Закрити</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

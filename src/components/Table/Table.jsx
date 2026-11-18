@@ -3,8 +3,11 @@ import "./index.css"
 import {Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import Pagination from "./Pagination.jsx";
 import {IndeterminateCheckbox} from "./IndeterminateCheckbox.jsx";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Spinner, Tooltip} from "@material-tailwind/react";
+import { Spinner, Tooltip } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../Modal/Modal.jsx"
+import Button from "../Buttons/Button.jsx"
 import PinnedRow from "./PinnedRow.jsx";
+import {loadColumnSizes} from "./columnSizes.js";
 
 const uniqueObjectsArray = (array, object) => {
     if (!Array.isArray(array) || Object.keys(object).length === 0) return array;
@@ -17,11 +20,6 @@ const uniqueObjectsArray = (array, object) => {
     return Array.from(new Map(array.map(item => [item.column, item])).values());
 }
 
-
-export const loadColumnSizes = () => {
-    const savedSizes = localStorage.getItem(`${location.pathname}-column-size`);
-    return savedSizes ? JSON.parse(savedSizes) : [];
-};
 
 const saveColumnSizes = (sizes) => {
     localStorage.setItem(`${location.pathname}-column-size`, JSON.stringify(sizes));
@@ -288,7 +286,7 @@ const Table = ({
                     <Pagination onLimitChange={onLimitChange} onPageChange={onPageChange} currentPage={currentPage + 1}
                                 pageSize={pageSize}
                                 totalCount={totalCount}/>
-                    <div className="flex shadow-md items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 p-1 dark:border-gray-700 dark:bg-gray-900/60">
+                    <div className="flex shadow-md items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 p-1 dark:border-neutral-700 dark:bg-neutral-800/60">
                         {
                             canChangeResize &&
                             <Tooltip content="Скинути ширину стовців">
@@ -297,7 +295,7 @@ const Table = ({
                                     aria-label="Скинути ширину стовців"
                                     disabled={!loadColumnSizes().length}
                                     onClick={handleResetColumnSize}
-                                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-600 dark:bg-gray-800 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:bg-gray-700"
+                                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200 dark:hover:border-blue-400 dark:hover:bg-neutral-600"
                                 >
                                     <i className="fa-solid fa-arrows-up-down-left-right text-xs"></i>
                                 </button>
@@ -319,15 +317,15 @@ const Table = ({
                     </div>
                 </div>
                 <div
-                    className={`max-w-full shadow-md  sm:rounded-lg bg-white dark:bg-gray-800 mb-5 text-${textSize}`}>
-                    <table ref={tableRef} className="table-auto  w-full text-left text-gray-500 dark:text-gray-400">
+                    className={`max-w-full shadow-md  sm:rounded-lg bg-white dark:bg-neutral-700 mb-5 text-${textSize}`}>
+                    <table ref={tableRef} className="table-auto  w-full text-left text-gray-600 dark:text-gray-400">
                         <thead>
                         {table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map(header => {
                                     return (
                                         <th
-                                            className={`px-1 py-0.5 sticky top-0 z-1 text-gray-800 font-normal  bg-gray-200 dark:bg-gray-700 dark:text-gray-400`}
+                                            className={`px-1 py-0.5 sticky top-0 z-1 text-gray-800 font-normal  bg-gray-200 dark:bg-neutral-600 dark:text-gray-400`}
                                             key={header.id}
                                             colSpan={header.colSpan}
                                             style={{width: header.getSize()}}
@@ -382,9 +380,9 @@ const Table = ({
                         ))}
                         {
                             loading ?
-                                <tr className="bg-white text-center dark:bg-gray-900 border-b dark:border-gray-700">
+                                <tr className="bg-white text-center dark:bg-neutral-800 border-b dark:border-neutral-700">
                                     <td colSpan={columns.length}
-                                        className="py-1 text-gray-700 dark:text-slate-400">
+                                        className="py-1 text-gray-700 dark:text-gray-400">
                                         <span className="inline-flex justify-center items-center py-10">
                                             <Spinner className="h-12 w-12"/>
                                         </span>
@@ -397,9 +395,9 @@ const Table = ({
                                             <tr key={row.id}
                                                 data-id={row.id}
                                                 data-updated={row?.original?.isUpdated}
-                                                className={`${(selectedRowId != null && row?.original?.id === selectedRowId) ? 'bg-blue-100/80 dark:bg-blue-900/40' : (row?.original?.deletedAt || row?.original?.deleted_at) ? 'bg-gray-200 dark:bg-gray-800' : 'bg-neutral-100 dark:bg-gray-900'} ${row.original?.isPinned && "hidden"} hover:bg-neutral-200 dark:hover:bg-neutral-700 ${(onDoubleClick || onRowClick) ? 'cursor-pointer' : ''}`}>
+                                                className={`${(selectedRowId != null && row?.original?.id === selectedRowId) ? 'bg-blue-100/80 dark:bg-blue-900/40' : (row?.original?.deletedAt || row?.original?.deleted_at) ? 'bg-gray-200 dark:bg-neutral-700' : 'bg-neutral-100 dark:bg-neutral-800'} ${row.original?.isPinned && "hidden"} hover:bg-neutral-200 dark:hover:bg-neutral-700 ${(onDoubleClick || onRowClick) ? 'cursor-pointer' : ''}`}>
                                                 {row.getVisibleCells().map(cell => (
-                                                    <td className="text-gray-700 dark:text-slate-400 font-mono"
+                                                    <td className="text-gray-700 dark:text-gray-400 font-mono"
                                                         key={cell.id}
                                                         {...{
                                                             style: {
@@ -432,19 +430,19 @@ const Table = ({
                                         );
                                     })
                                     :
-                                    <tr className="odd:bg-white text-center odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                    <tr className="odd:bg-white text-center odd:dark:bg-neutral-800 even:bg-gray-50 even:dark:bg-neutral-700 border-b dark:border-neutral-700">
                                         <td colSpan={columns.length}
-                                            className="py-2 text-lg  font-medium text-gray-700 dark:text-slate-400">Відсутні
+                                            className="py-2 text-lg  font-medium text-gray-700 dark:text-gray-400">Відсутні
                                             записи
                                         </td>
                                     </tr>
                         }
                         </tbody>
-                        <tfoot className="border border-t border-gray-200 dark:border-gray-700">
+                        <tfoot className="border border-t border-gray-200 dark:border-neutral-700">
                         {
                             canSelect ?
-                                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                    <td className="p-2 font-medium text-gray-700 dark:text-slate-400">
+                                <tr className="odd:bg-white odd:dark:bg-neutral-800 even:bg-gray-50 even:dark:bg-neutral-700 border-b dark:border-neutral-700">
+                                    <td className="p-2 font-medium text-gray-700 dark:text-gray-400">
                                         <IndeterminateCheckbox
                                             {...{
                                                 checked: table.getIsAllPageRowsSelected(),
@@ -465,12 +463,12 @@ const Table = ({
                             pageSize={pageSize}
                             totalCount={totalCount}/>
             </div>
-            <Dialog open={isOpen} size="xs" handler={toggleModal}>
-                <DialogHeader>Оберіть стовпці, які будуть відображатись</DialogHeader>
-                <DialogBody className="overflow-y-auto">
+            <Modal open={isOpen} size="xs" handler={toggleModal}>
+                <ModalHeader>Оберіть стовпці, які будуть відображатись</ModalHeader>
+                <ModalBody className="overflow-y-auto">
                     <div>
                         <div className="px-1 pb-1 border-b border-solid border-blueGray-200 dark:border-black ">
-                            <label className="cursor-pointer text-slate-500 dark:text-slate-400">
+                            <label className="cursor-pointer text-gray-600 dark:text-gray-400">
                                 <input
                                     className="cursor-pointer form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-300"
                                     {...{
@@ -486,7 +484,7 @@ const Table = ({
                             if (column.id === 'select') return;
                             return (
                                 <div key={column.id} className="px-1 py-1">
-                                    <label className="cursor-pointer text-slate-500 dark:text-slate-400">
+                                    <label className="cursor-pointer text-gray-600 dark:text-gray-400">
                                         <input
                                             className="cursor-pointer form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-300"
                                             {...{
@@ -501,16 +499,15 @@ const Table = ({
                             )
                         })}
                     </div>
-                </DialogBody>
-                <DialogFooter>
+                </ModalBody>
+                <ModalFooter>
                     <Button
                         color="gray"
-                        onClick={toggleModal}
-                    >
+                        onClick={toggleModal}>
                         <span>Закрити</span>
                     </Button>
-                </DialogFooter>
-            </Dialog>
+                </ModalFooter>
+            </Modal>
         </Fragment>
     );
 };

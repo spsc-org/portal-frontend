@@ -41,7 +41,7 @@ const NamesCell = ({ row }) => (
             </div>
         ))}
         {row.originalId && (
-            <div className="text-gray-400" title="originalId">
+            <div className="text-gray-600" title="originalId">
                 [origId#{row.originalId}]
             </div>
         )}

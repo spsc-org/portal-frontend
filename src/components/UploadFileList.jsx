@@ -1,7 +1,8 @@
 // Список додатків (указ, кошик проєктів): локальний UI-стан вибору файлу/прев'ю;
 // сам список і завантаження — у ViewModel власника (attachments/setAttachments).
 import {useRef, useState} from 'react';
-import {Button, Card} from "@material-tailwind/react";
+import { Card } from "@material-tailwind/react"
+import Button from "./Buttons/Button.jsx"
 import Input from "./fields/Input.jsx";
 import ImportFile from "./Modal/ImportFile.jsx";
 import {format} from "date-fns";
@@ -76,12 +77,12 @@ const UploadFileList = ({
 
     return (
         <>
-            <Card className="shadow-lg dark:bg-gray-900">
+            <Card className="shadow-lg dark:bg-neutral-800">
                 {attachments.map((attachment, index) => {
                     return (
                         <div key={index} className="p-2">
                             <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium dark:text-slate-400">{index + 1}.</span>
+                                <span className="text-sm font-medium dark:text-gray-400">{index + 1}.</span>
                                 <Input
                                     className="flex-1"
                                     readOnly
@@ -91,8 +92,7 @@ const UploadFileList = ({
                                 <Button
                                     title="Додати файл"
                                     size="sm"
-                                    onClick={() => triggerFileSelect(index)}
-                                >
+                                    onClick={() => triggerFileSelect(index)}>
                                     <i className="fa-regular fa-plus"></i>
                                 </Button>
                                 {!attachment?.file && (
@@ -101,8 +101,7 @@ const UploadFileList = ({
                                         size="sm"
                                         color="red"
                                         variant="outlined"
-                                        onClick={() => removeEmptyItem(index)}
-                                    >
+                                        onClick={() => removeEmptyItem(index)}>
                                         <i className="fa-regular fa-xmark"></i>
                                     </Button>
                                 )}
@@ -113,8 +112,7 @@ const UploadFileList = ({
                                             title="Видалити файл"
                                             size="sm"
                                             color="red"
-                                            onClick={() => clearFile(index, attachment?.file?.id)}
-                                        >
+                                            onClick={() => clearFile(index, attachment?.file?.id)}>
                                             <i className="fa-regular fa-file-slash"></i>
                                         </Button>
                                         {attachment?.file.type && attachment?.file.type.includes("image") ?
@@ -127,8 +125,7 @@ const UploadFileList = ({
                                                     handleOpenPreview({
                                                         source: URL.createObjectURL(attachment?.file)
                                                     })
-                                                }}
-                                            >
+                                                }}>
                                                 <i className="fa-regular fa-eye"></i>
                                             </Button>
                                             : null

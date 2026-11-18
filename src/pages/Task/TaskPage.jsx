@@ -3,7 +3,8 @@ import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { confirmToast } from "../../components/confirmToast.jsx";
 import { SORT_OPTIONS, TaskPageViewModel } from "./viewmodel/TaskViewModels.js";
 import TaskLayout from "../../components/TaskLayout.jsx";
-import {Button, Spinner} from "@material-tailwind/react";
+import { Spinner } from "@material-tailwind/react"
+import Button from "../../components/Buttons/Button.jsx"
 import {useEffect} from "react";
 import {useSearchParams} from "react-router";
 import CreateTaskModal from "./Components/Modals/CreateTaskModal.jsx";
@@ -122,7 +123,7 @@ const TaskPage = () => {
                     />
                     {/* Потік із довантаженням: замість сторінок — "Показати ще" */}
                     {Boolean(listTotal) &&
-                        <div className="mt-2 flex items-center justify-between px-1 text-xs text-slate-500 dark:text-slate-400">
+                        <div className="mt-2 flex items-center justify-between px-1 text-xs text-gray-600 dark:text-gray-400">
                             <span>Показано {listTasks.length} із {listTotal}</span>
                             {hasNextPage &&
                                 <Button size="sm" variant="text" color="blue"

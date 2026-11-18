@@ -12,12 +12,12 @@ const RESTRICT_CLASS = {
 const RestrictionsCell = ({ precomputedData }) => {
     const restrictions = precomputedData?.restrictions;
     if (!Array.isArray(restrictions) || restrictions.length === 0) {
-        return <span className="italic text-gray-400">Немає обмежень</span>;
+        return <span className="italic text-gray-600">Немає обмежень</span>;
     }
 
     return (
         <>
-            <span className="m-1 rounded-full bg-gray-300 p-0.5 dark:bg-gray-600">{restrictions.length}</span>{" "}
+            <span className="m-1 rounded-full bg-gray-300 p-0.5 dark:bg-neutral-500">{restrictions.length}</span>{" "}
             {restrictions.map(({ num, color, value }, i) => {
                 const isR6Text = value !== undefined && String(num) === "6";
                 const preview = isR6Text && value.length > 6 ? `${value.slice(0, 6)}…` : value;

@@ -56,7 +56,7 @@ const ProjectItem = ({states, caption, onShowClick, decrees, ...props}) => {
 
             {/* Order number */}
             <div
-                className="flex items-center justify-center w-[22px] shrink-0 text-[11px] font-semibold text-gray-400 dark:text-[#555d72]">
+                className="flex items-center justify-center w-[22px] shrink-0 text-[11px] font-semibold text-gray-600 dark:text-[#555d72]">
                 {order}
             </div>
 
@@ -99,14 +99,14 @@ const ProjectItem = ({states, caption, onShowClick, decrees, ...props}) => {
 
                 {/* Row 3: countries */}
                 <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-sm font-medium text-gray-500 dark:text-[#8b91a3]">Країни:</span>
+                    <span className="text-sm font-medium text-gray-600 dark:text-[#8b91a3]">Країни:</span>
                     {countries.length > 0 ? countries.map((item, index) => (
                         <span key={index}
                               className="text-sm font-medium px-[5px] py-[1px] rounded-[4px] bg-gray-300 text-gray-800 dark:bg-[#2d4170] dark:text-[#c8d8ff]">
                             {item.iso}
                         </span>
                     )) : (
-                        <span className="text-xs italic text-gray-400 dark:text-[#555d72]">відсутні</span>
+                        <span className="text-xs italic text-gray-600 dark:text-[#555d72]">відсутні</span>
                     )}
                 </div>
 
@@ -121,7 +121,7 @@ const ProjectItem = ({states, caption, onShowClick, decrees, ...props}) => {
 
             {/* Linked proposals */}
             <div
-                className="text-sm mr-1  font-semibold text-gray-500 dark:text-[#8b91a3] flex-1 min-w-0 flex flex-col items-start gap-0.5 py-[10px] pr-1">
+                className="text-sm mr-1  font-semibold text-gray-600 dark:text-[#8b91a3] flex-1 min-w-0 flex flex-col items-start gap-0.5 py-[10px] pr-1">
                 {linkedProposal.length > 0 && (
                     <>
                         {linkedProposal.map((item, index) => {
@@ -130,7 +130,7 @@ const ProjectItem = ({states, caption, onShowClick, decrees, ...props}) => {
                             return (
                                 <span title={item.caption} key={index}>
                                     <span
-                                        className={`font-semibold text-[10px] ${item.stateStyle ?? 'text-gray-500'}`}>{item.state}</span>: <span className="font-normal text-[12px]">{displayText}</span>
+                                        className={`font-semibold text-[10px] ${item.stateStyle ?? 'text-gray-600'}`}>{item.state}</span>: <span className="font-normal text-[12px]">{displayText}</span>
                                 </span>
                             );
                         })}
@@ -142,7 +142,7 @@ const ProjectItem = ({states, caption, onShowClick, decrees, ...props}) => {
             <div className="w-[20%] shrink-0 flex flex-col gap-0.5 justify-center">
                 {Boolean(parsedPrecomputedData?.documents) &&
                     parsedPrecomputedData?.documents?.map((document, index) => (
-                        <span className="text-sm leading-1 font-medium text-gray-500 dark:text-[#8b91a3] flex items-center gap-1"
+                        <span className="text-sm leading-1 font-medium text-gray-600 dark:text-[#8b91a3] flex items-center gap-1"
                               key={index}>
                             {document?.regNum} {document?.regDate}
                         </span>

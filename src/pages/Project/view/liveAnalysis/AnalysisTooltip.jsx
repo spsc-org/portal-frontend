@@ -27,7 +27,7 @@ const Progress = ({ layers }) => {
                 <span>Прогрес перевірки</span>
                 <span>{layers.length} слоїв</span>
             </div>
-            <div className="flex h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+            <div className="flex h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-neutral-600">
                 {success > 0 && <div className="h-full bg-green-500" style={{ width: width(success) }} />}
                 {warning > 0 && <div className="h-full bg-yellow-500" style={{ width: width(warning) }} />}
                 {failed > 0 && <div className="h-full bg-red-500" style={{ width: width(failed) }} />}
@@ -41,7 +41,7 @@ const Progress = ({ layers }) => {
     );
 };
 
-const Phrase = ({ children }) => <span className="mb-1 mr-1 inline-block rounded bg-gray-100 px-2 py-0.5 font-mono dark:bg-gray-700">{children}</span>;
+const Phrase = ({ children }) => <span className="mb-1 mr-1 inline-block rounded bg-gray-100 px-2 py-0.5 font-mono dark:bg-neutral-600">{children}</span>;
 
 /** Дані шару (знайдені/відсутні фрази, сегменти, пари ключ-значення) — legacy formatLayerValidationData. */
 const LayerData = ({ data }) => {
@@ -51,7 +51,7 @@ const LayerData = ({ data }) => {
                 {data.foundPhrases.map((item) => (
                     <span key={`${item.phrase}-${item.isGlobal}`}>
                         <Phrase>{item.phrase}</Phrase>
-                        <span className={`mr-2 ${item.isGlobal ? "text-gray-400" : "text-blue-400"}`}>({item.isGlobal ? "системне" : "особисте"})</span>
+                        <span className={`mr-2 ${item.isGlobal ? "text-gray-600" : "text-blue-400"}`}>({item.isGlobal ? "системне" : "особисте"})</span>
                     </span>
                 ))}
             </div>
@@ -74,7 +74,7 @@ const LayerData = ({ data }) => {
                       .map((item, index) => (
                           <div key={index} className={index > 0 ? "mb-1 mt-2" : "mb-1"}>
                               <div className="text-xs font-medium">Сегмент:</div>
-                              <div className="mb-1 rounded bg-gray-100 px-2 py-1 font-mono text-xs dark:bg-gray-700">"{item.segment}"</div>
+                              <div className="mb-1 rounded bg-gray-100 px-2 py-1 font-mono text-xs dark:bg-neutral-600">"{item.segment}"</div>
                               <div className="text-xs text-red-600 dark:text-red-400">{item.message}</div>
                           </div>
                       ))
@@ -98,11 +98,11 @@ const AlternativeSearch = ({ search }) => {
                 <span className="text-xs font-medium text-blue-800 dark:text-blue-200">Альтернативний пошук</span>
                 <span className="rounded bg-blue-100 px-2 py-0.5 text-xs dark:bg-blue-900/30">{search.totalFound} знайдено</span>
             </div>
-            <div className="overflow-hidden rounded border border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800">
-                <div className="border-b border-gray-200 bg-gray-50 px-2 py-1 text-xs font-medium dark:border-gray-600 dark:bg-gray-700">Знайдені записи за назвою:</div>
+            <div className="overflow-hidden rounded border border-gray-200 bg-white dark:border-gray-600 dark:bg-neutral-700">
+                <div className="border-b border-gray-200 bg-gray-50 px-2 py-1 text-xs font-medium dark:border-gray-600 dark:bg-neutral-600">Знайдені записи за назвою:</div>
                 <div className="max-h-48 overflow-y-auto">
                     {records.map((record, index) => (
-                        <div key={`${record.record?.sid}-${index}`} className="border-b border-gray-100 p-2 last:border-b-0 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50">
+                        <div key={`${record.record?.sid}-${index}`} className="border-b border-gray-100 p-2 last:border-b-0 hover:bg-gray-50 dark:border-neutral-700 dark:hover:bg-neutral-600/50">
                             <div className="mb-1 flex items-center justify-between">
                                 <span className="text-sm font-medium text-gray-900 dark:text-gray-100">DRS ID: {record.record?.sid}</span>
                                 <span className={`rounded px-2 py-0.5 text-xs ${similarityClass(record.similarity)}`}>{record.similarity}%</span>
@@ -110,7 +110,7 @@ const AlternativeSearch = ({ search }) => {
                             <div className="mb-1 text-xs text-gray-600 dark:text-gray-400">
                                 <strong>Назва в БД:</strong> {record.record?.name}
                             </div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-gray-600">
                                 <strong>Знайдено по:</strong> {nameFieldLabel(record.matchedBy)}
                                 <br />
                                 <strong>Частина назви:</strong> "{record.matchedPart}"
@@ -121,7 +121,7 @@ const AlternativeSearch = ({ search }) => {
                     ))}
                 </div>
             </div>
-            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">💡 Оберіть потрібний DRS ID та внесіть його в поле вручну</div>
+            <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">💡 Оберіть потрібний DRS ID та внесіть його в поле вручну</div>
         </div>
     );
 };
@@ -133,7 +133,7 @@ const NameComparison = ({ comparison }) => {
         <Divider title="Порівняння назв:">
             <div className="space-y-2">
                 {entries.map(([field, data]) => (
-                    <div key={field} className="rounded border border-gray-200 bg-white p-2 dark:border-gray-600 dark:bg-gray-800">
+                    <div key={field} className="rounded border border-gray-200 bg-white p-2 dark:border-gray-600 dark:bg-neutral-700">
                         <div className="mb-1 flex items-center justify-between">
                             <span className="text-xs font-medium">{nameFieldLabel(field)}</span>
                             <div className="flex items-center gap-2">
@@ -157,7 +157,7 @@ const NameComparison = ({ comparison }) => {
                     </div>
                 ))}
             </div>
-            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
                 Поріг схожості: {comparison.threshold || 80}% | Макс. схожість: {comparison.maxSimilarity || 0}%
             </div>
         </Divider>
@@ -192,7 +192,7 @@ const AnalysisTooltip = ({ result, field, objectId }) => {
             <AlternativeSearch search={vd.alternativeSearch} />
             {vd.databaseRecord && (
                 <Divider title="База даних:">
-                    <div className="rounded border border-gray-200 bg-white p-3 dark:border-gray-600 dark:bg-gray-800">
+                    <div className="rounded border border-gray-200 bg-white p-3 dark:border-gray-600 dark:bg-neutral-700">
                         <div className="mb-1 text-sm font-medium">{vd.databaseRecord.name}</div>
                         <div className="text-xs text-gray-600 dark:text-gray-400">
                             DRS ID: {vd.databaseRecord.sid}

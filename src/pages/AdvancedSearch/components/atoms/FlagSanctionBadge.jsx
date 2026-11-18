@@ -38,9 +38,9 @@ const FlagSanctionBadge = ({ datasetId, originalData = {}, highlightText, filter
     return (
         <div className="flex flex-col gap-1 text-xs">
             {/* Прапор + мітка датасету */}
-            <div className="inline-flex items-center gap-1.5 w-fit bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-600">
+            <div className="inline-flex items-center gap-1.5 w-fit bg-gray-100 dark:bg-neutral-600 px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600">
                 <Flag svg={meta.svg} label={meta.label} />
-                <span className="font-semibold text-[10px] text-slate-600 dark:text-slate-300 uppercase tracking-wide">
+                <span className="font-semibold text-[10px] text-gray-600 dark:text-gray-300 uppercase tracking-wide">
                     {meta.label}
                 </span>
             </div>
@@ -55,7 +55,7 @@ const FlagSanctionBadge = ({ datasetId, originalData = {}, highlightText, filter
 
             {/* Програма / режим санкцій */}
             {programValue && (
-                <div className="text-[10px] text-gray-600 dark:text-slate-400 leading-tight line-clamp-2">
+                <div className="text-[10px] text-gray-600 dark:text-gray-400 leading-tight line-clamp-2">
                     {highlightText ? highlightText(String(programValue), filters?.search) : String(programValue)}
                 </div>
             )}

@@ -1,5 +1,6 @@
 import {useMemo, useState} from "react";
-import {Button, Checkbox} from "@material-tailwind/react";
+import { Checkbox } from "@material-tailwind/react"
+import Button from "../../components/Buttons/Button.jsx"
 import Input from "../../components/fields/Input.jsx";
 
 const Constraints = ({

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-React 19 + Vite + JavaScript (plain `.js`/`.jsx`, no TypeScript) + react-router v8 (data mode:
+React 18 (`react@^18`, resolved 18.3.1 — `ref` is NOT a plain prop: components that MT `Tooltip`/`PopoverHandler`/`MenuHandler` wrap must use `forwardRef`) + Vite + JavaScript (plain `.js`/`.jsx`, no TypeScript) + react-router v8 (data mode:
 `createBrowserRouter`, client-side only, no SSR). This is the frontend for an internal "portal"
 backed by a Laravel API using Sanctum SPA cookie authentication. The app is early-stage: only login
 and a placeholder dashboard exist behind auth guards, but `package.json` already carries a large set
@@ -66,7 +66,12 @@ There is no `typecheck` script (no TypeScript/tsconfig in this repo), no `format
   - Shared domain models live in `src/entities/<domain>/` (`notification`, `file`, `userGroup`, `spa`,
     `document` — API + `DocumentFormViewModel`); global widgets (sidebar, bell, feedback modal, online
     users, `document/DocumentFormModal` — create/update document, used by /document and project import)
-    in `src/widgets/`. Shared view helpers: `components/confirmToast.jsx` (toast-style confirm used by
+    in `src/widgets/`. Portal UI kit primitives (use these, not `@material-tailwind` `Dialog`/`Button`/
+    `IconButton`): `components/Modal/Modal.jsx` (`Modal`/`ModalHeader title`/`ModalBody`/`ModalFooter`,
+    close button auto-rendered from `onClose`, `hideClose` if the header has its own; `fullHeight` opt-in),
+    `components/Buttons/Button.jsx` / `IconButton.jsx` / `CloseButton.jsx` (styles in `buttonStyles.js`;
+    MT colour names are aliased, `green` → `primary`). Dark surfaces are `neutral` (page 900, card 800,
+    border 700; form fields bg `neutral-900` + border `neutral-600`, kit `surface-field`/`border-input`), dark text `gray`; no `slate`. Shared view helpers: `components/confirmToast.jsx` (toast-style confirm used by
     decree/dictionary), `components/UploadFileList.jsx` (attachments list).
   - `/project` is the former `/project/v2` (`/project/v2` redirects): `src/pages/Project/` —
     `viewmodel/ProjectListViewModels.js` (`ProjectListPageViewModel` + `CartModalViewModel`) replaces

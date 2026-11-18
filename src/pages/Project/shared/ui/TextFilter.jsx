@@ -19,7 +19,7 @@ const TextFilter = ({ id, label, value, onChange, delay, placeholder = "" }) => 
                     placeholder={placeholder}
                     onChange={(event) => vm.onInput(event.target.value)}
                     onKeyDown={(event) => event.key === "Enter" && vm.onSubmit()}
-                    className="h-9 w-full rounded-md border border-gray-200 bg-white py-1 pl-2 pr-7 text-xs text-gray-700 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-gray-600 dark:bg-neutral-800 dark:text-gray-300"
+                    className="h-9 w-full rounded-md border border-gray-200 bg-white py-1 pl-2 pr-7 text-xs text-gray-700 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-300"
                 />
                 {vm.canClear && (
                     <button
@@ -27,7 +27,7 @@ const TextFilter = ({ id, label, value, onChange, delay, placeholder = "" }) => 
                         title="Очистити"
                         aria-label={`Очистити: ${label}`}
                         onClick={vm.onClear}
-                        className="absolute inset-y-0 right-0 flex w-7 items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                        className="absolute inset-y-0 right-0 flex w-7 items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-200"
                     >
                         <i className="fa-solid fa-xmark text-xs" />
                     </button>

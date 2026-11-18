@@ -1,20 +1,8 @@
 import { useSearchParams } from "react-router"
 import { observer } from "mobx-react-lite"
-import {
-  Button,
-  Card,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  Menu,
-  MenuHandler,
-  MenuItem,
-  MenuList,
-  Spinner,
-  Tooltip,
-  Typography,
-} from "@material-tailwind/react"
+import { Card, Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
+import Button from "../../components/Buttons/Button.jsx"
 import { format } from "date-fns"
 import DuplicateProjectsModal from "./DuplicateProjectsModal.jsx"
 import Page from "../../components/Page.jsx"
@@ -74,7 +62,7 @@ const ImportContent = observer(({ vm }) => {
               onChange={() => setSelectedItemTypeId(type.id)}
               className="peer sr-only"
             />
-            <span className="flex items-center rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs text-gray-700 shadow-sm transition peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 hover:border-blue-300 hover:bg-blue-50 sm:text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-slate-200 dark:peer-checked:border-blue-400 dark:peer-checked:bg-blue-900/30 dark:peer-checked:text-blue-200 dark:hover:border-blue-400/70 dark:hover:bg-blue-900/20">
+            <span className="flex items-center rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs text-gray-700 shadow-sm transition peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 hover:border-blue-300 hover:bg-blue-50 sm:text-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-200 dark:peer-checked:border-blue-400 dark:peer-checked:bg-blue-900/30 dark:peer-checked:text-blue-200 dark:hover:border-blue-400/70 dark:hover:bg-blue-900/20">
               {type.caption}
             </span>
           </label>
@@ -194,8 +182,7 @@ const ImportContent = observer(({ vm }) => {
                   size="sm"
                   variant="outlined"
                   isLoading={isPending}
-                  disabled={isPending}
-                >
+                  disabled={isPending}>
                   <span className="flex items-center gap-2">
                     <i className="fa-solid fa-download"></i>
                     <span>Завантажити шаблон</span>
@@ -224,8 +211,7 @@ const ImportContent = observer(({ vm }) => {
                 color="green"
                 disabled={
                   isFetching || Boolean(errors) || Boolean(upload.isPending)
-                }
-              >
+                }>
                 <span className="flex items-center gap-2">
                   <i className="fa-solid fa-cloud-arrow-up"></i>
                   <span>Імпортувати</span>
@@ -243,21 +229,21 @@ const ImportContent = observer(({ vm }) => {
           <Typography
             variant="small"
             color="gray"
-            className="flex flex-wrap items-center gap-x-1.5 text-xs font-normal text-gray-500 dark:text-slate-400"
+            className="flex flex-wrap items-center gap-x-1.5 text-xs font-normal text-gray-600 dark:text-gray-400"
           >
             <i className="fa-regular fa-file-lines"></i>
             <span>Документ: {data?.data?.regNum}</span>
             {data?.data?.regDate && (
-              <span className="text-gray-400 dark:text-slate-500">
+              <span className="text-gray-600 dark:text-gray-500">
                 від {format(data?.data?.regDate, "dd.MM.yyyy")}
               </span>
             )}
           </Typography>
         )}
       </div>
-      <Card className="m-0 border border-gray-100 p-2.5 shadow-lg sm:p-3 dark:border-gray-700/60 dark:bg-gray-800">
+      <Card className="m-0 border border-gray-100 p-2.5 shadow-lg sm:p-3 dark:border-neutral-700/60 dark:bg-neutral-700">
         <div className="flex flex-col gap-2.5">
-          <div className="flex flex-col gap-2 border-b border-gray-100 pb-2.5 md:flex-row md:items-center md:justify-between dark:border-gray-700/60">
+          <div className="flex flex-col gap-2 border-b border-gray-100 pb-2.5 md:flex-row md:items-center md:justify-between dark:border-neutral-700/60">
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300">
                 <i className="fa-solid fa-folder-plus"></i>
@@ -265,14 +251,14 @@ const ImportContent = observer(({ vm }) => {
               <div className="space-y-0.5">
                 <Typography
                   variant="h6"
-                  className="leading-tight text-gray-900 dark:text-slate-100"
+                  className="leading-tight text-gray-900 dark:text-gray-100"
                 >
                   Додати проєкти
                 </Typography>
                 <Typography
                   variant="small"
                   color="gray"
-                  className="text-xs font-normal text-gray-500 dark:text-slate-400"
+                  className="text-xs font-normal text-gray-600 dark:text-gray-400"
                 >
                   Оберіть тип проєкту та завантажте файл у шаблоні.
                 </Typography>
@@ -284,8 +270,7 @@ const ImportContent = observer(({ vm }) => {
                 color="blue"
                 disabled={!selectedItemTypeId}
                 onClick={handleAddProjects}
-                className="flex items-center gap-1.5 px-3 py-2 shadow-sm"
-              >
+                className="flex items-center gap-1.5 px-3 py-2 shadow-sm">
                 <i className="fa-regular fa-plus"></i>
                 <span className="hidden sm:inline">Додати файл</span>
                 <span className="sm:hidden">Додати</span>
@@ -297,8 +282,7 @@ const ImportContent = observer(({ vm }) => {
                   variant="outlined"
                   color="blue"
                   disabled={findDuplicateMutation.isPending}
-                  onClick={findDuplicates}
-                >
+                  onClick={findDuplicates}>
                   <span className="flex items-center gap-1.5">
                     <i className="fa-solid fa-database"></i>
                     <span className="hidden sm:inline">
@@ -333,58 +317,58 @@ const ImportContent = observer(({ vm }) => {
         />
       )}
       {importProjects.isSuccess && (
-        <Dialog open={importProjects.isSuccess} size="xl">
-          <DialogHeader className="dark:text-gray-200">
+        <Modal open={importProjects.isSuccess} size="xl">
+          <ModalHeader>
             Імпортовано успішно
-          </DialogHeader>
-          <DialogBody className="max-h-[65vh] overflow-auto pt-0">
-            <Typography className="mb-2 text-sm font-medium dark:text-slate-200">
+          </ModalHeader>
+          <ModalBody className="max-h-[65vh] overflow-auto pt-0">
+            <Typography className="mb-2 text-sm font-medium dark:text-gray-200">
               Додано проєктів: {importedCount}
             </Typography>
             {isImportDetailsLoading && (
-              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                 <Spinner className="h-4 w-4" />
                 <span>Завантаження деталей...</span>
               </div>
             )}
             {!isImportDetailsLoading &&
               Boolean(importedProjectsData?.length) && (
-                <div className="rounded-md border border-slate-200 bg-white dark:border-gray-700 dark:bg-gray-900">
+                <div className="rounded-md border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
                   <div className="overflow-auto">
-                    <table className="min-w-full text-xs text-slate-700 dark:text-slate-200">
-                      <thead className="bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-slate-200">
+                    <table className="min-w-full text-xs text-gray-700 dark:text-gray-200">
+                      <thead className="bg-gray-100 text-gray-700 dark:bg-neutral-700 dark:text-gray-200">
                         <tr>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Дія
                           </th>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Стан
                           </th>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Тип
                           </th>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Назви/ДН
                           </th>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Країни
                           </th>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Ідентифікаційні дані
                           </th>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Дод.інформація
                           </th>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Термін
                           </th>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Категорії
                           </th>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Документи
                           </th>
-                          <th className="border border-slate-200 px-2 py-1 dark:border-gray-700">
+                          <th className="border border-gray-200 px-2 py-1 dark:border-neutral-700">
                             Виконавець
                           </th>
                         </tr>
@@ -405,9 +389,9 @@ const ImportContent = observer(({ vm }) => {
                           return (
                             <tr
                               key={row.id}
-                              className="bg-white hover:bg-slate-50 dark:bg-gray-900 dark:hover:bg-gray-800/70"
+                              className="bg-white hover:bg-gray-50 dark:bg-neutral-800 dark:hover:bg-neutral-700/70"
                             >
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 <Tooltip content={action?.caption || ""}>
                                   <span>
                                     {action?.icon ? (
@@ -418,13 +402,13 @@ const ImportContent = observer(({ vm }) => {
                                   </span>
                                 </Tooltip>
                               </td>
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 {renderStateIcon(row.stateId)}
                               </td>
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 {renderSubjectType(row.subjectTypeId)}
                               </td>
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 {row.nameUk ? (
                                   <>
                                     <strong>
@@ -462,25 +446,25 @@ const ImportContent = observer(({ vm }) => {
                                   </span>
                                 ) : null}
                               </td>
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 {renderCountries(parsed)}
                               </td>
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 {renderIdentifiers(parsed)}
                               </td>
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 {renderAttributes(row, parsed)}
                               </td>
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 {termCaption}
                               </td>
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 {renderCategories(parsed)}
                               </td>
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 {renderDocuments(row, parsed)}
                               </td>
-                              <td className="border border-slate-200 px-2 py-1 align-top dark:border-gray-700">
+                              <td className="border border-gray-200 px-2 py-1 align-top dark:border-neutral-700">
                                 {performer?.name || ""}
                               </td>
                             </tr>
@@ -491,20 +475,19 @@ const ImportContent = observer(({ vm }) => {
                   </div>
                 </div>
               )}
-          </DialogBody>
-          <DialogFooter>
+          </ModalBody>
+          <ModalFooter>
             <Button
               variant="gradient"
               color="green"
               className="w-full"
               onClick={() => {
                 vm.openProjects()
-              }}
-            >
+              }}>
               <span>Ок</span>
             </Button>
-          </DialogFooter>
-        </Dialog>
+          </ModalFooter>
+        </Modal>
       )}
       {duplicateOpen && (
         <DuplicateProjectsModal
@@ -515,62 +498,59 @@ const ImportContent = observer(({ vm }) => {
         />
       )}
       {confirmImportOpen && (
-        <Dialog open={confirmImportOpen} size="sm" handler={handleCancelImport}>
-          <DialogHeader className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
+        <Modal open={confirmImportOpen} size="sm" handler={handleCancelImport}>
+          <ModalHeader className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
             <i className="fa-regular fa-triangle-exclamation"></i>
             <span>Підтвердження імпорту</span>
-          </DialogHeader>
-          <DialogBody className="dark:text-slate-200">
+          </ModalHeader>
+          <ModalBody>
             Дані містять неточності, всеодно імпортувати?
-          </DialogBody>
-          <DialogFooter className="gap-2">
+          </ModalBody>
+          <ModalFooter className="gap-2">
             <Button
               variant="outlined"
-              color="red"
+              color="secondary"
               onClick={handleCancelImport}
-              disabled={importProjects.isPending}
-            >
+              disabled={importProjects.isPending}>
               Ні
             </Button>
             <LoadingButton
               isLoading={importProjects.isPending}
               color="green"
               onClick={handleConfirmImport}
-              disabled={importProjects.isPending}
-            >
+              disabled={importProjects.isPending}>
               Так
             </LoadingButton>
-          </DialogFooter>
-        </Dialog>
+          </ModalFooter>
+        </Modal>
       )}
       {invalidFieldsOpen && (
-        <Dialog
+        <Modal
           open={invalidFieldsOpen}
           size="lg"
-          handler={handleInvalidFieldsClose}
-        >
-          <DialogHeader className="flex items-center gap-2 text-red-700 dark:text-red-300">
+          handler={handleInvalidFieldsClose}>
+          <ModalHeader className="flex items-center gap-2 text-red-700 dark:text-red-300">
             <i className="fa-regular fa-triangle-exclamation"></i>
             <span>422 Невалідні дані</span>
-          </DialogHeader>
+          </ModalHeader>
           <div className="px-4 pb-2">
-            <Typography className="text-sm text-slate-700 dark:text-slate-200">
+            <Typography className="text-sm text-gray-700 dark:text-gray-200">
               {invalidFieldsDialogProps?.message ||
                 "Некоректні параметри запиту"}
             </Typography>
           </div>
           <div className="px-4 pb-1">
-            <div className="max-h-[55vh] overflow-auto rounded-md border border-slate-200 bg-slate-50 p-3 dark:border-gray-700 dark:bg-gray-900/40">
+            <div className="max-h-[55vh] overflow-auto rounded-md border border-gray-200 bg-gray-50 p-3 dark:border-neutral-700 dark:bg-neutral-800/40">
               {(invalidFieldsDialogProps?.invalidFields || []).map(
                 (item, index) => (
                   <div
                     key={index}
-                    className="mb-3 rounded border border-slate-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-800/80"
+                    className="mb-3 rounded border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-700/80"
                   >
                     <Typography className="mb-1 text-xs font-semibold text-red-700 dark:text-red-300">
                       {index + 1}. Помилка
                     </Typography>
-                    <Typography className="text-xs leading-5 whitespace-pre-line text-slate-700 dark:text-slate-200">
+                    <Typography className="text-xs leading-5 whitespace-pre-line text-gray-700 dark:text-gray-200">
                       {String(item || "")
                         .split("; ")
                         .join(";\n")}
@@ -580,12 +560,12 @@ const ImportContent = observer(({ vm }) => {
               )}
             </div>
           </div>
-          <DialogFooter>
-            <Button color="red" onClick={handleInvalidFieldsClose}>
+          <ModalFooter>
+            <Button color="secondary" onClick={handleInvalidFieldsClose}>
               Закрити
             </Button>
-          </DialogFooter>
-        </Dialog>
+          </ModalFooter>
+        </Modal>
       )}
     </Page>
   )

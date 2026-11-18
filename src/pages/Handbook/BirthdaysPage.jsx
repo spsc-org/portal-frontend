@@ -23,7 +23,7 @@ const BirthdaysView = observer(({ vm }) => {
     if (!vm.canRead) {
         return (
             <HandbookLayout active="birthdays">
-                <div className="flex min-h-[50vh] items-center justify-center text-slate-400 dark:text-slate-600">
+                <div className="flex min-h-[50vh] items-center justify-center text-gray-600 dark:text-gray-600">
                     <i className="fa-solid fa-lock mr-2"></i>Немає доступу до довідників.
                 </div>
             </HandbookLayout>

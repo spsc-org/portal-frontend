@@ -1,11 +1,6 @@
-import {
-    Button,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Typography,
-} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 
 /** onDownload(url) — завантаження файлу результату (ExportViewModel.downloadResult). */
 const ImportResultDialog = ({ open, onClose, result, onDownload }) => {
@@ -21,13 +16,13 @@ const ImportResultDialog = ({ open, onClose, result, onDownload }) => {
     const handleDownload = () => onDownload?.(downloadUrl);
 
     return (
-        <Dialog open={open} handler={onClose} size="xl">
-            <DialogHeader>
+        <Modal open={open} handler={onClose} size="xl">
+            <ModalHeader>
                 <Typography variant="h5" color={success ? "green" : "red"}>
                     {success ? "Результат операції" : "Помилка"}
                 </Typography>
-            </DialogHeader>
-            <DialogBody divider className="flex flex-col gap-4">
+            </ModalHeader>
+            <ModalBody divider className="flex flex-col gap-4">
                 <Typography variant="h6">{message}</Typography>
 
                 {downloadUrl && (
@@ -40,23 +35,22 @@ const ImportResultDialog = ({ open, onClose, result, onDownload }) => {
                 )}
 
                 {displayDetails && Object.keys(displayDetails).length > 0 && (
-                    <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-md max-h-96 overflow-y-auto">
+                    <div className="p-2 bg-gray-100 dark:bg-neutral-700 rounded-md max-h-96 overflow-y-auto">
                         <pre className="text-sm whitespace-pre-wrap break-all">
                             {JSON.stringify(displayDetails, null, 2)}
                         </pre>
                     </div>
                 )}
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
                     variant="filled"
                     color="green"
-                    onClick={onClose}
-                >
+                    onClick={onClose}>
                     Ок
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

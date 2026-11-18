@@ -25,7 +25,7 @@ const AddLinkFields = ({onAdd, isPending}) => {
                 onKeyDown={(e) => e.key === "Enter" && submit(ENTITY_PROFILE, profileId, setProfileId)}
                 disabled={isPending}
                 placeholder="+ досьє (id)"
-                className="w-24 rounded-md border border-slate-200 bg-white px-2 py-1 text-[10.5px] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-500"
+                className="w-24 rounded-md border border-gray-200 bg-white px-2 py-1 text-[10.5px] dark:bg-neutral-900 dark:border-neutral-600 dark:text-gray-100 dark:placeholder:text-gray-500"
             />
             <input
                 type="text"
@@ -34,7 +34,7 @@ const AddLinkFields = ({onAdd, isPending}) => {
                 onKeyDown={(e) => e.key === "Enter" && submit(ENTITY_CONNECTION, connectionId, setConnectionId)}
                 disabled={isPending}
                 placeholder="+ звʼязок (id)"
-                className="w-24 rounded-md border border-slate-200 bg-white px-2 py-1 text-[10.5px] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-500"
+                className="w-24 rounded-md border border-gray-200 bg-white px-2 py-1 text-[10.5px] dark:bg-neutral-900 dark:border-neutral-600 dark:text-gray-100 dark:placeholder:text-gray-500"
             />
             <input
                 type="text"
@@ -43,7 +43,7 @@ const AddLinkFields = ({onAdd, isPending}) => {
                 onKeyDown={(e) => e.key === "Enter" && submit(ENTITY_ORPHAN, orphanId, setOrphanId)}
                 disabled={isPending}
                 placeholder="+ сирота (id проєкту)"
-                className="w-28 rounded-md border border-slate-200 bg-white px-2 py-1 text-[10.5px] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-500"
+                className="w-28 rounded-md border border-gray-200 bg-white px-2 py-1 text-[10.5px] dark:bg-neutral-900 dark:border-neutral-600 dark:text-gray-100 dark:placeholder:text-gray-500"
             />
         </div>
     );

@@ -52,7 +52,7 @@ export const sourceType = (modelClass) =>
         label: `Код ${modelClass}`,
         table: `model_class ${modelClass}`,
         icon: "fa-solid fa-database",
-        badgeClasses: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300",
+        badgeClasses: "bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-gray-300",
     };
 
 // Опції для форми пошуку дублікатів (тип джерела-драфта) і для мультивибору "Джерело"

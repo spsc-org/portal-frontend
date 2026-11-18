@@ -4,7 +4,7 @@ import ExpiryDateBadge from "../atoms/ExpiryDateBadge.jsx";
 
 // Стандартний рендер для текстових полів
 const DefaultRenderer = ({ value, highlightText, filters, columnId }) => {
-    if (!value) return <span className="text-gray-400 dark:text-slate-500">----</span>;
+    if (!value) return <span className="text-gray-600 dark:text-gray-500">----</span>;
 
     // Для довгих текстів обрізаємо (крім 'other', там може бути багато важливого)
     // Збільшено ліміт до 500 символів
@@ -14,7 +14,7 @@ const DefaultRenderer = ({ value, highlightText, filters, columnId }) => {
     }
 
     return (
-        <div className="whitespace-pre-wrap dark:text-slate-300">
+        <div className="whitespace-pre-wrap dark:text-gray-300">
             {highlightText(displayedValue, filters.search)}
         </div>
     );
@@ -28,7 +28,7 @@ const DecreeRenderer = ({ row, highlightText, filters }) => {
     const expiryDate = originalData.expiry_date;
 
     if (!decreeNumber && !thematicPackage && !expiryDate) {
-        return <span className="text-gray-400 dark:text-slate-500">----</span>;
+        return <span className="text-gray-600 dark:text-gray-500">----</span>;
     }
 
     return (
@@ -44,7 +44,7 @@ const DecreeRenderer = ({ row, highlightText, filters }) => {
 
             {/* Тематичний пакет */}
             {thematicPackage && (
-                <div className="text-gray-700 dark:text-slate-300 leading-tight">
+                <div className="text-gray-700 dark:text-gray-300 leading-tight">
                     {highlightText(thematicPackage, filters.search)}
                 </div>
             )}

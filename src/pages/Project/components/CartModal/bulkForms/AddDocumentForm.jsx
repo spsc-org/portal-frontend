@@ -7,7 +7,7 @@ import BulkFormShell from "./BulkFormShell.jsx";
 import { SelectField } from "./fields.jsx";
 import SingleSelect from "../../../../../components/fields/SingleSelect.jsx";
 
-const inputClass = "w-full h-10 px-3 py-2 border border-gray-300 dark:border-neutral-600 rounded-md text-sm bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500";
+const inputClass = "w-full h-10 px-3 py-2 border border-gray-200 dark:border-neutral-600 rounded-md text-sm bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500";
 const labelClass = "mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300";
 
 // bulkTab7 — "Додати документ". Єдина bulk-форма БЕЗ поля "reason" (сервер
@@ -90,7 +90,7 @@ const AddDocumentForm = ({ projectIds, userId, onDone }) => {
                 <div>
                     <label className={`${labelClass} flex items-center gap-1.5`}>
                         Номер
-                        {regnumLookupPending && <i className="fas fa-spinner fa-spin text-xs text-gray-400" />}
+                        {regnumLookupPending && <i className="fas fa-spinner fa-spin text-xs text-gray-500" />}
                     </label>
                     <input type="text" value={fields.addDocRegnum} onChange={(e) => setField("addDocRegnum")(e.target.value)} className={inputClass} />
                 </div>
@@ -103,6 +103,7 @@ const AddDocumentForm = ({ projectIds, userId, onDone }) => {
                     <input type="text" value={fields.addDocListItem} onChange={(e) => setField("addDocListItem")(e.target.value)} placeholder="напр. 1.15" className={inputClass} />
                 </div>
                 <SingleSelect
+                    surface="form"
                     label="Підрозділ"
                     id="cart-add-document-unit"
                     options={units}

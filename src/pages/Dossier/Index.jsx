@@ -35,8 +35,8 @@ const Index = () => {
 
     if (!canView) {
         return (
-            <div className="flex h-full items-center justify-center bg-gray-100 dark:bg-gray-900">
-                <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+            <div className="flex h-full items-center justify-center bg-gray-100 dark:bg-neutral-800">
+                <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-400">
                     <i className="fa-solid fa-lock mb-2 text-xl"></i>
                     <p>Немає доступу до перегляду санкційних профілів.</p>
                 </div>
@@ -45,7 +45,7 @@ const Index = () => {
     }
 
     return (
-        <div data-i-doc="page:sanction-profiles" className="flex h-full overflow-hidden bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+        <div data-i-doc="page:sanction-profiles" className="flex h-full overflow-hidden bg-gray-100 text-gray-900 dark:bg-neutral-800 dark:text-gray-100">
             <ProfilesMasterList
                 filters={filters}
                 canManage={canManage}
@@ -78,7 +78,7 @@ const Index = () => {
                 onSelectProfile={handleSelect}
             />
             {showOrphans && (
-                <aside className="flex-none w-[460px] border-l border-gray-200 dark:border-gray-700">
+                <aside className="flex-none w-[460px] border-l border-gray-200 dark:border-neutral-700">
                     <OrphansPanel canManage={canManage} onClose={() => setShowOrphans(false)}/>
                 </aside>
             )}
@@ -87,7 +87,7 @@ const Index = () => {
                     <Link
                         to="/dossier/tickets"
                         title="Усі тікети модуля Досьє"
-                        className="inline-flex items-center gap-2 h-9 px-3.5 rounded-full text-[12.5px] font-semibold shadow-md transition bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 dark:bg-gray-800 dark:border-blue-800 dark:text-blue-400"
+                        className="inline-flex items-center gap-2 h-9 px-3.5 rounded-full text-[12.5px] font-semibold shadow-md transition bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 dark:bg-neutral-700 dark:border-blue-800 dark:text-blue-400"
                     >
                         <i className="fa-solid fa-ticket text-xs"></i>
                         Тікети
@@ -99,7 +99,7 @@ const Index = () => {
                         className={`inline-flex items-center gap-2 h-9 px-3.5 rounded-full text-[12.5px] font-semibold shadow-md transition ${
                             showOrphans
                                 ? "bg-amber-600 text-white"
-                                : "bg-white text-amber-700 border border-amber-200 hover:bg-amber-50 dark:bg-gray-800 dark:border-amber-800 dark:text-amber-400"
+                                : "bg-white text-amber-700 border border-amber-200 hover:bg-amber-50 dark:bg-neutral-700 dark:border-amber-800 dark:text-amber-400"
                         }`}
                     >
                         <i className="fa-solid fa-user-large-slash text-xs"></i>

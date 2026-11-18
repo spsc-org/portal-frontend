@@ -26,9 +26,9 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
     const badgeCount = vm.badgeCount(item.key);
 
     const linkClass = active
-        ? 'border-blue-200 bg-blue-50 text-blue-700 shadow-sm dark:border-slate-600 dark:bg-slate-800 dark:text-white'
-        : 'border-transparent text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white';
-    const iconClass = active ? 'text-blue-600 dark:text-blue-300' : 'text-slate-500 dark:text-slate-400';
+        ? 'border-blue-200 bg-blue-50 text-blue-700 shadow-sm dark:border-gray-600 dark:bg-neutral-700 dark:text-white'
+        : 'border-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-neutral-700 dark:hover:text-white';
+    const iconClass = active ? 'text-blue-600 dark:text-blue-300' : 'text-gray-600 dark:text-gray-400';
     const toggleSubmenu = () => setSubmenuOpen((prev) => !prev);
 
     const label = (
@@ -78,7 +78,7 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
                                     className={`flex cursor-pointer items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold leading-none text-white transition hover:bg-red-600 ${
                                         open
                                             ? 'ml-auto h-[1.1rem] min-w-[1.1rem] shrink-0'
-                                            : 'absolute -right-1 -top-1 h-[1.1rem] min-w-[1.1rem] ring-2 ring-white dark:ring-slate-900'
+                                            : 'absolute -right-1 -top-1 h-[1.1rem] min-w-[1.1rem] ring-2 ring-white dark:ring-neutral-800'
                                     }`}
                                 >
                                     {vm.badgeLabel(item.key)}
@@ -99,7 +99,7 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
                     <button
                         type="button"
                         onClick={toggleSubmenu}
-                        className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                        className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-300 dark:hover:bg-neutral-700"
                         aria-label={item.label}
                     >
                         <i className={`fa-solid fa-chevron-down text-[10px] transition-transform duration-200 ${submenuOpen || submenuActive ? 'rotate-180' : ''}`} />
@@ -113,20 +113,27 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
                         submenuOpen || submenuActive ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                     }`}
                 >
-                    <div className="overflow-hidden border-l border-slate-300/80 pl-2 dark:border-slate-700">
+                    <div className="overflow-hidden border-l border-gray-300/80 pl-2 dark:border-neutral-700">
                         {item.submenu.map((sub) => (
                             <Link
                                 key={sub.href}
                                 to={sub.href}
+                                title={sub.legacy ? `${sub.label} — легасі-сторінка, доступ закрито` : sub.label}
                                 className={`mb-0.5 flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium transition ${
                                     isHrefActive(sub.href, pathname)
-                                        ? 'bg-blue-100 text-blue-700 dark:bg-slate-800 dark:text-blue-300'
-                                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
-                                }`}
+                                        ? 'bg-blue-100 text-blue-700 dark:bg-neutral-700 dark:text-blue-300'
+                                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-neutral-700 dark:hover:text-gray-200'
+                                } ${sub.legacy ? 'opacity-60' : ''}`}
                             >
                                 <i className="fa-solid fa-level-up-alt rotate-90 text-[10px] opacity-70" />
                                 <i className={`${sub.icon} text-[11px]`} />
-                                {sub.label}
+                                <span className="min-w-0 truncate">{sub.label}</span>
+                                {sub.legacy && (
+                                    <span className="ml-auto inline-flex shrink-0 items-center gap-0.5 rounded bg-gray-200 px-1 text-[9px] font-semibold uppercase text-gray-600 dark:bg-neutral-600 dark:text-gray-400">
+                                        <i className="fa-solid fa-lock text-[8px]" />
+                                        легасі
+                                    </span>
+                                )}
                             </Link>
                         ))}
                     </div>
@@ -134,7 +141,7 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
             )}
 
             {!open && (
-                <div className="pointer-events-none invisible absolute left-[calc(100%+0.625rem)] top-1/2 z-[1300] -translate-y-1/2 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:opacity-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                <div className="pointer-events-none invisible absolute left-[calc(100%+0.625rem)] top-1/2 z-[1300] -translate-y-1/2 whitespace-nowrap rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:opacity-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-200">
                     {item.label}
                 </div>
             )}
@@ -154,34 +161,34 @@ function Sidebar() {
             data-i-doc="component:sidebar"
             // Висота — рівно екран (не за вмістом сторінки): sticky лишає сайдбар на місці, поки
             // скролиться вікно, а довге меню прокручується всередині (flex-1 + overflow-y-auto).
-            className={`sticky top-0 flex h-screen shrink-0 flex-col self-start overflow-hidden border-r border-slate-200 bg-white p-3 transition-[width] duration-300 dark:border-slate-700 dark:bg-slate-900 ${
-                open ? 'w-56' : 'w-16'
+            className={`sticky top-0 flex h-screen shrink-0 flex-col self-start overflow-hidden border-r border-gray-200 bg-white p-1 transition-[width] duration-300 dark:border-neutral-700 dark:bg-neutral-800 ${
+                open ? 'w-56' : 'w-12'
             }`}
         >
-            <div className="mb-2 flex items-center justify-between">
+            <div className="flex items-center justify-between">
                 {open && (
                     <Link
                         to="/"
-                        className="group flex items-center gap-x-2 rounded-xl px-2 py-1.5 transition hover:bg-slate-100/80 dark:hover:bg-slate-800/70"
+                        className="group flex items-center gap-x-2 rounded-xl px-2 py-0 transition hover:bg-gray-100/80 dark:hover:bg-neutral-700/70"
                     >
-                        <span className="text-xl font-semibold text-slate-800 dark:text-slate-200">Portal</span>
+                        <span className="text-xl font-semibold text-gray-800 dark:text-gray-200">Portal</span>
                     </Link>
                 )}
                 <button
                     type="button"
                     onClick={vm.toggleOpen}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 transition hover:border-gray-300 hover:bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-200 dark:hover:bg-neutral-700"
                     aria-label={open ? SIDEBAR_UI.collapse : SIDEBAR_UI.expand}
                 >
                     <i className={`fa-solid ${open ? 'fa-left-long-to-line' : 'fa-right-long-to-line'} text-sm transition-transform duration-300`} />
                 </button>
             </div>
 
-            <hr className="my-3 border-slate-200 dark:border-slate-700" />
+            <hr className="my-2.5 border-gray-200 dark:border-neutral-700" />
 
             <div className="flex min-h-0 flex-1 flex-col">
                 {/* flex-1: коли блок "Користувачі онлайн" згорнутий, меню займає вивільнене місце. */}
-                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1 [scrollbar-width:thin] [scrollbar-color:#94a3b8_transparent] dark:[scrollbar-color:#475569_transparent]">
+                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1 [scrollbar-width:thin] [scrollbar-color:#94a3b8_transparent] dark:[scrollbar-color:#525252_transparent]">
                     <nav>
                         {vm.isMenuLoading ? (
                             <SidebarNavSkeleton open={open} />
@@ -191,7 +198,7 @@ function Sidebar() {
                     </nav>
                 </div>
 
-                <hr className="my-3 shrink-0 border-slate-200 dark:border-slate-700" />
+                <hr className="my-3 shrink-0 border-gray-200 dark:border-neutral-700" />
                 {/* Каркас може бути з кешу меню — онлайн/користувач лише після підтвердження сесії. */}
                 {vm.isAuthenticated && (
                     <OnlineUsersBlock
@@ -208,7 +215,7 @@ function Sidebar() {
                     type="button"
                     onClick={ui.openFeedback}
                     title={`${SIDEBAR_UI.feedback} (Alt+B)`}
-                    className="group flex w-full items-center gap-x-2 rounded-lg border border-slate-300/80 bg-white/50 px-2 py-2 text-slate-700 transition hover:bg-blue-50 hover:text-blue-700 dark:border-slate-700/70 dark:bg-slate-900/50 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                    className="group flex w-full items-center gap-x-2 rounded-lg border border-gray-300/80 bg-white/50 px-2 py-2 text-gray-700 transition hover:bg-blue-50 hover:text-blue-700 dark:border-neutral-700/70 dark:bg-neutral-800/50 dark:text-gray-300 dark:hover:bg-neutral-700 dark:hover:text-white"
                 >
                     <i className="fa-solid fa-circle-exclamation text-sm opacity-70 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
                     {open && <span className="text-xs font-medium">{SIDEBAR_UI.feedback}</span>}
@@ -219,7 +226,7 @@ function Sidebar() {
                 <div className="-mb-1 mt-2 text-center">
                     <Link
                         to="/developer-posts"
-                        className="text-xs text-slate-600 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                        className="text-xs text-gray-600 transition hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
                         title="Що нового"
                     >
                         Версія {vm.version}
@@ -233,9 +240,9 @@ function Sidebar() {
 
             {open && (
                 <Link to="/welcome" className="mt-2 text-center text-xs">
-                    <span className="p-0.5 text-slate-600 dark:text-slate-300">
+                    <span className="p-0.5 text-gray-600 dark:text-gray-300">
                         © {new Date().getFullYear()}{' '}
-                        <span className="text-slate-700 dark:text-slate-300">Sanctions policy support centre</span>
+                        <span className="text-gray-700 dark:text-gray-300">Sanctions policy support centre</span>
                     </span>
                 </Link>
             )}

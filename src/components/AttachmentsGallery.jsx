@@ -23,14 +23,14 @@ const iconByExtension = (extension = '') => {
         case "pdf":
             return "fa-file-pdf text-red-500";
         default:
-            return "fa-file text-slate-400";
+            return "fa-file text-gray-500";
     }
 };
 
 // Спільна компактна "плитка" вкладення (48px), як TagPill/аватарки в
 // панелі — хрестик видалення з'являється лише на ховері
 const Tile = ({onDelete, attachment, children}) => (
-    <div className="group relative h-12 w-12 shrink-0 overflow-hidden rounded-md border border-slate-200 dark:border-slate-700">
+    <div className="group relative h-12 w-12 shrink-0 overflow-hidden rounded-md border border-gray-200 dark:border-neutral-700">
         {children}
         {Boolean(onDelete) &&
             <button type="button"
@@ -70,7 +70,7 @@ const DocumentThumb = observer(({attachment, onDelete, downloads}) => {
         return (
             <Tile attachment={attachment} onDelete={onDelete}>
                 <Tooltip content={attachment.fileName}>
-                    <div className="flex h-full w-full items-center justify-center bg-slate-100 dark:bg-slate-800">
+                    <div className="flex h-full w-full items-center justify-center bg-gray-100 dark:bg-neutral-700">
                         <i className={`fa-regular ${iconByExtension(attachment.fileName?.split('.').pop() || '')} text-lg`}></i>
                     </div>
                 </Tooltip>
@@ -83,7 +83,7 @@ const DocumentThumb = observer(({attachment, onDelete, downloads}) => {
             <Tooltip content={attachment.fileName}>
                 <button type="button" onClick={() => downloads.download(attachment)}
                         title="Завантажити"
-                        className="flex h-full w-full items-center justify-center bg-slate-100 dark:bg-slate-800">
+                        className="flex h-full w-full items-center justify-center bg-gray-100 dark:bg-neutral-700">
                     {isPending
                         ? <Spinner className="h-4 w-4"/>
                         : <i className={`fa-regular ${iconByExtension(attachment.fileName?.split('.').pop() || '')} text-lg`}></i>}
@@ -141,7 +141,7 @@ const AttachmentsGallery = ({data = [], isLoading = false, isDisabled = false, o
                             : <DocumentThumb attachment={attachment} downloads={downloads}
                                              onDelete={isDisabled ? undefined : onDeleteAttachment}/>}
                         <span title={attachment.fileName}
-                              className="max-w-full truncate text-center text-[9px] leading-tight text-slate-500 dark:text-slate-400">
+                              className="max-w-full truncate text-center text-[9px] leading-tight text-gray-600 dark:text-gray-400">
                             {attachment.fileName}
                         </span>
                     </div>
@@ -163,17 +163,17 @@ const AttachmentsGallery = ({data = [], isLoading = false, isDisabled = false, o
                                         {...dragProps}
                                         className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-dashed transition ${isDragging
                                             ? "border-blue-400 bg-blue-50 dark:bg-blue-900/20"
-                                            : "border-slate-300 hover:border-blue-400 hover:text-blue-500 dark:border-slate-600"}`}>
+                                            : "border-gray-300 hover:border-blue-400 hover:text-blue-500 dark:border-gray-600"}`}>
                                     {isLoading
                                         ? <Spinner className="h-4 w-4"/>
-                                        : <i className="fa-regular fa-plus text-slate-400"></i>}
+                                        : <i className="fa-regular fa-plus text-gray-500"></i>}
                                 </button>
                             </Tooltip>
                         )}
                     </ImageUploading>
                 }
                 {!data.length && isDisabled &&
-                    <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-500">—</span>
                 }
             </div>
         </Gallery>

@@ -4,6 +4,7 @@ import { fieldLabelForPath } from "../shared/lib/projectSnapshot.js"
 import ProjectFormLeft from "./projectForm/ProjectFormLeft.jsx"
 import ProjectFormRight from "./projectForm/ProjectFormRight.jsx"
 import ProjectFormBottom from "./projectForm/ProjectFormBottom.jsx"
+import { avatarInitials } from "../../../lib/avatarInitials.js"
 
 const formatTime = (value) => {
   const date = new Date(String(value ?? "").replace(" ", "T"))
@@ -31,8 +32,8 @@ const CoEditors = observer(() => {
             title={`Також редагує: ${user.name}${since ? ` (з ${since})` : ""}`}
             className="flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 py-1 pr-2 pl-1 dark:border-amber-700 dark:bg-amber-900/30"
           >
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-200 text-[10px] font-semibold text-amber-800 dark:bg-amber-800 dark:text-amber-100">
-              {user.initials}
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-amber-200 text-[10px] font-semibold text-amber-800 dark:bg-amber-800 dark:text-amber-100">
+              {avatarInitials(user.initials, user.name)}
             </span>
             <span className="text-xs whitespace-nowrap text-amber-800 dark:text-amber-200">
               {user.name}
@@ -208,7 +209,7 @@ const Footer = observer(() => {
     <div className="sticky bottom-0 z-10 -mx-4 mt-4 flex items-center justify-between gap-4 border-t border-gray-200 bg-white px-4 py-3 dark:border-neutral-700 dark:bg-neutral-800">
       <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-1">
         {vm.saving && (
-          <i className="fa-solid fa-spinner fa-spin text-gray-400" />
+          <i className="fa-solid fa-spinner fa-spin text-gray-500" />
         )}
         <div
           className="flex flex-col text-sm text-red-600 dark:text-red-400"
@@ -287,7 +288,7 @@ const ProjectFormModal = () => {
               {caption.action && <i className={caption.action.icon} />}{" "}
               {caption.action?.caption}
               {vm.isEdit && (
-                <span className="ml-2 font-normal text-gray-500 normal-case">
+                <span className="ml-2 font-normal text-gray-600 normal-case">
                   #{vm.projectId}
                 </span>
               )}
@@ -317,7 +318,7 @@ const ProjectFormModal = () => {
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto">
           {vm.loading || !vm.form ? (
-            <div className="flex h-full items-center justify-center text-gray-400">
+            <div className="flex h-full items-center justify-center text-gray-600">
               <i className="fa-solid fa-spinner fa-spin mr-2" />
               Завантаження проєкту…
             </div>

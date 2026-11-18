@@ -46,7 +46,7 @@ const TicketsButton = ({entityType, entityId, entityLabel, canManage, className 
                     className={`inline-flex items-center gap-1 h-6 px-2 rounded-md text-[10px] font-semibold transition ${
                         draftPending
                             ? "bg-blue-50 text-blue-700 border border-dashed border-blue-300 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700"
-                            : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-neutral-700 dark:text-gray-400 dark:hover:bg-neutral-600"
                     }`}
                 >
                     <i className="fa-solid fa-ticket"></i>

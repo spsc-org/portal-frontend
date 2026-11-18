@@ -7,10 +7,16 @@ import { HighlightedText, RequiredPhrases } from "../liveAnalysis/AnalysisText.j
 // Класи полів картки (modalProjectCard/tab-general.blade.php)
 const BOX = "rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-sm text-gray-900 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100";
 const TONES = {
-    default: { title: "text-gray-500 dark:text-gray-400", box: BOX },
+    default: { title: "text-gray-600 dark:text-gray-400", box: BOX },
     green: { title: "text-green-700 dark:text-green-400", box: "rounded-md border border-green-300 bg-green-50 px-2.5 py-1.5 text-sm text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400" },
     blue: { title: "text-blue-700 dark:text-blue-300", box: "rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1.5 text-sm text-blue-900 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-100" },
 };
+
+// Поле вводу інлайн-редагування: займає місце значення і не виходить за рамку блоку
+// (min-w-0 w-full — інакше input у flex не стискається нижче ~20 символів). Відступи й
+// шрифт задано явно: @tailwindcss/forms дає input/textarea padding .5rem .75rem і 1rem.
+const EDIT_INPUT =
+    "block min-h-[1.5em] w-full min-w-0 flex-1 rounded border border-dashed border-blue-400 bg-blue-50 px-1 py-0 text-sm leading-[1.5] text-gray-800 shadow-none focus:border-solid focus:border-blue-500 focus:outline-none focus:ring-0 dark:border-blue-500 dark:bg-blue-900/30 dark:text-gray-100";
 
 export const Box = ({ children, className = "", title }) => (
     <div className={`${BOX} ${className}`} title={title}>
@@ -75,12 +81,12 @@ export const CardText = observer(({ field, label, title, tone = "default", edita
                             onChange={(event) => vm.setEditValue(event.target.value)}
                             onKeyDown={onKeyDown}
                             onBlur={vm.commitEdit}
-                            className="min-h-[1.5em] flex-1 rounded border border-dashed border-blue-400 bg-blue-50 px-1 text-gray-800 focus:outline-none"
+                            className={EDIT_INPUT}
                         />
                     ) : (
                         <span className={`min-h-[1.5em] min-w-0 flex-1 break-words ${multiline ? "whitespace-pre-wrap" : ""}`}>{items.length ? <HighlightedText text={shown} items={items} /> : shown}</span>
                     )}
-                    {vm.savingField === field && <i className="fa-solid fa-spinner fa-spin mt-1 text-xs text-gray-400" />}
+                    {vm.savingField === field && <i className="fa-solid fa-spinner fa-spin mt-1 text-xs text-gray-500" />}
                     {analysed && <AnalysisBadge state={vm.analysis} field={field} className={canEdit ? "mr-6" : ""} />}
                     {canEdit && !isEditing && (
                         <button type="button" title="Редагувати" onClick={() => vm.startEdit(field)} className="absolute right-0 top-0 px-1 opacity-0 transition-opacity group-hover:opacity-100">

@@ -26,8 +26,8 @@ const WelcomeView = () => {
     return (
         <div data-i-doc="page:welcome" className=" px-3 pb-6 pt-3 sm:px-4">
             <PageHeader title="Головна" actions={<HeaderIconButton icon="fa-solid fa-refresh" title="Оновити" onClick={vm.refresh} />} />
-            <div className="mb-5 rounded-2xl border border-slate-300 bg-gradient-to-r from-white to-blue-50 p-5 shadow-md shadow-slate-200/70 ring-1 ring-slate-200/60 dark:border-slate-700 dark:from-slate-900 dark:to-slate-800 dark:shadow-black/20 dark:ring-0">
-                <p className="text-2xl font-bold text-slate-900 dark:text-white">Вітаємо в системі, {vm.userName}</p>
+            <div className="mb-5 rounded-2xl border border-gray-300 bg-gradient-to-r from-white to-blue-50 p-5 shadow-md shadow-gray-200/70 ring-1 ring-gray-200/60 dark:border-neutral-700 dark:from-neutral-800 dark:to-neutral-700 dark:shadow-black/20 dark:ring-0">
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">Вітаємо в системі, {vm.userName}</p>
 
                 {vm.isDebug && (
                     <span className="mt-3 inline-flex rounded-md bg-blue-600 px-3 py-1 text-xs font-semibold text-white dark:bg-blue-700">
@@ -41,7 +41,7 @@ const WelcomeView = () => {
             {vm.showKPI && (
                 <div data-i-doc="widget:welcome-kpi-stats">
                     {period && (
-                        <h5 className="mt-1  text-slate-900 dark:text-white">
+                        <h5 className="mt-1  text-gray-900 dark:text-white">
                             Статистика за період: {period.label || "Останні 7 днів"}{" "}
                             <span className="text-xs ml-1">
                                 з {formatDate(period.from, "dd.MM.yyyy HH:mm:ss")} по {formatDate(period.to, "dd.MM.yyyy HH:mm:ss")}

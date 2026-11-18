@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite"
 import { useVM } from "../../../../shared/mvvm/index.js"
 import { Box, CardText, Flag, SectionTitle, VocField } from "./cardParts.jsx"
 import AnalysisBadge from "../liveAnalysis/AnalysisBadge.jsx"
+import { avatarInitials } from "../../../../lib/avatarInitials.js"
 
 const TILE_BG = {
   green: ["bg-gray-50 dark:bg-neutral-900", "bg-green-50 dark:bg-green-900"],
@@ -24,9 +25,9 @@ const Restrictions = ({ items }) => {
       >
         {items.map((item) => {
           const border = item.checked
-            ? "border-2 border-gray-500 dark:border-gray-400"
+            ? "border-2 border-gray-500 dark:border-neutral-400"
             : item.dashed
-              ? "border-2 border-dashed border-gray-500 dark:border-gray-400"
+              ? "border-2 border-dashed border-gray-500 dark:border-neutral-400"
               : ""
           const span =
             item.code === "25"
@@ -81,16 +82,16 @@ const Avatar = ({ user, resolvedState = null, ring = false }) => {
   if (!user) return null
   const bg =
     resolvedState === null
-      ? "bg-gray-100 dark:bg-gray-600"
+      ? "bg-gray-100 dark:bg-neutral-500"
       : resolvedState === 1
         ? "bg-green-300 dark:bg-green-700"
         : "bg-gray-200 dark:bg-neutral-700"
   return (
     <div
       title={user.caption}
-      className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold text-gray-700 dark:text-gray-200 ${bg} ${ring ? "-mt-2 ring-2 ring-white dark:ring-neutral-800" : ""}`}
+      className={`flex h-6 w-6 items-center justify-center overflow-hidden rounded-full text-[10px] font-semibold text-gray-700 dark:text-gray-200 ${bg} ${ring ? "-mt-2 ring-2 ring-white dark:ring-neutral-800" : ""}`}
     >
-      {user.initials}
+      {avatarInitials(user.initials, user.caption)}
     </div>
   )
 }
@@ -139,7 +140,7 @@ const Tickets = observer(({ tickets }) => {
               <div className="mb-0.5 text-gray-900 dark:text-gray-100">
                 {ticket.text}
               </div>
-              <div className="text-xs text-gray-400 dark:text-gray-500">
+              <div className="text-xs text-gray-600 dark:text-gray-500">
                 ticket#{ticket.id}
               </div>
             </div>
@@ -149,7 +150,7 @@ const Tickets = observer(({ tickets }) => {
                   <>
                     <TicketButton
                       title="Позначити реалізованим"
-                      icon="fa-solid fa-check text-gray-500 dark:text-gray-400"
+                      icon="fa-solid fa-check text-gray-600 dark:text-gray-400"
                       onClick={() => vm.setTicketState(ticket.id, 0)}
                     />
                     <TicketButton
@@ -171,7 +172,7 @@ const Tickets = observer(({ tickets }) => {
                 ) : (
                   <TicketButton
                     title="Відмінити позначку реалізованого"
-                    icon="fa-solid fa-arrow-rotate-left text-gray-500 dark:text-gray-400"
+                    icon="fa-solid fa-arrow-rotate-left text-gray-600 dark:text-gray-400"
                     onClick={() => vm.setTicketState(ticket.id, -1)}
                   />
                 ))}
@@ -183,7 +184,7 @@ const Tickets = observer(({ tickets }) => {
                   title="Переглянути вкладення"
                   className="rounded-full bg-white p-1 text-xs hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700"
                 >
-                  <i className="fa-solid fa-paperclip pointer-events-none text-gray-500 dark:text-gray-400" />
+                  <i className="fa-solid fa-paperclip pointer-events-none text-gray-600 dark:text-gray-400" />
                 </a>
               )}
             </div>
@@ -233,7 +234,7 @@ const Attachments = observer(({ attachments }) => {
         type="button"
         title="Завантажити"
         onClick={() => vm.download(attachment)}
-        className="rounded-md p-2 text-gray-400 opacity-0 transition-all group-hover:opacity-100 hover:bg-blue-50 hover:text-blue-600 dark:text-gray-500 dark:hover:bg-blue-900/20 dark:hover:text-blue-400"
+        className="rounded-md p-2 text-gray-600 opacity-0 transition-all group-hover:opacity-100 hover:bg-blue-50 hover:text-blue-600 dark:text-gray-500 dark:hover:bg-blue-900/20 dark:hover:text-blue-400"
       >
         <i className="fa-solid fa-download" />
       </button>
@@ -242,7 +243,7 @@ const Attachments = observer(({ attachments }) => {
           type="button"
           title="Видалити"
           onClick={() => vm.detach(attachment.id)}
-          className="rounded-md p-2 text-gray-400 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-50 hover:text-red-600 dark:text-gray-500 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+          className="rounded-md p-2 text-gray-600 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-50 hover:text-red-600 dark:text-gray-500 dark:hover:bg-red-900/20 dark:hover:text-red-400"
         >
           <i className="fa-solid fa-trash-can" />
         </button>
@@ -252,9 +253,9 @@ const Attachments = observer(({ attachments }) => {
   return (
     <div className="mb-4 w-full">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-xs text-gray-500 dark:text-gray-400">Вкладення</h3>
+        <h3 className="text-xs text-gray-600 dark:text-gray-400">Вкладення</h3>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+          <span className="text-xs text-gray-600 dark:text-gray-400">
             {attachments.length} {filesWord(attachments.length)}
           </span>
           {vm.isEditable && (
@@ -272,7 +273,7 @@ const Attachments = observer(({ attachments }) => {
         </div>
       </div>
       {attachments.length === 0 && (
-        <div className="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="py-6 text-center text-sm text-gray-600 dark:text-gray-400">
           <i className="fa-regular fa-folder-open mb-2 block text-2xl text-gray-300 dark:text-gray-600" />
           Немає вкладень
         </div>
@@ -304,7 +305,7 @@ const Attachments = observer(({ attachments }) => {
                   <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
                     {photo.originalName || photo.filename}
                   </p>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="text-xs text-gray-600 dark:text-gray-400">
                     {formatDate(photo.uploadDate)}
                   </div>
                 </div>
@@ -320,7 +321,7 @@ const Attachments = observer(({ attachments }) => {
           className="group mb-2 flex items-center justify-between rounded-lg bg-gray-50 p-3 transition-all hover:bg-gray-100 dark:bg-neutral-900 dark:hover:bg-neutral-700"
         >
           <div className="flex min-w-0 flex-1 items-center">
-            <i className="fa-regular fa-file mr-3 text-lg text-gray-400" />
+            <i className="fa-regular fa-file mr-3 text-lg text-gray-500" />
             <div className="min-w-0 flex-1">
               <p
                 className="truncate text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -328,7 +329,7 @@ const Attachments = observer(({ attachments }) => {
               >
                 {file.originalName || file.filename}
               </p>
-              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
                 <span>{formatSize(file.size)}</span>
                 <span>•</span>
                 <span>{formatDate(file.uploadDate)}</span>
@@ -341,7 +342,7 @@ const Attachments = observer(({ attachments }) => {
       {vm.isEditable && vm.uploadOpen && (
         <div>
           <div className="mb-3 flex items-center gap-4 px-1 text-xs text-gray-700 dark:text-gray-300">
-            <span className="shrink-0 text-gray-500 dark:text-gray-400">
+            <span className="shrink-0 text-gray-600 dark:text-gray-400">
               Тип:
             </span>
             {[
@@ -369,7 +370,7 @@ const Attachments = observer(({ attachments }) => {
               event.preventDefault(),
               vm.upload(event.dataTransfer.files)
             )}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-4 text-xs text-gray-500 hover:border-blue-400 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-400"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-4 text-xs text-gray-600 hover:border-blue-400 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-400"
           >
             <i
               className={`fa-solid ${vm.uploading ? "fa-spinner fa-spin" : "fa-cloud-arrow-up"}`}
@@ -535,7 +536,7 @@ const CardGeneralTab = () => {
               <SectionTitle>Підстави</SectionTitle>
               <div className="max-h-52 space-y-2 overflow-y-auto pr-1">
                 {view.reasons.length === 0 ? (
-                  <Box className="text-gray-500 dark:text-gray-400">—</Box>
+                  <Box className="text-gray-600 dark:text-gray-400">—</Box>
                 ) : (
                   view.reasons.map((reason) => <Box key={reason}>{reason}</Box>)
                 )}

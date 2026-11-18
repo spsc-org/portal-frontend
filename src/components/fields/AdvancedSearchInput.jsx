@@ -49,17 +49,17 @@ const AdvancedSearchInput = ({
         };
     }, [debouncedSendRequest]);
 
-    const baseClasses = `w-full bg-white disabled:bg-gray-200 dark:disabled:bg-gray-950 placeholder:text-slate-400 leading-5 text-slate-700 text-${size} border rounded-sm px-3 py-2 transition duration-150 ease-in-out focus:outline-none pr-10 dark:bg-gray-900 dark:text-gray-300`;
+    const baseClasses = `w-full bg-white disabled:bg-gray-200 dark:disabled:bg-neutral-800 placeholder:text-gray-500 leading-5 text-gray-700 text-${size} border rounded-sm px-3 py-2 transition duration-150 ease-in-out focus:outline-none pr-10 dark:bg-neutral-900 dark:text-gray-300`;
 
     const stateClasses = error
         ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
-        : 'border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:hover:border-gray-500 dark:focus:border-blue-500';
+        : 'border-gray-200 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-neutral-600 dark:hover:border-neutral-500 dark:focus:border-blue-500';
 
 
     return (
         <div className="relative w-full">
             {label && <label htmlFor={name}
-                     className={`block text-${size} text-gray-500 dark:text-gray-300`}>{label}
+                     className={`block text-${size} text-gray-600 dark:text-gray-300`}>{label}
             </label>}
             <div className="relative">
                 <input ref={inputRef} onInput={sendChange} disabled={disabled} type={type} defaultValue={value}
@@ -68,7 +68,7 @@ const AdvancedSearchInput = ({
                        className={`${baseClasses} ${stateClasses}`}/>
                 {value && (
                     <div
-                        className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors duration-150 ease-in-out"
+                        className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-600 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors duration-150 ease-in-out"
                         onClick={handleClear}
                         style={{cursor: 'pointer'}}
                         aria-label="Очистити пошук"

@@ -1,11 +1,6 @@
-import {
-    Button,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Typography,
-} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import { observer } from "mobx-react-lite";
 import { useVM } from "../../../shared/mvvm/viewModelHooks.js";
 import {useState} from "react";
@@ -44,8 +39,8 @@ const DetailsDialog = ({open, onClose, record}) => {
     const hasActions = Array.isArray(record.actions) && record.actions.length > 0;
 
     return (
-        <Dialog data-i-doc="modal:advanced-search-details" open={open} handler={onClose} size="lg" className="dark:bg-slate-800">
-            <DialogHeader className="flex flex-col gap-0 items-start border-b border-gray-200 dark:border-slate-700 pb-4">
+        <Modal data-i-doc="modal:advanced-search-details" open={open} handler={onClose} size="lg">
+            <ModalHeader className="flex flex-col gap-0 items-start border-b pb-4">
                 <div className="flex items-center gap-3 w-full">
                     {type && type.icon && (
                         <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-full text-blue-500 dark:text-blue-400">
@@ -53,10 +48,10 @@ const DetailsDialog = ({open, onClose, record}) => {
                         </div>
                     )}
                     <div className="flex flex-col flex-grow">
-                        <Typography variant="h5" className="dark:text-slate-200">
+                        <Typography variant="h5" className="dark:text-gray-200">
                             Детальна інформація
                         </Typography>
-                        <Typography variant="small" className="font-normal text-gray-600 dark:text-slate-400">
+                        <Typography variant="small" className="font-normal text-gray-600 dark:text-gray-400">
                             {record.dataset_name || dataset?.caption || 'Невідомий датасет'}
                         </Typography>
                     </div>
@@ -65,8 +60,7 @@ const DetailsDialog = ({open, onClose, record}) => {
                             size="sm"
                             variant={activeTab === 'details' ? "filled" : "outlined"}
                             color="blue"
-                            onClick={() => setActiveTab('details')}
-                        >
+                            onClick={() => setActiveTab('details')}>
                             Інформація
                         </Button>
                         {hasActions && (
@@ -75,8 +69,7 @@ const DetailsDialog = ({open, onClose, record}) => {
                                 variant={activeTab === 'actions' ? "filled" : "outlined"}
                                 color="amber"
                                 onClick={() => setActiveTab('actions')}
-                                className="flex items-center gap-1.5"
-                            >
+                                className="flex items-center gap-1.5">
                                 <i className="ti ti-history text-sm"></i>
                                 Рішення
                                 <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === 'actions' ? 'bg-white/20' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300'}`}>
@@ -88,15 +81,14 @@ const DetailsDialog = ({open, onClose, record}) => {
                             size="sm"
                             variant={activeTab === 'raw' ? "filled" : "outlined"}
                             color="blue"
-                            onClick={() => setActiveTab('raw')}
-                        >
+                            onClick={() => setActiveTab('raw')}>
                             Сирі дані
                         </Button>
                     </div>
                 </div>
-            </DialogHeader>
+            </ModalHeader>
 
-            <DialogBody className="h-[32rem] overflow-y-auto p-4">
+            <ModalBody className="h-[32rem] overflow-y-auto p-4">
                 {activeTab === 'details' && (
                     <div data-i-doc="tab:advanced-search-details-info" className="space-y-4">
                         {/* Загальна секція для всіх датасетів */}
@@ -127,18 +119,16 @@ const DetailsDialog = ({open, onClose, record}) => {
                         </pre>
                     </div>
                 )}
-            </DialogBody>
-            <DialogFooter className="border-t border-gray-200 dark:border-slate-700 pt-2">
+            </ModalBody>
+            <ModalFooter className="border-t pt-2">
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
-                    className="mr-1"
-                >
+                    className="mr-1">
                     <span>Закрити</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

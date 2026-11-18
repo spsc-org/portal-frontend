@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router'
-import { Button } from '@material-tailwind/react'
+import Button from "../../components/Buttons/Button.jsx"
 import { apiFetch, ApiError } from '../../lib/api.js'
 import AuthLayout from './AuthLayout.jsx'
 import FormField from './FormField.jsx'

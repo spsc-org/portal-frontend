@@ -36,7 +36,7 @@ const RewriteRestriction25Form = ({ projectIds, userId, onDone }) => {
             <div>
                 <label className="mb-1 flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                     Новий текст
-                    <span className="text-xs font-normal text-gray-400 dark:text-gray-500" title='Щоб очистити поле, впишіть слово "очистити"'>
+                    <span className="text-xs font-normal text-gray-600 dark:text-gray-500" title='Щоб очистити поле, впишіть слово "очистити"'>
                         <i className="fas fa-info-circle" />
                     </span>
                 </label>
@@ -44,7 +44,7 @@ const RewriteRestriction25Form = ({ projectIds, userId, onDone }) => {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="Введіть текст"
-                    className="min-h-[100px] w-full resize-y rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200 dark:placeholder-gray-500"
+                    className="min-h-[100px] w-full resize-y rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200 dark:placeholder-gray-500"
                 />
             </div>
         </BulkFormShell>

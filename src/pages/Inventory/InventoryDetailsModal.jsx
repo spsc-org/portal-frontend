@@ -3,19 +3,10 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { InventoryDetailsViewModel } from "./viewmodel/InventoryViewModels.js";
 import { confirmToast } from "../../components/confirmToast.jsx";
-import {
-    Button, Card,
-    Dialog,
-    DialogFooter,
-    DialogHeader,
-    IconButton,
-    Spinner,
-    Tab,
-    TabPanel,
-    Tabs,
-    TabsBody,
-    TabsHeader
-} from "@material-tailwind/react";
+import { Card, Spinner, Tab, TabPanel, Tabs, TabsBody, TabsHeader } from "@material-tailwind/react"
+import IconButton from "../../components/Buttons/IconButton.jsx"
+import { Modal, ModalHeader, ModalFooter } from "../../components/Modal/Modal.jsx"
+import Button from "../../components/Buttons/Button.jsx"
 import DocumentGallery from "../../components/DocumentGallary.jsx";
 import {useFilteredAttachments} from "../../hooks/useFilteredAttachments.jsx";
 import {LoadingDialogBody} from "../../components/Buttons/LoadingDialogBody.jsx";
@@ -89,7 +80,7 @@ const AuditEntry = ({entry, dictionary, inventoryType, inventoryLocation}) => {
     }
 
     const formatValue = (field, value) => {
-        if (value === null || value === undefined || value === '') return <span className="text-gray-400 italic">—</span>;
+        if (value === null || value === undefined || value === '') return <span className="text-gray-600 italic">—</span>;
         // Check vocabularies if labels are not provided in diff (though AuditService usually provides labels)
         // For inventory specific fields if needed
         if (field === 'valueTypeId') return inventoryType?.find(t => t.id === value)?.caption || value;
@@ -102,14 +93,14 @@ const AuditEntry = ({entry, dictionary, inventoryType, inventoryLocation}) => {
         <div className="border rounded-lg mb-2 overflow-hidden dark:border-gray-600">
             <button
                 onClick={() => setOpen(o => !o)}
-                className="w-full flex items-center justify-between px-3 py-2 text-left bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+                className="w-full flex items-center justify-between px-3 py-2 text-left bg-gray-50 dark:bg-neutral-600 hover:bg-gray-100 dark:hover:bg-neutral-500"
             >
                 <div className="flex items-center gap-x-3">
                     <ActionBadge action={entry.action}/>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">{entry.createdAt}</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">{entry.createdAt}</span>
                     <span className="text-xs dark:text-gray-300">{userName}</span>
                     {entry.action === 'legacy_update' && entry.context ? (
-                        <span className="text-xs text-gray-400">({Object.keys(entry.context).length} зм.)</span>
+                        <span className="text-xs text-gray-600">({Object.keys(entry.context).length} зм.)</span>
                     ) : entry.context?.name ? (
                         <span className="text-xs text-purple-500 dark:text-purple-400">{entry.context.name}</span>
                     ) : entry.context?.fileName ? (
@@ -121,18 +112,18 @@ const AuditEntry = ({entry, dictionary, inventoryType, inventoryLocation}) => {
                     ) : entry.action === 'comment_edit' && entry.context?.to ? (
                         <span className="text-xs text-cyan-600 dark:text-cyan-400 truncate max-w-[300px]">{entry.context.to}</span>
                     ) : diffEntries.length > 0 ? (
-                        <span className="text-xs text-gray-400">({diffEntries.length} зм.)</span>
+                        <span className="text-xs text-gray-600">({diffEntries.length} зм.)</span>
                     ) : null}
                 </div>
-                <i className={`fa-regular fa-chevron-${open ? 'up' : 'down'} text-gray-400 text-xs`}/>
+                <i className={`fa-regular fa-chevron-${open ? 'up' : 'down'} text-gray-600 text-xs`}/>
             </button>
 
             {open && (
-                <div className="px-3 py-2 dark:bg-gray-800">
+                <div className="px-3 py-2 dark:bg-neutral-700">
                     {entry.action === 'legacy_update' && entry.context ? (
                         <table className="w-full text-xs">
                             <thead>
-                            <tr className="text-left text-gray-500 dark:text-gray-400">
+                            <tr className="text-left text-gray-600 dark:text-gray-400">
                                 <th className="pb-1 w-1/4">Поле</th>
                                 <th className="pb-1 w-[37.5%]">Було</th>
                                 <th className="pb-1 w-[37.5%]">Стало</th>
@@ -181,11 +172,11 @@ const AuditEntry = ({entry, dictionary, inventoryType, inventoryLocation}) => {
                             <p className="text-green-600 dark:text-green-400">{entry.context?.to}</p>
                         </div>
                     ) : diffEntries.length === 0 ? (
-                        <p className="text-xs text-gray-400 italic">Немає змін у відстежуваних полях</p>
+                        <p className="text-xs text-gray-600 italic">Немає змін у відстежуваних полях</p>
                     ) : (
                         <table className="w-full text-xs">
                             <thead>
-                            <tr className="text-left text-gray-500 dark:text-gray-400">
+                            <tr className="text-left text-gray-600 dark:text-gray-400">
                                 <th className="pb-1 w-1/4">Поле</th>
                                 <th className="pb-1 w-[37.5%]">Було</th>
                                 <th className="pb-1 w-[37.5%]">Стало</th>
@@ -247,8 +238,8 @@ const InventoryDetailsModal = ({open, id, onClose, dictionary, readOnly = false}
     };
 
     return (
-        <Dialog data-i-doc="modal:inventory-details" open={open} size="xxl" className="dark:bg-gray-800" handler={onClose}>
-            <DialogHeader className="dark:text-gray-200">
+        <Modal data-i-doc="modal:inventory-details" open={open} size="xxl" handler={onClose}>
+            <ModalHeader>
                 <span className="mr-5">Детальна інформація {data?.data?.caption}</span>
                 <a className="block"  href={`/inventory/${id}/export`}
                    target="_blank">
@@ -256,7 +247,7 @@ const InventoryDetailsModal = ({open, id, onClose, dictionary, readOnly = false}
                         <i className="fa-regular fa-print"></i>
                     </IconButton>
                 </a>
-            </DialogHeader>
+            </ModalHeader>
             <LoadingDialogBody isLoading={isDictionaryFetching} className="min-h-[32rem] h-full relative overflow-y-auto">
 
 
@@ -269,7 +260,7 @@ const InventoryDetailsModal = ({open, id, onClose, dictionary, readOnly = false}
                                     <div className="flex flex-row items-center gap-x-2">
                                         Аудит змін
                                         {auditTotal > 0 && (
-                                            <div className="relative h-[20px] w-[20px] bg-gray-950 dark:bg-gray-950 rounded-full">
+                                            <div className="relative h-[20px] w-[20px] bg-gray-950 dark:bg-neutral-900 rounded-full">
                                                 <span className="absolute text-sm left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
                                                     {auditTotal}
                                                 </span>
@@ -283,74 +274,74 @@ const InventoryDetailsModal = ({open, id, onClose, dictionary, readOnly = false}
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">itemId:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.id}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.id}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Накладна:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.invoice}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.invoice}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:dark:text-gray-400 font-bold ">Опис:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.caption}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.caption}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Деталі:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.details}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.details}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Серійний номер:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.serial}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.serial}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Інв. номер:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.inventoryNum}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.inventoryNum}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Реєстр. №:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.registryNum}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.registryNum}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Кількість:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.amount}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.amount}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Вартість:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.cost}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.cost}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Тип:</p>
-                                            <p className="dark:text-slate-400 ">{inventoryType?.find(d => d.id === data?.data?.valueTypeId)?.caption}</p>
+                                            <p className="dark:text-gray-400 ">{inventoryType?.find(d => d.id === data?.data?.valueTypeId)?.caption}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Розташування:</p>
-                                            <p className="dark:text-slate-400 ">{inventoryLocation?.find(d => d.id === data?.data?.locationId)?.caption}</p>
+                                            <p className="dark:text-gray-400 ">{inventoryLocation?.find(d => d.id === data?.data?.locationId)?.caption}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Мат. відповідальний:</p>
-                                            <p className="dark:text-slate-400 ">{responsibleUsers?.find(d => d.id === data?.data?.responsibleUserId)?.caption}</p>
+                                            <p className="dark:text-gray-400 ">{responsibleUsers?.find(d => d.id === data?.data?.responsibleUserId)?.caption}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Відповідальний:</p>
-                                            <p className="dark:text-slate-400 ">{users?.find(d => d.id === data?.data?.baileeUserId)?.caption}</p>
+                                            <p className="dark:text-gray-400 ">{users?.find(d => d.id === data?.data?.baileeUserId)?.caption}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Дата створення:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.createdAt}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.createdAt}</p>
                                         </div>
                                         <div className="flex flex-row gap-x-2"/>
                                         <div className="flex flex-row gap-x-2">
                                             <p className="dark:text-gray-400 font-bold ">Дата редагування:</p>
-                                            <p className="dark:text-slate-400 ">{data?.data?.updatedAt}</p>
+                                            <p className="dark:text-gray-400 ">{data?.data?.updatedAt}</p>
                                         </div>
                                         {data?.data?.deletedAt &&
                                             <>
                                                 <div className="flex flex-row gap-x-2">
                                                     <p className="dark:text-gray-400 font-bold ">Дата видалення:</p>
-                                                    <p className="dark:text-slate-400 ">{data?.data?.deletedAt}</p>
+                                                    <p className="dark:text-gray-400 ">{data?.data?.deletedAt}</p>
                                                 </div>
                                                 <div className="flex flex-row gap-x-2">
                                                     <p className="dark:text-gray-400 font-bold">Останній змінив:</p>
-                                                    <p className="dark:text-slate-400 ">{dictionary?.user?.find(d => d.id === data?.data?.updatedUserId)?.caption}</p>
+                                                    <p className="dark:text-gray-400 ">{dictionary?.user?.find(d => d.id === data?.data?.updatedUserId)?.caption}</p>
                                                 </div>
                                             </>
 
@@ -358,7 +349,7 @@ const InventoryDetailsModal = ({open, id, onClose, dictionary, readOnly = false}
                                     </div>
                                     <div className="mt-4 flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Примітка:</p>
-                                        <p className="dark:text-slate-400 flex-1">{data?.data?.note}</p>
+                                        <p className="dark:text-gray-400 flex-1">{data?.data?.note}</p>
                                     </div>
                                     <Card variant="filled" className="p-2 bg-gray-600/20 mb-2">
                                         <ImageGallery allowNonImageType={false} data={imageAttachments}
@@ -380,7 +371,7 @@ const InventoryDetailsModal = ({open, id, onClose, dictionary, readOnly = false}
                                     {auditLoading
                                         ? <div className="flex justify-center py-4"><Spinner className="h-8 w-8"/></div>
                                         : auditHistory.length === 0
-                                            ? <p className="text-sm text-gray-400 italic">Записів аудиту немає</p>
+                                            ? <p className="text-sm text-gray-600 italic">Записів аудиту немає</p>
                                             : <>
                                                 {auditHistory.map(entry => (
                                                     <AuditEntry
@@ -398,7 +389,7 @@ const InventoryDetailsModal = ({open, id, onClose, dictionary, readOnly = false}
                                                             onClick={() => setAuditPage(p => p - 1)}
                                                             className="px-3 py-1 text-xs rounded border dark:border-gray-600 disabled:opacity-40"
                                                         >‹ Новіші</button>
-                                                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                        <span className="text-xs text-gray-600 dark:text-gray-400">
                                                             {auditPage} / {auditPages}
                                                         </span>
                                                         <button
@@ -415,12 +406,12 @@ const InventoryDetailsModal = ({open, id, onClose, dictionary, readOnly = false}
                             </TabsBody>
                         </Tabs>
             </LoadingDialogBody>
-            <DialogFooter>
+            <ModalFooter>
                 <Button className="mt-20" onClick={onClose} color="gray">
                     <span>Закрити</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

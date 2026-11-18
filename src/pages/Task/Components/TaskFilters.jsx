@@ -1,7 +1,9 @@
-import {Button, Menu, MenuHandler, MenuItem, MenuList} from "@material-tailwind/react";
+import { Menu, MenuHandler, MenuItem, MenuList } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import MultiSelectChip from "../../../components/fields/MultiSelectChip.jsx";
-import ChipToggle, {chipToggleClassName} from "../../../components/fields/ChipToggle.jsx";
+import ChipToggle from "../../../components/fields/ChipToggle.jsx";
+import { chipToggleClassName } from "../../../components/fields/chipToggleStyles.js";
 import ChipResetButton from "../../../components/fields/ChipResetButton.jsx";
 
 const optionCaption = (option) => option?.caption || option?.name || option?.label || "";
@@ -26,7 +28,7 @@ const TaskFilters = ({
 
     return (
         // Стікі-панель: непрозорий фон (не /90) — інакше в dark просвічує світлий контент
-        <div data-i-doc="view:task-filters" className="sticky top-[50px] z-20 -mx-1 mb-3 flex flex-wrap items-center gap-1.5 border-b border-slate-200 bg-white px-1 py-2 dark:border-slate-700 dark:bg-neutral-900">
+        <div data-i-doc="view:task-filters" className="sticky top-[50px] z-20 mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800">
             <div className="w-56">
                 <SearchInput
                     size="xs"
@@ -75,14 +77,14 @@ const TaskFilters = ({
 
             {/* Правий блок: групування + сортування */}
             <div className="ml-auto flex items-center gap-1.5">
-                <div className="flex items-center gap-0.5 rounded-lg border border-slate-200 bg-white p-0.5 dark:border-slate-600 dark:bg-slate-800"
+                <div className="flex items-center gap-0.5 rounded-lg border border-gray-200 bg-white p-0.5 dark:border-gray-600 dark:bg-neutral-700"
                      title="Групування списку">
                     {[["status", "Статус"], ["project", "Проєкт"], ["priority", "Пріоритет"], ["none", "Без груп"]].map(([key, label]) => (
                         <button key={key} type="button"
                                 onClick={() => onGroupBy(key)}
                                 className={`rounded-md px-2 py-1 text-[11px] font-medium transition ${groupBy === key
                                     ? "bg-blue-500 text-white"
-                                    : "text-slate-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"}`}>
+                                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-neutral-600"}`}>
                             {label}
                         </button>
                     ))}
@@ -96,11 +98,11 @@ const TaskFilters = ({
                             <i className="fa-solid fa-chevron-down text-[8px] opacity-50"></i>
                         </button>
                     </MenuHandler>
-                    <MenuList className="min-w-[10rem] border border-slate-200 bg-white p-1 text-slate-700 dark:border-slate-600 dark:!bg-slate-800 dark:!text-slate-200">
+                    <MenuList className="min-w-[10rem] border border-gray-200 bg-white p-1 text-gray-700 dark:border-gray-600 dark:!bg-neutral-700 dark:!text-gray-200">
                         {sortOptions.map(option => (
                             <MenuItem key={option.id}
                                       onClick={() => onSort(option)}
-                                      className={`text-xs dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-100 dark:focus:bg-slate-700 ${sortValue?.id === option.id ? "bg-blue-50 dark:bg-blue-900/30" : ""}`}>
+                                      className={`text-xs dark:text-gray-300 dark:hover:bg-neutral-600 dark:hover:text-gray-100 dark:focus:bg-neutral-600 ${sortValue?.id === option.id ? "bg-blue-50 dark:bg-blue-900/30" : ""}`}>
                                 {option.caption}
                             </MenuItem>
                         ))}

@@ -44,17 +44,17 @@ const AdminNotificationsView = observer(({ vm }) => (
     <AdminLayout data-i-doc="page:admin-notifications" active="notifications">
         <div className="mx-2 mt-5 max-w-2xl">
             <div className="mb-3">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
                     Категорії нотифікацій
                 </p>
-                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400">
                     Глобальний перелік категорій і каналів, якими система їх підтримує —
                     лише перегляд. Персональні переваги користувачів — на сторінці
                     «Налаштування» кожного користувача.
                 </p>
             </div>
             {vm.isLoading ? (
-                <p className="text-xs text-slate-500 dark:text-slate-400">Завантаження…</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Завантаження…</p>
             ) : (
                 <NotificationCategoryTable categories={vm.categories} readOnly />
             )}

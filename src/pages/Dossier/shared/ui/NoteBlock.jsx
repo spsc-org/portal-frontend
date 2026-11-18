@@ -17,7 +17,7 @@ const NoteBlock = ({value, onSave, isPending = false, canEdit = true, placeholde
     if (draft !== null) {
         return (
             <div className="mt-3">
-                <p className="mb-1 text-[9.5px] font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500">{label}</p>
+                <p className="mb-1 text-[9.5px] font-bold uppercase tracking-wide text-gray-600 dark:text-gray-500">{label}</p>
                 <textarea
                     autoFocus
                     rows={3}
@@ -29,7 +29,7 @@ const NoteBlock = ({value, onSave, isPending = false, canEdit = true, placeholde
                             setDraft(null);
                         }
                     }}
-                    className="w-full resize-y rounded-md border border-blue-300 bg-white p-2 text-[12.5px] leading-relaxed text-gray-800 outline-none focus:border-blue-500 dark:border-blue-700 dark:bg-gray-900 dark:text-gray-200"
+                    className="w-full resize-y rounded-md border border-blue-300 bg-white p-2 text-[12.5px] leading-relaxed text-gray-800 outline-none focus:border-blue-500 dark:border-blue-700 dark:bg-neutral-900 dark:text-gray-200"
                 />
                 <div className="mt-1.5 flex gap-2">
                     <button
@@ -58,15 +58,15 @@ const NoteBlock = ({value, onSave, isPending = false, canEdit = true, placeholde
 
     return (
         <div data-i-doc="component:sanction-profiles-note-block" className="mt-3">
-            <p className="mb-1 text-[9.5px] font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500">{label}</p>
+            <p className="mb-1 text-[9.5px] font-bold uppercase tracking-wide text-gray-600 dark:text-gray-500">{label}</p>
             <p
                 onClick={canEdit ? () => setDraft(value || "") : undefined}
                 title={canEdit ? "Натисніть, щоб змінити примітку" : undefined}
-                className={`whitespace-pre-wrap text-[12.5px] leading-relaxed text-gray-700 dark:text-gray-300 ${canEdit ? "group cursor-text rounded-md px-1 -mx-1 transition hover:bg-slate-100 dark:hover:bg-slate-800/60" : ""}`}
+                className={`whitespace-pre-wrap text-[12.5px] leading-relaxed text-gray-700 dark:text-gray-300 ${canEdit ? "group cursor-text rounded-md px-1 -mx-1 transition hover:bg-gray-100 dark:hover:bg-neutral-700/60" : ""}`}
             >
                 {value || (canEdit ? placeholder : "—")}
                 {canEdit &&
-                    <i className="fa-regular fa-pen ml-1.5 align-middle text-[10px] text-gray-400 opacity-0 transition group-hover:opacity-100 dark:text-gray-500"></i>
+                    <i className="fa-regular fa-pen ml-1.5 align-middle text-[10px] text-gray-500 opacity-0 transition group-hover:opacity-100 dark:text-gray-500"></i>
                 }
             </p>
         </div>

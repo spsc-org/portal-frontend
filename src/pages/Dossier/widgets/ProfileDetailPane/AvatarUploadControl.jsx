@@ -47,7 +47,7 @@ const AvatarUploadControl = ({profile, isUploading, isDeleting, onUpload, onRequ
                     disabled={isBusy}
                     onClick={() => inputRef.current?.click()}
                     title={isUploading ? "Завантаження…" : "Завантажити фото"}
-                    className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-blue-300 bg-white text-blue-700 cursor-pointer transition hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-blue-700 dark:text-blue-300"
+                    className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-blue-300 bg-white text-blue-700 cursor-pointer transition hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-neutral-700 dark:border-blue-700 dark:text-blue-300"
                 >
                     <i className={`fa-solid ${isUploading ? "fa-spinner fa-spin" : "fa-camera"} text-[12px]`}></i>
                 </button>
@@ -57,7 +57,7 @@ const AvatarUploadControl = ({profile, isUploading, isDeleting, onUpload, onRequ
                         disabled={isBusy}
                         onClick={onRequestDelete}
                         title={isDeleting ? "Видалення…" : "Видалити фото"}
-                        className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-red-200 bg-white text-red-600 cursor-pointer transition hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-red-800 dark:text-red-400"
+                        className="inline-flex items-center justify-center w-[30px] h-[30px] rounded-full border border-red-200 bg-white text-red-600 cursor-pointer transition hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-neutral-700 dark:border-red-800 dark:text-red-400"
                     >
                         <i className={`fa-solid ${isDeleting ? "fa-spinner fa-spin" : "fa-trash"} text-[12px]`}></i>
                     </button>

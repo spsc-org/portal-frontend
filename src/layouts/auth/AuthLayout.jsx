@@ -6,7 +6,7 @@ export default function AuthLayout({ title, children }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-gray-50 px-4 py-10">
       <Link to="/" aria-label="Portal">
-        <AuthLogo className="h-16 w-16 fill-current text-gray-400 transition-colors hover:text-gray-500" />
+        <AuthLogo className="h-16 w-16 fill-current text-gray-600 transition-colors hover:text-gray-600" />
       </Link>
 
       <div className="w-full max-w-sm rounded-lg border border-gray-200 bg-white p-6 shadow-sm">

@@ -4,7 +4,7 @@ import { useVM } from "../../../../../shared/mvvm/index.js";
 import { cartErrorMessage } from "../../../model/projectModel.js";
 import { SelectField } from "./fields.jsx";
 
-const inputClass = "w-full text-sm border border-gray-300 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500";
+const inputClass = "w-full text-sm border border-gray-200 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500";
 const labelClass = "mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300";
 
 // bulkTab12 — "Створити задачу". На відміну від інших 11 форм, НЕ проходить
@@ -70,7 +70,7 @@ const CreateTaskForm = ({ projectIds, userId, onDone }) => {
                 <SelectField label="Проєкт" value={projectId} onChange={setProjectId} options={tasksProjects} placeholder="— без проєкту —" />
                 <SelectField label="Пріоритет" value={priorityId} onChange={setPriorityId} options={priorities} />
                 <div>
-                    <label className={labelClass}>Термін <span className="font-normal text-gray-400">(не обов'язково)</span></label>
+                    <label className={labelClass}>Термін <span className="font-normal text-gray-600">(не обов'язково)</span></label>
                     <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={inputClass} />
                 </div>
             </div>

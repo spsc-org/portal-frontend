@@ -15,7 +15,7 @@ const DialogShell = ({ title, icon, onClose, children, footer, width = "max-w-3x
                     {icon && <i className={`${icon} mr-2 text-blue-500`} />}
                     {title}
                 </h3>
-                <button type="button" onClick={onClose} aria-label="Закрити" className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                <button type="button" onClick={onClose} aria-label="Закрити" className="text-gray-600 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
                     <i className="fas fa-xmark text-lg" />
                 </button>
             </div>
@@ -103,20 +103,20 @@ const ProposalFilterModal = observer(() => {
     const { extended } = vm;
     return (
         <DialogShell title="Фільтрація за поданнями" icon="fa-regular fa-filter" onClose={vm.close} width="max-w-6xl" testId="project-proposal-filter-modal">
-            <div className="mb-3 rounded-md bg-slate-100 px-2.5 py-1 text-sm text-slate-600 shadow-sm dark:bg-neutral-700 dark:text-slate-300">
+            <div className="mb-3 rounded-md bg-gray-100 px-2.5 py-1 text-sm text-gray-600 shadow-sm dark:bg-neutral-700 dark:text-gray-300">
                 Це нежадібний фільтр. Якщо він увімкнений, то будуть глобально відібрані усі записи, повʼязані з обраними поданнями, незалежно від інших фільтрів.
             </div>
-            <label className="mb-3 inline-flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+            <label className="mb-3 inline-flex cursor-pointer items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                 Off
                 <span className="relative inline-block h-5 w-11">
                     <input
                         type="checkbox"
-                        className="peer h-5 w-11 cursor-pointer appearance-none rounded-full bg-slate-200 transition-colors checked:bg-slate-800 dark:bg-neutral-600 dark:checked:bg-blue-500"
+                        className="peer h-5 w-11 cursor-pointer appearance-none rounded-full bg-gray-200 transition-colors checked:bg-gray-800 dark:bg-neutral-600 dark:checked:bg-blue-500"
                         checked={extended.enabled}
                         onChange={(event) => vm.setEnabled(event.target.checked)}
                         data-testid="proposal-filter-enabled"
                     />
-                    <span className="pointer-events-none absolute left-0 top-0 h-5 w-5 rounded-full border border-slate-300 bg-white shadow-sm transition-transform peer-checked:translate-x-6" />
+                    <span className="pointer-events-none absolute left-0 top-0 h-5 w-5 rounded-full border border-gray-300 bg-white shadow-sm transition-transform peer-checked:translate-x-6" />
                 </span>
                 On
             </label>
@@ -141,7 +141,7 @@ const ProposalFilterModal = observer(() => {
                     <tbody className="divide-y divide-gray-200 text-gray-700 dark:divide-neutral-700 dark:text-gray-300">
                         {vm.isLoading && (
                             <tr>
-                                <td colSpan={6} className="py-3 text-center text-gray-400">
+                                <td colSpan={6} className="py-3 text-center text-gray-600">
                                     <i className="fa-solid fa-spinner fa-spin mr-2" />
                                     Завантаження подань…
                                 </td>
@@ -149,7 +149,7 @@ const ProposalFilterModal = observer(() => {
                         )}
                         {!vm.isLoading && vm.visible.length === 0 && (
                             <tr>
-                                <td colSpan={6} className="py-3 text-center text-gray-400">
+                                <td colSpan={6} className="py-3 text-center text-gray-600">
                                     Оберіть субʼєкти подання і стани, щоб побачити подання
                                 </td>
                             </tr>
@@ -181,7 +181,7 @@ const ProposalFilterModal = observer(() => {
 });
 
 const categoryOf = (id) => RULE_CATEGORIES.find((category) => category.id === id) ?? RULE_CATEGORIES[0];
-const INLINE_SELECT = "w-full cursor-pointer rounded border border-transparent bg-transparent px-2 py-1 text-xs hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-300 dark:bg-neutral-800 dark:hover:border-neutral-600";
+const INLINE_SELECT = "w-full cursor-pointer rounded border border-transparent bg-transparent px-2 py-1 text-xs hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-300 dark:bg-neutral-900 dark:hover:border-neutral-600";
 const TH = "px-4 py-2 font-medium";
 
 const PersonalRules = observer(() => {
@@ -199,17 +199,17 @@ const PersonalRules = observer(() => {
                     placeholder="Введіть фразу..."
                     value={draft.phrase}
                     onChange={(event) => vm.setDraft({ phrase: event.target.value })}
-                    className="min-w-[240px] flex-1 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100"
+                    className="min-w-[240px] flex-1 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100"
                     data-testid="reason-rule-phrase"
                 />
-                <select value={draft.category} onChange={(event) => vm.setDraft({ category: event.target.value })} className="rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm dark:border-neutral-600 dark:bg-neutral-900">
+                <select value={draft.category} onChange={(event) => vm.setDraft({ category: event.target.value })} className="rounded-md border border-gray-200 bg-white px-2 py-1.5 text-sm dark:border-neutral-600 dark:bg-neutral-900">
                     {RULE_CATEGORIES.map((category) => (
                         <option key={category.id} value={category.id}>
                             {category.caption}
                         </option>
                     ))}
                 </select>
-                <select value={draft.countryId} onChange={(event) => vm.setDraft({ countryId: event.target.value })} className="max-w-[180px] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm dark:border-neutral-600 dark:bg-neutral-900">
+                <select value={draft.countryId} onChange={(event) => vm.setDraft({ countryId: event.target.value })} className="max-w-[180px] rounded-md border border-gray-200 bg-white px-2 py-1.5 text-sm dark:border-neutral-600 dark:bg-neutral-900">
                     <option value="">(Будь-яка)</option>
                     {vm.countries.map((country) => (
                         <option key={country.id} value={country.id}>
@@ -227,7 +227,7 @@ const PersonalRules = observer(() => {
                 </button>
             </form>
             <table className="w-full text-left">
-                <thead className="bg-gray-100 text-xs uppercase text-gray-500 dark:bg-neutral-900">
+                <thead className="bg-gray-100 text-xs uppercase text-gray-600 dark:bg-neutral-900">
                     <tr>
                         <th className={`${TH} w-[30%]`}>Фраза</th>
                         <th className={`${TH} w-[120px]`}>Категорія</th>
@@ -282,7 +282,7 @@ const PersonalRules = observer(() => {
                                 </button>
                             </td>
                             <td className="px-4 py-2 text-right">
-                                <button type="button" title="Видалити" onClick={() => vm.remove(rule.id)} className="p-1 text-gray-400 transition-colors hover:text-red-500">
+                                <button type="button" title="Видалити" onClick={() => vm.remove(rule.id)} className="p-1 text-gray-600 transition-colors hover:text-red-500">
                                     <i className="fa-solid fa-trash-can" />
                                 </button>
                             </td>
@@ -290,7 +290,7 @@ const PersonalRules = observer(() => {
                     ))}
                 </tbody>
             </table>
-            {!vm.isLoading && vm.personal.length === 0 && <p className="py-4 text-center text-sm text-gray-400">Особистих правил ще немає</p>}
+            {!vm.isLoading && vm.personal.length === 0 && <p className="py-4 text-center text-sm text-gray-600">Особистих правил ще немає</p>}
         </>
     );
 });
@@ -300,7 +300,7 @@ const GlobalRules = observer(() => {
     return (
         <>
             <table className="w-full text-left">
-                <thead className="bg-gray-100 text-xs uppercase text-gray-500 dark:bg-neutral-900">
+                <thead className="bg-gray-100 text-xs uppercase text-gray-600 dark:bg-neutral-900">
                     <tr>
                         <th className={`${TH} w-[35%]`}>Фраза</th>
                         <th className={`${TH} w-[120px]`}>Категорія</th>
@@ -320,7 +320,7 @@ const GlobalRules = observer(() => {
                                     </span>
                                 </td>
                                 <td className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
-                                    {rule.target_country_id ? vm.countryName(rule.target_country_id) : <span className="italic text-gray-400">Будь-яка</span>}
+                                    {rule.target_country_id ? vm.countryName(rule.target_country_id) : <span className="italic text-gray-600">Будь-яка</span>}
                                 </td>
                                 <td className="px-4 py-2 text-center">{rule.is_case_sensitive ? <i className="fa-solid fa-check text-blue-500" /> : <span className="text-gray-300">—</span>}</td>
                             </tr>
@@ -328,7 +328,7 @@ const GlobalRules = observer(() => {
                     })}
                 </tbody>
             </table>
-            {!vm.isLoading && vm.global.length === 0 && <p className="py-4 text-center text-sm text-gray-400">Системних правил немає</p>}
+            {!vm.isLoading && vm.global.length === 0 && <p className="py-4 text-center text-sm text-gray-600">Системних правил немає</p>}
         </>
     );
 });
@@ -339,7 +339,7 @@ const ReasonRulesModal = observer(() => {
     if (!vm.isOpen) return null;
     const tabClass = (tab) =>
         `border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
-            vm.tab === tab ? "border-blue-500 text-blue-600 dark:text-blue-400" : "border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+            vm.tab === tab ? "border-blue-500 text-blue-600 dark:text-blue-400" : "border-transparent text-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
         }`;
     return (
         <DialogShell title="Правила обґрунтувань" icon="fa-solid fa-list-check" onClose={vm.close} width="max-w-5xl" testId="project-reason-rules-modal">
@@ -352,7 +352,7 @@ const ReasonRulesModal = observer(() => {
                 </button>
             </nav>
             {vm.isLoading ? (
-                <p className="py-4 text-center text-sm text-gray-400">
+                <p className="py-4 text-center text-sm text-gray-600">
                     <i className="fa-solid fa-spinner fa-spin mr-2" />
                     Завантаження…
                 </p>

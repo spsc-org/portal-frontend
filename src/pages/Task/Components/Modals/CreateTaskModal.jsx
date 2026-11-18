@@ -1,15 +1,8 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { CreateTaskViewModel } from "../../viewmodel/TaskViewModels.js";
-import {
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Spinner,
-    Switch,
-    Typography,
-} from "@material-tailwind/react";
+import { Spinner, Switch, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import SingleSelect from "../../../../Components/fields/SingleSelect.jsx";
 import DatePicker from "../../../../Components/fields/DatePicker.jsx";
 import AttachmentsGallery from "../../../../components/AttachmentsGallery.jsx";
@@ -65,13 +58,13 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
     const attachFilesMutation = vm.cmd.attachFiles;
 
     return (
-        <Dialog open={open} handler={handleCancel} size="md">
-            <DialogHeader className="flex flex-row justify-between items-center">
-                <Typography variant="h5" className="dark:text-slate-200">
+        <Modal open={open} handler={handleCancel} size="md">
+            <ModalHeader className="flex flex-row justify-between items-center">
+                <Typography variant="h5" className="dark:text-gray-200">
                     Створити задачу
                 </Typography>
-                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg border dark:border-slate-700">
-                    <Typography variant="small" className="text-slate-600 dark:text-slate-400 font-medium">
+                <div className="flex items-center gap-2 bg-gray-100 dark:bg-neutral-700 px-2 py-1 rounded-lg border dark:border-neutral-700">
+                    <Typography variant="small" className="text-gray-600 dark:text-gray-400 font-medium">
                         Розширений режим
                     </Typography>
                     <Switch
@@ -80,11 +73,11 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                         color="green"
                         checked={isAdvanced}
                         onChange={toggleAdvanced}
-                        className="dark:bg-slate-700"
+                        className="dark:bg-neutral-600"
                     />
                 </div>
-            </DialogHeader>
-            <DialogBody className={`${isAdvanced ? 'h-[36rem]' : 'h-fit'} overflow-y-auto px-4`}>
+            </ModalHeader>
+            <ModalBody className={`${isAdvanced ? 'h-[36rem]' : 'h-fit'} overflow-y-auto px-4`}>
                 {!isReady ? (
                     <div className="flex items-center justify-center py-16">
                         <Spinner className="h-8 w-8"/>
@@ -100,12 +93,12 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                                 placeholder="Назва задачі…"
                                 onChange={(e) => setTitleDraft(e.target.value)}
                                 onBlur={saveTitle}
-                                className="w-full resize-none rounded-md border border-slate-200 bg-white p-1.5 text-base font-semibold leading-snug text-slate-900 focus:border-blue-300 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                                className="w-full resize-none rounded-md border border-gray-200 bg-white p-1.5 text-base font-semibold leading-snug text-gray-900 focus:border-blue-300 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100"
                             />
                             {updateTitleMutation.isPending && <Spinner className="h-3.5 w-3.5 shrink-0"/>}
                         </div>
 
-                        <div className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200 bg-slate-50/60 px-3 dark:divide-slate-800 dark:border-slate-700 dark:bg-slate-800/40">
+                        <div className="mt-3 divide-y divide-gray-100 rounded-lg border border-gray-200 bg-gray-50/60 px-3 dark:divide-neutral-700 dark:border-neutral-700 dark:bg-neutral-700/40">
                             {isAdvanced &&
                                 <>
                                     <MetaRow icon="fa-regular fa-shapes" label="Тип">
@@ -181,7 +174,7 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                                         <button type="button"
                                                 onClick={() => updateDueDateMutation.mutate(null)}
                                                 title="Прибрати термін"
-                                                className="text-slate-400 transition hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400">
+                                                className="text-gray-600 transition hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400">
                                             <i className="fa-regular fa-calendar-xmark text-xs"></i>
                                         </button>
                                     }
@@ -191,7 +184,7 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
 
                         {isAdvanced && (
                             <div className="mt-3">
-                                <p className="mb-1 text-xs font-medium text-slate-500 dark:text-slate-400">Опис</p>
+                                <p className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">Опис</p>
                                 <div className="flex items-start gap-1.5">
                                     <textarea
                                         rows={4}
@@ -199,7 +192,7 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                                         placeholder="Додати опис…"
                                         onChange={(e) => setDescriptionDraft(e.target.value)}
                                         onBlur={saveDescription}
-                                        className="w-full resize-y rounded-md border border-slate-200 bg-white p-2 text-sm leading-relaxed text-slate-700 focus:border-blue-300 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                                        className="w-full resize-y rounded-md border border-gray-200 bg-white p-2 text-sm leading-relaxed text-gray-700 focus:border-blue-300 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-300"
                                     />
                                     {updateDescriptionMutation.isPending && <Spinner className="h-3.5 w-3.5 shrink-0"/>}
                                 </div>
@@ -207,7 +200,7 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                         )}
 
                         <div className="mt-3">
-                            <p className="mb-1 text-xs font-medium text-slate-500 dark:text-slate-400">
+                            <p className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
                                 Вкладення{draftAttachments.length > 0 ? ` (${draftAttachments.length})` : ""}
                             </p>
                             <AttachmentsGallery data={draftAttachments}
@@ -217,8 +210,8 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                         </div>
                     </>
                 )}
-            </DialogBody>
-            <DialogFooter className="gap-x-2">
+            </ModalBody>
+            <ModalFooter className="gap-x-2">
                 <button type="button" onClick={handleCancel}
                         className="rounded px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-900/20">
                     Закрити
@@ -227,12 +220,11 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                     isLoading={finalizeMutation.isPending}
                     disabled={!isReady}
                     color="green"
-                    onClick={handleFinalize}
-                >
+                    onClick={handleFinalize}>
                     Створити
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

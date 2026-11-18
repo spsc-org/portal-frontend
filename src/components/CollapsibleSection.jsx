@@ -107,13 +107,13 @@ const CollapsibleSection = ({
     return (
         <div className={className}>
             <div className={`transition flex items-center justify-between gap-2 ${headerClassName}`}>
-                <div className="text-sm font-semibold text-gray-700 dark:text-slate-300">
+                <div className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                     {title}
                 </div>
                 <button
                     type="button"
                     onClick={() => setIsOpen(prevState => !prevState)}
-                    className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:bg-gray-700"
+                    className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200 dark:hover:border-blue-400 dark:hover:bg-neutral-600"
                     aria-expanded={isOpen}
                     aria-controls={sectionId}
                 >

@@ -6,10 +6,12 @@ import { IdentifierListViewModel } from "../viewmodel/DictionaryViewModels.js";
 import {Fragment, useMemo} from "react";
 import PageHeader from "../../../layouts/app/PageHeader.jsx";
 import { HeaderButton } from "../../../layouts/app/HeaderButtons.jsx";
-import Table, {loadColumnSizes} from "../../../components/Table/Table.jsx";
+import Table from "../../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import {createColumnHelper} from "@tanstack/react-table";
 import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
-import {Button, Switch, Tooltip} from "@material-tailwind/react";
+import { Switch, Tooltip } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import {convertDate} from "../../../lib/utils.js";
 import IdentifyDetailsModal from "./IdentifyDetailsModal.jsx";
 import IdentifyModal from "./IdentifyModal.jsx";
@@ -190,7 +192,6 @@ const DictionaryIdentify = ({ page }) => {
 
     return (
         <Fragment>
-            {/* усі вкладки змонтовані (TabsBody) — шапку дає лише активна */}
             {page.tab === "identify" && (
                 <PageHeader
                     title="Ідентифікатори"
@@ -204,7 +205,7 @@ const DictionaryIdentify = ({ page }) => {
                 <CollapsibleSection
                     title="Фільтри"
                     showHiddenAppliedBadge
-                    className="mb-4 rounded-xl border border-gray-200 bg-gray-50/80 p-3 shadow-md dark:border-gray-700 dark:bg-gray-900/60 sm:p-4"
+                    className="mb-4 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800"
                 >
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
                         <div className="min-w-0" data-filter-active={filters?.code?.trim() ? "true" : "false"}>
@@ -242,7 +243,7 @@ const DictionaryIdentify = ({ page }) => {
                             <DateRangePicker size="xs" onChange={handleChangeDate} from={filters.from} to={filters.to}
                                              label="Дата актуалізації"/>
                         </div>
-                        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-gray-200 pt-2 dark:border-gray-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
+                        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-gray-200 pt-2 dark:border-neutral-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
                             {Boolean(auth?.user?.permissions?.pages?.dictionary?.restore) &&
                                 <Tooltip content="Приховати видалені">
                                     <Switch size="xs" ripple={false}

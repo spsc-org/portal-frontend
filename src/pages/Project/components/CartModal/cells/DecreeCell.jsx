@@ -15,7 +15,7 @@ const DecreeCell = ({ decreeCode, expiredAt, decree }) => {
     if (!code) {
         return (
             <>
-                <span className="italic text-gray-400">Немає указу</span>
+                <span className="italic text-gray-600">Немає указу</span>
                 <hr />
             </>
         );
@@ -39,7 +39,7 @@ const DecreeCell = ({ decreeCode, expiredAt, decree }) => {
 
     return (
         <>
-            <i className={`fa-solid fa-file-certificate ${isActive ? "text-red-500" : "text-gray-400"}`} /> {code} {dateNode}
+            <i className={`fa-solid fa-file-certificate ${isActive ? "text-red-500" : "text-gray-600"}`} /> {code} {dateNode}
             <hr />
         </>
     );

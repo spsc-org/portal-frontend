@@ -2,7 +2,8 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { InventoryFormViewModel } from "./viewmodel/InventoryViewModels.js";
 import SingleSelect from "../../components/fields/SingleSelect.jsx";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
+import Button from "../../components/Buttons/Button.jsx"
 import Input from "../../components/fields/Input.jsx";
 
 const InventoryModal = ({open, onClose, dictionary, id, isClone = false}) => {
@@ -17,10 +18,9 @@ const InventoryModal = ({open, onClose, dictionary, id, isClone = false}) => {
     };
 
     return (
-        <Dialog open={open} size="lg" handler={onClose}>
-            <DialogHeader
-                className="dark:text-gray-200">{dialogTitle}</DialogHeader>
-            <DialogBody>
+        <Modal open={open} size="lg" handler={onClose}>
+            <ModalHeader>{dialogTitle}</ModalHeader>
+            <ModalBody>
                 <div className="grid grid-cols-2 gap-4">
                     <Input error={errors?.caption} label="Опис" value={form.caption}
                            name="caption" isRequired={req('caption')}
@@ -66,21 +66,19 @@ const InventoryModal = ({open, onClose, dictionary, id, isClone = false}) => {
                            onChange={handleChangeForm}/>
                 </div>
 
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
-                    className="mr-1"
-                >
+                    className="mr-1">
                     <span>Закрити</span>
                 </Button>
                 <Button variant="gradient" color="green" onClick={onSubmit} disabled={vm.isPending}>
                     <span>{submitText}</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

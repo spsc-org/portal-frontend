@@ -1,5 +1,7 @@
 import {useState} from "react";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
+import Button from "../../../../components/Buttons/Button.jsx"
 import ProfilesMasterList from "../../widgets/ProfilesMasterList/ProfilesMasterList.jsx";
 import ProfileDetailPane from "../../widgets/ProfileDetailPane/ProfileDetailPane.jsx";
 
@@ -25,17 +27,16 @@ const MoveConnectionModal = ({open, currentProfileId, isPending, onClose, onConf
     const canConfirmMove = Boolean(selectedTargetId) && selectedTargetId !== currentProfileId;
 
     return (
-        <Dialog data-i-doc="modal:sanction-profiles-move-connection"
+        <Modal data-i-doc="modal:sanction-profiles-move-connection"
             open={open}
             handler={onClose}
             size="xl"
-            className="dark:bg-slate-900 border dark:border-slate-800"
-            overlayProps={{className: "bg-black/20 backdrop-blur-none"}}
-        >
-            <DialogHeader className="dark:text-white">
+            className="border"
+            overlayProps={{className: "bg-black/20 backdrop-blur-none"}}>
+            <ModalHeader>
                 <Typography variant="h5">Перенести зв'язок</Typography>
-            </DialogHeader>
-            <DialogBody className="p-0 h-[80vh] overflow-hidden flex">
+            </ModalHeader>
+            <ModalBody className="p-0 h-[80vh] overflow-hidden flex">
                 <ProfilesMasterList
                     filters={filters}
                     onQueryChange={setQuery}
@@ -47,21 +48,20 @@ const MoveConnectionModal = ({open, currentProfileId, isPending, onClose, onConf
                     onSelect={setSelectedTargetId}
                 />
                 <ProfileDetailPane key={selectedTargetId ?? "none"} profileId={selectedTargetId} canManage={false}/>
-            </DialogBody>
-            <DialogFooter className="gap-2">
-                <Button variant="text" color="red" onClick={onClose} disabled={isPending}>
+            </ModalBody>
+            <ModalFooter className="gap-2">
+                <Button color="secondary" onClick={onClose} disabled={isPending}>
                     Скасувати
                 </Button>
                 <Button
                     variant="gradient"
                     color="blue"
                     onClick={() => onConfirm(selectedTargetId)}
-                    disabled={!canConfirmMove || isPending}
-                >
+                    disabled={!canConfirmMove || isPending}>
                     {isPending ? "Перенесення…" : "Перенести сюди"}
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

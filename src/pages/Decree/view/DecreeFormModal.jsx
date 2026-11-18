@@ -1,5 +1,7 @@
 import { observer } from "mobx-react-lite";
-import { Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography } from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import { format } from "date-fns";
 import Input from "../../../components/fields/Input.jsx";
 import SingleSelect from "../../../components/fields/SingleSelect.jsx";
@@ -32,18 +34,18 @@ const DecreeFormModal = ({ open, onClose, decreeId = null }) => {
     const renamedTo = `${nameSource?.code ? nameSource.code.replace("/", "-") : "-"}_${nameSource?.date ? format(nameSource.date, "yyyy-MM-dd") : ""}`;
 
     return (
-        <Dialog data-i-doc={isEditing ? "modal:decree-update" : "modal:decree-create"} open={open} handler={onClose} size="md">
-            <DialogHeader>
-                <Typography variant="h5" className="dark:text-slate-200">
+        <Modal data-i-doc={isEditing ? "modal:decree-update" : "modal:decree-create"} open={open} handler={onClose} size="md">
+            <ModalHeader>
+                <Typography variant="h5" className="dark:text-gray-200">
                     {isEditing
                         ? <>Редагувати указ: {decree?.code} {decree?.date ? <span>від {format(decree.date, "dd.MM.yyyy")}</span> : ""}</>
                         : "Створити указ"}
                 </Typography>
-            </DialogHeader>
-            <DialogBody className="h-[32rem] overflow-y-auto">
+            </ModalHeader>
+            <ModalBody className="h-[32rem] overflow-y-auto">
                 {isEditing &&
                     <div className="mb-2">
-                        <label className="cursor-pointer text-slate-500 dark:text-slate-400">
+                        <label className="cursor-pointer text-gray-600 dark:text-gray-400">
                             <input
                                 type="checkbox"
                                 className="cursor-pointer form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-300"
@@ -92,7 +94,7 @@ const DecreeFormModal = ({ open, onClose, decreeId = null }) => {
                 <Input tag="textarea" error={errors?.comment} placeholder="" label="Коментар"
                        value={form.comment} name="comment" disabled={isLocked}
                        onChange={vm.changeInput}/>
-                <Typography variant="h5" className="dark:text-slate-200">Указ:</Typography>
+                <Typography variant="h5" className="dark:text-gray-200">Указ:</Typography>
                 <div className="flex  gap-x-2 max-w-md">
                     <Input disabled placeholder="Відсутній файл" error={errors?.decreeFile}
                            value={decreeFile?.name}/>
@@ -111,7 +113,7 @@ const DecreeFormModal = ({ open, onClose, decreeId = null }) => {
                         <span>{renamedTo}</span>
                     </Typography>
                 }
-                <Typography variant="h5" className="dark:text-slate-200">Додати додатки:</Typography>
+                <Typography variant="h5" className="dark:text-gray-200">Додати додатки:</Typography>
                 <UploadFileList
                     errors={errors}
                     data={isEditing ? decree : form}
@@ -128,17 +130,17 @@ const DecreeFormModal = ({ open, onClose, decreeId = null }) => {
                         formatText="Формати: .pdf"
                         onClose={vm.closeUpload}/>
                 }
-            </DialogBody>
-            <DialogFooter>
-                <Button variant="text" color="red" onClick={onClose} className="mr-1">
+            </ModalBody>
+            <ModalFooter>
+                <Button color="secondary" onClick={onClose} className="mr-1">
                     <span>Закрити</span>
                 </Button>
                 <Button variant="gradient" color="green" onClick={handleSubmit} disabled={vm.isPending || vm.isLoading}>
                     {vm.isPending && isEditing && <i className="fa-regular fa-spinner animate-spin"></i>}
                     <span>{isEditing ? "Редагувати" : "Створити"}</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

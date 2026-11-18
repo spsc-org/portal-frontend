@@ -7,10 +7,12 @@ import {Link} from "react-router";
 import {convertDate} from "../../lib/utils.js";
 import AdvancedSelect from "../../components/fields/AdvancedSelect.jsx";
 import {createColumnHelper} from "@tanstack/react-table";
-import Table, {loadColumnSizes} from "../../components/Table/Table.jsx";
+import Table from "../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../components/Table/columnSizes.js";
 import InventoryModal from "./InventoryModal.jsx";
 import InventoryDetailsModal from "./InventoryDetailsModal.jsx";
-import {Badge, Button, Menu, MenuHandler, MenuItem, MenuList, Switch, Tooltip} from "@material-tailwind/react";
+import { Badge, Menu, MenuHandler, MenuItem, MenuList, Switch, Tooltip } from "@material-tailwind/react"
+import Button from "../../components/Buttons/Button.jsx"
 import Page from "../../components/Page.jsx";
 import SearchInput from "../../components/fields/SearchInput.jsx";
 import DateRangePicker from "../../components/fields/DateRangePicker.jsx";
@@ -346,7 +348,7 @@ const Index = () => {
                 <CollapsibleSection
                     title="Фільтри"
                     showHiddenAppliedBadge
-                    className="mt-2 mx-2 mb-5 rounded-xl border border-gray-200 bg-gray-50/80 p-3 shadow-md dark:border-gray-700 dark:bg-gray-900/60 sm:p-4"
+                    className="mt-2 mx-2 mb-5 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800"
                 >
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
                         <div className="min-w-0" data-filter-active={filters?.fText?.trim() ? "true" : "false"}>
@@ -388,14 +390,14 @@ const Index = () => {
                                              label="Дата оновлення"/>
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 pt-2 dark:border-gray-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 pt-2 dark:border-neutral-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
                             <div className="flex flex-wrap items-center gap-2">
                                 {Boolean(auth?.user?.permissions?.pages?.inventory?.restore) &&
                                     <Tooltip content="Приховати видалені">
                                         <label
                                             htmlFor="hideDeletedInventory"
                                             data-filter-active={filters.hideDeleted ? "true" : "false"}
-                                            className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:border-blue-300 dark:border-gray-600 dark:bg-gray-800 dark:text-slate-200"
+                                            className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:border-blue-300 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200"
                                         >
                                             <Switch id="hideDeletedInventory" size="xs" ripple={false}
                                                     color="green"
@@ -409,7 +411,7 @@ const Index = () => {
                                     <label
                                         htmlFor="hideNonInventory"
                                         data-filter-active={filters.hideNonInventory ? "true" : "false"}
-                                        className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:border-blue-300 dark:border-gray-600 dark:bg-gray-800 dark:text-slate-200"
+                                        className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:border-blue-300 dark:border-gray-600 dark:bg-neutral-700 dark:text-gray-200"
                                     >
                                         <Switch id="hideNonInventory" size="xs" ripple={false}
                                                 color="green"

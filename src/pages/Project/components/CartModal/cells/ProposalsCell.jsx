@@ -14,7 +14,7 @@ const ProposalsCell = ({ precomputedData }) => {
     if (!Array.isArray(proposals) || proposals.length === 0) {
         return (
             <>
-                <span className="italic text-gray-400">Немає подань</span>
+                <span className="italic text-gray-600">Немає подань</span>
                 <hr />
             </>
         );

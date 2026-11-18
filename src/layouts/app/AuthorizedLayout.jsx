@@ -21,13 +21,13 @@ function AuthorizedLayout() {
   return (
     // Звичайні сторінки скролять вікно (на це спирається BackToTop);
     // fullBleed — фіксована висота екрана, скрол усередині колонок сторінки.
-    <div className={`flex bg-gray-50 dark:bg-gray-950 ${fullBleed ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
+    <div className={`flex bg-gray-200 dark:bg-neutral-900 ${fullBleed ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
       <Sidebar />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <Header actionsRef={setActionsSlot} />
 
-        <main className={fullBleed ? 'min-h-0 flex-1 overflow-hidden' : 'flex-1 p-6'}>
+        <main className={fullBleed ? 'min-h-0 flex-1 overflow-hidden' : 'flex-1 p-3'}>
           {/* Каркас може рендеритись з кешу меню до відповіді /api/me — сторінки лише після неї. */}
           <PageHeaderSlotContext.Provider value={actionsSlot}>{session.isAuthenticated ? <Outlet /> : null}</PageHeaderSlotContext.Provider>
         </main>

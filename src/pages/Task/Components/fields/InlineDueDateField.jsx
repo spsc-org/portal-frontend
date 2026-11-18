@@ -31,7 +31,7 @@ const InlineDueDateField = ({value, onSave, onClear, isPending = false, canEdit 
                 <div className="flex items-center gap-1">
                     <DatePicker value={dueDate || undefined} onChange={handleChange}/>
                     <button type="button" onClick={() => setIsEditing(false)} title="Скасувати"
-                            className="text-slate-400 transition hover:text-red-500">
+                            className="text-gray-600 transition hover:text-red-500">
                         <i className="fa-regular fa-xmark text-xs"></i>
                     </button>
                 </div>
@@ -46,12 +46,12 @@ const InlineDueDateField = ({value, onSave, onClear, isPending = false, canEdit 
                     {canEdit && !isPending &&
                         <>
                             <button type="button" onClick={() => setIsEditing(true)} title="Змінити термін"
-                                    className="text-slate-400 transition hover:text-blue-500 dark:text-slate-500 dark:hover:text-blue-400">
+                                    className="text-gray-600 transition hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400">
                                 <i className="fa-regular fa-pen text-[10px]"></i>
                             </button>
                             {Boolean(dueDate) &&
                                 <button type="button" onClick={handleClear} title="Прибрати термін"
-                                        className="text-slate-400 transition hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400">
+                                        className="text-gray-600 transition hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400">
                                     <i className="fa-regular fa-calendar-xmark text-[10px]"></i>
                                 </button>
                             }

@@ -57,7 +57,7 @@ const ProjectListTable = ({ vm }) => (
                 {vm.isLoading && <SkeletonRows columns={COLUMNS} count={vm.skeletonRowCount} cellClassName={TD} />}
                 {!vm.isLoading && vm.rows.length === 0 && (
                     <tr>
-                        <td colSpan={COLUMNS.length} className="px-3 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                        <td colSpan={COLUMNS.length} className="px-3 py-8 text-center text-sm text-gray-600 dark:text-gray-400">
                             {vm.emptyText}
                         </td>
                     </tr>
@@ -70,8 +70,8 @@ const ProjectListTable = ({ vm }) => (
                         onDoubleClick={(event) => vm.rowEvents.onDoubleClick(event, id)}
                         onContextMenu={(event) => vm.contextMenu.onOpen(event, { row, precomputedData })}
                         className={`group cursor-pointer transition-colors duration-1000 hover:bg-gray-50 dark:hover:bg-neutral-700/60 ${
-                            isHighlighted ? "bg-blue-50 dark:bg-blue-800/20" : isDisabled ? "bg-gray-100 dark:bg-gray-800" : ""
-                        } ${isPulsing ? "animate-rowUpdated dark:animate-rowUpdatedDark motion-reduce:animate-none" : ""}`}
+                            isHighlighted ? "bg-blue-50 dark:bg-blue-800/20" : isDisabled ? "bg-gray-100 dark:bg-neutral-700" : ""
+                        } ${isPulsing ? "animate-highlight dark:animate-darkHighlight motion-reduce:animate-none" : ""}`}
                     >
                         <td className={TD}>
                             <CartRowCheckbox id={id} checked={vm.cart.isSelected(id)} onToggle={vm.cart.onToggle} />

@@ -2,7 +2,8 @@ import { observer } from 'mobx-react-lite';
 import { useViewModel } from '../../../../shared/mvvm/useViewModel.js';
 import { StatisticsViewModel } from '../../viewmodel/AttendanceModalViewModels.js';
 import PropTypes from 'prop-types';
-import { Dialog, DialogHeader } from "@material-tailwind/react";
+import { Modal, ModalHeader } from "../../../../components/Modal/Modal.jsx"
+import CloseButton from "../../../../components/Buttons/CloseButton.jsx"
 
 const StatisticsModalInner = observer(({ isOpen, onClose }) => {
     const vm = useViewModel((deps) => new StatisticsViewModel(deps));
@@ -14,13 +15,11 @@ const StatisticsModalInner = observer(({ isOpen, onClose }) => {
     const isToday = vm.isToday;
 
     return (
-        <Dialog data-i-doc="modal:staff-attendance-statistics" open={isOpen} handler={onClose} size="xl">
-            <DialogHeader className="flex justify-between items-center">
+        <Modal data-i-doc="modal:staff-attendance-statistics" open={isOpen} handler={onClose} size="xl">
+            <ModalHeader hideClose className="flex justify-between items-center">
                 Стройовка
-                <button onClick={onClose} className="text-slate-500 hover:text-slate-700">
-                    <i className="fa-solid fa-times"></i>
-                </button>
-            </DialogHeader>
+                <CloseButton onClick={onClose} />
+            </ModalHeader>
             <div className="p-4">
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2">Дата</label>
@@ -28,7 +27,7 @@ const StatisticsModalInner = observer(({ isOpen, onClose }) => {
                         type="date"
                         value={statisticsDate}
                         onChange={(e) => setStatisticsDate(e.target.value)}
-                        className="px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                        className="px-3 py-2 border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-neutral-600 dark:text-white"
                     />
                 </div>
                 {isStatisticsLoading ? (
@@ -41,14 +40,14 @@ const StatisticsModalInner = observer(({ isOpen, onClose }) => {
                     <div className="overflow-x-auto">
                         <table className="w-full border-collapse border border-gray-300 dark:border-gray-600">
                             <thead>
-                                <tr className="bg-gray-200 dark:bg-gray-800">
+                                <tr className="bg-gray-200 dark:bg-neutral-700">
                                     <th rowSpan={2} className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-left text-sm font-bold">Дата</th>
                                     <th rowSpan={2} className={`border px-3 py-2 text-center text-sm font-bold ${!isToday ? 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-600' : 'border-gray-300 dark:border-gray-600'}`}>За списком</th>
                                     <th rowSpan={2} className={`border px-3 py-2 text-center text-sm font-bold ${!isToday ? 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-600' : 'border-gray-300 dark:border-gray-600'}`}>Постійна дислокація</th>
                                     <th colSpan={2} className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold">Тимчасова дислокація</th>
                                     <th colSpan={5} className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold">Відсутні</th>
                                 </tr>
-                                <tr className="bg-gray-100 dark:bg-gray-900">
+                                <tr className="bg-gray-100 dark:bg-neutral-800">
                                     <th className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold">ЗП</th>
                                     <th className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold">Дистанційна робота</th>
                                     <th className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold">Відрядження</th>
@@ -73,20 +72,20 @@ const StatisticsModalInner = observer(({ isOpen, onClose }) => {
                                 </tr>
                             </tbody>
                         </table>
-                        <div className="mt-4 text-sm text-slate-600 dark:text-slate-400">
-                            У відпустках: <span className="font-bold text-slate-800 dark:text-slate-200">{statisticsResponse?.vacation_percentage}%</span>
+                        <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                            У відпустках: <span className="font-bold text-gray-800 dark:text-gray-200">{statisticsResponse?.vacation_percentage}%</span>
                         </div>
                         <div className="mt-6 border-t border-gray-300 dark:border-gray-600 pt-4">
                             <h3 className="text-sm font-bold mb-2">Деталізація по категоріям:</h3>
                             <div className="overflow-x-auto">
                                 <table className="w-full border-collapse border border-gray-300 dark:border-gray-600">
                                     <thead>
-                                        <tr className="bg-gray-200 dark:bg-gray-800">
+                                        <tr className="bg-gray-200 dark:bg-neutral-700">
                                             <th rowSpan={2} className="border px-3 py-2 text-center text-sm font-bold border-gray-300 dark:border-gray-600">Постійна дислокація</th>
                                             <th colSpan={2} className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold">Тимчасова дислокація</th>
                                             <th colSpan={5} className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold">Відсутні</th>
                                         </tr>
-                                        <tr className="bg-gray-100 dark:bg-gray-900">
+                                        <tr className="bg-gray-100 dark:bg-neutral-800">
                                             <th className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold">ЗП</th>
                                             <th className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold">Дистанційна робота</th>
                                             <th className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center text-sm font-bold">Відрядження</th>
@@ -170,7 +169,7 @@ const StatisticsModalInner = observer(({ isOpen, onClose }) => {
                     </div>
                 )}
             </div>
-        </Dialog>
+        </Modal>
     );
 });
 

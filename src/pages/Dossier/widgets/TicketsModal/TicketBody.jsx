@@ -35,11 +35,11 @@ const TicketBody = ({ticket, canManage, onChanged}) => {
                 </span>
             </div>
 
-            <div className="text-sm text-slate-800 dark:text-slate-200 whitespace-pre-wrap">
+            <div className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
                 {ticket.text}
             </div>
 
-            <div className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200 bg-slate-50/60 px-3 dark:divide-slate-800 dark:border-slate-700 dark:bg-slate-800/40">
+            <div className="mt-3 divide-y divide-gray-100 rounded-lg border border-gray-200 bg-gray-50/60 px-3 dark:divide-neutral-700 dark:border-neutral-700 dark:bg-neutral-700/40">
                 <MetaRow icon="fa-regular fa-user-pen" label="Створив">
                     Користувач #{ticket.created_by}
                 </MetaRow>
@@ -61,7 +61,7 @@ const TicketBody = ({ticket, canManage, onChanged}) => {
             </div>
 
             <div className="mt-3">
-                <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
                     Привʼязки ({links.length})
                 </p>
                 <div className="flex flex-col gap-1.5">
@@ -72,7 +72,7 @@ const TicketBody = ({ticket, canManage, onChanged}) => {
                         return (
                             <div
                                 key={`${link.type}-${link.id}`}
-                                className="flex items-center justify-between gap-2 rounded-md bg-slate-50 px-2.5 py-1.5 text-xs dark:bg-slate-800/60"
+                                className="flex items-center justify-between gap-2 rounded-md bg-gray-50 px-2.5 py-1.5 text-xs dark:bg-neutral-700/60"
                             >
                                 {url ? (
                                     <a
@@ -84,7 +84,7 @@ const TicketBody = ({ticket, canManage, onChanged}) => {
                                         {label}
                                     </a>
                                 ) : (
-                                    <span className="font-semibold text-slate-600 dark:text-slate-300">{label}</span>
+                                    <span className="font-semibold text-gray-600 dark:text-gray-300">{label}</span>
                                 )}
                                 {canRemove && (
                                     <button
@@ -92,7 +92,7 @@ const TicketBody = ({ticket, canManage, onChanged}) => {
                                         title="Прибрати привʼязку"
                                         disabled={removeLinkMutation.isPending}
                                         onClick={() => removeLinkMutation.mutate({type: link.type, id: link.id})}
-                                        className="text-slate-400 hover:text-red-600 dark:hover:text-red-400"
+                                        className="text-gray-600 hover:text-red-600 dark:hover:text-red-400"
                                     >
                                         <i className="fa-solid fa-xmark text-[10px]"></i>
                                     </button>
@@ -107,7 +107,7 @@ const TicketBody = ({ticket, canManage, onChanged}) => {
             </div>
 
             {isOpen(ticket) && canManage && (
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-neutral-700">
                     {resolving ? (
                         <div className="flex flex-col gap-1.5">
                             <textarea
@@ -115,13 +115,13 @@ const TicketBody = ({ticket, canManage, onChanged}) => {
                                 onChange={(e) => setResolutionNote(e.target.value)}
                                 placeholder="Коментар до вирішення (необовʼязково)…"
                                 rows={2}
-                                className="w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11.5px] dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
+                                className="w-full rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-[11.5px] dark:bg-neutral-900 dark:border-neutral-600 dark:text-gray-100 dark:placeholder:text-gray-500"
                             />
                             <div className="flex justify-end gap-1.5">
                                 <button
                                     type="button"
                                     onClick={() => setResolving(false)}
-                                    className="text-[11px] font-semibold text-slate-500 px-2 py-1 hover:text-slate-700 dark:text-slate-400"
+                                    className="text-[11px] font-semibold text-gray-600 px-2 py-1 hover:text-gray-700 dark:text-gray-400"
                                 >
                                     Скасувати
                                 </button>

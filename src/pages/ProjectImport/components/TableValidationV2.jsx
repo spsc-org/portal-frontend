@@ -33,45 +33,45 @@ const TableValidationV2 = ({data = [], headers = [], validation = null, warnings
                         validation ?
                             <>
                                 <i className="fa-regular fa-triangle-exclamation text-red-500 mr-1"></i>
-                                <span className="dark:text-slate-200">Неможливо додати через помилки валідації! Виправте файл та завантажте знову.</span>
+                                <span className="dark:text-gray-200">Неможливо додати через помилки валідації! Виправте файл та завантажте знову.</span>
                             </>
                             : !data.length ?
                                 <>
                                     <i className="fa-regular fa-circle-info text-blue-500 mr-1"></i>
-                                    <span className="dark:text-slate-200">Файл пустий, або містить невідповідні значення.</span>
+                                    <span className="dark:text-gray-200">Файл пустий, або містить невідповідні значення.</span>
                                 </>
                                 : <>
                                     <i className="fa-regular fa-circle-check text-green-600 mr-1"></i>
-                                    <span className="dark:text-slate-200">Перевірки пройшли успішно!</span>
+                                    <span className="dark:text-gray-200">Перевірки пройшли успішно!</span>
                                 </>
                     }
 
                 </Typography>
             </div>
             <div className="mb-0.5 flex justify-end gap-x-2">
-                <p className="text-xs text-slate-600 dark:text-slate-200">
+                <p className="text-xs text-gray-600 dark:text-gray-200">
                     <i className="fa-regular fa-message-exclamation text-yellow-500 mr-1"></i>
                     <span>Попередження.</span>
                 </p>
-                <p className="text-xs text-slate-600 dark:text-slate-200">
+                <p className="text-xs text-gray-600 dark:text-gray-200">
                     <i className="fa-regular fa-circle-info text-blue-500 mr-1"></i>
                     <span>Інформація.</span>
                 </p>
-                <p className="text-xs text-slate-600 dark:text-slate-200">
+                <p className="text-xs text-gray-600 dark:text-gray-200">
                     <i className="fa-regular fa-triangle-exclamation text-red-500 mr-1"></i>
                     <span>Помилки валідації.</span>
                 </p>
             </div>
-            <div className="rounded border border-slate-300 bg-slate-100 text-[10px] shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:text-[11px]">
+            <div className="rounded border border-gray-300 bg-gray-100 text-[10px] shadow-sm dark:border-neutral-700 dark:bg-neutral-700 sm:text-[11px]">
                 <div className="max-h-[68vh] overflow-auto">
                     <table
-                        className="min-w-[980px] w-full border-collapse bg-slate-100 text-left text-slate-700 dark:bg-transparent dark:text-gray-300">
+                        className="min-w-[980px] w-full border-collapse bg-gray-100 text-left text-gray-700 dark:bg-transparent dark:text-gray-300">
                     <thead>
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map(header => (
                                 <th key={header.id}
-                                    className="sticky text-xs top-0 z-10 border-b border-slate-300 bg-slate-200 px-1 py-1 font-semibold text-[10px] leading-none tracking-[0.02em] text-slate-800 dark:border-gray-700 dark:bg-gray-700/70 dark:text-gray-200 sm:text-[11px]">
+                                    className="sticky text-xs top-0 z-10 border-b border-gray-300 bg-gray-200 px-1 py-1 font-semibold text-[10px] leading-none tracking-[0.02em] text-gray-800 dark:border-neutral-700 dark:bg-neutral-600/70 dark:text-gray-200 sm:text-[11px]">
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(
@@ -85,7 +85,7 @@ const TableValidationV2 = ({data = [], headers = [], validation = null, warnings
                     </thead>
                     <tbody>
                     {table.getRowModel().rows.map(row => (
-                        <tr key={row.id} className="border-b border-slate-300 odd:bg-slate-100 even:bg-slate-50 hover:bg-slate-200/70 dark:border-gray-700/60 dark:odd:bg-gray-900/20 dark:even:bg-gray-900/20 dark:hover:bg-gray-700/40">
+                        <tr key={row.id} className="border-b border-gray-300 odd:bg-gray-100 even:bg-gray-50 hover:bg-gray-200/70 dark:border-neutral-700/60 dark:odd:bg-neutral-800/20 dark:even:bg-neutral-800/20 dark:hover:bg-neutral-600/40">
                             {row.getVisibleCells().map(cell => (
                                 <Fragment key={cell.id}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -122,13 +122,13 @@ export default TableValidationV2;
 
 const ValidationTooltip = ({message, icon, color, children}) => (
     <Tooltip
-        className="bg-slate-100 shadow-md dark:bg-gray-600 relative border border-slate-300 dark:border-gray-700"
+        className="bg-gray-100 shadow-md dark:bg-neutral-500 relative border border-gray-300 dark:border-neutral-700"
         content={
-            <Typography color="white" className="font-normal text-xs text-slate-600 dark:text-slate-200">
+            <Typography color="white" className="font-normal text-xs text-gray-600 dark:text-gray-200">
                 <i className={`fa-regular ${icon} ${color} mr-1`}></i>
                 <span>{message}</span>
                 <span
-                    className="absolute bottom-[-10px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-t-[12px] border-t-slate-100 dark:border-t-gray-600 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent"/>
+                    className="absolute bottom-[-10px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-t-[12px] border-t-gray-100 dark:border-t-gray-600 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent"/>
             </Typography>
         }
         placement="top"
@@ -142,7 +142,7 @@ const CellContent = ({value}) => {
         return value.map((item, index) => (
             <span
                 key={index}
-                className="inline-flex m-[1px] w-fit rounded-sm bg-slate-300 px-1 py-0.5 text-[10px] text-slate-800 dark:bg-slate-700 dark:text-slate-200"
+                className="inline-flex m-[1px] w-fit rounded-sm bg-gray-300 px-1 py-0.5 text-[10px] text-gray-800 dark:bg-neutral-600 dark:text-gray-200"
             >
           {item?.original || item}
         </span>));
@@ -155,7 +155,7 @@ const CellContent = ({value}) => {
             .map((item, index) => (
                 <span
                     key={index}
-                    className="inline-flex m-[1px] w-fit rounded-sm bg-slate-300 px-1 py-0.5 text-[10px] text-slate-800 dark:bg-slate-700 dark:text-slate-200"
+                    className="inline-flex m-[1px] w-fit rounded-sm bg-gray-300 px-1 py-0.5 text-[10px] text-gray-800 dark:bg-neutral-600 dark:text-gray-200"
                 >
           {item}
         </span>
@@ -197,17 +197,17 @@ const TableCell = ({validation, warnings, info, value, ...props}) => {
         if (findValidation) return "border-red-300 bg-red-300/50 dark:border-red-500/70 dark:bg-red-900/30";
         if (findWarning) return "border-yellow-300 bg-amber-300/50 dark:border-yellow-500/70 dark:bg-amber-900/20";
         if (findInfo) return "border-blue-300 bg-blue-300/40 dark:border-blue-500/70 dark:bg-blue-900/20";
-        return "border-slate-300 bg-slate-100/90 dark:bg-transparent";
+        return "border-gray-300 bg-gray-100/90 dark:bg-transparent";
     };
 
     const rawValue = value !== undefined ? value : props.getValue();
 
     const cell = (
         <td
-            className={`border px-1 py-[3px] leading-tight text-slate-800 ${getStateClasses()} min-w-[30px] align-top relative dark:border-gray-700 dark:text-slate-200`}
+            className={`border px-1 py-[3px] leading-tight text-gray-800 ${getStateClasses()} min-w-[30px] align-top relative dark:border-neutral-700 dark:text-gray-200`}
         >
             <div
-                className="inline-block w-full max-w-[130px] max-h-[74px] overflow-y-auto break-words pr-0.5 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded [&::-webkit-scrollbar-thumb]:bg-slate-400 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600"
+                className="inline-block w-full max-w-[130px] max-h-[74px] overflow-y-auto break-words pr-0.5 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600"
             >
                 <CellContent value={rawValue}/>
             </div>

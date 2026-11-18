@@ -7,7 +7,7 @@ import {detectPhoneType, PHONE_TYPES} from "../shared/lib/detectPhoneType.js";
 const TYPE_STYLES = {
     [PHONE_TYPES.INTERNAL]: {icon: "fa-solid fa-building", className: "text-blue-600 dark:text-blue-400"},
     [PHONE_TYPES.MOBILE]: {icon: "fa-solid fa-mobile-screen-button", className: "text-emerald-600 dark:text-emerald-400"},
-    [PHONE_TYPES.OTHER]: {icon: "fa-solid fa-phone", className: "text-slate-400 dark:text-slate-500"},
+    [PHONE_TYPES.OTHER]: {icon: "fa-solid fa-phone", className: "text-gray-600 dark:text-gray-500"},
 };
 // Один номер телефону + іконка типу (внутрішній/мобільний/інший, за
 // detectPhoneType.js) — інкапсулює вивід, щоб пізніше кастомізувати

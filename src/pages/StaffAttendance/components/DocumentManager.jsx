@@ -2,10 +2,12 @@ import { observer } from 'mobx-react-lite';
 import { useViewModel } from '../../../shared/mvvm/useViewModel.js';
 import { DocumentManagerViewModel } from '../viewmodel/AttendanceModalViewModels.js';
 import PropTypes from 'prop-types';
-import { Button, Input, Card, IconButton, Typography } from "@material-tailwind/react";
+import { Input, Card, Typography } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 
 const DocumentForm = ({ formData, onFormChange, onSubmit, onCancel, isLoading, submitLabel }) => (
-    <div className="flex flex-col gap-2 p-2 bg-white dark:bg-slate-800 rounded border border-blue-200 dark:border-blue-900">
+    <div className="flex flex-col gap-2 p-2 bg-white dark:bg-neutral-700 rounded border border-blue-200 dark:border-blue-900">
         <div className="flex gap-2">
             <div className="flex-1">
                 <Input
@@ -42,16 +44,14 @@ const DocumentForm = ({ formData, onFormChange, onSubmit, onCancel, isLoading, s
                 variant="text"
                 size="sm"
                 onClick={onCancel}
-                disabled={isLoading}
-            >
+                disabled={isLoading}>
                 Скасувати
             </Button>
             <Button
                 size="sm"
                 color="blue"
                 onClick={onSubmit}
-                disabled={isLoading}
-            >
+                disabled={isLoading}>
                 {isLoading ? 'Зберігаю...' : submitLabel}
             </Button>
         </div>
@@ -75,7 +75,7 @@ const DocumentManager = ({ absenceId, documents = [] }) => {
     const handleEditCancel = vm.cancelEdit;
 
     return (
-        <div className="flex flex-col gap-3 mt-4 p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+        <div className="flex flex-col gap-3 mt-4 p-3 bg-gray-50 dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-neutral-700">
             <div className="flex items-center justify-between">
                 <Typography className="font-bold text-sm">Документи</Typography>
                 <Button
@@ -83,8 +83,7 @@ const DocumentManager = ({ absenceId, documents = [] }) => {
                     variant="text"
                     className="flex items-center gap-1"
                     onClick={() => setIsAdding()}
-                    disabled={addDocumentMutation.isPending || deleteDocumentMutation.isPending || updateDocumentMutation.isPending}
-                >
+                    disabled={addDocumentMutation.isPending || deleteDocumentMutation.isPending || updateDocumentMutation.isPending}>
                     <i className="fa-solid fa-plus text-xs"></i>
                     Додати
                 </Button>
@@ -102,7 +101,7 @@ const DocumentManager = ({ absenceId, documents = [] }) => {
             )}
 
             {localDocuments.length === 0 ? (
-                <Typography className="text-xs text-slate-500">Немає документів</Typography>
+                <Typography className="text-xs text-gray-600">Немає документів</Typography>
             ) : (
                 <div className="flex flex-col gap-2">
                     {localDocuments.map(doc => (
@@ -117,17 +116,17 @@ const DocumentManager = ({ absenceId, documents = [] }) => {
                                     submitLabel="Оновити"
                                 />
                             ) : (
-                                <Card className="p-2 bg-white dark:bg-slate-800 border-0 shadow-sm">
+                                <Card className="p-2 bg-white dark:bg-neutral-700 border-0 shadow-sm">
                                     <div className="flex justify-between items-start gap-2">
                                         <div className="flex-1 min-w-0">
-                                            <Typography className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                                            <Typography className="text-xs font-bold text-gray-800 dark:text-gray-100">
                                                 № {doc.document_number}
                                             </Typography>
-                                            <Typography className="text-xs text-slate-600 dark:text-slate-400">
+                                            <Typography className="text-xs text-gray-600 dark:text-gray-400">
                                                 {doc.document_date} • {doc.added_by}
                                             </Typography>
                                             {doc.description && (
-                                                <Typography className="text-xs text-slate-700 dark:text-slate-300 mt-1">
+                                                <Typography className="text-xs text-gray-700 dark:text-gray-300 mt-1">
                                                     {doc.description}
                                                 </Typography>
                                             )}

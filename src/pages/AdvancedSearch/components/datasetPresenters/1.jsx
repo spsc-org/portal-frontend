@@ -4,7 +4,7 @@ import {Chip, Typography} from "@material-tailwind/react";
 // Helper для відображення секції
 const Section = ({title, children, className = ""}) => (
     <div className={`mb-4 ${className}`}>
-        <Typography variant="h6" color="blue-gray" className="dark:text-slate-200 mb-2 text-sm font-bold uppercase tracking-wider border-b dark:border-slate-600 pb-1">
+        <Typography variant="h6" color="blue-gray" className="dark:text-gray-200 mb-2 text-sm font-bold uppercase tracking-wider border-b dark:border-gray-600 pb-1">
             {title}
         </Typography>
         {children}
@@ -17,8 +17,8 @@ const InfoRow = ({label, value, children}) => {
     if (!value && !children) return null;
     return (
         <div className="flex flex-col sm:flex-row sm:gap-2 mb-1">
-            <span className="text-gray-600 dark:text-slate-400 font-medium min-w-[120px] text-sm">{label}:</span>
-            <span className="text-gray-900 dark:text-slate-200 text-sm break-words flex items-center gap-2">
+            <span className="text-gray-600 dark:text-gray-400 font-medium min-w-[120px] text-sm">{label}:</span>
+            <span className="text-gray-900 dark:text-gray-200 text-sm break-words flex items-center gap-2">
                 {children || value}
             </span>
         </div>
@@ -52,11 +52,11 @@ const Dataset1Presenter = ({record}) => {
     return (
         <div className="flex flex-col gap-4 p-2">
             {/* Header Info */}
-            <div className="bg-gray-50 dark:bg-slate-700/30 p-3 rounded-lg border border-gray-200 dark:border-slate-600">
+            <div className="bg-gray-50 dark:bg-neutral-600/30 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <InfoRow label="Статус">
-                            {state_icon && <i className={`${state_icon} ${state_color || 'text-gray-600 dark:text-slate-400'}`}></i>}
+                            {state_icon && <i className={`${state_icon} ${state_color || 'text-gray-600 dark:text-gray-400'}`}></i>}
                             <span>{state_caption}</span>
                         </InfoRow>
                         <InfoRow label="Тип дії" value={action_type_caption}/>
@@ -85,18 +85,18 @@ const Dataset1Presenter = ({record}) => {
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-max table-auto text-left text-sm">
                             <thead>
-                            <tr className="border-b border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-800">
-                                <th className="p-2 font-medium text-gray-700 dark:text-slate-300">Тип</th>
-                                <th className="p-2 font-medium text-gray-700 dark:text-slate-300">Значення</th>
-                                <th className="p-2 font-medium text-gray-700 dark:text-slate-300">Країна</th>
+                            <tr className="border-b border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-neutral-700">
+                                <th className="p-2 font-medium text-gray-700 dark:text-gray-300">Тип</th>
+                                <th className="p-2 font-medium text-gray-700 dark:text-gray-300">Значення</th>
+                                <th className="p-2 font-medium text-gray-700 dark:text-gray-300">Країна</th>
                             </tr>
                             </thead>
                             <tbody>
                             {data.identifiers.map((item, index) => (
-                                <tr key={index} className="border-b border-gray-100 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50">
-                                    <td className="p-2 text-gray-800 dark:text-slate-300">{item.caption || item.group}</td>
-                                    <td className="p-2 font-mono text-gray-800 dark:text-slate-300">{item.value}</td>
-                                    <td className="p-2 text-gray-800 dark:text-slate-300">{item.country}</td>
+                                <tr key={index} className="border-b border-gray-100 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-600/50">
+                                    <td className="p-2 text-gray-800 dark:text-gray-300">{item.caption || item.group}</td>
+                                    <td className="p-2 font-mono text-gray-800 dark:text-gray-300">{item.value}</td>
+                                    <td className="p-2 text-gray-800 dark:text-gray-300">{item.country}</td>
                                 </tr>
                             ))}
                             </tbody>
@@ -136,8 +136,8 @@ const Dataset1Presenter = ({record}) => {
                 <Section title="Пропозиції (Пакети)">
                     <ul className="space-y-2 text-sm">
                         {data.proposals.map((prop, index) => (
-                            <li key={index} className="flex items-start gap-2 text-gray-800 dark:text-slate-200">
-                                <span className="text-gray-400 dark:text-slate-500 mt-1">•</span>
+                            <li key={index} className="flex items-start gap-2 text-gray-800 dark:text-gray-200">
+                                <span className="text-gray-600 dark:text-gray-500 mt-1">•</span>
                                 <div>
                                     <span className="font-medium">{prop.caption}</span>
 
@@ -148,7 +148,7 @@ const Dataset1Presenter = ({record}) => {
                                         </div>
                                     )}
 
-                                    {prop.stateId && <span className="text-xs text-gray-400 dark:text-slate-500 ml-2">[State: {prop.stateId}]</span>}
+                                    {prop.stateId && <span className="text-xs text-gray-600 dark:text-gray-500 ml-2">[State: {prop.stateId}]</span>}
                                 </div>
                             </li>
                         ))}
@@ -161,11 +161,11 @@ const Dataset1Presenter = ({record}) => {
                 <Section title="Документи (Підстави)">
                     <ul className="space-y-2 text-sm">
                         {data.documents.map((doc, index) => (
-                            <li key={index} className="flex items-start gap-2 bg-gray-50 dark:bg-slate-700/30 p-2 rounded">
+                            <li key={index} className="flex items-start gap-2 bg-gray-50 dark:bg-neutral-600/30 p-2 rounded">
                                 <i className="fa-regular fa-file-lines mt-1 text-blue-500 dark:text-blue-400"></i>
                                 <div>
-                                    <div className="font-medium text-gray-900 dark:text-slate-200">{doc.unitCaption}</div>
-                                    <div className="text-gray-600 dark:text-slate-400">№{doc.regNum} від {doc.regDate}</div>
+                                    <div className="font-medium text-gray-900 dark:text-gray-200">{doc.unitCaption}</div>
+                                    <div className="text-gray-600 dark:text-gray-400">№{doc.regNum} від {doc.regDate}</div>
                                 </div>
                             </li>
                         ))}
@@ -178,10 +178,10 @@ const Dataset1Presenter = ({record}) => {
                 <Section title="Вкладення">
                     <ul className="space-y-2 text-sm">
                         {data.attachments.map((att, index) => (
-                            <li key={index} className="flex items-center gap-2 bg-gray-50 dark:bg-slate-700/30 p-2 rounded border border-gray-100 dark:border-slate-600">
-                                <i className="fa-solid fa-paperclip text-gray-500 dark:text-slate-400"></i>
-                                <span className="text-gray-800 dark:text-slate-200 font-medium break-all">{att.original_name}</span>
-                                {att.mime_type && <span className="text-xs text-gray-400 dark:text-slate-500 ml-auto">{att.mime_type}</span>}
+                            <li key={index} className="flex items-center gap-2 bg-gray-50 dark:bg-neutral-600/30 p-2 rounded border border-gray-100 dark:border-gray-600">
+                                <i className="fa-solid fa-paperclip text-gray-600 dark:text-gray-400"></i>
+                                <span className="text-gray-800 dark:text-gray-200 font-medium break-all">{att.original_name}</span>
+                                {att.mime_type && <span className="text-xs text-gray-600 dark:text-gray-500 ml-auto">{att.mime_type}</span>}
                             </li>
                         ))}
                     </ul>
@@ -198,7 +198,7 @@ const Dataset1Presenter = ({record}) => {
                                 value={cat.caption}
                                 variant="outlined"
                                 size="sm"
-                                className="rounded-full normal-case border-gray-300 dark:border-slate-500 text-gray-700 dark:text-slate-300"
+                                className="rounded-full normal-case border-gray-300 dark:border-neutral-500 text-gray-700 dark:text-gray-300"
                             />
                         ))}
                     </div>
@@ -208,7 +208,7 @@ const Dataset1Presenter = ({record}) => {
             {/* Reasoning */}
             {reasoning && (
                 <Section title="Обґрунтування">
-                    <div className="text-sm text-gray-800 dark:text-slate-200 bg-gray-50 dark:bg-slate-700/30 p-3 rounded border border-gray-200 dark:border-slate-600 whitespace-pre-wrap">
+                    <div className="text-sm text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-neutral-600/30 p-3 rounded border border-gray-200 dark:border-gray-600 whitespace-pre-wrap">
                         {reasoning}
                     </div>
                 </Section>
@@ -217,7 +217,7 @@ const Dataset1Presenter = ({record}) => {
             {/* Notes */}
             {notes && (
                 <Section title="Примітки">
-                    <div className="text-sm text-gray-600 dark:text-slate-400 italic">
+                    <div className="text-sm text-gray-600 dark:text-gray-400 italic">
                         {notes}
                     </div>
                 </Section>

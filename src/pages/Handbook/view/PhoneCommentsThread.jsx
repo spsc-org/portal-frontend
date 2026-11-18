@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
-import { IconButton, Spinner } from "@material-tailwind/react";
+import { Spinner } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
 import { format } from "date-fns";
 import ConfirmModal from "../../../components/Modal/ConfirmModal.jsx";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
@@ -16,8 +17,8 @@ const PhoneCommentsThread = ({ entryId, readOnly = false }) => {
 
     return (
         <span data-i-doc="widget:handbook-phone-comments-thread" style={{display: "contents"}}>
-        <div className="mt-4 border-t border-slate-200 pt-3 dark:border-slate-700">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+        <div className="mt-4 border-t border-gray-200 pt-3 dark:border-neutral-700">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
                 Коментарі{comments.length > 0 ? ` (${comments.length})` : ""}
             </p>
 
@@ -27,7 +28,7 @@ const PhoneCommentsThread = ({ entryId, readOnly = false }) => {
 
             <div className="flex max-h-72 flex-col gap-1.5 overflow-y-auto pr-1">
                 {!isLoading && comments.length === 0 &&
-                    <p className="py-2 text-center text-xs text-slate-400 dark:text-slate-500">
+                    <p className="py-2 text-center text-xs text-gray-600 dark:text-gray-500">
                         Ще немає коментарів
                     </p>
                 }
@@ -38,22 +39,22 @@ const PhoneCommentsThread = ({ entryId, readOnly = false }) => {
                         <div key={comment.id}
                              className={`group max-w-[90%] rounded-lg px-2.5 py-1.5 ${isOwn
                                  ? "self-end bg-blue-50 dark:bg-blue-900/30"
-                                 : "self-start bg-slate-100 dark:bg-slate-800"}`}>
+                                 : "self-start bg-gray-100 dark:bg-neutral-700"}`}>
                             <div className="flex items-center gap-1.5">
-                                <span className="text-[11px] font-semibold text-slate-700 dark:text-slate-200">
+                                <span className="text-[11px] font-semibold text-gray-700 dark:text-gray-200">
                                     {isOwn ? "Ви" : comment.user?.name || "—"}
                                 </span>
-                                <span className="text-[9px] text-slate-400 dark:text-slate-500">
+                                <span className="text-[9px] text-gray-600 dark:text-gray-500">
                                     {comment.created_at ? format(new Date(comment.created_at), "yyyy-MM-dd HH:mm") : ""}
                                 </span>
                                 {isOwn && !isEditing &&
                                     <span className="ml-auto flex items-center gap-0.5 opacity-0 transition group-hover:opacity-100">
                                         <button type="button" onClick={() => vm.startEdit(comment)} title="Редагувати"
-                                                className="text-slate-400 transition hover:text-blue-500">
+                                                className="text-gray-600 transition hover:text-blue-500">
                                             <i className="fa-regular fa-pen text-[10px]"></i>
                                         </button>
                                         <button type="button" onClick={() => vm.askDelete(comment.id)} title="Видалити"
-                                                className="text-slate-400 transition hover:text-red-500">
+                                                className="text-gray-600 transition hover:text-red-500">
                                             <i className="fa-regular fa-trash-can text-[10px]"></i>
                                         </button>
                                     </span>
@@ -66,7 +67,7 @@ const PhoneCommentsThread = ({ entryId, readOnly = false }) => {
                                         autoFocus
                                         value={vm.editDraft}
                                         onChange={(e) => vm.setEditDraft(e.target.value)}
-                                        className="flex-1 resize-none rounded-md border border-slate-200 bg-white p-1.5 text-xs leading-relaxed text-slate-700 focus:border-blue-300 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                                        className="flex-1 resize-none rounded-md border border-gray-200 bg-white p-1.5 text-xs leading-relaxed text-gray-700 focus:border-blue-300 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-300"
                                     />
                                     <div className="flex flex-col gap-1">
                                         <IconButton size="sm" color="green" disabled={vm.cmd.update.isPending || !vm.editDraft.trim()}
@@ -79,7 +80,7 @@ const PhoneCommentsThread = ({ entryId, readOnly = false }) => {
                                     </div>
                                 </div>
                             ) : (
-                                <p className="whitespace-pre-wrap text-xs leading-relaxed text-slate-800 dark:text-slate-300">
+                                <p className="whitespace-pre-wrap text-xs leading-relaxed text-gray-800 dark:text-gray-300">
                                     {comment.body}
                                 </p>
                             )}
@@ -103,7 +104,7 @@ const PhoneCommentsThread = ({ entryId, readOnly = false }) => {
                             e.preventDefault();
                             vm.send();
                         }}
-                        className="flex-1 resize-none rounded-md border border-slate-200 bg-white p-2 text-xs leading-relaxed text-slate-700 focus:border-blue-300 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                        className="flex-1 resize-none rounded-md border border-gray-200 bg-white p-2 text-xs leading-relaxed text-gray-700 focus:border-blue-300 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-300"
                     />
                     <IconButton size="sm" color="blue" disabled={vm.cmd.add.isPending || !vm.draft.trim()}
                                 onClick={vm.send} title="Надіслати (Enter)">

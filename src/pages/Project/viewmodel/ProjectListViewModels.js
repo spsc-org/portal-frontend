@@ -37,7 +37,7 @@ import { ProjectCardViewModel } from './ProjectCardViewModel.js'
 import { VocabularyModalViewModel } from './VocabularyModalViewModel.js'
 
 const HIGHLIGHT_MS = 3000
-const UPDATED_PULSE_MS = 1500 // = animation rowUpdated
+const UPDATED_PULSE_MS = 3000 // = animation highlight (Portal UI kit, 3s)
 const ROW_REFRESH_DEBOUNCE_MS = 400
 const NO_IDS = []
 

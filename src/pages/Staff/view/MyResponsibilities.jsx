@@ -14,13 +14,13 @@ const MyResponsibilities = () => {
 
     return (
         <div data-i-doc="widget:staff-responsible-my"
-             className="rounded-2xl border border-slate-300 bg-white p-4 shadow-md shadow-slate-200/70 ring-1 ring-slate-200/60 dark:border-slate-700 dark:bg-slate-900/70 dark:shadow-black/20 dark:ring-0">
-            <h3 className="mb-2 text-sm font-bold text-slate-900 dark:text-slate-100">Мої відповідальності</h3>
+             className="rounded-2xl border border-gray-300 bg-white p-4 shadow-md shadow-gray-200/70 ring-1 ring-gray-200/60 dark:border-neutral-700 dark:bg-neutral-800/70 dark:shadow-black/20 dark:ring-0">
+            <h3 className="mb-2 text-sm font-bold text-gray-900 dark:text-gray-100">Мої відповідальності</h3>
 
             {isLoading && <Spinner className="h-4 w-4"/>}
 
             {!isLoading && assignments.length === 0 &&
-                <p className="text-xs text-slate-400 dark:text-slate-500">Ви поки ні за що не відповідаєте</p>
+                <p className="text-xs text-gray-600 dark:text-gray-500">Ви поки ні за що не відповідаєте</p>
             }
 
             {!isLoading && assignments.length > 0 &&

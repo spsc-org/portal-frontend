@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Button, Typography } from '@material-tailwind/react'
+import { Typography } from "@material-tailwind/react"
+import Button from "../../components/Buttons/Button.jsx"
 import { useSession } from '../../stores/storeHooks.js'
 import { apiFetch, ApiError } from '../../lib/api.js'
 import AuthLayout from './AuthLayout.jsx'

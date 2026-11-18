@@ -4,20 +4,9 @@ import { useStores } from "../../../stores/storeHooks.js";
 import { confirmToast } from "../../../components/confirmToast.jsx";
 import { IDENTIFIER_API } from "../model/dictionaryApi.js";
 import { IdentifierDetailsViewModel } from "../viewmodel/DictionaryViewModels.js";
-import {
-    Button,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Spinner,
-    Tab,
-    TabPanel,
-    Tabs,
-    TabsBody,
-    TabsHeader,
-    Tooltip
-} from "@material-tailwind/react";
+import { Spinner, Tab, TabPanel, Tabs, TabsBody, TabsHeader, Tooltip } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import {useMemo} from "react";
 import Table from "../../../components/Table/Table.jsx";
 import {createColumnHelper} from "@tanstack/react-table";
@@ -229,11 +218,11 @@ const IdentifyDetailsModal = ({open, id, onClose, dictionary, dictionaries}) => 
     const handlePageChange = vm.setVersionsPage;
 
     return (
-        <Dialog data-i-doc="modal:dictionary-identify-details-modal" open={open} size="xl" className="dark:bg-gray-800" handler={onClose}>
-            <DialogHeader className="dark:text-gray-200">
+        <Modal data-i-doc="modal:dictionary-identify-details-modal" open={open} size="xl" handler={onClose}>
+            <ModalHeader>
                 <span className="mr-5">Детальна інформація {details?.code}</span>
-            </DialogHeader>
-            <DialogBody className="h-[42rem] overflow-y-auto">
+            </ModalHeader>
+            <ModalBody className="max-h-[calc(100vh-12rem)] overflow-y-auto">
                 {isFetching ?
                     <div className="flex flex-row justify-center w-full">
                         <Spinner className="h-12 w-12"/>
@@ -248,7 +237,7 @@ const IdentifyDetailsModal = ({open, id, onClose, dictionary, dictionaries}) => 
                                 <div className="flex flex-row items-center gap-x-2">
                                     Версії змін
                                     <div
-                                        className="relative h-[20px] w-[20px] align-middle bg-gray-950 dark:bg-gray-950 rounded-[50%]">
+                                        className="relative h-[20px] w-[20px] align-middle bg-gray-950 dark:bg-neutral-900 rounded-[50%]">
                                         <span
                                             className="absolute text-sm left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-white">{versions?.length}</span>
                                     </div>
@@ -260,64 +249,64 @@ const IdentifyDetailsModal = ({open, id, onClose, dictionary, dictionaries}) => 
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">ID:</p>
-                                        <p className="dark:text-slate-400 ">{details?.id}</p>
+                                        <p className="dark:text-gray-400 ">{details?.id}</p>
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Код:</p>
-                                        <p className="dark:text-slate-400">{details?.code}</p>
+                                        <p className="dark:text-gray-400">{details?.code}</p>
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:dark:text-gray-400 font-bold ">Група:</p>
-                                        <p className="dark:text-slate-400 ">{details?.group}</p>
+                                        <p className="dark:text-gray-400 ">{details?.group}</p>
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Паттерн:</p>
                                         {details?.pattern &&
                                             <pre><code
-                                                className="bg-slate-800 dark:bg-slate-950 px-2 py-1.5 rounded-md text-green-500 dark:text-green-700">{details?.pattern}</code></pre>
+                                                className="bg-gray-800 dark:bg-neutral-900 px-2 py-1.5 rounded-md text-green-500 dark:text-green-700">{details?.pattern}</code></pre>
                                         }
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Назва українською:</p>
-                                        <p className="dark:text-slate-400 ">{details?.name_uk}</p>
+                                        <p className="dark:text-gray-400 ">{details?.name_uk}</p>
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Опис українською:</p>
-                                        <p className="dark:text-slate-400 ">{details?.description_uk}</p>
+                                        <p className="dark:text-gray-400 ">{details?.description_uk}</p>
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Виводити як:</p>
-                                        <p className="dark:text-slate-400 ">{details?.name_doc}</p>
+                                        <p className="dark:text-gray-400 ">{details?.name_doc}</p>
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Опис англійською:</p>
-                                        <p className="dark:text-slate-400 ">{details?.description_en}</p>
+                                        <p className="dark:text-gray-400 ">{details?.description_en}</p>
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Назва англійською:</p>
-                                        <p className="dark:text-slate-400 ">{details?.name_en}</p>
+                                        <p className="dark:text-gray-400 ">{details?.name_en}</p>
                                     </div>
 
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Коментар:</p>
-                                        <p className="dark:text-slate-400 ">{details?.comment}</p>
+                                        <p className="dark:text-gray-400 ">{details?.comment}</p>
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Тип суб'єкта:</p>
-                                        <p className="dark:text-slate-400 ">{details?.subjectType?.caption}</p>
+                                        <p className="dark:text-gray-400 ">{details?.subjectType?.caption}</p>
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Країна:</p>
-                                        <p className="dark:text-slate-400 ">{details?.belongCountry?.caption}</p>
+                                        <p className="dark:text-gray-400 ">{details?.belongCountry?.caption}</p>
                                     </div>
 
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Створено:</p>
-                                        <p className="dark:text-slate-400 ">{data?.data?.createdAt}</p>
+                                        <p className="dark:text-gray-400 ">{data?.data?.createdAt}</p>
                                     </div>
                                     <div className="flex flex-row gap-x-2">
                                         <p className="dark:text-gray-400 font-bold ">Останнє оновлення:</p>
-                                        <p className="dark:text-slate-400 ">{data?.data?.updatedAt}</p>
+                                        <p className="dark:text-gray-400 ">{data?.data?.updatedAt}</p>
                                     </div>
                                 </div>
                             </TabPanel>
@@ -343,13 +332,13 @@ const IdentifyDetailsModal = ({open, id, onClose, dictionary, dictionaries}) => 
                         </TabsBody>
                     </Tabs>
                 }
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button onClick={onClose} color="gray">
                     <span>Закрити</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

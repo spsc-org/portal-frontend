@@ -18,7 +18,7 @@ function NotificationItem({ notification: n, isLast }) {
     const category = notificationCategory(n);
     const isRead = Boolean(n.read_at);
     const body = notificationBody(n);
-    const titleClass = isRead ? 'text-slate-600 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100';
+    const titleClass = isRead ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100';
 
     const handleOpen = (e) => {
         e.preventDefault();
@@ -28,17 +28,17 @@ function NotificationItem({ notification: n, isLast }) {
     return (
         <div
             className={`flex gap-3 border-l-4 px-4 py-3.5 ${category.borderClass} ${
-                isLast ? '' : 'border-b border-slate-100 dark:border-slate-800'
-            } ${isRead ? '' : 'bg-blue-50/50 dark:bg-slate-800'} hover:bg-slate-50 dark:hover:bg-slate-800`}
+                isLast ? '' : 'border-b border-gray-100 dark:border-neutral-700'
+            } ${isRead ? '' : 'bg-blue-50/50 dark:bg-neutral-700'} hover:bg-gray-50 dark:hover:bg-neutral-700`}
         >
             {actor?.avatar_url ? (
                 <img
                     src={actor.avatar_url}
                     alt={actor.name || ''}
-                    className="mt-0.5 h-8 w-8 shrink-0 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700"
+                    className="mt-0.5 h-8 w-8 shrink-0 rounded-full object-cover ring-1 ring-gray-200 dark:ring-neutral-700"
                 />
             ) : (
-                <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-400 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-500 dark:ring-slate-700">
+                <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 ring-1 ring-gray-200 dark:bg-neutral-700 dark:text-gray-500 dark:ring-neutral-700">
                     <span className={`h-2 w-2 rounded-full ${category.dotClass}`} />
                 </span>
             )}
@@ -46,7 +46,7 @@ function NotificationItem({ notification: n, isLast }) {
             <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
                             {vm.typeLabel(n.type)}
                         </p>
 
@@ -75,12 +75,12 @@ function NotificationItem({ notification: n, isLast }) {
                 </div>
 
                 {body && (
-                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
                         {body}
                     </p>
                 )}
 
-                <p className="mt-1.5 text-[11px] text-slate-400 dark:text-slate-500">
+                <p className="mt-1.5 text-[11px] text-gray-600 dark:text-gray-500">
                     {actor?.name ? `${actor.name} · ` : ''}{n.created_at}
                 </p>
             </div>

@@ -3,6 +3,7 @@ import { Spinner } from "@material-tailwind/react";
 import { format } from "date-fns";
 import { uk } from "date-fns/locale";
 import SearchInput from "../../../components/fields/SearchInput.jsx";
+import FilterPanel from "../../../components/FilterPanel.jsx";
 import MultiSelectChip from "../../../components/fields/MultiSelectChip.jsx";
 import ChipToggle from "../../../components/fields/ChipToggle.jsx";
 import ChipResetButton from "../../../components/fields/ChipResetButton.jsx";
@@ -22,17 +23,17 @@ const DeveloperPostCard = ({post, isActive, onSelect}) => {
             className={`w-full rounded-lg border p-3 text-left transition ${
                 isActive
                     ? "border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/20"
-                    : "border-slate-200 bg-white hover:border-blue-200 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
+                    : "border-gray-200 bg-white hover:border-blue-200 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-neutral-700"
             }`}
         >
             <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-1.5 min-w-0">
                     {isUnread && <span className="h-2 w-2 shrink-0 rounded-full bg-blue-500" title="Непрочитано"></span>}
-                    <span className={`truncate text-sm ${isUnread ? "font-bold text-slate-900 dark:text-slate-100" : "font-medium text-slate-700 dark:text-slate-300"}`}>
+                    <span className={`truncate text-sm ${isUnread ? "font-bold text-gray-900 dark:text-gray-100" : "font-medium text-gray-700 dark:text-gray-300"}`}>
                         {post.title}
                     </span>
                 </div>
-                <span className="shrink-0 rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                <span className="shrink-0 rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600 dark:bg-neutral-700 dark:text-gray-400">
                     v{post.version}
                 </span>
             </div>
@@ -46,7 +47,7 @@ const DeveloperPostCard = ({post, isActive, onSelect}) => {
                         <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${status.className}`}>{status.label}</span>
                     }
                 </div>
-                <span className="text-[11px] text-slate-400 dark:text-slate-500">
+                <span className="text-[11px] text-gray-600 dark:text-gray-500">
                     {post.author?.name || "—"} · {post.created_at ? format(new Date(post.created_at), "d MMM, HH:mm", {locale: uk}) : ""}
                 </span>
             </div>
@@ -59,15 +60,16 @@ const DeveloperPostList = ({ vm, onSelect }) => {
     const { list } = vm;
 
     return (
-        <div className="flex h-full w-[420px] shrink-0 flex-col border-r border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950">
+        <div className="flex h-full w-[420px] shrink-0 flex-col border-r border-gray-200 bg-gray-50 dark:border-neutral-700 dark:bg-neutral-900">
             <PageHeader
                 title="Пости"
                 documentTitle="Блог розробників"
                 actions={vm.canCreate && <HeaderButton icon="fa-solid fa-plus" onClick={vm.openCreate}>Створити</HeaderButton>}
             />
-            <div className="border-b border-slate-200 px-4 py-2 text-xs text-slate-400 dark:border-slate-800 dark:text-slate-500">{list.meta.total} усього</div>
+            <div className="border-b border-gray-200 px-4 py-2 text-xs text-gray-600 dark:border-neutral-700 dark:text-gray-500">{list.meta.total} усього</div>
 
-            <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-200 bg-white px-3 py-2 dark:border-slate-700 dark:bg-neutral-900">
+            <div className="px-3 pt-3">
+                <FilterPanel className="flex flex-wrap items-center gap-1.5">
                 <SearchInput
                     size="xs"
                     name="q"
@@ -86,6 +88,7 @@ const DeveloperPostList = ({ vm, onSelect }) => {
                 <MultiSelectChip label="Автор" icon="fa-regular fa-user-pen"
                                   options={list.authors} value={list.selectedAuthors} onChange={list.setAuthors}/>
                 <ChipResetButton onClick={list.resetFilters} hasActive={list.hasActiveFilters}/>
+                </FilterPanel>
             </div>
 
             <div className="flex-1 overflow-y-auto p-3">
@@ -96,7 +99,7 @@ const DeveloperPostList = ({ vm, onSelect }) => {
                 }
 
                 {!list.isLoading && list.posts.length === 0 &&
-                    <div className="flex flex-col items-center justify-center py-16 text-center text-slate-400 dark:text-slate-500">
+                    <div className="flex flex-col items-center justify-center py-16 text-center text-gray-600 dark:text-gray-500">
                         <i className="fa-regular fa-code-branch mb-2 text-2xl"></i>
                         <p className="text-sm">Постів поки немає</p>
                     </div>
@@ -115,14 +118,14 @@ const DeveloperPostList = ({ vm, onSelect }) => {
             </div>
 
             {list.meta.pages > 1 &&
-                <div className="flex items-center justify-between border-t border-slate-200 px-3 py-2 dark:border-slate-800">
+                <div className="flex items-center justify-between border-t border-gray-200 px-3 py-2 dark:border-neutral-700">
                     <button type="button" onClick={list.prevPage} disabled={list.page <= 1}
-                            className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs text-slate-500 transition hover:bg-white disabled:opacity-40 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                            className="rounded-lg border border-gray-200 px-2.5 py-1 text-xs text-gray-600 transition hover:bg-white disabled:opacity-40 dark:border-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-700">
                         <i className="fa-solid fa-chevron-left"></i>
                     </button>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">Сторінка {list.meta.page} із {list.meta.pages}</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">Сторінка {list.meta.page} із {list.meta.pages}</span>
                     <button type="button" onClick={list.nextPage} disabled={list.page >= list.meta.pages}
-                            className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs text-slate-500 transition hover:bg-white disabled:opacity-40 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                            className="rounded-lg border border-gray-200 px-2.5 py-1 text-xs text-gray-600 transition hover:bg-white disabled:opacity-40 dark:border-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-700">
                         <i className="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>

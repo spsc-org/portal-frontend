@@ -13,7 +13,7 @@ const getFileIcon = (fileName) => {
     if (['doc', 'docx'].includes(ext))          return 'fa-regular fa-file-word text-blue-500';
     if (['xls', 'xlsx', 'csv'].includes(ext))   return 'fa-regular fa-file-excel text-green-600';
     if (['zip', 'rar', '7z'].includes(ext))     return 'fa-regular fa-file-zipper text-yellow-500';
-    return 'fa-regular fa-file text-gray-400';
+    return 'fa-regular fa-file text-gray-500';
 };
 
 const InventoryAttachmentsInline = ({attachments = []}) => {

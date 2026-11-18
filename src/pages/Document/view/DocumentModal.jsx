@@ -1,12 +1,6 @@
-import {
-    Button,
-    Card,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Typography
-} from "@material-tailwind/react";
+import { Card, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import { observer } from "mobx-react-lite";
 import { format } from "date-fns";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
@@ -22,13 +16,13 @@ const DocumentModal = ({selectedId, open = false, onClose, dictionaries}) => {
     const redirectToProjects = () => openProjectsForDocument(document?.regNum);
 
     return (
-        <Dialog data-i-doc="modal:document-details" open={open} handler={onClose} size="sm">
-            <DialogHeader className="dark:text-gray-200">
+        <Modal data-i-doc="modal:document-details" open={open} handler={onClose} size="sm">
+            <ModalHeader>
                 <span className="mr-5">Детальна інформація: {document?.regNum}
                     <span>  {document?.regDate ? format(document?.regDate, "dd.MM.yyyy") : null}</span></span>
-            </DialogHeader>
-            <DialogBody className="h-fit overflow-y-auto">
-                <div className="mb-2 inline-flex gap-x-6 self-center dark:text-slate-400 items-center">
+            </ModalHeader>
+            <ModalBody className="h-fit overflow-y-auto">
+                <div className="mb-2 inline-flex gap-x-6 self-center dark:text-gray-400 items-center">
                     <Typography variant={"small"} className="font-normal ">Кількість
                         проєктів:</Typography>
                         <Button onClick={redirectToProjects} variant="filled" size="sm">
@@ -70,29 +64,29 @@ const DocumentModal = ({selectedId, open = false, onClose, dictionaries}) => {
                         </Button>
                 </div>
 
-                <Card className=" p-2 grid grid-cols-2 gap-1 bg-gray-900/10 dark:bg-gray-900">
+                <Card className=" p-2 grid grid-cols-2 gap-1 bg-gray-900/10 dark:bg-neutral-800">
                     <div className="inline-flex gap-x-2">
                         <p className="font-bold dark:text-gray-50">Назва:</p>
-                        <p className="font-normal dark:text-slate-400">{document?.caption}</p>
+                        <p className="font-normal dark:text-gray-400">{document?.caption}</p>
                     </div>
                     <div className="inline-flex gap-x-2">
                         <p className="font-bold dark:text-gray-50">Реєстраційний номер:</p>
-                        <p className="font-normal dark:text-slate-400">{document?.regNum}
+                        <p className="font-normal dark:text-gray-400">{document?.regNum}
                             <span>  {document?.regDate ? format(document?.regDate, "dd.MM.yyyy") : null}</span>
                         </p>
                     </div>
                     <div className="inline-flex gap-x-2">
                         <p className="font-bold dark:text-gray-50">Тип:</p>
-                        <p className="font-normal dark:text-slate-400">{document?.typeId ? types.find(type => type.id === document.typeId)?.caption : null}</p>
+                        <p className="font-normal dark:text-gray-400">{document?.typeId ? types.find(type => type.id === document.typeId)?.caption : null}</p>
                     </div>
                     <div className="inline-flex gap-x-2">
                         <p className="font-bold dark:text-gray-50">Підрозділ:</p>
-                        <p className="font-normal dark:text-slate-400">{document?.unitId ? units.find(unit => unit.id === document.unitId)?.caption : null}</p>
+                        <p className="font-normal dark:text-gray-400">{document?.unitId ? units.find(unit => unit.id === document.unitId)?.caption : null}</p>
                     </div>
                     <div className="inline-flex gap-x-2 max-w-[450px]">
                         <p className="font-bold dark:text-gray-50">Шлях:</p>
                         {document?.path ?
-                            <div className=" bg-slate-800 w-full dark:bg-slate-950 px-1 py-0.5 rounded-md">
+                            <div className=" bg-gray-800 w-full dark:bg-neutral-900 px-1 py-0.5 rounded-md">
                             <span
                                 className="text-xs font-normal break-words text-green-500 dark:text-green-700">{document?.path}</span>
                             </div>
@@ -101,38 +95,37 @@ const DocumentModal = ({selectedId, open = false, onClose, dictionaries}) => {
                     </div>
                     <div className="inline-flex gap-x-2">
                         <p className="font-bold dark:text-gray-50">Коментар:</p>
-                        <p className="font-normal dark:text-slate-400">{document?.comments}</p>
+                        <p className="font-normal dark:text-gray-400">{document?.comments}</p>
                     </div>
                     <div className="inline-flex gap-x-2">
                         <p className="font-bold dark:text-gray-50">Створений:</p>
-                        <p className="font-normal dark:text-slate-400">{document?.createdAt ? format(document?.createdAt, "dd.MM.yyyy") : null}</p>
+                        <p className="font-normal dark:text-gray-400">{document?.createdAt ? format(document?.createdAt, "dd.MM.yyyy") : null}</p>
                     </div>
                     <div className="inline-flex gap-x-2">
                         <p className="font-bold dark:text-gray-50">Оновлений:</p>
-                        <p className="font-normal dark:text-slate-400">{document?.updatedAt ? format(document?.updatedAt, "dd.MM.yyyy") : null}</p>
+                        <p className="font-normal dark:text-gray-400">{document?.updatedAt ? format(document?.updatedAt, "dd.MM.yyyy") : null}</p>
                     </div>
                     <div className="inline-flex gap-x-2">
                         <p className="font-bold dark:text-gray-50">Створив:</p>
-                        <p className="font-normal dark:text-slate-400">{document?.createdUserId ? users.find(u => u.id === document.createdUserId)?.name : null}</p>
+                        <p className="font-normal dark:text-gray-400">{document?.createdUserId ? users.find(u => u.id === document.createdUserId)?.name : null}</p>
                     </div>
                     <div className="inline-flex gap-x-2">
                         <p className="font-bold dark:text-gray-50">Оновив:</p>
-                        <p className="font-normal dark:text-slate-400">{document?.updatedUserId ? users.find(u => u.id === document.updatedUserId)?.name : null}</p>
+                        <p className="font-normal dark:text-gray-400">{document?.updatedUserId ? users.find(u => u.id === document.updatedUserId)?.name : null}</p>
                     </div>
 
                 </Card>
 
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
                     className="mr-1">
                     <span>Закрити</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

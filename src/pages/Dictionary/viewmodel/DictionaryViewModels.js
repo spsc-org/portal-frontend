@@ -19,16 +19,14 @@ import {
   updateIdentifier,
 } from '../model/dictionaryApi.js'
 
-export const TABS = ['identify', 'identify-v2', 'subgroup', 'attributes']
-
-/** Сторінка /dictionary: вкладка (синхронізується з ?tab=) + словники сторінки. */
+/** Сторінка /dictionary/{section}: розділ (з маршруту) + словники сторінки. */
 export class DictionaryPageViewModel {
-  tab
+  tab // розділ: identify | identify-v2 | subgroup | attributes
 
-  constructor({ scope, stores, initialTab }) {
+  constructor({ scope, stores, section }) {
     this.scope = scope
     this.stores = stores
-    this.tab = TABS.includes(initialTab) ? initialTab : TABS[0]
+    this.tab = section
     makeViewModel(this)
     // countries, subjectTypes — колишні Inertia props.
     this.optionsQuery = scope.query(pageOptionsQuery('dictionary'))
@@ -54,9 +52,6 @@ export class DictionaryPageViewModel {
     return this.stores.session.pagePermissions.dictionary ?? {}
   }
 
-  setTab(value) {
-    this.tab = value
-  }
 }
 
 const IDENTIFIER_FILTERS = {

@@ -5,27 +5,8 @@ import { ProposalViewViewModel } from "../viewmodel/ProposalViewModels.js";
 import {Link} from "react-router";
 import {useEffect, useMemo, useState} from "react";
 import {useParams} from "react-router";
-import {
-    Badge,
-    Button,
-    ButtonGroup,
-    Card,
-    Menu,
-    MenuHandler,
-    MenuItem,
-    MenuList,
-    Popover,
-    PopoverContent,
-    PopoverHandler,
-    Spinner,
-    Tab,
-    TabPanel,
-    Tabs,
-    TabsBody,
-    TabsHeader,
-    Tooltip,
-    Typography
-} from "@material-tailwind/react";
+import { Badge, ButtonGroup, Card, Menu, MenuHandler, MenuItem, MenuList, Popover, PopoverContent, PopoverHandler, Spinner, Tab, TabPanel, Tabs, TabsBody, TabsHeader, Tooltip, Typography } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import AppChip from "../../../components/AppChip.jsx";
 import {closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors,} from '@dnd-kit/core';
 import {arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy} from '@dnd-kit/sortable';
@@ -268,10 +249,10 @@ const ProposalViewContent = observer(({ vm }) => {
                       }}>
                       {headers.map(({count, value, content}) => (
                         <Tab onClick={() => setActiveTab(value)}
-                             className="p-0 m-0.5 hover:bg-gray-200 dark:hover:bg-gray-600 transition max-w-xs shrink-0"
+                             className="p-0 m-0.5 hover:bg-gray-200 dark:hover:bg-neutral-500 transition max-w-xs shrink-0"
                              key={value}
                              value={value}>
-                          <div className="text-gray-700 dark:text-slate-300 text-left ">
+                          <div className="text-gray-700 dark:text-gray-300 text-left ">
                             <span dangerouslySetInnerHTML={{__html: content}}></span>
                             <span>{count}</span>
                           </div>
@@ -327,7 +308,7 @@ const ProposalViewContent = observer(({ vm }) => {
                                   </div>
                                   <Typography
                                     id="NonReady"
-                                    className="dark:text-slate-400"
+                                    className="dark:text-gray-400"
                                     variant="h5"> <i
                                     className="fa-regular fa-circle-exclamation text-red-600 mr-1"></i>
                                     Проєкти, які не потрапили в реліз (Стан "Готово"
@@ -367,7 +348,7 @@ const ProposalViewContent = observer(({ vm }) => {
                                           </Button>
                                         </PopoverHandler>
                                       </Badge>
-                                      <PopoverContent className="z-[100] p-2">
+                                      <PopoverContent className="p-2">
                                         <div
                                           className="flex flex-col divide-y gap-1">
                                           {
@@ -490,7 +471,7 @@ const ProposalViewContent = observer(({ vm }) => {
                                       Boolean(countNonReady) &&
                                       <Typography
                                         id="NonReady"
-                                        className="dark:text-slate-400"
+                                        className="dark:text-gray-400"
                                         variant="h5"> <i
                                         className="fa-regular fa-circle-exclamation text-red-600 mr-1"></i>
                                         Проєкти, які не увійдуть в реліз (Стан
@@ -541,84 +522,84 @@ const ProposalViewContent = observer(({ vm }) => {
           </div>
           <div
             className="flex-shrink flex-auto self-auto px-1.5 bg-white dark:bg-[rgb(22,27,39)] border-l border border-gray-200 dark:border-[rgba(255,255,255,0.07)]">
-            <Typography variant="h6" className="mt-4 dark:text-slate-200">
+            <Typography variant="h6" className="mt-4 dark:text-gray-200">
               Детальна інформація
             </Typography>
-            <Card className="text-sm mt-2 p-2 dark:bg-gray-700">
+            <Card className="text-sm mt-2 p-2 dark:bg-neutral-600">
               <div className="grid grid-cols-1 gap-y-2">
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">Реєстраційний номер:</p>
-                  <p className="font-normal dark:text-slate-400">{proposal?.outgoingNumber}</p>
+                  <p className="font-normal dark:text-gray-400">{proposal?.outgoingNumber}</p>
 
                 </div>
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">Реєстраційна дата:</p>
                   <p
-                    className="font-normal dark:text-slate-400">{proposal?.outgoingDate ? format(proposal?.outgoingDate, "dd.MM.yyyy") : "---"}</p>
+                    className="font-normal dark:text-gray-400">{proposal?.outgoingDate ? format(proposal?.outgoingDate, "dd.MM.yyyy") : "---"}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">Суб'єкт подання:</p>
                   <p
-                    className="font-normal dark:text-slate-400">{proposal?.issuerId ? issuers.find(i => i.id === proposal?.issuerId)?.caption : "---"}</p>
+                    className="font-normal dark:text-gray-400">{proposal?.issuerId ? issuers.find(i => i.id === proposal?.issuerId)?.caption : "---"}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">Стан:</p>
                   <p
-                    className="font-normal dark:text-slate-400">{proposal?.stateId ? proposalState.find(s => s.id === proposal?.stateId)?.caption : "---"}</p>
+                    className="font-normal dark:text-gray-400">{proposal?.stateId ? proposalState.find(s => s.id === proposal?.stateId)?.caption : "---"}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">К-сть юридичних:</p>
-                  <p className="font-normal dark:text-slate-400">{proposal?.calcLegal}</p>
+                  <p className="font-normal dark:text-gray-400">{proposal?.calcLegal}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">К-сть фізичних:</p>
-                  <p className="font-normal dark:text-slate-400">{proposal?.calcPerson}</p>
+                  <p className="font-normal dark:text-gray-400">{proposal?.calcPerson}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">Дата створення:</p>
                   <p
-                    className="font-normal dark:text-slate-400">{proposal?.createdAt ? format(proposal?.createdAt, "dd.MM.yyyy") : "---"}</p>
+                    className="font-normal dark:text-gray-400">{proposal?.createdAt ? format(proposal?.createdAt, "dd.MM.yyyy") : "---"}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">Створив:</p>
                   <p
-                    className="font-normal dark:text-slate-400">{proposal?.createdUserId ? users.find(s => s.id === proposal?.createdUserId)?.name : "---"}</p>
+                    className="font-normal dark:text-gray-400">{proposal?.createdUserId ? users.find(s => s.id === proposal?.createdUserId)?.name : "---"}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">Дата оновлення:</p>
                   <p
-                    className="font-normal dark:text-slate-400">{proposal?.updatedAt ? format(proposal?.updatedAt, "dd.MM.yyyy") : "---"}</p>
+                    className="font-normal dark:text-gray-400">{proposal?.updatedAt ? format(proposal?.updatedAt, "dd.MM.yyyy") : "---"}</p>
                 </div>
 
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">Оновив:</p>
                   <p
-                    className="font-normal dark:text-slate-400">{proposal?.updatedUserId ? users.find(s => s.id === proposal?.updatedUserId)?.name : "---"}</p>
+                    className="font-normal dark:text-gray-400">{proposal?.updatedUserId ? users.find(s => s.id === proposal?.updatedUserId)?.name : "---"}</p>
                 </div>
                 <div className="inline-flex gap-x-2">
                   <p className="font-bold dark:text-gray-50">Дата видалення:</p>
                   <p
-                    className="font-normal dark:text-slate-400">{proposal?.deletedAt ? format(proposal?.deletedAt, "dd.MM.yyyy") : "---"}</p>
+                    className="font-normal dark:text-gray-400">{proposal?.deletedAt ? format(proposal?.deletedAt, "dd.MM.yyyy") : "---"}</p>
                 </div>
               </div>
             </Card>
-            <Card className="text-sm mt-2 p-2 dark:bg-gray-700">
+            <Card className="text-sm mt-2 p-2 dark:bg-neutral-600">
               <div className="flex flex-col gap-x-2">
                 <p className="font-bold dark:text-gray-50">Summary:</p>
-                <p className="font-normal dark:text-slate-400">{proposal?.calcSummary ?
+                <p className="font-normal dark:text-gray-400">{proposal?.calcSummary ?
                   <div dangerouslySetInnerHTML={{__html: proposal?.calcSummary}}></div> : null}</p>
               </div>
             </Card>
-            <Card className="text-sm mt-2 p-2 dark:bg-gray-700">
+            <Card className="text-sm mt-2 p-2 dark:bg-neutral-600">
               <div className="flex flex-col gap-x-2 max-h-44 overflow-auto">
                 <p className="font-bold dark:text-gray-50">Опис:</p>
-                <p className="font-normal dark:text-slate-400">{proposal?.description}</p>
+                <p className="font-normal dark:text-gray-400">{proposal?.description}</p>
               </div>
             </Card>
-            <Card className="text-sm mt-2 p-2 dark:bg-gray-700">
+            <Card className="text-sm mt-2 p-2 dark:bg-neutral-600">
               <div className="flex flex-col gap-x-2 max-h-44 overflow-auto">
                 <p className="font-bold dark:text-gray-50">Коментар:</p>
-                <p className="font-normal dark:text-slate-400">{proposal?.comments}</p>
+                <p className="font-normal dark:text-gray-400">{proposal?.comments}</p>
               </div>
             </Card>
           </div>

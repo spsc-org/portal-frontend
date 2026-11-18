@@ -2,7 +2,9 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { CreateTicketViewModel } from "../../viewmodel/DossierViewModels.js";
 
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
+import Button from "../../../../components/Buttons/Button.jsx"
 
 import {entityLabel as entityTypeLabel} from "../../entities/dossierTicket/model.js";
 import AddLinkFields from "./AddLinkFields.jsx";
@@ -29,25 +31,24 @@ const CreateTicketModal = ({open, onClose, entityType, entityId, entityLabel, on
     const previewByKey = new Map(linkPreview.map((p) => [linkKey(p), p]));
 
     return (
-        <Dialog data-i-doc="modal:dossier-create-ticket"
+        <Modal data-i-doc="modal:dossier-create-ticket"
             open={open}
             handler={onClose}
             size="sm"
-            className="dark:bg-slate-900 border dark:border-slate-800"
-            overlayProps={{className: "bg-black/20 backdrop-blur-none"}}
-        >
-            <DialogHeader className="dark:text-white flex items-center gap-2">
+            className="border"
+            overlayProps={{className: "bg-black/20 backdrop-blur-none"}}>
+            <ModalHeader className="flex items-center gap-2">
                 <i className="fa-solid fa-ticket text-base"></i>
                 <Typography variant="h5">Новий тікет{entityLabel ? ` — ${entityLabel}` : ""}</Typography>
-            </DialogHeader>
-            <DialogBody className="flex flex-col gap-2">
+            </ModalHeader>
+            <ModalBody className="flex flex-col gap-2">
                 <textarea
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="Опишіть проблему…"
                     rows={3}
                     autoFocus
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-600 dark:text-gray-100"
                 />
 
                 {extraLinks.length > 0 && (
@@ -62,7 +63,7 @@ const CreateTicketModal = ({open, onClose, entityType, entityId, entityLabel, on
                             return (
                                 <div
                                     key={linkKey(link)}
-                                    className={`flex items-center justify-between gap-2 rounded-md bg-gray-50 px-2.5 py-1.5 text-[11px] dark:bg-gray-800/60 ${
+                                    className={`flex items-center justify-between gap-2 rounded-md bg-gray-50 px-2.5 py-1.5 text-[11px] dark:bg-neutral-700/60 ${
                                         found === false ? "text-red-600 dark:text-red-400" : "text-gray-600 dark:text-gray-300"
                                     }`}
                                 >
@@ -76,7 +77,7 @@ const CreateTicketModal = ({open, onClose, entityType, entityId, entityLabel, on
                                         type="button"
                                         title="Прибрати"
                                         onClick={() => removeLink(link)}
-                                        className="text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+                                        className="text-gray-600 hover:text-red-600 dark:hover:text-red-400"
                                     >
                                         <i className="fa-solid fa-xmark text-[10px]"></i>
                                     </button>
@@ -87,8 +88,8 @@ const CreateTicketModal = ({open, onClose, entityType, entityId, entityLabel, on
                 )}
 
                 <AddLinkFields onAdd={addLink}/>
-            </DialogBody>
-            <DialogFooter className="gap-2">
+            </ModalBody>
+            <ModalFooter className="gap-2">
                 <Button variant="text" color="gray" onClick={onClose}>
                     Закрити
                 </Button>
@@ -96,12 +97,11 @@ const CreateTicketModal = ({open, onClose, entityType, entityId, entityLabel, on
                     variant="gradient"
                     color="blue"
                     disabled={!text.trim() || createMutation.isPending}
-                    onClick={submit}
-                >
+                    onClick={submit}>
                     {createMutation.isPending ? "Створюю…" : "Додати тікет"}
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

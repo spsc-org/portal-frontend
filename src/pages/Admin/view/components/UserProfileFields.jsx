@@ -38,8 +38,8 @@ const UserProfileFields = ({ vm }) => {
                 {text("rankFrom", "Дата присв. останнього звання", { type: "date" })}
             </div>
             {CHECKBOXES.map(({ name, label }, index) => (
-                <div key={name} className={`${index === 0 ? "mt-5" : "mt-3"} rounded-lg border border-slate-200 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-800/40`}>
-                    <label className="cursor-pointer text-slate-600 dark:text-slate-300">
+                <div key={name} className={`${index === 0 ? "mt-5" : "mt-3"} rounded-lg border border-gray-200 bg-white px-3 py-2 dark:border-neutral-700 dark:bg-neutral-700/40`}>
+                    <label className="cursor-pointer text-gray-600 dark:text-gray-300">
                         <input
                             type="checkbox"
                             className="cursor-pointer form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-300"

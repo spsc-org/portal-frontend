@@ -1,8 +1,10 @@
 import { useMemo } from "react";
 import { observer } from "mobx-react-lite";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Button, Tooltip } from "@material-tailwind/react";
-import Table, { loadColumnSizes } from "../../../components/Table/Table.jsx";
+import { Tooltip } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
+import Table from "../../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import SingleSelect from "../../../components/fields/SingleSelect.jsx";
 import ConfirmModal from "../../../components/Modal/ConfirmModal.jsx";
@@ -83,8 +85,8 @@ function useAdminColumns(vm) {
     ], [vm, moduleKeys]);
 }
 
-const FilterSelect = observer(({ vm, id, label, options, width, searchable = false }) => (
-    <div className={width}>
+const FilterSelect = observer(({ vm, id, label, options, searchable = false }) => (
+    <div className="min-w-0">
         <SingleSelect
             size="xs"
             id={id}
@@ -122,22 +124,31 @@ const AdminUsersView = ({ vm }) => {
                     </>
                 }
             />
-            <div className="mx-2 mt-5">
-                <div className="flex flex-row justify-between items-center">
-                    <div className="mb-5 flex flex-wrap items-end gap-x-5 gap-y-2">
-                        <div className="w-56">
-                            <SearchInput size="xs" name="q" value={table.filters.q || ""} placeholder="Пошук"
-                                         icon="fa-regular fa-magnifying-glass" onChange={table.handleInput}/>
-                        </div>
-                        <FilterSelect vm={vm} id="unit" label="Підрозділ" options={data.unitOptions} width="w-48" searchable/>
-                        <FilterSelect vm={vm} id="isResponsible" label="Матеріально відповідальний" options={data.isResponsibleOptions} width="w-52"/>
-                        <FilterSelect vm={vm} id="trashed" label="Видалений" options={data.trashedOptions} width="w-40"/>
-                        <Tooltip content="Скинути фільтри">
-                            <Button size="sm" className="h-10" disabled={!vm.hasActiveFilters} onClick={() => table.reset()}>
-                                <i className="fa-regular fa-filter-slash"></i>
-                            </Button>
-                        </Tooltip>
+            <div className="flex flex-col gap-2">
+                {/* Панель фільтрів — як на /project (ProjectFilters): картка surface-card + сітка полів */}
+                <div
+                    data-i-doc="component:admin-users-filters"
+                    className="rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800"
+                >
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] items-end gap-2">
+                        <SearchInput size="xs" name="q" value={table.filters.q || ""} placeholder="Пошук"
+                                     icon="fa-regular fa-magnifying-glass" onChange={table.handleInput}/>
+                        <FilterSelect vm={vm} id="unit" label="Підрозділ" options={data.unitOptions} searchable/>
+                        <FilterSelect vm={vm} id="isResponsible" label="Матеріально відповідальний" options={data.isResponsibleOptions}/>
+                        <FilterSelect vm={vm} id="trashed" label="Видалений" options={data.trashedOptions}/>
                     </div>
+                    {vm.hasActiveFilters && (
+                        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                            <button
+                                type="button"
+                                onClick={() => table.reset()}
+                                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                            >
+                                <i className="fa-solid fa-filter-circle-xmark" />
+                                Скинути фільтри
+                            </button>
+                        </div>
+                    )}
                 </div>
                 <Table
                     onDoubleClick={(row) => !row?.original?.deleted_at && vm.openEdit(row.id)}

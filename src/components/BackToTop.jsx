@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {IconButton} from "@material-tailwind/react";
+import IconButton from "./Buttons/IconButton.jsx"
 
 const BackToTop = () => {
     const [visible, setVisible] = useState(false);

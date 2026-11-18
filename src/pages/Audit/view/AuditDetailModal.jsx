@@ -1,9 +1,11 @@
 import { observer } from "mobx-react-lite";
-import { Dialog, DialogBody, DialogHeader, IconButton, Spinner } from "@material-tailwind/react";
+import { Spinner } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody } from "../../../components/Modal/Modal.jsx"
+import CloseButton from "../../../components/Buttons/CloseButton.jsx"
 import { convertDate } from "../../../lib/utils.js";
 
 const renderValue = (val) => {
-    if (val === null || val === undefined) return <span className="text-gray-400 italic">—</span>;
+    if (val === null || val === undefined) return <span className="text-gray-600 italic">—</span>;
     if (typeof val === 'object' && 'label' in val && 'value' in val) {
         return <span>{val.label ? `${val.label}: ` : ''}{val.value ?? '—'}</span>;
     }
@@ -18,10 +20,10 @@ const DiffSection = ({ title, color, items, renderRow }) => {
     return (
         <div className="mb-3">
             <div className={`text-xs font-semibold uppercase tracking-wide mb-1 ${color}`}>{title}</div>
-            <div className="divide-y divide-gray-100 dark:divide-gray-700 border border-gray-200 dark:border-gray-700 rounded">
+            <div className="divide-y divide-gray-100 dark:divide-neutral-700 border border-gray-200 dark:border-neutral-700 rounded">
                 {entries.map(([key, val]) => (
                     <div key={key} className="flex gap-2 px-2 py-1 text-xs">
-                        <span className="text-gray-500 dark:text-gray-400 shrink-0 w-40 truncate" title={key}>{key}</span>
+                        <span className="text-gray-600 dark:text-gray-400 shrink-0 w-40 truncate" title={key}>{key}</span>
                         {renderRow(val)}
                     </div>
                 ))}
@@ -37,17 +39,15 @@ const AuditDetailModal = ({ vm }) => {
     const isFetching = vm.detailQuery.isFetching;
 
     return (
-        <Dialog open={vm.selectedId != null} handler={vm.closeDetail} size="lg" className="dark:bg-gray-900">
-            <DialogHeader className="flex items-center justify-between py-3 px-4 border-b dark:border-gray-700">
-                <div className="text-sm font-semibold text-gray-800 dark:text-slate-200">
+        <Modal open={vm.selectedId != null} handler={vm.closeDetail} size="lg">
+            <ModalHeader hideClose className="flex items-center justify-between py-3 px-4 border-b">
+                <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                     Деталі запису аудиту #{vm.selectedId}
                 </div>
-                <IconButton variant="text" size="sm" onClick={vm.closeDetail}>
-                    <i className="fa-solid fa-xmark text-gray-600 dark:text-slate-300"/>
-                </IconButton>
-            </DialogHeader>
+                <CloseButton onClick={vm.closeDetail} />
+            </ModalHeader>
 
-            <DialogBody className="px-4 py-3 overflow-y-auto max-h-[70vh]">
+            <ModalBody className="px-4 py-3 overflow-y-auto max-h-[70vh]">
                 {isFetching && <div className="flex justify-center py-8"><Spinner/></div>}
 
                 {!isFetching && record && (
@@ -63,7 +63,7 @@ const AuditDetailModal = ({ vm }) => {
                         </div>
 
                         {!vm.hasChanges && (
-                            <p className="text-xs text-gray-400 italic">Немає змін (перший знімок або порожній diff)</p>
+                            <p className="text-xs text-gray-600 italic">Немає змін (перший знімок або порожній diff)</p>
                         )}
 
                         <DiffSection
@@ -79,7 +79,7 @@ const AuditDetailModal = ({ vm }) => {
                             renderRow={(val) => (
                                 <span className="flex gap-2 items-center">
                                     <span className="text-red-500 line-through">{renderValue(val?.fromLabel ?? val?.from)}</span>
-                                    <i className="fa-solid fa-arrow-right text-gray-400 text-[10px]"/>
+                                    <i className="fa-solid fa-arrow-right text-gray-500 text-[10px]"/>
                                     <span className="text-green-600">{renderValue(val?.toLabel ?? val?.to)}</span>
                                 </span>
                             )}
@@ -92,8 +92,8 @@ const AuditDetailModal = ({ vm }) => {
                         />
                     </>
                 )}
-            </DialogBody>
-        </Dialog>
+            </ModalBody>
+        </Modal>
     );
 };
 

@@ -27,16 +27,16 @@ const UserAvatars = ({users = [], max = 6}) => {
                 <Tooltip key={user.id} content={user.name}>
                     {user.avatar ? (
                         <img src={`/files?path=${user.avatar}`} alt={user.name}
-                             className="h-6 w-6 shrink-0 rounded-full border-2 border-white object-cover dark:border-gray-900"/>
+                             className="h-6 w-6 shrink-0 rounded-full border-2 border-white object-cover dark:border-neutral-800"/>
                     ) : (
-                        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-white text-[9px] font-bold text-white dark:border-gray-900 ${AVATAR_COLORS[user.id % AVATAR_COLORS.length]}`}>
+                        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-white text-[9px] font-bold text-white dark:border-neutral-800 ${AVATAR_COLORS[user.id % AVATAR_COLORS.length]}`}>
                             {getInitials(user.name)}
                         </div>
                     )}
                 </Tooltip>
             ))}
             {rest > 0 &&
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-white bg-slate-400 text-[9px] font-bold text-white dark:border-gray-900 dark:bg-slate-600">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-white bg-gray-400 text-[9px] font-bold text-white dark:border-neutral-800 dark:bg-neutral-500">
                     +{rest}
                 </div>
             }

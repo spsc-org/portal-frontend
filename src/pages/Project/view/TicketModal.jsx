@@ -19,12 +19,12 @@ const TicketModal = () => {
                             </div>
                             <div>
                                 <h3 className="text-sm font-semibold leading-tight text-gray-900 dark:text-gray-100">{vm.isEdit ? "Редагувати тікет" : "Новий тікет"}</h3>
-                                <p className="mt-0.5 text-xs leading-tight text-gray-400 dark:text-gray-500">
+                                <p className="mt-0.5 text-xs leading-tight text-gray-600 dark:text-gray-500">
                                     {vm.projectName ? `${vm.projectName} · #${vm.projectId}` : `#${vm.projectId}`}
                                 </p>
                             </div>
                         </div>
-                        <button type="button" onClick={vm.close} aria-label="Закрити" className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-neutral-700 dark:hover:text-gray-300">
+                        <button type="button" onClick={vm.close} aria-label="Закрити" className="flex h-8 w-8 items-center justify-center rounded-full text-gray-600 transition hover:bg-gray-100 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-neutral-700 dark:hover:text-gray-300">
                             <i className="fa-solid fa-xmark pointer-events-none text-base" />
                         </button>
                     </div>
@@ -47,7 +47,7 @@ const TicketModal = () => {
                                 value={vm.text}
                                 onChange={(event) => vm.setText(event.target.value)}
                                 placeholder="Опишіть проблему або залиште коментар…"
-                                className={`w-full resize-none rounded-xl border bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 transition focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-neutral-800 dark:text-gray-100 dark:placeholder-gray-600 dark:focus:ring-blue-600 ${vm.errors.text ? "border-red-400 dark:border-red-600" : "border-gray-200 dark:border-neutral-600"}`}
+                                className={`w-full resize-none rounded-xl border bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 transition focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-neutral-900 dark:text-gray-100 dark:placeholder-gray-600 dark:focus:ring-blue-600 ${vm.errors.text ? "border-red-400 dark:border-red-600" : "border-gray-200 dark:border-neutral-600"}`}
                             />
                         </div>
 
@@ -65,14 +65,14 @@ const TicketModal = () => {
                                             <i className="fa-solid fa-download" />
                                         </a>
                                     )}
-                                    <button type="button" title="Видалити вкладення" onClick={vm.dropFile} className="shrink-0 text-gray-400 transition hover:text-red-500 dark:hover:text-red-400">
+                                    <button type="button" title="Видалити вкладення" onClick={vm.dropFile} className="shrink-0 text-gray-600 transition hover:text-red-500 dark:hover:text-red-400">
                                         <i className="fa-solid fa-xmark text-sm" />
                                     </button>
                                 </div>
                             ) : (
                                 <label className="group relative flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-gray-300 px-3.5 py-2.5 transition hover:border-blue-400 hover:bg-blue-50/50 dark:border-neutral-600 dark:hover:border-blue-500 dark:hover:bg-blue-900/10">
-                                    <i className="fa-regular fa-paperclip text-sm text-gray-400 transition group-hover:text-blue-500 dark:text-gray-500" />
-                                    <span className="select-none text-sm text-gray-400 transition group-hover:text-blue-500 dark:text-gray-500">Прикріпити файл</span>
+                                    <i className="fa-regular fa-paperclip text-sm text-gray-500 transition group-hover:text-blue-500 dark:text-gray-500" />
+                                    <span className="select-none text-sm text-gray-600 transition group-hover:text-blue-500 dark:text-gray-500">Прикріпити файл</span>
                                     {vm.uploading && (
                                         <span className="ml-auto whitespace-nowrap text-xs text-blue-500 dark:text-blue-400">
                                             <i className="fa-solid fa-spinner fa-spin mr-1" />
@@ -89,7 +89,7 @@ const TicketModal = () => {
                         )}
 
                         <div className="flex items-center justify-between pt-1">
-                            <button type="button" onClick={vm.close} className="px-3 py-2 text-sm text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                            <button type="button" onClick={vm.close} className="px-3 py-2 text-sm text-gray-600 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                                 Скасувати
                             </button>
                             <button

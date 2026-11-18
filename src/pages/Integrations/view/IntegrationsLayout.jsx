@@ -5,7 +5,7 @@ import { useSession } from "../../../stores/storeHooks.js";
 import { INTEGRATIONS_NAVIGATION } from "../shared/config/navigation.js";
 
 const NoAccess = () => (
-    <div className="flex min-h-[50vh] items-center justify-center text-slate-400 dark:text-slate-600">
+    <div className="flex min-h-[50vh] items-center justify-center text-gray-600 dark:text-gray-600">
         <i className="fa-solid fa-lock mr-2"></i>Немає доступу до цього розділу.
     </div>
 );

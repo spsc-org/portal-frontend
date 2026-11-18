@@ -1,7 +1,9 @@
-import {Button, Menu, MenuHandler, MenuItem, MenuList} from "@material-tailwind/react";
+import { Menu, MenuHandler, MenuItem, MenuList } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import MultiSelectChip from "../../../components/fields/MultiSelectChip.jsx";
-import ChipToggle, {chipToggleClassName} from "../../../components/fields/ChipToggle.jsx";
+import ChipToggle from "../../../components/fields/ChipToggle.jsx";
+import { chipToggleClassName } from "../../../components/fields/chipToggleStyles.js";
 import ChipResetButton from "../../../components/fields/ChipResetButton.jsx";
 
 // Однопунктовий dropdown (один з варіантів, не мультивибір) — той самий
@@ -20,11 +22,11 @@ const SingleSelectMenu = ({icon, options, value, onChange}) => {
                     <i className="fa-solid fa-chevron-down text-[8px] opacity-50"></i>
                 </button>
             </MenuHandler>
-            <MenuList className="min-w-[9rem] border border-slate-200 bg-white p-1 text-slate-700 dark:border-slate-600 dark:!bg-slate-800 dark:!text-slate-200">
+            <MenuList className="min-w-[9rem] border border-gray-200 bg-white p-1 text-gray-700 dark:border-gray-600 dark:!bg-neutral-700 dark:!text-gray-200">
                 {options.map((option) => (
                     <MenuItem key={option.value}
                               onClick={() => onChange(option.value)}
-                              className={`text-xs dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-100 dark:focus:bg-slate-700 ${value === option.value ? "bg-blue-50 dark:bg-blue-900/30" : ""}`}>
+                              className={`text-xs dark:text-gray-300 dark:hover:bg-neutral-600 dark:hover:text-gray-100 dark:focus:bg-neutral-600 ${value === option.value ? "bg-blue-50 dark:bg-blue-900/30" : ""}`}>
                         {option.label}
                     </MenuItem>
                 ))}
@@ -58,7 +60,7 @@ const PhoneFilters = ({
         .map((option) => ({id: option.value, caption: option.label}));
 
     return (
-        <div data-i-doc="view:handbook-phone-filters" className="sticky top-[50px] z-20 -mx-1 mb-3 flex flex-wrap items-center gap-1.5 border-b border-slate-200 bg-white px-1 py-2 dark:border-slate-700 dark:bg-neutral-900">
+        <div data-i-doc="view:handbook-phone-filters" className="sticky top-[50px] z-20 mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800">
             <div className="w-56">
                 <SearchInput
                     size="xs"

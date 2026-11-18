@@ -67,10 +67,14 @@ const Reasoning = observer(() => {
   )
 })
 
+// Як у легасі (ProjectModalManager: input.style = "background-color: green|orange|red"):
+// колір — фон самого чекбокса. @tailwindcss/forms робить його appearance:none, тож квадрат
+// заливається кольором повністю, а у відміченому стані зверху — біла галочка плагіна.
+// text-* — currentColor для :checked (плагін), щоб колір не змінювався при відмітці.
 const SWATCH = {
-  green: "bg-green-600 accent-green-600",
-  orange: "bg-orange-500 accent-orange-500",
-  red: "bg-red-600 accent-red-600",
+  green: "bg-green-700 text-green-700",
+  orange: "bg-amber-500 text-amber-500",
+  red: "bg-red-600 text-red-600",
 }
 
 const Restrictions = observer(() => {
@@ -97,7 +101,7 @@ const Restrictions = observer(() => {
             </button>
           )}
         </div>
-        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+        <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
           <label className="flex cursor-pointer items-center gap-1">
             <input
               type="checkbox"
@@ -138,17 +142,13 @@ const Restrictions = observer(() => {
                 className="flex cursor-pointer items-center gap-1 text-sm text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
                 title={meta?.caption}
               >
-                <span
-                  className={`inline-flex rounded-sm p-px ${SWATCH[meta?.color] ?? ""}`}
-                >
-                  <input
-                    type="checkbox"
-                    name={key}
-                    className="h-4 w-4"
-                    checked={Boolean(form[key])}
-                    onChange={() => vm.toggleRestriction(key)}
-                  />
-                </span>
+                <input
+                  type="checkbox"
+                  name={key}
+                  className={`h-4 w-4 cursor-pointer rounded border border-gray-300 dark:border-neutral-600 ${SWATCH[meta?.color] ?? "text-blue-600"}`}
+                  checked={Boolean(form[key])}
+                  onChange={() => vm.toggleRestriction(key)}
+                />
                 <span>{code}</span>
               </label>
               {/* текст санкції 6 видно лише коли її позначено; при знятті значення не стирається */}
@@ -161,14 +161,14 @@ const Restrictions = observer(() => {
                     onChange={(event) =>
                       vm.setField("r6Text", event.target.value)
                     }
-                    className={`h-6 w-56 rounded border border-gray-300 pr-5 pl-1.5 text-xs text-gray-900 transition-colors dark:border-neutral-600 dark:text-gray-100 ${form.r6Text ? "bg-yellow-100 dark:bg-yellow-900/40" : "bg-white dark:bg-neutral-900"}`}
+                    className={`h-6 w-56 rounded border border-gray-200 pr-5 pl-1.5 text-xs text-gray-900 transition-colors dark:border-neutral-600 dark:text-gray-100 ${form.r6Text ? "bg-yellow-100 dark:bg-yellow-900/40" : "bg-white dark:bg-neutral-900"}`}
                   />
                   {form.r6Text && (
                     <button
                       type="button"
                       tabIndex={-1}
                       onClick={() => vm.setField("r6Text", "")}
-                      className="absolute top-1/2 right-1 -translate-y-1/2 text-xs leading-none text-gray-400 hover:text-red-500"
+                      className="absolute top-1/2 right-1 -translate-y-1/2 text-xs leading-none text-gray-600 hover:text-red-500"
                     >
                       &times;
                     </button>
@@ -185,7 +185,7 @@ const Restrictions = observer(() => {
         </label>
         <textarea
           name="r25"
-          className={`${TEXTAREA} h-14 flex-1 border-gray-300 dark:border-neutral-600`}
+          className={`${TEXTAREA} h-14 flex-1 border-gray-200 dark:border-neutral-600`}
           value={form.r25 ?? ""}
           onChange={(event) => vm.setField("r25", event.target.value)}
         />

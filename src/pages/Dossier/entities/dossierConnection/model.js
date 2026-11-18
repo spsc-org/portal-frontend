@@ -14,7 +14,7 @@ export const isAnchor = (connection) =>
 export const originMeta = (origin) =>
     origin === "manual"
         ? {label: "вручну", icon: "fa-solid fa-hand-pointer", classes: "text-violet-600 dark:text-violet-400"}
-        : {label: "автоматично", icon: "fa-solid fa-robot", classes: "text-slate-500 dark:text-slate-400"};
+        : {label: "автоматично", icon: "fa-solid fa-robot", classes: "text-gray-600 dark:text-gray-400"};
 
 const REVIEW_REASON_LABELS = {
     changed: "джерело змінилось",
@@ -45,7 +45,7 @@ export const connectionStatus = (connection) => {
         return {
             label: "нікчемний",
             icon: "fa-solid fa-ban",
-            classes: "text-gray-500 dark:text-gray-400",
+            classes: "text-gray-600 dark:text-gray-400",
         };
     }
     if (connection?.needs_review && connection?.review_reason === "conflict") {
@@ -69,7 +69,7 @@ export const connectionStatus = (connection) => {
             classes: "text-green-600 dark:text-green-400",
         };
     }
-    return {label: "непідтверджений модератором", icon: "fa-regular fa-circle", classes: "text-slate-400 dark:text-slate-500"};
+    return {label: "непідтверджений модератором", icon: "fa-regular fa-circle", classes: "text-gray-600 dark:text-gray-500"};
 };
 
 // Лівий accent-бар картки зв'язку (за макетом).
@@ -79,7 +79,7 @@ export const connectionAccentClasses = (connection) => {
     if (connection?.needs_review && connection?.review_reason === "conflict") return "border-l-red-500";
     if (connection?.needs_review) return "border-l-orange-400";
     if (connection?.confirmed_by != null) return "border-l-green-500";
-    return "border-l-slate-300 dark:border-l-slate-600";
+    return "border-l-gray-300 dark:border-l-gray-600";
 };
 
 // Звʼязок вважається підтвердженим, коли є confirmed_by і немає needs_review (розходження
@@ -109,7 +109,7 @@ export const canDelete = (connection, currentUserId) =>
 export const criteriaChipClasses = (key) =>
     key === "drsId" || key === "drs_id"
         ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
-        : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300";
+        : "bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-gray-300";
 
 export const criteriaList = (matchedCriteria) => {
     if (!matchedCriteria) return [];

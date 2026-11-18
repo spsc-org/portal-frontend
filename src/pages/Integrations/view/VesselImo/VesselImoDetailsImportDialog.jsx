@@ -1,15 +1,7 @@
 import { observer } from "mobx-react-lite";
-import {
-    Alert,
-    Button,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Input,
-    Spinner,
-    Typography,
-} from "@material-tailwind/react";
+import { Alert, Input, Spinner, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
+import Button from "../../../../components/Buttons/Button.jsx"
 import LoadingButton from "../../../../components/Buttons/LoadingButton.jsx";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { FileImportViewModel } from "../../viewmodel/IntegrationsViewModels.js";
@@ -17,12 +9,12 @@ import { INTEGRATION_KEYS, previewVesselImoDetailsImport, commitVesselImoDetails
 
 const SummaryGrid = ({ summary }) => (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-        <div><span className="text-gray-500 dark:text-slate-400">Було:</span> <span className="font-medium dark:text-slate-200">{summary.previousCount}</span></div>
-        <div><span className="text-gray-500 dark:text-slate-400">Залито:</span> <span className="font-medium dark:text-slate-200">{summary.importedCount}</span></div>
-        <div><span className="text-gray-500 dark:text-slate-400">Додано:</span> <span className={`font-medium ${summary.addedCount > 0 ? 'text-green-600' : 'dark:text-slate-200'}`}>{summary.addedCount}</span></div>
-        <div><span className="text-gray-500 dark:text-slate-400">Видалено:</span> <span className={`font-medium ${summary.removedCount > 0 ? 'text-red-500' : 'dark:text-slate-200'}`}>{summary.removedCount}</span></div>
-        <div><span className="text-gray-500 dark:text-slate-400">Без змін:</span> <span className="font-medium dark:text-slate-200">{summary.unchangedCount}</span></div>
-        <div><span className="text-gray-500 dark:text-slate-400">Дублів у файлі:</span> <span className="font-medium dark:text-slate-200">{summary.duplicatesInSource}</span></div>
+        <div><span className="text-gray-600 dark:text-gray-400">Було:</span> <span className="font-medium dark:text-gray-200">{summary.previousCount}</span></div>
+        <div><span className="text-gray-600 dark:text-gray-400">Залито:</span> <span className="font-medium dark:text-gray-200">{summary.importedCount}</span></div>
+        <div><span className="text-gray-600 dark:text-gray-400">Додано:</span> <span className={`font-medium ${summary.addedCount > 0 ? 'text-green-600' : 'dark:text-gray-200'}`}>{summary.addedCount}</span></div>
+        <div><span className="text-gray-600 dark:text-gray-400">Видалено:</span> <span className={`font-medium ${summary.removedCount > 0 ? 'text-red-500' : 'dark:text-gray-200'}`}>{summary.removedCount}</span></div>
+        <div><span className="text-gray-600 dark:text-gray-400">Без змін:</span> <span className="font-medium dark:text-gray-200">{summary.unchangedCount}</span></div>
+        <div><span className="text-gray-600 dark:text-gray-400">Дублів у файлі:</span> <span className="font-medium dark:text-gray-200">{summary.duplicatesInSource}</span></div>
         {summary.invalidRows > 0 && (
             <div className="col-span-2 sm:col-span-3 text-amber-500">
                 Рядків з невалідним/відсутнім IMO (пропущено): {summary.invalidRows}
@@ -69,7 +61,7 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
 
         return (
             <div>
-                <Typography className="dark:text-slate-300 mb-4">
+                <Typography className="dark:text-gray-300 mb-4">
                     Аналіз файлу «{file?.name}» — стан ДО імпорту.
                 </Typography>
                 {previewMutation.isError && <Alert color="red" className="mb-4">{errorMessage}</Alert>}
@@ -88,7 +80,7 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
             return (
                 <div className="flex flex-col items-center justify-center h-48 gap-4">
                     <Spinner className="h-12 w-12" />
-                    <Typography className="dark:text-slate-200">Йде імпорт, будь ласка, зачекайте…</Typography>
+                    <Typography className="dark:text-gray-200">Йде імпорт, будь ласка, зачекайте…</Typography>
                 </div>
             );
         }
@@ -101,7 +93,7 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
             return (
                 <div className="flex flex-col items-center justify-center h-48 gap-4">
                     <Spinner className="h-12 w-12" />
-                    <Typography className="dark:text-slate-200">Аналізуємо файл…</Typography>
+                    <Typography className="dark:text-gray-200">Аналізуємо файл…</Typography>
                 </div>
             );
         }
@@ -113,7 +105,7 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
         return (
             <>
                 {error && <Alert color="red" className="mb-4">{error}</Alert>}
-                <Typography className="dark:text-slate-300 mb-4">
+                <Typography className="dark:text-gray-300 mb-4">
                     Завантажте Excel-книгу з деталями суден (один лист, ключ — IMO). Імпорт
                     повністю замінює поточну таблицю деталей.
                 </Typography>
@@ -128,8 +120,8 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
                     type="file"
                     label="Файл для імпорту (.xlsx)"
                     onChange={handleFileChange}
-                    className="dark:text-slate-200"
-                    labelProps={{ className: "dark:!text-slate-400 dark:peer-focus:!text-blue-300" }}
+                    className="dark:text-gray-200"
+                    labelProps={{ className: "dark:!text-gray-400 dark:peer-focus:!text-blue-300" }}
                     error={!!error}
                 />
             </>
@@ -140,15 +132,15 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
     const showConfirmButton = previewMutation.isSuccess && !isImportSettled;
 
     return (
-        <Dialog open={open} handler={handleClose} size="md" className="dark:bg-slate-800">
-            <DialogHeader>
-                <Typography variant="h5" className="dark:text-slate-200">
+        <Modal open={open} handler={handleClose} size="md">
+            <ModalHeader>
+                <Typography variant="h5" className="dark:text-gray-200">
                     Імпорт деталей суден
                 </Typography>
-            </DialogHeader>
-            <DialogBody>{renderBody()}</DialogBody>
-            <DialogFooter>
-                <Button variant="text" color="blue-gray" onClick={handleClose} className="mr-1 dark:text-slate-300 dark:hover:bg-slate-700">
+            </ModalHeader>
+            <ModalBody>{renderBody()}</ModalBody>
+            <ModalFooter>
+                <Button variant="text" color="blue-gray" onClick={handleClose} className="mr-1 dark:text-gray-300 dark:hover:bg-neutral-600">
                     Закрити
                 </Button>
                 {showAnalyzeButton && (
@@ -157,8 +149,7 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
                         color="blue"
                         onClick={handleAnalyze}
                         isLoading={previewMutation.isPending}
-                        disabled={!file || previewMutation.isPending}
-                    >
+                        disabled={!file || previewMutation.isPending}>
                         Аналізувати
                     </LoadingButton>
                 )}
@@ -168,13 +159,12 @@ const VesselImoDetailsImportDialog = ({ open, onClose, onImportSuccess }) => {
                         color="green"
                         onClick={handleConfirmImport}
                         isLoading={importMutation.isPending}
-                        disabled={importMutation.isPending}
-                    >
+                        disabled={importMutation.isPending}>
                         Підтвердити імпорт
                     </LoadingButton>
                 )}
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

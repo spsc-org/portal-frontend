@@ -11,7 +11,7 @@ export const SelectField = ({ label, value, onChange, options, placeholder = "â€
             value={value}
             onChange={(e) => onChange(e.target.value)}
             required={required}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
+            className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
         >
             <option value="">{placeholder}</option>
             {options.map((o) => (

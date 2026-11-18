@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components -- примітиви полів деталей джерела (компоненти + хелпери форматування) */
 
-const labelClasses = "font-medium text-xs mb-1 text-gray-500 dark:text-gray-400";
-const valueBoxClasses = "p-2 bg-gray-50 dark:bg-gray-800 rounded text-gray-800 dark:text-gray-100 text-sm";
+const labelClasses = "font-medium text-xs mb-1 text-gray-600 dark:text-gray-400";
+const valueBoxClasses = "p-2 bg-gray-50 dark:bg-neutral-700 rounded text-gray-800 dark:text-gray-100 text-sm";
 
 // Спільні примітиви для шаблонів подання джерела-звʼязку (по одному шаблону на
 // кожну таблицю-джерело — див. sourceDetails/*, зареєстровані в shared/config/sourceTypes.js).

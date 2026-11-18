@@ -5,7 +5,7 @@ const AttendanceLegend = ({ absenceTypes }) => (
         {absenceTypes.filter(type => type.value !== 'home_based').map(type => (
             <div key={type.value} className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-sm shadow-sm" style={{ backgroundColor: type.color }}></span>
-                <Typography className="text-[10px] font-bold text-slate-700 dark:text-slate-300">{type.caption}</Typography>
+                <Typography className="text-[10px] font-bold text-gray-700 dark:text-gray-300">{type.caption}</Typography>
             </div>
         ))}
     </div>

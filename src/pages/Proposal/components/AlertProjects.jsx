@@ -1,5 +1,6 @@
 import {useState} from "react";
-import {Button, List, ListItem} from "@material-tailwind/react";
+import { List, ListItem } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 
 export default function AlertProjects({ ignoreAttachAlert }) {
     const [showAll, setShowAll] = useState(false);
@@ -12,7 +13,7 @@ export default function AlertProjects({ ignoreAttachAlert }) {
     return (
         <>
             {Boolean(ignoreAttachAlert.length) && (
-                <div className="p-2 dark:text-slate-300  bg-red-300 dark:bg-red-700 rounded-md">
+                <div className="p-2 dark:text-gray-300  bg-red-300 dark:bg-red-700 rounded-md">
                     <span className="text-sm">
                         <i className="fa-solid fa-circle-info"></i>{" "}
                         Обрані проєкти вже мають укази. Дані по указ будуть змінено.
@@ -35,8 +36,7 @@ export default function AlertProjects({ ignoreAttachAlert }) {
                             variant="text"
                             size="sm"
                             className="mt-2"
-                            onClick={() => setShowAll(!showAll)}
-                        >
+                            onClick={() => setShowAll(!showAll)}>
                             {showAll ? "Сховати" : "Показати більше"}
                         </Button>
                     )}

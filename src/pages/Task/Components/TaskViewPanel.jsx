@@ -2,7 +2,8 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { confirmToast } from "../../../components/confirmToast.jsx";
 import { TaskDetailsViewModel } from "../viewmodel/TaskViewModels.js";
-import {Chip, IconButton, Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip} from "@material-tailwind/react";
+import { Chip, Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
 import {format} from "date-fns";
 import AttachmentsGallery from "../../../components/AttachmentsGallery.jsx";
 import {allowedStatusIds, getPriorityStyle, getStatusStyle, getTypeStyle} from "../utils.jsx";
@@ -70,11 +71,11 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
 
     return (
         <aside data-i-doc="view:task-view-panel"
-            className="w-[26rem] 2xl:w-[30rem] shrink-0 sticky top-14 self-start max-h-[calc(100vh-4.5rem)] flex flex-col rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            className="w-[26rem] 2xl:w-[30rem] shrink-0 sticky top-14 self-start max-h-[calc(100vh-4.5rem)] flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
             {/* Шапка: id, дії */}
-            <div className="flex items-center justify-between gap-2 border-b border-slate-200 px-4 py-2.5 dark:border-slate-700">
+            <div className="flex items-center justify-between gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-neutral-700">
                 <div className="flex items-center gap-2 min-w-0">
-                    <span className="font-mono text-xs font-semibold text-slate-500 dark:text-slate-400">#{id}</span>
+                    <span className="font-mono text-xs font-semibold text-gray-600 dark:text-gray-400">#{id}</span>
                     {Boolean(task?.deleted_at) &&
                         <Chip size="sm" color="blue" variant="ghost" className="py-0.5" value="Видалено"/>
                     }
@@ -87,17 +88,17 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                                     {getStatusStyle(task.status?.name)}
                                     {updateStatusMutation.isPending
                                         ? <Spinner className="h-3 w-3"/>
-                                        : <i className="fa-solid fa-chevron-down text-[8px] text-slate-400"></i>}
+                                        : <i className="fa-solid fa-chevron-down text-[8px] text-gray-500"></i>}
                                 </button>
                             </MenuHandler>
-                            <MenuList className="min-w-[9rem] dark:border-slate-700 dark:bg-slate-800">
+                            <MenuList className="min-w-[9rem] dark:border-neutral-700 dark:bg-neutral-700">
                                 {/* Лише переходи, дозволені життєвим циклом (TaskLifecycle) */}
                                 {statuses
                                     .filter(status => allowedStatusIds(task, auth).includes(status.id))
                                     .map(status => (
                                         <MenuItem key={status.id}
                                                   onClick={() => handleChangeStatus(status.id)}
-                                                  className="dark:hover:bg-slate-700 dark:focus:bg-slate-700">
+                                                  className="dark:hover:bg-neutral-600 dark:focus:bg-neutral-600">
                                             {getStatusStyle(status.name)}
                                         </MenuItem>
                                     ))}
@@ -110,7 +111,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                     {Boolean(task) &&
                         <Tooltip content={data?.isFavorite ? "Прибрати з обраного" : "Додати в обране"}>
                             <IconButton size="sm" variant="text"
-                                        className={data?.isFavorite ? "text-amber-400" : "dark:text-slate-300"}
+                                        className={data?.isFavorite ? "text-amber-400" : "dark:text-gray-300"}
                                         disabled={toggleFavoriteMutation.isPending}
                                         onClick={handleToggleFavorite}>
                                 <i className={`${data?.isFavorite ? "fa-solid" : "fa-regular"} fa-star`}></i>
@@ -119,14 +120,14 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                     }
                     {canEdit &&
                         <Tooltip content="Злити з іншою задачею">
-                            <IconButton size="sm" variant="text" className="dark:text-slate-300" onClick={() => setIsMergeModalOpen(true)}>
+                            <IconButton size="sm" variant="text" className="dark:text-gray-300" onClick={() => setIsMergeModalOpen(true)}>
                                 <i className="fa-solid fa-code-merge"></i>
                             </IconButton>
                         </Tooltip>
                     }
                     {Boolean(task) &&
                         <Tooltip content="Створити нову задачу на основі цієї">
-                            <IconButton size="sm" variant="text" className="dark:text-slate-300" onClick={() => setIsCloneModalOpen(true)}>
+                            <IconButton size="sm" variant="text" className="dark:text-gray-300" onClick={() => setIsCloneModalOpen(true)}>
                                 <i className="fa-regular fa-clone"></i>
                             </IconButton>
                         </Tooltip>
@@ -136,7 +137,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                             <IconButton
                                 size="sm"
                                 variant="text"
-                                className="dark:text-slate-300"
+                                className="dark:text-gray-300"
                                 onClick={() => setIsAuditModalOpen(true)}
                             >
                                 <i className="fa-regular fa-clock-rotate-left"></i>
@@ -144,12 +145,12 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                         </Tooltip>
                     }
                     <Tooltip content="Скопіювати посилання">
-                        <IconButton size="sm" variant="text" className="dark:text-slate-300" onClick={handleCopyLink}>
+                        <IconButton size="sm" variant="text" className="dark:text-gray-300" onClick={handleCopyLink}>
                             <i className="fa-regular fa-link"></i>
                         </IconButton>
                     </Tooltip>
                     <Tooltip content="Закрити (Esc)">
-                        <IconButton size="sm" variant="text" className="dark:text-slate-300" onClick={onClose}>
+                        <IconButton size="sm" variant="text" className="dark:text-gray-300" onClick={onClose}>
                             <i className="fa-regular fa-xmark text-base"></i>
                         </IconButton>
                     </Tooltip>
@@ -163,7 +164,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                         <Spinner className="h-8 w-8"/>
                     </div>
                 ) : !task ? (
-                    <div className="flex flex-col items-center justify-center gap-2 py-16 text-slate-400">
+                    <div className="flex flex-col items-center justify-center gap-2 py-16 text-gray-600">
                         <i className="fa-regular fa-circle-exclamation text-2xl"></i>
                         <span className="text-sm">Не вдалося завантажити задачу</span>
                     </div>
@@ -176,7 +177,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                             canEdit={canEdit}
                         />
 
-                        <div className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200 bg-slate-50/60 px-3 dark:divide-slate-800 dark:border-slate-700 dark:bg-slate-800/40">
+                        <div className="mt-3 divide-y divide-gray-100 rounded-lg border border-gray-200 bg-gray-50/60 px-3 dark:divide-neutral-700 dark:border-neutral-700 dark:bg-neutral-700/40">
                             <InlineSelectField
                                 icon="fa-regular fa-shapes" label="Тип"
                                 options={types}
@@ -239,7 +240,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                                         <button type="button"
                                                 onClick={() => setIsProjectsModalOpen(true)}
                                                 title="Керувати набором проєктів"
-                                                className="text-slate-400 transition hover:text-blue-500 dark:text-slate-500 dark:hover:text-blue-400">
+                                                className="text-gray-600 transition hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400">
                                             <i className="fa-regular fa-pen text-[10px]"></i>
                                         </button>
                                     }
@@ -274,7 +275,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                         </div>
 
                         <div className="mt-3">
-                            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
                                 Опис
                             </p>
                             <InlineDescriptionField
@@ -287,7 +288,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
 
                         {(attachments.length > 0 || canEdit) &&
                             <div className="mt-4">
-                                <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                                <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
                                     Вкладення{attachments.length > 0 ? ` (${attachments.length})` : ""}
                                 </p>
                                 <AttachmentsGallery data={attachments}
@@ -299,8 +300,8 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                         }
 
                         {(task.result || resultAttachments.length > 0 || canEdit) &&
-                            <div className="mt-4 rounded-md border border-slate-200 bg-slate-50/60 p-2.5 dark:border-slate-700 dark:bg-slate-800/40">
-                                <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                            <div className="mt-4 rounded-md border border-gray-200 bg-gray-50/60 p-2.5 dark:border-neutral-700 dark:bg-neutral-700/40">
+                                <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
                                     Результат
                                 </p>
                                 <InlineDescriptionField
@@ -312,7 +313,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                                 />
                                 {(resultAttachments.length > 0 || canEdit) &&
                                     <div className="mt-2.5">
-                                        <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                                        <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
                                             Файли результату{resultAttachments.length > 0 ? ` (${resultAttachments.length})` : ""}
                                         </p>
                                         <AttachmentsGallery data={resultAttachments}

@@ -36,7 +36,7 @@ const OrphanRow = ({project, canManage, onLink, onCreate, isLinking, isCreating}
     const canLink = profileId !== "" && Number(profileId) > 0;
 
     return (
-        <div className="flex flex-col gap-2 px-3.5 py-3 rounded-lg border border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700">
+        <div className="flex flex-col gap-2 px-3.5 py-3 rounded-lg border border-gray-200 bg-white dark:bg-neutral-800 dark:border-neutral-700">
             <div className="flex items-start justify-between gap-2">
                 <div className="text-[12.5px] font-semibold text-gray-900 dark:text-gray-100 truncate">
                     {projectTitle(project)}
@@ -45,7 +45,7 @@ const OrphanRow = ({project, canManage, onLink, onCreate, isLinking, isCreating}
                     type="button"
                     onClick={() => setExpanded((prev) => !prev)}
                     title={expanded ? "Згорнути картку проєкту" : "Розгорнути картку проєкту"}
-                    className="flex-none w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-800"
+                    className="flex-none w-6 h-6 flex items-center justify-center rounded text-gray-600 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-neutral-700"
                 >
                     <i className={`fa-solid ${expanded ? "fa-chevron-up" : "fa-chevron-down"} text-[11px]`}></i>
                 </button>
@@ -57,11 +57,11 @@ const OrphanRow = ({project, canManage, onLink, onCreate, isLinking, isCreating}
             </div>
 
             {expanded && (
-                <div className="mt-1 pt-2.5 border-t border-gray-100 dark:border-gray-800">
+                <div className="mt-1 pt-2.5 border-t border-gray-100 dark:border-neutral-700">
                     {isPending && (
                         <div className="animate-pulse flex flex-col gap-2" aria-hidden="true">
-                            <div className="h-9 w-full rounded-md bg-gray-100 dark:bg-gray-800"/>
-                            <div className="h-9 w-4/5 rounded-md bg-gray-100 dark:bg-gray-800"/>
+                            <div className="h-9 w-full rounded-md bg-gray-100 dark:bg-neutral-700"/>
+                            <div className="h-9 w-4/5 rounded-md bg-gray-100 dark:bg-neutral-700"/>
                         </div>
                     )}
                     {isError && (
@@ -88,7 +88,7 @@ const OrphanRow = ({project, canManage, onLink, onCreate, isLinking, isCreating}
                         value={profileId}
                         onChange={(e) => setProfileId(e.target.value)}
                         placeholder="id досьє"
-                        className="w-24 h-8 px-2 text-xs font-mono rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                        className="w-24 h-8 px-2 text-xs font-mono rounded-md border border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-600 dark:text-gray-100"
                     />
                     <button
                         type="button"
@@ -104,7 +104,7 @@ const OrphanRow = ({project, canManage, onLink, onCreate, isLinking, isCreating}
                         disabled={isCreating}
                         onClick={onCreate}
                         title="Створити нове досьє на основі цього проєкту"
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-emerald-200 bg-white text-emerald-700 cursor-pointer transition hover:bg-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-emerald-800 dark:text-emerald-400"
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-emerald-200 bg-white text-emerald-700 cursor-pointer transition hover:bg-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-neutral-700 dark:border-emerald-800 dark:text-emerald-400"
                     >
                         <i className={`fa-solid ${isCreating ? "fa-spinner fa-spin" : "fa-folder-plus"} text-[12px]`}></i>
                     </button>

@@ -2,16 +2,9 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { AttachDecreeViewModel } from "../viewmodel/ProposalViewModels.js";
 import { useProposalProps } from "../viewmodel/useProposalProps.js";
-import {
-    Button,
-    Checkbox,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Tooltip,
-    Typography
-} from "@material-tailwind/react";
+import { Checkbox, Tooltip, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import SingleSelect from "../../../components/fields/SingleSelect.jsx";
 import React, {useMemo, useState} from "react";
 import {
@@ -125,7 +118,7 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
                         <span className="text-[13px] font-medium text-gray-800 dark:text-[#e8eaf0]">
                             {row?.original?.nameUk || row?.original?.nameEn || "Відсутнє значення"}
                         </span>
-                        <div className="text-[10.5px] font-mono text-gray-400 dark:text-[#555d72] space-x-1">
+                        <div className="text-[10.5px] font-mono text-gray-600 dark:text-[#555d72] space-x-1">
                             <span>ID: {row.original.id}</span>
                             {
                                 Boolean(row.original?.createdAt) &&
@@ -223,17 +216,17 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
     }, [rowSelection])
 
     return (
-        <Dialog open={open} handler={onClose} size="xxl">
-            <DialogHeader className="border-b border-gray-200 dark:border-[rgba(255,255,255,0.07)] py-3 px-4">
+        <Modal open={open} handler={onClose} size="xxl">
+            <ModalHeader className="border-b dark:border-[rgba(255,255,255,0.07)] py-3 px-4">
                 <Typography variant="h6" className="text-gray-900 dark:text-[#e8eaf0]">
                     Прикріплення указу
                 </Typography>
-            </DialogHeader>
-            <DialogBody>
+            </ModalHeader>
+            <ModalBody>
                 <div className="flex flex-col lg:flex-row gap-4">
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
-                            <span className="text-[12px] text-gray-500 dark:text-[#8b91a3]">
+                            <span className="text-[12px] text-gray-600 dark:text-[#8b91a3]">
                                 Обрано: <span className="font-semibold text-gray-800 dark:text-[#e8eaf0]">{table.getSelectedRowModel().flatRows.length}</span>
                             </span>
                             {table.getSelectedRowModel().flatRows.length > 0 && (
@@ -276,7 +269,7 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
                                             <th
                                                 key={header.id}
                                                 style={{width: header.getSize()}}
-                                                className="sticky top-0 z-10 bg-gray-50 dark:bg-[#1a2035] text-[11px] font-semibold text-gray-500 dark:text-[#8b91a3] uppercase tracking-wide px-3 py-2 text-left border-b border-gray-200 dark:border-[rgba(255,255,255,0.07)]"
+                                                className="sticky top-0 z-10 bg-gray-50 dark:bg-[#1a2035] text-[11px] font-semibold text-gray-600 dark:text-[#8b91a3] uppercase tracking-wide px-3 py-2 text-left border-b border-gray-200 dark:border-[rgba(255,255,255,0.07)]"
                                             >
                                                 {header.isPlaceholder ? null : (
                                                     <div>
@@ -320,7 +313,7 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
                                           onChange={handleChangeSelect('decreeId')}/>
                             <Typography
                                 variant="paragraph"
-                                className="text-[12px] text-gray-500 dark:text-[#8b91a3] flex items-start gap-2 p-3 rounded-[8px] bg-blue-50 dark:bg-[rgba(79,142,247,0.08)] mt-3"
+                                className="text-[12px] text-gray-600 dark:text-[#8b91a3] flex items-start gap-2 p-3 rounded-[8px] bg-blue-50 dark:bg-[rgba(79,142,247,0.08)] mt-3"
                             >
                                 <i className="fa-solid fa-circle-info mt-0.5"></i>
                                 Оберіть указ та проєкти.
@@ -331,26 +324,23 @@ const AttachDecreeModal = ({open = false, onClose, ...dialogProps}) => {
                         }
                     </div>
                 </div>
-            </DialogBody>
-            <DialogFooter className="border-t border-gray-200 dark:border-[rgba(255,255,255,0.07)] py-3 px-4 gap-2">
+            </ModalBody>
+            <ModalFooter className="border-t dark:border-[rgba(255,255,255,0.07)] py-3 px-4 gap-2">
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
-                    className="mr-1"
-                >
+                    className="mr-1">
                     <span>Закрити</span>
                 </Button>
                 <LoadingButton
                     isLoading={create.isPending}
                     color="green"
                     disabled={!Object.keys(rowSelection).length || !form.decreeId}
-                    onClick={handleSubmit}
-                >
+                    onClick={handleSubmit}>
                     <span>Прикріпити</span>
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

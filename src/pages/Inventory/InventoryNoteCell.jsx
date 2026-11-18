@@ -43,18 +43,18 @@ const CommentCard = ({c, author, isOwn, onEdit, onDelete}) => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                    <span className="text-gray-400 dark:text-gray-500">{c.createdAt?.slice(0, 16)}</span>
+                    <span className="text-gray-600 dark:text-gray-500">{c.createdAt?.slice(0, 16)}</span>
                     {isOwn && (
                         <div className="flex gap-0.5">
                             <button onClick={(e) => { e.stopPropagation(); onEdit(c); }}
                                     title="Редагувати"
-                                    className="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700
+                                    className="bg-white dark:bg-neutral-700 hover:bg-gray-100 dark:hover:bg-neutral-600
                                                rounded-full p-1 transition-colors">
                                 <i className="fa-regular fa-pen-to-square text-blue-500 pointer-events-none"/>
                             </button>
                             <button onClick={(e) => { e.stopPropagation(); onDelete(c.id); }}
                                     title="Видалити"
-                                    className="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700
+                                    className="bg-white dark:bg-neutral-700 hover:bg-gray-100 dark:hover:bg-neutral-600
                                                rounded-full p-1 transition-colors">
                                 <i className="fa-regular fa-trash text-red-500 pointer-events-none"/>
                             </button>
@@ -91,7 +91,7 @@ const InventoryNoteCell = ({note, comments = [], users = [], inventoryId, curren
             <button
                 onClick={(e) => { e.stopPropagation(); onOpenModal({mode: 'add', inventoryId}); }}
                 className="self-start mt-0.5 flex items-center gap-1 text-[11px]
-                           text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                           text-gray-600 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 <i className="fa-regular fa-plus fa-xs"/>
                 <span>Коментар</span>
             </button>

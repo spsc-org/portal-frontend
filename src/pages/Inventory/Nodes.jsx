@@ -1,7 +1,9 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { InventoryNodesViewModel } from "./viewmodel/InventoryViewModels.js";
-import {Button, IconButton, Spinner, Tooltip} from "@material-tailwind/react";
+import { Spinner, Tooltip } from "@material-tailwind/react"
+import IconButton from "../../components/Buttons/IconButton.jsx"
+import Button from "../../components/Buttons/Button.jsx"
 import Page from "../../components/Page.jsx";
 import PageHeader from "../../layouts/app/PageHeader.jsx";
 import { HeaderButton } from "../../layouts/app/HeaderButtons.jsx";
@@ -10,15 +12,15 @@ import AdvancedSelect from "../../components/fields/AdvancedSelect.jsx";
 const InventoryRow = ({item, actionBtn, isAdded, inventoryType}) => {
     const type = inventoryType.find(t => t.id === item.valueTypeId);
     return (
-        <div className={`flex items-center justify-between rounded px-2 py-1.5 text-xs border dark:border-gray-700 ${isAdded ? 'bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-900/50' : 'bg-gray-50 dark:bg-gray-800'}`}>
+        <div className={`flex items-center justify-between rounded px-2 py-1.5 text-xs border dark:border-neutral-700 ${isAdded ? 'bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-900/50' : 'bg-gray-50 dark:bg-neutral-700'}`}>
             <div className="flex items-center gap-2 min-w-0 overflow-hidden">
-                {type && <i className={`${type.icon} text-gray-500 shrink-0`} title={type.caption}/>}
+                {type && <i className={`${type.icon} text-gray-600 shrink-0`} title={type.caption}/>}
                 {item.inventoryNum &&
-                    <span className="text-gray-400 shrink-0 font-mono">{item.inventoryNum}</span>}
+                    <span className="text-gray-600 shrink-0 font-mono">{item.inventoryNum}</span>}
                 <span className={`font-medium truncate ${isAdded ? 'text-blue-700 dark:text-blue-300' : 'dark:text-gray-200'}`}>
                     {item.caption}
                 </span>
-                {item.serial && <span className="text-gray-400 shrink-0">{item.serial}</span>}
+                {item.serial && <span className="text-gray-600 shrink-0">{item.serial}</span>}
             </div>
             <div className="shrink-0 ml-2">
                 {isAdded ? (
@@ -62,14 +64,14 @@ const NodesPage = () => {
     const addItemMutation = { mutate: vm.addItem, isPending: vm.addItemCmd.isPending };
     const removeItemMutation = { mutate: vm.removeItem, isPending: vm.removeItemCmd.isPending };
 
-    const inputCls = "w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200";
+    const inputCls = "w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 dark:bg-neutral-900 dark:border-neutral-600 dark:text-gray-200";
 
     const getNetworkLabel = (value) => networkConnections.find(c => c.value === value)?.caption ?? '---';
     const getTypeLabel = (value) => nodeTypes.find(t => t.value === value)?.caption ?? '---';
 
     return (
             <Page>
-                <div data-i-doc="page:inventory-nodes" className="flex flex-col h-[calc(100vh-120px)] mt-2 mx-2 border rounded-xl bg-white dark:bg-gray-900 dark:border-gray-700 overflow-hidden shadow-sm">
+                <div data-i-doc="page:inventory-nodes" className="flex flex-col h-[calc(100vh-120px)] mt-2 mx-2 border rounded-xl bg-white dark:bg-neutral-800 dark:border-neutral-700 overflow-hidden shadow-sm">
                     <PageHeader
                         title="Вузли інвентарю"
                         actions={<HeaderButton icon="fa-regular fa-plus" onClick={handleStartCreate}>Новий вузол</HeaderButton>}
@@ -77,10 +79,10 @@ const NodesPage = () => {
 
                     <div className="flex flex-row flex-1 overflow-hidden">
                         {/* ── Left: Nodes list ─────────────────────────── */}
-                        <div className="w-1/6 border-r dark:border-gray-700 flex flex-col overflow-hidden bg-gray-50/50 dark:bg-gray-900/50">
-                            <div className="p-4 border-b dark:border-gray-700">
+                        <div className="w-1/6 border-r dark:border-neutral-700 flex flex-col overflow-hidden bg-gray-50/50 dark:bg-neutral-800/50">
+                            <div className="p-4 border-b dark:border-neutral-700">
                                 <div className="relative">
-                                    <i className="fa-regular fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"/>
+                                    <i className="fa-regular fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs"/>
                                     <input
                                         className={`${inputCls} pl-8`}
                                         placeholder="Пошук вузлів..."
@@ -95,23 +97,23 @@ const NodesPage = () => {
                                     <div className="flex justify-center p-8"><Spinner className="h-6 w-6"/></div>
                                 )}
                                 {!isNodesFetching && nodes.length === 0 && (
-                                    <p className="text-center text-sm text-gray-400 p-8">Вузлів не знайдено</p>
+                                    <p className="text-center text-sm text-gray-600 p-8">Вузлів не знайдено</p>
                                 )}
                                 {nodes.map(node => (
                                     <button
                                         key={node.id}
                                         onClick={() => handleSelectNode(node.id)}
-                                        className={`w-full flex items-center justify-between px-4 py-3 text-left border-b dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all ${
+                                        className={`w-full flex items-center justify-between px-4 py-3 text-left border-b dark:border-neutral-700 hover:bg-white dark:hover:bg-neutral-700 transition-all ${
                                             selectedNodeId === node.id
-                                                ? 'bg-white dark:bg-gray-800 border-l-4 border-l-blue-500 shadow-sm'
+                                                ? 'bg-white dark:bg-neutral-700 border-l-4 border-l-blue-500 shadow-sm'
                                                 : ''
                                         }`}
                                     >
                                         <div className="min-w-0">
                                             <div className="text-sm font-semibold dark:text-gray-200 truncate">{node.name}</div>
                                             <div className="flex items-center gap-2 mt-0.5">
-                                                <div className="text-xs text-gray-500">{node.items_count} ел.</div>
-                                                <div className="text-[10px] bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 px-1 rounded uppercase font-bold">
+                                                <div className="text-xs text-gray-600">{node.items_count} ел.</div>
+                                                <div className="text-[10px] bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-gray-400 px-1 rounded uppercase font-bold">
                                                     {getTypeLabel(node.type)}
                                                 </div>
                                             </div>
@@ -123,11 +125,11 @@ const NodesPage = () => {
                         </div>
 
                         {/* ── Right: Node detail ───────────────────────── */}
-                        <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-900">
+                        <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-neutral-800">
                             {!isCreating && !selectedNodeId && (
-                                <div className="flex-1 flex items-center justify-center text-gray-400">
+                                <div className="flex-1 flex items-center justify-center text-gray-600">
                                     <div className="text-center space-y-4">
-                                        <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto">
+                                        <div className="w-20 h-20 bg-gray-100 dark:bg-neutral-700 rounded-full flex items-center justify-center mx-auto">
                                             <i className="fa-regular fa-diagram-nested text-4xl text-gray-300"/>
                                         </div>
                                         <p className="text-base">Оберіть вузол зі списку зліва для перегляду деталей</p>
@@ -140,7 +142,7 @@ const NodesPage = () => {
                                     <h3 className="font-bold text-xl dark:text-gray-200">Створення нового вузла</h3>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-1 col-span-2">
-                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Назва вузла</label>
+                                            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Назва вузла</label>
                                             <input
                                                 className={`${inputCls} p-2.5 text-base`}
                                                 placeholder="Введіть назву..."
@@ -151,7 +153,7 @@ const NodesPage = () => {
                                         </div>
 
                                         <div className="space-y-1">
-                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Тип вузла</label>
+                                            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Тип вузла</label>
                                             <select
                                                 className={`${inputCls} p-2.5 text-base h-11`}
                                                 value={nodeForm.type}
@@ -164,7 +166,7 @@ const NodesPage = () => {
                                         </div>
 
                                         <div className="space-y-1">
-                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Підключення до мережі</label>
+                                            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Підключення до мережі</label>
                                             <select
                                                 className={`${inputCls} p-2.5 text-base h-11`}
                                                 value={nodeForm.network_connection}
@@ -177,7 +179,7 @@ const NodesPage = () => {
                                         </div>
 
                                         <div className="space-y-1 col-span-2">
-                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Відповідальний користувач</label>
+                                            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Відповідальний користувач</label>
                                             <AdvancedSelect
                                                 size="md"
                                                 options={Object.values(dictionary?.user ?? {})}
@@ -188,7 +190,7 @@ const NodesPage = () => {
                                         </div>
 
                                         <div className="space-y-1 col-span-2">
-                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Нотатки</label>
+                                            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Нотатки</label>
                                             <textarea
                                                 className={`${inputCls} p-2.5 text-base`}
                                                 placeholder="Опис вузла, комплектація тощо..."
@@ -203,8 +205,7 @@ const NodesPage = () => {
                                             color="green"
                                             onClick={() => createMutation.mutate(nodeForm)}
                                             disabled={!nodeForm.name.trim() || createMutation.isPending}
-                                            className="flex items-center gap-2"
-                                        >
+                                            className="flex items-center gap-2">
                                             {createMutation.isPending ? <Spinner className="h-4 w-4"/> : <i className="fa-regular fa-check"/>}
                                             Зберегти вузол
                                         </Button>
@@ -218,7 +219,7 @@ const NodesPage = () => {
                             {!isCreating && selectedNodeId && (
                                 <div className="flex flex-col overflow-hidden flex-1">
                                     {/* Node Header */}
-                                    <div className="p-6 border-b dark:border-gray-700 bg-gray-50/30 dark:bg-gray-800/30">
+                                    <div className="p-6 border-b dark:border-neutral-700 bg-gray-50/30 dark:bg-neutral-700/30">
                                         {isDetailFetching && !nodeDetail ? (
                                             <div className="flex items-center gap-3 dark:text-gray-300"><Spinner className="h-5 w-5"/> Завантаження...</div>
                                         ) : isEditing ? (
@@ -232,7 +233,7 @@ const NodesPage = () => {
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase">Тип</label>
+                                                    <label className="text-[10px] font-bold text-gray-600 uppercase">Тип</label>
                                                     <select
                                                         className={`${inputCls} p-2 text-sm h-10`}
                                                         value={nodeForm.type}
@@ -244,7 +245,7 @@ const NodesPage = () => {
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase">Мережа</label>
+                                                    <label className="text-[10px] font-bold text-gray-600 uppercase">Мережа</label>
                                                     <select
                                                         className={`${inputCls} p-2 text-sm h-10`}
                                                         value={nodeForm.network_connection}
@@ -256,7 +257,7 @@ const NodesPage = () => {
                                                     </select>
                                                 </div>
                                                 <div className="col-span-2">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase">Відповідальний</label>
+                                                    <label className="text-[10px] font-bold text-gray-600 uppercase">Відповідальний</label>
                                                     <AdvancedSelect
                                                         size="sm"
                                                         options={Object.values(dictionary?.user ?? {})}
@@ -278,8 +279,7 @@ const NodesPage = () => {
                                                         size="sm"
                                                         color="green"
                                                         onClick={() => updateMutation.mutate({id: selectedNodeId, data: nodeForm})}
-                                                        disabled={!nodeForm.name.trim() || updateMutation.isPending}
-                                                    >
+                                                        disabled={!nodeForm.name.trim() || updateMutation.isPending}>
                                                         Зберегти зміни
                                                     </Button>
                                                     <Button size="sm" variant="text" onClick={() => setIsEditing(false)} className="dark:text-gray-300">
@@ -297,7 +297,7 @@ const NodesPage = () => {
                                                         </span>
                                                         <div className={`px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider ${
                                                             nodeDetail?.data?.network_connection === 'not_connected'
-                                                            ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+                                                            ? 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-gray-400'
                                                             : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800'
                                                         }`}>
                                                             <i className="fa-regular fa-network-wired mr-1.5 text-[10px]"/>
@@ -313,7 +313,7 @@ const NodesPage = () => {
                                                         )}
                                                     </div>
                                                     {nodeDetail?.data?.notes && (
-                                                        <p className="text-sm text-gray-500 mt-2 whitespace-pre-line leading-relaxed dark:text-gray-400">{nodeDetail.data.notes}</p>
+                                                        <p className="text-sm text-gray-600 mt-2 whitespace-pre-line leading-relaxed dark:text-gray-400">{nodeDetail.data.notes}</p>
                                                     )}
                                                 </div>
                                                 <div className="flex gap-2 shrink-0">
@@ -341,15 +341,14 @@ const NodesPage = () => {
                                     <div className="flex-1 overflow-y-auto p-6 space-y-6">
                                         <div className="flex items-center justify-between">
                                             <h4 className="text-lg font-semibold dark:text-gray-200 flex items-center gap-2">
-                                                Склад вузла <span className="text-sm font-normal text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">{currentItems.length}</span>
+                                                Склад вузла <span className="text-sm font-normal text-gray-600 bg-gray-100 dark:bg-neutral-700 px-2 py-0.5 rounded-full">{currentItems.length}</span>
                                             </h4>
                                             <Button
                                                 size="sm"
                                                 variant={showAddItems ? 'filled' : 'outlined'}
                                                 color="blue"
                                                 onClick={() => setShowAddItems(p => !p)}
-                                                className="flex items-center gap-2"
-                                            >
+                                                className="flex items-center gap-2">
                                                 <i className={`fa-regular fa-${showAddItems ? 'chevron-up' : 'plus'}`}/>
                                                 {showAddItems ? 'Завершити додавання' : 'Додати обладнання'}
                                             </Button>
@@ -360,8 +359,8 @@ const NodesPage = () => {
                                                 <div className="flex justify-center py-10"><Spinner className="h-8 w-8"/></div>
                                             )}
                                             {!isDetailFetching && currentItems.length === 0 && !showAddItems && (
-                                                <div className="text-center py-12 border-2 border-dashed rounded-xl dark:border-gray-800">
-                                                    <p className="text-gray-400 italic">Цей вузол поки що не має обладнання</p>
+                                                <div className="text-center py-12 border-2 border-dashed rounded-xl dark:border-neutral-700">
+                                                    <p className="text-gray-600 italic">Цей вузол поки що не має обладнання</p>
                                                 </div>
                                             )}
                                             {currentItems.map(item => (
@@ -384,7 +383,7 @@ const NodesPage = () => {
                                         </div>
 
                                         {showAddItems && (
-                                            <div className="mt-8 pt-8 border-t dark:border-gray-700 space-y-4 animate-in fade-in slide-in-from-top-2">
+                                            <div className="mt-8 pt-8 border-t dark:border-neutral-700 space-y-4 animate-in fade-in slide-in-from-top-2">
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
                                                         <i className="fa-regular fa-magnifying-glass-plus text-blue-500"/>
@@ -398,8 +397,7 @@ const NodesPage = () => {
                                                             size="sm"
                                                             color="blue-gray"
                                                             className="text-[10px] h-7 dark:text-gray-300"
-                                                            onClick={() => setItemFilters({search: '', type: [], user: []})}
-                                                        >
+                                                            onClick={() => setItemFilters({search: '', type: [], user: []})}>
                                                             Скинути фільтри пошуку
                                                         </Button>
                                                     )}
@@ -431,13 +429,13 @@ const NodesPage = () => {
                                                     />
                                                 </div>
 
-                                                <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar border rounded-lg p-2 bg-gray-50/50 dark:bg-gray-800/20">
+                                                <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar border rounded-lg p-2 bg-gray-50/50 dark:bg-neutral-700/20">
                                                     {isInventoryFetching && (
                                                         <div className="flex justify-center py-6"><Spinner className="h-6 w-6"/></div>
                                                     )}
                                                     {!isInventoryFetching && searchItems.length === 0 && (
-                                                        <div className="text-center py-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                                            <p className="text-sm text-gray-400">
+                                                        <div className="text-center py-6 bg-gray-50 dark:bg-neutral-700 rounded-lg">
+                                                            <p className="text-sm text-gray-600">
                                                                 {itemFilters.search || itemFilters.type.length || itemFilters.user.length ? 'Збігів не знайдено' : 'Почніть вводити текст або оберіть фільтри'}
                                                             </p>
                                                         </div>
@@ -454,8 +452,7 @@ const NodesPage = () => {
                                                                     color="green"
                                                                     onClick={() => addItemMutation.mutate(item.id)}
                                                                     disabled={addItemMutation.isPending}
-                                                                    className="py-1 px-3"
-                                                                >
+                                                                    className="py-1 px-3">
                                                                     Додати
                                                                 </Button>
                                                             }

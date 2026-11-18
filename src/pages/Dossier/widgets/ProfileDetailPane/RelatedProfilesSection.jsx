@@ -20,9 +20,9 @@ const RelatedProfilesSection = ({profileId, relations, canManage, onSelectProfil
 
     return (
         <span data-i-doc="component:sanction-profiles-related-profiles-section" style={{display: "contents"}}>
-            <div className="bg-white border border-gray-200 rounded-[14px] shadow-sm overflow-hidden dark:bg-gray-900 dark:border-gray-700">
+            <div className="bg-white border border-gray-200 rounded-[14px] shadow-sm overflow-hidden dark:bg-neutral-800 dark:border-neutral-700">
                 {relations.length === 0 && (
-                    <div className="py-6 text-center text-sm text-gray-400">Пов'язаних профілів ще немає.</div>
+                    <div className="py-6 text-center text-sm text-gray-600">Пов'язаних профілів ще немає.</div>
                 )}
 
                 {relations.map((connection) => {
@@ -32,7 +32,7 @@ const RelatedProfilesSection = ({profileId, relations, canManage, onSelectProfil
                     return (
                         <div
                             key={connection.id}
-                            className="flex items-start gap-3.5 px-5 py-3.5 border-b border-gray-100 last:border-b-0 dark:border-gray-800"
+                            className="flex items-start gap-3.5 px-5 py-3.5 border-b border-gray-100 last:border-b-0 dark:border-neutral-700"
                         >
                             <div className={`flex-none w-9 h-9 rounded-full flex items-center justify-center text-[13px] ${type.avatarClasses}`}>
                                 <i className={type.icon}></i>
@@ -51,7 +51,7 @@ const RelatedProfilesSection = ({profileId, relations, canManage, onSelectProfil
                                     </span>
                                 </div>
                                 {connection.note && (
-                                    <div className="text-[12px] text-gray-500 mt-1.5 dark:text-gray-400">{connection.note}</div>
+                                    <div className="text-[12px] text-gray-600 mt-1.5 dark:text-gray-400">{connection.note}</div>
                                 )}
                             </div>
                             {canManage && (
@@ -59,7 +59,7 @@ const RelatedProfilesSection = ({profileId, relations, canManage, onSelectProfil
                                     type="button"
                                     disabled={unlinkMutation.isPending}
                                     onClick={() => setUnlinkTarget(connection)}
-                                    className="flex-none inline-flex items-center gap-1.5 h-[30px] px-3 border border-red-200 rounded-[9px] bg-white text-[11.5px] font-semibold text-red-600 cursor-pointer transition hover:brightness-95 disabled:opacity-50 dark:bg-gray-800 dark:border-red-800 dark:text-red-400"
+                                    className="flex-none inline-flex items-center gap-1.5 h-[30px] px-3 border border-red-200 rounded-[9px] bg-white text-[11.5px] font-semibold text-red-600 cursor-pointer transition hover:brightness-95 disabled:opacity-50 dark:bg-neutral-700 dark:border-red-800 dark:text-red-400"
                                 >
                                     <i className="fa-solid fa-link-slash text-[10px]"></i>Прибрати
                                 </button>
@@ -69,7 +69,7 @@ const RelatedProfilesSection = ({profileId, relations, canManage, onSelectProfil
                 })}
 
                 {canManage && (
-                    <div className="px-5 py-4 border-t border-gray-100 dark:border-gray-800">
+                    <div className="px-5 py-4 border-t border-gray-100 dark:border-neutral-700">
                         <button
                             type="button"
                             onClick={() => setShowAddRelation(true)}

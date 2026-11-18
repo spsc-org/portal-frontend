@@ -1,5 +1,7 @@
 import { observer } from "mobx-react-lite";
-import { Button, Card, Typography, IconButton, Tooltip } from "@material-tailwind/react";
+import { Card, Typography, Tooltip } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import { convertDate } from "../../../lib/utils.js";
 import ImportDatasetResultDialog from './ImportDatasetResultDialog.jsx';
 import { getImportTypeIcon, StatusChip } from "./ImportLogShared.jsx";
@@ -28,20 +30,20 @@ const DatasetTable = ({ vm, onImportClick }) => {
     const detailsDialogProps = { logId: vm.detailsLogId };
 
     return (
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-4 dark:text-slate-200">Доступні датасети для імпорту</h2>
+        <div className="bg-white dark:bg-neutral-700 p-6 rounded-lg shadow-md">
+            <h2 className="text-lg font-semibold mb-4 dark:text-gray-200">Доступні датасети для імпорту</h2>
 
-            <Card className="w-full overflow-auto dark:bg-slate-800 shadow-none">
+            <Card className="w-full overflow-auto dark:bg-neutral-700 shadow-none">
                 <table className="w-full min-w-max table-auto text-left">
                     <thead className="sticky top-0 z-10">
                         <tr>
                             {COLUMNS.map(({ key, label }) => (
                                 <th
                                     key={label}
-                                    className="border-b border-blue-gray-100 dark:border-slate-700 bg-blue-gray-50 dark:bg-slate-900 py-2 px-2 cursor-pointer"
+                                    className="border-b border-blue-gray-100 dark:border-neutral-700 bg-blue-gray-50 dark:bg-neutral-800 py-2 px-2 cursor-pointer"
                                     onClick={() => requestSort(key)}
                                 >
-                                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70 dark:text-slate-400">
+                                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70 dark:text-gray-400">
                                         {label}{getSortIndicator(key)}
                                     </Typography>
                                 </th>
@@ -51,21 +53,21 @@ const DatasetTable = ({ vm, onImportClick }) => {
                     <tbody>
                         {sortedDatasets.map((dataset, index) => {
                             const isLast = index === sortedDatasets.length - 1;
-                            const classes = isLast ? 'py-2 px-2' : 'py-2 px-2 border-b border-blue-gray-50 dark:border-slate-700';
+                            const classes = isLast ? 'py-2 px-2' : 'py-2 px-2 border-b border-blue-gray-50 dark:border-neutral-700';
 
                             return (
-                                <tr key={dataset.id} className="even:bg-blue-gray-50/50 dark:even:bg-slate-700/30 hover:bg-blue-gray-50 dark:hover:bg-slate-700/50">
+                                <tr key={dataset.id} className="even:bg-blue-gray-50/50 dark:even:bg-neutral-600/30 hover:bg-blue-gray-50 dark:hover:bg-neutral-600/50">
                                     <td className={classes}>
                                         <div className="flex items-center gap-2">
                                             {getImportTypeIcon(dataset.format)}
-                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-slate-300">
+                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-300">
                                                 {dataset.format || '—'}
                                             </Typography>
                                         </div>
                                     </td>
                                     <td className={classes}>
                                         <div className="flex flex-col">
-                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-slate-200">
+                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-200">
                                                 {dataset.caption || dataset.name || '—'}
                                             </Typography>
                                             {dataset.url && (
@@ -86,26 +88,26 @@ const DatasetTable = ({ vm, onImportClick }) => {
                                                 <img
                                                     src={`/flag-svg/${dataset.country.toLowerCase()}.svg`}
                                                     alt={dataset.country}
-                                                    className="h-4 w-6 object-contain border border-blue-gray-50 dark:border-slate-600"
+                                                    className="h-4 w-6 object-contain border border-blue-gray-50 dark:border-gray-600"
                                                 />
                                             )}
-                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-slate-300">
+                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-300">
                                                 {dataset.country || '—'}
                                             </Typography>
                                         </div>
                                     </td>
                                     <td className={classes}>
-                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-slate-300">
+                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-300">
                                             {convertDate(dataset.last_updated_at) || '—'}
                                         </Typography>
                                     </td>
                                     <td className={classes}>
-                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-slate-300">
+                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-300">
                                             {dataset.updated_by_name || 'N/A'}
                                         </Typography>
                                     </td>
                                     <td className={classes}>
-                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-slate-300">
+                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none dark:text-gray-300">
                                             {dataset.last_run_record_count ?? '—'}
                                         </Typography>
                                     </td>
@@ -126,15 +128,15 @@ const DatasetTable = ({ vm, onImportClick }) => {
                                                             variant="text"
                                                             size="sm"
                                                             onClick={() => handleOpenDetails({ logId: dataset.last_import_log.id })}
-                                                            className="dark:text-slate-400 dark:hover:text-slate-200"
+                                                            className="dark:text-gray-400 dark:hover:text-gray-200"
                                                         >
-                                                            <i className="fa-solid fa-circle-info text-blue-gray-500 dark:text-slate-400" />
+                                                            <i className="fa-solid fa-circle-info text-blue-gray-500 dark:text-gray-400" />
                                                         </IconButton>
                                                     </Tooltip>
                                                 )}
                                             </div>
                                         ) : (
-                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-50 dark:text-slate-500">
+                                            <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-50 dark:text-gray-500">
                                                 -
                                             </Typography>
                                         )}
@@ -144,7 +146,7 @@ const DatasetTable = ({ vm, onImportClick }) => {
                                             <Button size="sm" variant="gradient" color="blue" onClick={() => onImportClick(dataset)}>
                                                 Імпорт
                                             </Button>
-                                            <Button size="sm" variant="outlined" color="blue-gray" onClick={() => setSelectedDataset(dataset)} className="dark:text-slate-300 dark:border-slate-500 dark:hover:bg-slate-700">
+                                            <Button size="sm" variant="outlined" color="blue-gray" onClick={() => setSelectedDataset(dataset)} className="dark:text-gray-300 dark:border-neutral-500 dark:hover:bg-neutral-600">
                                                 Журнал
                                             </Button>
                                         </div>

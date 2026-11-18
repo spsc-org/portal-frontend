@@ -2,7 +2,9 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { TicketsButtonViewModel } from "../../viewmodel/DossierViewModels.js";
 
-import {Dialog, DialogBody, DialogFooter, DialogHeader, Button, Typography, Spinner} from "@material-tailwind/react";
+import { Typography, Spinner } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
+import Button from "../../../../components/Buttons/Button.jsx"
 import TicketBody from "./TicketBody.jsx";
 
 // Один тікет — одна модалка (навмисно НЕ список: попередня версія показувала всі
@@ -17,32 +19,31 @@ const SingleTicketModal = ({open, onClose, ticketId, entityType, entityId, canMa
     const invalidate = vm.invalidate;
 
     return (
-        <Dialog data-i-doc="modal:dossier-single-ticket"
+        <Modal data-i-doc="modal:dossier-single-ticket"
             open={open}
             handler={onClose}
             size="sm"
-            className="dark:bg-slate-900 border dark:border-slate-800"
-            overlayProps={{className: "bg-black/20 backdrop-blur-none"}}
-        >
-            <DialogHeader className="dark:text-white flex items-center gap-2">
+            className="border"
+            overlayProps={{className: "bg-black/20 backdrop-blur-none"}}>
+            <ModalHeader className="flex items-center gap-2">
                 <i className="fa-solid fa-ticket text-base"></i>
                 <Typography variant="h5">Тікет #{ticketId}</Typography>
-            </DialogHeader>
-            <DialogBody className="max-h-[70vh] overflow-y-auto">
+            </ModalHeader>
+            <ModalBody className="max-h-[70vh] overflow-y-auto">
                 {isFetching && !ticket && (
                     <div className="flex justify-center py-10"><Spinner className="h-7 w-7"/></div>
                 )}
                 {!isFetching && !ticket && (
-                    <div className="py-10 text-center text-sm text-gray-400">Тікет не знайдено</div>
+                    <div className="py-10 text-center text-sm text-gray-600">Тікет не знайдено</div>
                 )}
                 {ticket && <TicketBody key={ticket.id} ticket={ticket} canManage={canManage} onChanged={invalidate}/>}
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button variant="text" color="gray" onClick={onClose}>
                     Закрити
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

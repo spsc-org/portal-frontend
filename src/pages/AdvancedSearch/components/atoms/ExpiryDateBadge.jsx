@@ -9,7 +9,7 @@ const ExpiryDateBadge = ({ date, highlightText, filters, label = "До:" }) => {
     if (isNaN(targetDate.getTime())) {
         // Якщо дата невалідна, просто виводимо як текст без логіки кольорів
         return (
-            <div className="flex items-center gap-1.5 mt-0.5 text-gray-600 dark:text-slate-400 text-[11px]">
+            <div className="flex items-center gap-1.5 mt-0.5 text-gray-600 dark:text-gray-400 text-[11px]">
                 <i className="fa-regular fa-calendar text-[10px]"></i>
                 <span>
                     {label} <span className="font-medium">{highlightText ? highlightText(date, filters?.search) : date}</span>
@@ -28,7 +28,7 @@ const ExpiryDateBadge = ({ date, highlightText, filters, label = "До:" }) => {
     // Різниця в днях
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    let containerClass = "text-gray-600 dark:text-slate-400";
+    let containerClass = "text-gray-600 dark:text-gray-400";
     let iconClass = "fa-regular fa-calendar-check";
     let statusLabel = label;
 

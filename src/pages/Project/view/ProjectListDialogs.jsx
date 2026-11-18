@@ -1,41 +1,43 @@
 import { observer } from "mobx-react-lite";
-import { Button, Checkbox, Dialog, DialogBody, DialogFooter, DialogHeader, Typography } from "@material-tailwind/react";
+import { Checkbox, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import ConfirmModal from "../../../components/Modal/ConfirmModal.jsx";
 import { COPY_OPTIONS } from "../viewmodel/ProjectListViewModels.js";
 
 /** Копіювання проєкту — legacy Page.confirmAndCopy (myApp.showConfirm з чекбоксами). */
 const CopyProjectDialog = observer(({ vm }) => (
-    <Dialog open={vm.copyTarget != null} handler={vm.closeCopy} size="xs">
-        <DialogHeader>Копіювання проєкту</DialogHeader>
-        <DialogBody className="flex flex-col gap-2">
-            <Typography className="text-sm dark:text-slate-300">
+    <Modal open={vm.copyTarget != null} handler={vm.closeCopy} size="xs">
+        <ModalHeader>Копіювання проєкту</ModalHeader>
+        <ModalBody className="flex flex-col gap-2">
+            <Typography className="text-sm dark:text-gray-300">
                 Створити копію проєкту #{vm.copyTarget}. Оберіть що включити до копії:
             </Typography>
             {COPY_OPTIONS.map(({ group, items }) => (
                 <div key={group} className="flex flex-col">
-                    <span className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">{group}</span>
+                    <span className="text-xs font-semibold uppercase text-gray-600 dark:text-gray-400">{group}</span>
                     {items.map((item) => (
                         <Checkbox
                             key={item.id}
                             label={item.label}
                             checked={Boolean(vm.copyOptions[item.id])}
                             onChange={() => vm.toggleCopyOption(item.id)}
-                            labelProps={{ className: "text-sm dark:text-slate-300" }}
+                            labelProps={{ className: "text-sm dark:text-gray-300" }}
                             data-testid={`copy-option-${item.id}`}
                         />
                     ))}
                 </div>
             ))}
-        </DialogBody>
-        <DialogFooter className="gap-2">
+        </ModalBody>
+        <ModalFooter className="gap-2">
             <Button variant="text" onClick={vm.closeCopy}>
                 Скасувати
             </Button>
             <Button color="blue" onClick={vm.copy} data-testid="copy-confirm">
                 Копіювати
             </Button>
-        </DialogFooter>
-    </Dialog>
+        </ModalFooter>
+    </Modal>
 ));
 
 /** Перегляд фото вкладень — legacy TableManager.openPhotoPreview. */
@@ -70,7 +72,7 @@ const PhotoPreview = observer(({ vm }) => {
                 <div className="mt-3 flex flex-col items-center gap-2">
                     <p className="text-sm text-white">{current.name}</p>
                     {many && (
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-gray-600">
                             {photo.index + 1} / {photo.photos.length}
                         </div>
                     )}

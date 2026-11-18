@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Card, IconButton, Spinner, Tooltip } from "@material-tailwind/react";
+import { Card, Spinner, Tooltip } from "@material-tailwind/react"
+import IconButton from "../../components/Buttons/IconButton.jsx"
 import toast from "react-hot-toast";
 import Page from "../../components/Page.jsx";
 import ConfirmModal from "../../components/Modal/ConfirmModal.jsx";
@@ -83,8 +84,8 @@ const ReasonRulesPage = () => {
         <>
             <Page>
                 <div data-i-doc="page:project-reason-rules" className="mx-auto mt-6 max-w-5xl px-4">
-                    <div className="mb-6 rounded-lg bg-white p-6 shadow-md dark:bg-slate-800">
-                        <p className="mb-1 text-sm text-gray-600 dark:text-slate-400">
+                    <div className="mb-6 rounded-lg bg-white p-6 shadow-md dark:bg-neutral-700">
+                        <p className="mb-1 text-sm text-gray-600 dark:text-gray-400">
                             Глобальні правила застосовуються до всіх користувачів під час перевірки
                             обґрунтування проєкту. Правила <strong>персональні</strong> (налаштовані
                             користувачами) тут не відображаються.
@@ -102,11 +103,11 @@ const ReasonRulesPage = () => {
                         </div>
                     </div>
 
-                    <div className="mb-6 rounded-lg bg-white p-6 shadow-md dark:bg-slate-800">
-                        <h2 className="mb-4 text-lg font-semibold text-gray-700 dark:text-slate-200">Додати правило</h2>
+                    <div className="mb-6 rounded-lg bg-white p-6 shadow-md dark:bg-neutral-700">
+                        <h2 className="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Додати правило</h2>
                         <div className="flex flex-wrap items-end gap-3">
                             <div className="min-w-[240px] flex-1">
-                                <label className="mb-1 block text-xs text-gray-500 dark:text-slate-400">Фраза</label>
+                                <label className="mb-1 block text-xs text-gray-600 dark:text-gray-400">Фраза</label>
                                 <input
                                     type="text"
                                     maxLength={500}
@@ -114,31 +115,31 @@ const ReasonRulesPage = () => {
                                     onChange={(e) => setPhrase(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleAdd()}
                                     placeholder="Введіть фразу…"
-                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
                                 />
                             </div>
                             <div>
-                                <label className="mb-1 block text-xs text-gray-500 dark:text-slate-400">Категорія</label>
+                                <label className="mb-1 block text-xs text-gray-600 dark:text-gray-400">Категорія</label>
                                 <select
                                     value={category}
                                     onChange={(e) => setCategory(e.target.value)}
-                                    className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    className="rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
                                 >
                                     {CATEGORY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                                 </select>
                             </div>
                             <div>
-                                <label className="mb-1 block text-xs text-gray-500 dark:text-slate-400">Поле</label>
-                                <select disabled value="reasoning" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-400">
+                                <label className="mb-1 block text-xs text-gray-600 dark:text-gray-400">Поле</label>
+                                <select disabled value="reasoning" className="rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-600 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-400">
                                     <option value="reasoning">Обґрунтування</option>
                                 </select>
                             </div>
                             <div>
-                                <label className="mb-1 block text-xs text-gray-500 dark:text-slate-400">Країна</label>
+                                <label className="mb-1 block text-xs text-gray-600 dark:text-gray-400">Країна</label>
                                 <select
                                     value={countryId}
                                     onChange={(e) => setCountryId(e.target.value)}
-                                    className="w-[150px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    className="w-[150px] rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
                                 >
                                     <option value="">(Будь-яка)</option>
                                     {sortedCountries.map((c) => <option key={c.id} value={c.id}>{countryName(c)}</option>)}
@@ -150,9 +151,9 @@ const ReasonRulesPage = () => {
                                     id="rrCaseSensitive"
                                     checked={caseSensitive}
                                     onChange={(e) => setCaseSensitive(e.target.checked)}
-                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 dark:border-slate-600"
+                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 dark:border-gray-600"
                                 />
-                                <label htmlFor="rrCaseSensitive" className="cursor-pointer text-sm text-gray-600 dark:text-slate-400">
+                                <label htmlFor="rrCaseSensitive" className="cursor-pointer text-sm text-gray-600 dark:text-gray-400">
                                     З урахуванням регістру
                                 </label>
                             </div>
@@ -170,31 +171,31 @@ const ReasonRulesPage = () => {
                         {addError && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{addError}</p>}
                     </div>
 
-                    <Card className="overflow-hidden shadow-md dark:bg-slate-800">
-                        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4 dark:border-slate-700">
-                            <h2 className="text-lg font-semibold text-gray-700 dark:text-slate-200">Список правил</h2>
+                    <Card className="overflow-hidden shadow-md dark:bg-neutral-700">
+                        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4 dark:border-neutral-700">
+                            <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">Список правил</h2>
                             <div className="flex items-center gap-3">
-                                <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
+                                <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                                     <input
                                         type="checkbox"
                                         checked={showInactive}
                                         onChange={(e) => setShowInactive(e.target.checked)}
-                                        className="h-4 w-4 rounded border-gray-300 dark:border-slate-600"
+                                        className="h-4 w-4 rounded border-gray-300 dark:border-gray-600"
                                     />
                                     Показати неактивні
                                 </label>
-                                <span className="text-xs text-gray-400 dark:text-slate-500">{visibleRules.length} із {rules.length}</span>
+                                <span className="text-xs text-gray-600 dark:text-gray-500">{visibleRules.length} із {rules.length}</span>
                             </div>
                         </div>
 
                         {isLoading && (
-                            <div className="flex items-center justify-center py-12 text-gray-400 dark:text-slate-500">
+                            <div className="flex items-center justify-center py-12 text-gray-600 dark:text-gray-500">
                                 <Spinner className="mr-2 h-5 w-5" /> Завантаження…
                             </div>
                         )}
 
                         {!isLoading && visibleRules.length === 0 && (
-                            <div className="py-12 text-center text-sm text-gray-400 dark:text-slate-500">
+                            <div className="py-12 text-center text-sm text-gray-600 dark:text-gray-500">
                                 <i className="fa-solid fa-list-check mb-2 block text-3xl opacity-30" />
                                 Немає правил
                             </div>
@@ -202,7 +203,7 @@ const ReasonRulesPage = () => {
 
                         {!isLoading && visibleRules.length > 0 && (
                             <table className="w-full text-sm">
-                                <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-500 dark:bg-slate-900 dark:text-slate-400">
+                                <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-600 dark:bg-neutral-800 dark:text-gray-400">
                                     <tr>
                                         <th className="px-4 py-3 text-left">Фраза</th>
                                         <th className="w-[120px] px-4 py-3 text-left">Категорія</th>
@@ -213,17 +214,17 @@ const ReasonRulesPage = () => {
                                         <th className="w-[80px] px-4 py-3 text-right">Дії</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
+                                <tbody className="divide-y divide-gray-100 dark:divide-neutral-700">
                                     {visibleRules.map((r) => (
-                                        <tr key={r.id} className={`transition hover:bg-gray-50 dark:hover:bg-slate-700/50 ${r.is_active ? "" : "opacity-50"}`}>
+                                        <tr key={r.id} className={`transition hover:bg-gray-50 dark:hover:bg-neutral-600/50 ${r.is_active ? "" : "opacity-50"}`}>
                                             <td className="px-4 py-3">
-                                                <span className="font-mono text-gray-800 dark:text-slate-200">{r.phrase}</span>
+                                                <span className="font-mono text-gray-800 dark:text-gray-200">{r.phrase}</span>
                                             </td>
                                             <td className="px-4 py-3">
                                                 <select
                                                     value={r.category}
                                                     onChange={(e) => patchRule(r.id, { category: e.target.value }, "Категорію змінено")}
-                                                    className="cursor-pointer rounded border border-transparent bg-transparent px-2 py-1 text-xs hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-300 dark:text-slate-200 dark:hover:border-slate-600"
+                                                    className="cursor-pointer rounded border border-transparent bg-transparent px-2 py-1 text-xs hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-300 dark:text-gray-200 dark:hover:border-gray-600"
                                                 >
                                                     {CATEGORY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                                                 </select>
@@ -232,13 +233,13 @@ const ReasonRulesPage = () => {
                                                 <select
                                                     value={r.target_country_id ?? ""}
                                                     onChange={(e) => patchRule(r.id, { target_country_id: e.target.value || null }, "Країну змінено")}
-                                                    className="w-full cursor-pointer rounded border border-transparent bg-transparent px-2 py-1 text-xs hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-300 dark:text-slate-200 dark:hover:border-slate-600"
+                                                    className="w-full cursor-pointer rounded border border-transparent bg-transparent px-2 py-1 text-xs hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-300 dark:text-gray-200 dark:hover:border-gray-600"
                                                 >
                                                     <option value="">(Будь-яка)</option>
                                                     {sortedCountries.map((c) => <option key={c.id} value={c.id}>{countryName(c)}</option>)}
                                                 </select>
                                             </td>
-                                            <td className="px-4 py-3 text-gray-500 dark:text-slate-400">
+                                            <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                                                 {r.field_type === "reasoning" ? "Обґрунтування" : r.field_type}
                                             </td>
                                             <td className="px-4 py-3 text-center">
@@ -246,7 +247,7 @@ const ReasonRulesPage = () => {
                                                     type="checkbox"
                                                     checked={r.is_case_sensitive}
                                                     onChange={(e) => patchRule(r.id, { is_case_sensitive: e.target.checked }, "Налаштування регістру змінено")}
-                                                    className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 dark:border-slate-600"
+                                                    className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 dark:border-gray-600"
                                                 />
                                             </td>
                                             <td className="px-4 py-3 text-center">
@@ -254,14 +255,14 @@ const ReasonRulesPage = () => {
                                                     type="button"
                                                     title={r.is_active ? "Деактивувати" : "Активувати"}
                                                     onClick={() => patchRule(r.id, { is_active: !r.is_active }, r.is_active ? "Правило деактивовано" : "Правило активовано")}
-                                                    className={`text-sm transition ${r.is_active ? "text-green-600 hover:text-red-500" : "text-gray-400 hover:text-green-600 dark:text-slate-500"}`}
+                                                    className={`text-sm transition ${r.is_active ? "text-green-600 hover:text-red-500" : "text-gray-600 hover:text-green-600 dark:text-gray-500"}`}
                                                 >
                                                     <i className={`fa-solid ${r.is_active ? "fa-toggle-on" : "fa-toggle-off"} text-xl`} />
                                                 </button>
                                             </td>
                                             <td className="px-4 py-3 text-right">
                                                 <Tooltip content="Видалити">
-                                                    <IconButton size="sm" variant="text" onClick={() => setDeleteTarget(r)} className="text-gray-400 hover:text-red-600 dark:text-slate-500">
+                                                    <IconButton size="sm" variant="text" onClick={() => setDeleteTarget(r)} className="text-gray-600 hover:text-red-600 dark:text-gray-500">
                                                         <i className="fa-solid fa-trash-can" />
                                                     </IconButton>
                                                 </Tooltip>

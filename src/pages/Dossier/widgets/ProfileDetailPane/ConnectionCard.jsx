@@ -40,10 +40,10 @@ const ConnectionCard = ({connection, canManage, currentUserId, onConfirm, onUnco
         ? "border-red-200 dark:border-red-800"
         : connection.needs_review
             ? "border-orange-200 dark:border-orange-800"
-            : "border-gray-200 dark:border-gray-700";
+            : "border-gray-200 dark:border-neutral-700";
 
     return (
-        <div data-i-doc="component:sanction-profiles-connection-card" className={`bg-white border ${borderClasses} border-l-4 ${connectionAccentClasses(connection)} rounded-xl shadow-sm px-[18px] py-4 dark:bg-gray-900`}>
+        <div data-i-doc="component:sanction-profiles-connection-card" className={`bg-white border ${borderClasses} border-l-4 ${connectionAccentClasses(connection)} rounded-xl shadow-sm px-[18px] py-4 dark:bg-neutral-800`}>
             <div className="flex items-center gap-[9px] flex-wrap">
                 <span className={`flex-none inline-flex items-center gap-[7px] text-[11.5px] font-semibold px-[11px] py-[5px] rounded-lg ${source.badgeClasses}`}>
                     <i className={`${source.icon} text-[11px]`}></i>{source.label}
@@ -80,14 +80,14 @@ const ConnectionCard = ({connection, canManage, currentUserId, onConfirm, onUnco
             </div>
             {!anchor && criteria.length > 0 && (
                 <div className="flex items-center gap-[7px] flex-wrap mt-[11px]">
-                    <span className="text-[10.5px] font-semibold text-gray-400">matched_criteria:</span>
+                    <span className="text-[10.5px] font-semibold text-gray-600">matched_criteria:</span>
                     {criteria.map((key) => (
                         <span key={key} className={`text-[10.5px] font-semibold px-2 py-[3px] rounded-md ${criteriaChipClasses(key)}`}>
                             {criteriaLabel(key)}
                         </span>
                     ))}
                     {matchedValue(connection) && (
-                        <span className="text-[10.5px] font-mono text-gray-500 dark:text-gray-400" title="Значення, яке збіглося">
+                        <span className="text-[10.5px] font-mono text-gray-600 dark:text-gray-400" title="Значення, яке збіглося">
                             = {matchedValue(connection)}
                         </span>
                     )}
@@ -151,7 +151,7 @@ const ConnectionCard = ({connection, canManage, currentUserId, onConfirm, onUnco
                             disabled={isPending || !canVoid(connection)}
                             onClick={() => onVoid(connection)}
                             title={canVoid(connection) ? "Позначити звʼязок нікчемним (помилковим)" : "Звʼязок підтверджено — спершу скасуйте підтвердження"}
-                            className={`${iconActionButton} border border-gray-300 bg-white text-gray-600 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300`}
+                            className={`${iconActionButton} border border-gray-300 bg-white text-gray-600 dark:bg-neutral-700 dark:border-gray-600 dark:text-gray-300`}
                         >
                             <i className="fa-solid fa-ban text-[13px]"></i>
                         </button>
@@ -161,7 +161,7 @@ const ConnectionCard = ({connection, canManage, currentUserId, onConfirm, onUnco
                         disabled={isPending || !isDeletable}
                         onClick={() => onUnlink(connection)}
                         title={isDeletable ? "Вилучити звʼязок" : "Видалити може лише той, хто створив цей звʼязок"}
-                        className={`${iconActionButton} border border-red-200 bg-white text-red-600 dark:bg-gray-800 dark:border-red-800 dark:text-red-400`}
+                        className={`${iconActionButton} border border-red-200 bg-white text-red-600 dark:bg-neutral-700 dark:border-red-800 dark:text-red-400`}
                     >
                         <i className="fa-solid fa-link-slash text-[13px]"></i>
                     </button>

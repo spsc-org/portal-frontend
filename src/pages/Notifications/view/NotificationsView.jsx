@@ -16,8 +16,8 @@ function NotificationsView() {
                 actions={<HeaderButton tone="default" icon="fa-solid fa-check-double" onClick={vm.markAllRead}>Прочитати всі</HeaderButton>}
             />
 
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                <div className="space-y-2.5 border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/70">
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+                <div className="space-y-2.5 border-b border-gray-200 bg-gray-50 px-4 py-3 dark:border-neutral-700 dark:bg-neutral-700/70">
                     <SegmentedControl value={vm.statusFilter} options={STATUS_OPTIONS} onChange={vm.setStatusFilter} />
 
                     {vm.typeOptions.length > 0 && (
@@ -39,14 +39,14 @@ function NotificationsView() {
                 </div>
 
                 {vm.isLoading && (
-                    <p className="px-4 py-10 text-center text-xs text-slate-500 dark:text-slate-400">Завантаження…</p>
+                    <p className="px-4 py-10 text-center text-xs text-gray-600 dark:text-gray-400">Завантаження…</p>
                 )}
 
                 {vm.isEmpty && (
                     <div className="flex flex-col items-center gap-2 px-4 py-12 text-center">
-                        <i className="fa-regular fa-bell-slash text-2xl text-slate-300 dark:text-slate-600" />
-                        <p className="text-sm text-slate-600 dark:text-slate-300">Немає нотифікацій</p>
-                        <p className="text-xs text-slate-400 dark:text-slate-500">Спробуйте змінити фільтри вище</p>
+                        <i className="fa-regular fa-bell-slash text-2xl text-gray-300 dark:text-gray-600" />
+                        <p className="text-sm text-gray-600 dark:text-gray-300">Немає нотифікацій</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-500">Спробуйте змінити фільтри вище</p>
                     </div>
                 )}
 

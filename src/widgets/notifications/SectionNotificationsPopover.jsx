@@ -27,10 +27,10 @@ function SectionNotificationsPopover({ section, title, anchorRef, onClose }) {
             <div
                 ref={panelRef}
                 style={positionStyle(vm.position)}
-                className="pointer-events-auto absolute w-80 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900"
+                className="pointer-events-auto absolute w-80 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg dark:border-neutral-700 dark:bg-neutral-800"
             >
-                <div className="flex items-center justify-between gap-2 border-b border-slate-200 px-4 py-2.5 dark:border-slate-700">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{title}</p>
+                <div className="flex items-center justify-between gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-neutral-700">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">{title}</p>
                     <div className="flex shrink-0 items-center gap-3">
                         {vm.items.length > 0 && (
                             <button
@@ -45,7 +45,7 @@ function SectionNotificationsPopover({ section, title, anchorRef, onClose }) {
                             type="button"
                             onClick={onClose}
                             aria-label="Закрити"
-                            className="text-slate-400 transition hover:text-slate-600 dark:hover:text-slate-300"
+                            className="text-gray-600 transition hover:text-gray-600 dark:hover:text-gray-300"
                         >
                             <i className="fa-solid fa-xmark text-xs" />
                         </button>
@@ -54,7 +54,7 @@ function SectionNotificationsPopover({ section, title, anchorRef, onClose }) {
 
                 {vm.isLoading && (
                     <div className="flex justify-center py-8">
-                        <i className="fa-solid fa-spinner fa-spin text-slate-300 dark:text-slate-600" />
+                        <i className="fa-solid fa-spinner fa-spin text-gray-300 dark:text-gray-600" />
                     </div>
                 )}
 

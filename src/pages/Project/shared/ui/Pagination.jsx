@@ -22,7 +22,7 @@ const Pagination = ({ page, pages, onChange, disabled = false }) => {
             </button>
             {buildPageItems(page, pages).map((item) =>
                 item.type === "gap" ? (
-                    <span key={item.key} className="px-1 text-xs text-gray-500 dark:text-gray-400">
+                    <span key={item.key} className="px-1 text-xs text-gray-600 dark:text-gray-400">
                         …
                     </span>
                 ) : (

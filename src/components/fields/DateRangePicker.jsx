@@ -3,7 +3,8 @@ import {DayPicker, getDefaultClassNames, UI} from "react-day-picker";
 import "react-day-picker/style.css";
 import {uk} from "react-day-picker/locale";
 import {addMonths, format} from "date-fns";
-import {Button, Popover, PopoverContent, PopoverHandler} from "@material-tailwind/react";
+import { Popover, PopoverContent, PopoverHandler } from "@material-tailwind/react"
+import Button from "../Buttons/Button.jsx"
 import Input from "./Input.jsx";
 
 const dateKey = (value) => (value ? new Date(value).getTime() : "");
@@ -24,7 +25,7 @@ const DateRangePicker = ({
 
     // Синхронізація з пропсами під час рендеру (замість setState в ефекті): лише коли змінились
     // самі дати — порівнюємо за значенням, бо батьки часто передають нові об'єкти Date.
-    const propsKey = ;
+    const propsKey = `${dateKey(from)}|${dateKey(to)}`;
     const [syncedKey, setSyncedKey] = useState(propsKey);
     if (syncedKey !== propsKey) {
         setSyncedKey(propsKey);
@@ -74,12 +75,12 @@ const DateRangePicker = ({
                             placeholder={placeholder}
                             onChange={() => null}
                             value={formatRange(range.from, range.to)}
-                            className="cursor-pointer !p-2.5 !placeholder:text-gray-500 dark:!placeholder:text-gray-400"
+                            className="cursor-pointer !h-9 !px-2.5 !py-0 !placeholder:text-gray-500 dark:!placeholder:text-gray-500"
                         />
                     </div>
                 </PopoverHandler>
                 <PopoverContent
-                    className="p-4 bg-white dark:bg-gray-900 dark:text-slate-200 border-0 shadow-lg z-[999]">
+                    className="p-4 bg-white dark:bg-neutral-800 dark:text-gray-200 border-0 shadow-lg">
                     <DayPicker
                         mode="range"
                         month={month}
@@ -94,8 +95,8 @@ const DateRangePicker = ({
                         selected={range.from ? range : undefined}
                         onSelect={handleRange}
                         classNames={{
-                            [UI.MonthsDropdown]: `${defaultClassNames.months_dropdown} dark:bg-gray-900`,
-                            [UI.YearsDropdown]: `${defaultClassNames.years_dropdown} dark:bg-gray-900`
+                            [UI.MonthsDropdown]: `${defaultClassNames.months_dropdown} dark:bg-neutral-800`,
+                            [UI.YearsDropdown]: `${defaultClassNames.years_dropdown} dark:bg-neutral-800`
                         }}
                         footer={footer}
                     />

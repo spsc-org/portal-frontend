@@ -98,9 +98,13 @@ export function resolveMenuItems(menu) {
  * основна сторінка /project (маршрут /project/v2 лише перенаправляє туди).
  */
 const SPA_HIDDEN_HREFS = new Set(['/project/v2'])
+// Легасі-сторінки: пункт лишається в меню, але позначений і веде на екран "доступ закрито".
+const SPA_LEGACY_HREFS = new Set(['/dictionary/identify'])
 
 function withoutSpaHiddenLinks(item) {
   if (!Array.isArray(item.submenu)) return item
-  const submenu = item.submenu.filter((sub) => !SPA_HIDDEN_HREFS.has(sub?.href))
-  return submenu.length === item.submenu.length ? item : { ...item, submenu }
+  const submenu = item.submenu
+    .filter((sub) => !SPA_HIDDEN_HREFS.has(sub?.href))
+    .map((sub) => (SPA_LEGACY_HREFS.has(sub?.href) ? { ...sub, legacy: true } : sub))
+  return { ...item, submenu }
 }

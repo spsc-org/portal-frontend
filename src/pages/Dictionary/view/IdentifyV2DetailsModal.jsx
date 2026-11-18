@@ -2,19 +2,9 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { IDENTIFIER_API } from "../model/dictionaryApi.js";
 import { IdentifierDetailsViewModel } from "../viewmodel/DictionaryViewModels.js";
-import {
-    Button,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-    Spinner,
-    Tab,
-    TabPanel,
-    Tabs,
-    TabsBody,
-    TabsHeader,
-} from "@material-tailwind/react";
+import { Spinner, Tab, TabPanel, Tabs, TabsBody, TabsHeader } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import {useMemo, useState} from "react";
 
 const FIELD_LABELS = {
@@ -63,7 +53,7 @@ const AuditEntry = ({entry, dictionary}) => {
     ];
 
     const formatValue = (value) => {
-        if (value === null || value === undefined || value === '') return <span className="text-gray-400 italic">—</span>;
+        if (value === null || value === undefined || value === '') return <span className="text-gray-600 italic">—</span>;
         if (typeof value === 'object') return value.label ?? value.value ?? '';
         return String(value);
     };
@@ -72,27 +62,27 @@ const AuditEntry = ({entry, dictionary}) => {
         <div className="border rounded-lg mb-2 overflow-hidden dark:border-gray-600">
             <button
                 onClick={() => setOpen(o => !o)}
-                className="w-full flex items-center justify-between px-3 py-2 text-left bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+                className="w-full flex items-center justify-between px-3 py-2 text-left bg-gray-50 dark:bg-neutral-600 hover:bg-gray-100 dark:hover:bg-neutral-500"
             >
                 <div className="flex items-center gap-x-3">
                     <ActionBadge action={entry.action}/>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">{entry.createdAt}</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">{entry.createdAt}</span>
                     <span className="text-xs dark:text-gray-300">{userName}</span>
                     {rows.length > 0 && (
-                        <span className="text-xs text-gray-400">({rows.length} зм.)</span>
+                        <span className="text-xs text-gray-600">({rows.length} зм.)</span>
                     )}
                 </div>
-                <i className={`fa-regular fa-chevron-${open ? 'up' : 'down'} text-gray-400 text-xs`}/>
+                <i className={`fa-regular fa-chevron-${open ? 'up' : 'down'} text-gray-600 text-xs`}/>
             </button>
 
             {open && (
-                <div className="px-3 py-2 dark:bg-gray-800">
+                <div className="px-3 py-2 dark:bg-neutral-700">
                     {rows.length === 0 ? (
-                        <p className="text-xs text-gray-400 italic">Немає змін у відстежуваних полях</p>
+                        <p className="text-xs text-gray-600 italic">Немає змін у відстежуваних полях</p>
                     ) : (
                         <table className="w-full text-xs">
                             <thead>
-                            <tr className="text-left text-gray-500 dark:text-gray-400">
+                            <tr className="text-left text-gray-600 dark:text-gray-400">
                                 <th className="pb-1 w-1/4">Поле</th>
                                 <th className="pb-1 w-[37.5%]">Було</th>
                                 <th className="pb-1 w-[37.5%]">Стало</th>
@@ -160,11 +150,11 @@ const IdentifyV2DetailsModal = ({open, id, onClose, dictionary, dictionaries}) =
     const auditPages   = auditData?.pages ?? 1;
 
     return (
-        <Dialog data-i-doc="modal:dictionary-identify-v2-details-modal" open={open} size="xl" className="dark:bg-gray-800" handler={onClose}>
-            <DialogHeader className="dark:text-gray-200">
+        <Modal data-i-doc="modal:dictionary-identify-v2-details-modal" open={open} size="xl" handler={onClose}>
+            <ModalHeader>
                 <span className="mr-5">Детальна інформація {details?.code}</span>
-            </DialogHeader>
-            <DialogBody className="h-[42rem] overflow-y-auto">
+            </ModalHeader>
+            <ModalBody className="max-h-[calc(100vh-12rem)] overflow-y-auto">
                 {isFetching
                     ? <div className="flex justify-center w-full"><Spinner className="h-12 w-12"/></div>
                     : (
@@ -179,7 +169,7 @@ const IdentifyV2DetailsModal = ({open, id, onClose, dictionary, dictionaries}) =
                                     <div className="flex items-center gap-x-2">
                                         Аудит змін
                                         {auditTotal > 0 && (
-                                            <div className="relative h-[20px] w-[20px] bg-gray-950 dark:bg-gray-950 rounded-full">
+                                            <div className="relative h-[20px] w-[20px] bg-gray-950 dark:bg-neutral-900 rounded-full">
                                                 <span className="absolute text-sm left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
                                                     {auditTotal}
                                                 </span>
@@ -208,13 +198,13 @@ const IdentifyV2DetailsModal = ({open, id, onClose, dictionary, dictionaries}) =
                                         ].map(([label, value]) => (
                                             <div key={label} className="flex flex-row gap-x-2">
                                                 <span className="dark:text-gray-400 font-bold">{label}:</span>
-                                                <span className="dark:text-slate-400">{value}</span>
+                                                <span className="dark:text-gray-400">{value}</span>
                                             </div>
                                         ))}
                                         {details?.pattern && (
                                             <div className="flex flex-row gap-x-2 col-span-2">
                                                 <span className="dark:text-gray-400 font-bold">Паттерн:</span>
-                                                <pre><code className="bg-slate-800 dark:bg-slate-950 px-2 py-1.5 rounded-md text-green-500 dark:text-green-700">{details.pattern}</code></pre>
+                                                <pre><code className="bg-gray-800 dark:bg-neutral-900 px-2 py-1.5 rounded-md text-green-500 dark:text-green-700">{details.pattern}</code></pre>
                                             </div>
                                         )}
                                     </div>
@@ -223,7 +213,7 @@ const IdentifyV2DetailsModal = ({open, id, onClose, dictionary, dictionaries}) =
                                     {auditLoading
                                         ? <div className="flex justify-center py-4"><Spinner className="h-8 w-8"/></div>
                                         : auditHistory.length === 0
-                                            ? <p className="text-sm text-gray-400 italic">Записів аудиту немає</p>
+                                            ? <p className="text-sm text-gray-600 italic">Записів аудиту немає</p>
                                             : <>
                                                 {auditHistory.map(entry => (
                                                     <AuditEntry
@@ -239,7 +229,7 @@ const IdentifyV2DetailsModal = ({open, id, onClose, dictionary, dictionaries}) =
                                                             onClick={() => setAuditPage(p => p - 1)}
                                                             className="px-3 py-1 text-xs rounded border dark:border-gray-600 disabled:opacity-40"
                                                         >‹ Новіші</button>
-                                                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                        <span className="text-xs text-gray-600 dark:text-gray-400">
                                                             {auditPage} / {auditPages}
                                                         </span>
                                                         <button
@@ -256,13 +246,13 @@ const IdentifyV2DetailsModal = ({open, id, onClose, dictionary, dictionaries}) =
                         </Tabs>
                     )
                 }
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button onClick={onClose} color="gray">
                     <span>Закрити</span>
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

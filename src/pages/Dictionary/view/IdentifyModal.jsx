@@ -2,7 +2,8 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { GROUPS, IDENTIFIER_API } from "../model/dictionaryApi.js";
 import { IdentifierFormViewModel } from "../viewmodel/DictionaryViewModels.js";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import SingleSelect from "../../../components/fields/SingleSelect.jsx";
 import Input from "../../../components/fields/Input.jsx";
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
@@ -21,11 +22,11 @@ const IdentifyModal = ({open, onClose, id, dictionaries}) => {
     const updateMutation = createMutation;
 
     return (
-        <Dialog open={open} size="lg" handler={onClose}>
-            <DialogHeader>
+        <Modal open={open} size="lg" handler={onClose}>
+            <ModalHeader>
                 <span>{id ? `Редагування: ${data?.data?.current_version?.code}` : "Додати"}</span>
-            </DialogHeader>
-            <DialogBody className="h-[42rem] overflow-y-auto">
+            </ModalHeader>
+            <ModalBody className="max-h-[calc(100vh-12rem)] overflow-y-auto">
                 <div className="grid grid-cols-2 gap-2">
                     <Input shrink error={errors?.code} label="Код" value={form.code}
                            name="code"
@@ -74,21 +75,19 @@ const IdentifyModal = ({open, onClose, id, dictionaries}) => {
                            onChange={handleChangeForm}/>
                 </div>
 
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
-                    className="mr-1"
-                >
+                    className="mr-1">
                     <span>Закрити</span>
                 </Button>
                 <LoadingButton isLoading={createMutation.isPending || updateMutation.isPending} variant="gradient" color="green" onClick={onSubmit}>
                     <span>{id ? 'Редагувати' : 'Створити'}</span>
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 export default observer(IdentifyModal);

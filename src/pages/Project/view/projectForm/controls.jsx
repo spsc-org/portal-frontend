@@ -1,6 +1,8 @@
 import { observer } from "mobx-react-lite";
 import Select from "react-select";
 import MultiSelect from "../../../../components/fields/MultiSelect.jsx";
+import { selectMenuProps, useSelectMenuPortal } from "../../../../components/fields/selectMenuPortal.js";
+import { kitSelectClassNames } from "../../../../components/fields/selectClassNames.js";
 import { SELECT, borderFor } from "./formStyles.js";
 
 /** Повідомлення валідації під/біля поля (legacy span#warningSpan-{name}). */
@@ -36,6 +38,7 @@ export const VocMulti = ({ options, value, onChange, issue, id }) => (
     <div className={issue ? `rounded-md border ${borderFor(issue)}` : ""}>
         <MultiSelect
             id={id}
+            surface="form"
             options={options}
             value={value}
             onChange={onChange}
@@ -46,7 +49,10 @@ export const VocMulti = ({ options, value, onChange, issue, id }) => (
 );
 
 /** Один елемент зі словника з пошуком і очищенням (указ). */
-export const VocSearchSelect = ({ options, value, onChange, id }) => (
+export const VocSearchSelect = ({ options, value, onChange, id }) => {
+    const { anchorRef, menuPortalTarget } = useSelectMenuPortal();
+    return (
+    <div ref={anchorRef}>
     <Select
         inputId={id}
         options={options}
@@ -57,18 +63,13 @@ export const VocSearchSelect = ({ options, value, onChange, id }) => (
         isClearable
         placeholder="Оберіть"
         noOptionsMessage={() => "Нічого не знайдено"}
-        menuPosition="fixed"
-        styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }), menu: (base) => ({ ...base, zIndex: 9999 }) }}
-        classNames={{
-            container: () => "text-sm dark:text-gray-300",
-            control: () => "dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300",
-            singleValue: () => "dark:text-gray-300",
-            input: () => "dark:text-gray-300",
-            menuList: () => "dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300",
-            option: (state) => (state.isFocused ? "dark:bg-gray-500 dark:text-gray-300" : "dark:bg-gray-900 dark:text-gray-300"),
-        }}
+        {...selectMenuProps(menuPortalTarget)}
+        unstyled
+        classNames={kitSelectClassNames({ size: "sm", surface: "form" })}
     />
-);
+    </div>
+    );
+};
 
 /** Нативний селект зі словника: порожнє значення → null. */
 export const VocSelect = ({ name, options, value, onChange, issue, className = SELECT, empty = true }) => (

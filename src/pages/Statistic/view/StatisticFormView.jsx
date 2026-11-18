@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
-import { Button } from "@material-tailwind/react";
+import Button from "../../../components/Buttons/Button.jsx"
 import Page from "../../../components/Page.jsx";
 import SingleSelect from "../../../components/fields/SingleSelect.jsx";
 
@@ -14,11 +14,11 @@ const StatisticFormView = ({ vm }) => {
 
     return (
         <Page>
-            <div data-i-doc="page:statistic" className="max-w-md mx-auto mt-10 bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6">
-                <p className="mb-4 text-sm font-medium text-gray-600 dark:text-slate-300">Нереалізовані проєкти</p>
+            <div data-i-doc="page:statistic" className="max-w-md mx-auto mt-10 bg-white dark:bg-neutral-700 rounded-lg shadow-lg p-6">
+                <p className="mb-4 text-sm font-medium text-gray-600 dark:text-gray-300">Нереалізовані проєкти</p>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-y-4">
                     <div>
-                        <label htmlFor="year" className="block text-sm text-gray-500 dark:text-gray-300">Рік</label>
+                        <label htmlFor="year" className="block text-sm text-gray-600 dark:text-gray-300">Рік</label>
                         <input
                             id="year"
                             type="number"
@@ -27,7 +27,7 @@ const StatisticFormView = ({ vm }) => {
                             required
                             value={vm.year}
                             onChange={(e) => vm.setYear(e.target.value)}
-                            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-slate-200"
+                            className="mt-1 w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-200"
                         />
                     </div>
                     <SingleSelect

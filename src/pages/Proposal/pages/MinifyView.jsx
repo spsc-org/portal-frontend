@@ -127,7 +127,7 @@ const MinifyViewContent = observer(({ vm }) => {
                     documentTitle="Подання (мінімізовано)"
                     breadcrumbs={[{ label: "Подання", href: "/proposal" }, { label: proposal?.caption || `#${id}`, href: `/proposal/${id}` }]}
                 />
-                <div data-i-doc="page:proposal-minify-view" className="mb-2 flex items-center gap-x-1 font-medium dark:text-slate-200">
+                <div data-i-doc="page:proposal-minify-view" className="mb-2 flex items-center gap-x-1 font-medium dark:text-gray-200">
                     {
                         isFixed &&
                         <Tooltip content="Зафіксований">
@@ -137,12 +137,12 @@ const MinifyViewContent = observer(({ vm }) => {
                     {proposalElement}
                 </div>
                 <div className="overflow-x-auto">
-                    <table id="minifyTable" className="table-auto text-sm boreder w-full text-left text-gray-500 dark:text-gray-400">
+                    <table id="minifyTable" className="table-auto text-sm boreder w-full text-left text-gray-600 dark:text-gray-400">
                         <thead>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <th key={header.id} className="border p-2 dark:bg-b text-left px-1 py-0.5  text-gray-800 font-normal  bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                                    <th key={header.id} className="border p-2 dark:bg-b text-left px-1 py-0.5  text-gray-800 font-normal  bg-gray-200 dark:bg-neutral-600 dark:text-gray-400">
                                         {flexRender(header.column.columnDef.header, header.getContext())}
                                     </th>
                                 ))}
@@ -153,7 +153,7 @@ const MinifyViewContent = observer(({ vm }) => {
                         {table.getRowModel().rows.map((row) => (
                             <tr key={row.id}>
                                 {row.getVisibleCells().map((cell) => (
-                                    <td key={cell.id} className="border p-2 align-top bg-white text-left dark:bg-gray-900 border-b dark:border-gray-700">
+                                    <td key={cell.id} className="border p-2 align-top bg-white text-left dark:bg-neutral-800 border-b dark:border-neutral-700">
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}

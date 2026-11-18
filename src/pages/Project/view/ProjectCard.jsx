@@ -120,19 +120,19 @@ export const ProjectCardDock = observer(() => {
     return (
         <div className="pointer-events-none fixed bottom-2 left-2 right-2 z-[1050] flex flex-wrap-reverse items-end justify-end gap-2" data-i-doc="component:project-card-dock">
             {vm.dock.map((item) => (
-                <div key={item.projectId} className="pointer-events-auto flex max-w-[16rem] items-center rounded-lg border border-gray-300 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-                    <button type="button" title={`Розгорнути картку #${item.projectId}`} onClick={() => vm.restoreFromDock(item)} className="flex min-w-0 items-center gap-2 rounded-l-lg py-1.5 pl-3 pr-2 text-sm text-gray-800 hover:bg-blue-50 dark:text-gray-100 dark:hover:bg-gray-700">
+                <div key={item.projectId} className="pointer-events-auto flex max-w-[16rem] items-center rounded-lg border border-gray-300 bg-white shadow-lg dark:border-neutral-700 dark:bg-neutral-700">
+                    <button type="button" title={`Розгорнути картку #${item.projectId}`} onClick={() => vm.restoreFromDock(item)} className="flex min-w-0 items-center gap-2 rounded-l-lg py-1.5 pl-3 pr-2 text-sm text-gray-800 hover:bg-blue-50 dark:text-gray-100 dark:hover:bg-neutral-600">
                         <i className="fa-regular fa-window-restore pointer-events-none text-blue-700 dark:text-blue-400" />
                         <span className="pointer-events-none shrink-0 font-semibold">#{item.projectId}</span>
                         <span className="pointer-events-none truncate">{item.caption}</span>
                     </button>
-                    <button type="button" title="Закрити" onClick={() => vm.removeFromDock(item.projectId)} className="rounded-r-lg border-l border-gray-200 px-2 py-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100">
+                    <button type="button" title="Закрити" onClick={() => vm.removeFromDock(item.projectId)} className="rounded-r-lg border-l border-gray-200 px-2 py-1.5 text-gray-600 hover:bg-gray-100 hover:text-gray-800 dark:border-neutral-700 dark:text-gray-400 dark:hover:bg-neutral-600 dark:hover:text-gray-100">
                         <i className="fa-solid fa-xmark pointer-events-none" />
                     </button>
                 </div>
             ))}
             {vm.dock.length > 1 && (
-                <button type="button" title="Закрити всі згорнуті картки" onClick={vm.clearDock} className="pointer-events-auto rounded-lg border border-gray-300 bg-white/90 px-2 py-1.5 text-xs text-gray-600 shadow hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800/90 dark:text-gray-300 dark:hover:bg-gray-700">
+                <button type="button" title="Закрити всі згорнуті картки" onClick={vm.clearDock} className="pointer-events-auto rounded-lg border border-gray-300 bg-white/90 px-2 py-1.5 text-xs text-gray-600 shadow hover:bg-gray-100 dark:border-neutral-700 dark:bg-neutral-700/90 dark:text-gray-300 dark:hover:bg-neutral-600">
                     <i className="fa-solid fa-xmark pointer-events-none" /> Усі
                 </button>
             )}

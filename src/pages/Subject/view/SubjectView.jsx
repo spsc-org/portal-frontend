@@ -1,9 +1,11 @@
 import { useMemo } from "react";
 import { observer } from "mobx-react-lite";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Button, Tooltip } from "@material-tailwind/react";
+import { Tooltip } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import Page from "../../../components/Page.jsx";
-import Table, { loadColumnSizes } from "../../../components/Table/Table.jsx";
+import Table from "../../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import SingleSelect from "../../../components/fields/SingleSelect.jsx";
 import SubjectDetailsModal from "./SubjectDetailsModal.jsx";
@@ -69,8 +71,8 @@ const SubjectView = ({ vm }) => {
     return (
         <Page>
             <div data-i-doc="page:subject" className="mt-2 mx-2">
-                <div className="flex flex-row justify-between items-center">
-                    <div className="grid grid-cols-3 gap-x-5 gap-y-2 mb-20">
+                <div className="mb-3 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800">
+                    <div className="grid grid-cols-3 items-end gap-x-5 gap-y-2">
                         <SearchInput size="sm" name="caption" value={table.filters.caption} label="Глобальний пошук" onChange={table.handleInput}/>
                         <SingleSelect
                             closeMenuOnSelect
@@ -80,9 +82,9 @@ const SubjectView = ({ vm }) => {
                             value={table.filters.subjectType}
                             onChange={vm.setSubjectType}
                         />
-                        <div className="flex mt-4">
+                        <div className="flex">
                             <Tooltip content="Скинути фільтри">
-                                <Button className="h-10" onClick={() => table.reset()}>
+                                <Button className="h-9" onClick={() => table.reset()}>
                                     <i className="fa-regular fa-filter-slash"></i>
                                 </Button>
                             </Tooltip>

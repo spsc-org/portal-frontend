@@ -1,6 +1,8 @@
 import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
-import { Dialog, DialogHeader, DialogBody, DialogFooter, Button, Select, Option, Input, Textarea, Checkbox } from "@material-tailwind/react";
+import { Select, Option, Input, Textarea, Checkbox } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
+import Button from "../../../../components/Buttons/Button.jsx"
 import StatusToggle from '../StatusToggle.jsx';
 
 // Українська плюралізація: 1 день, 2-4 дні, 5+ днів (11-14 — завжди днів)
@@ -31,14 +33,17 @@ const AddEditAbsenceModal = ({ vm }) => {
     };
 
     return (
-        <Dialog data-i-doc="modal:staff-attendance-add-edit-absence" open={isOpen} handler={onClose} size="lg">
-            <DialogHeader>{editingAbsence ? "Редагування" : "Створити заявку"}</DialogHeader>
+        <Modal data-i-doc="modal:staff-attendance-add-edit-absence" open={isOpen} handler={onClose} size="lg">
+            <ModalHeader>{editingAbsence ? "Редагування" : "Створити заявку"}</ModalHeader>
             <form onSubmit={submitRequest}>
-                <DialogBody className="flex flex-col gap-4">
+                <ModalBody className="flex flex-col gap-4">
                     {/* Row 1: Користувач + Статус (2 cols) */}
                     <div className="grid grid-cols-2 gap-4 items-end">
                         <Select
                             label="Співробітник"
+                            className="dark:border-gray-600 dark:text-gray-300"
+                            labelProps={{ className: "dark:text-gray-400" }}
+                            menuProps={{ className: "dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-300" }}
                             onChange={(val) => setData('user_id', val)}
                             value={data.user_id}
                         >
@@ -62,7 +67,7 @@ const AddEditAbsenceModal = ({ vm }) => {
                                         className={`flex min-w-0 cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${
                                             data.type === t.value
                                                 ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/25"
-                                                : "border-blue-gray-100 hover:border-blue-gray-300 dark:border-slate-700 dark:hover:border-slate-500"
+                                                : "border-blue-gray-100 hover:border-blue-gray-300 dark:border-neutral-700 dark:hover:border-neutral-500"
                                         }`}
                                     >
                                         <input
@@ -138,25 +143,24 @@ const AddEditAbsenceModal = ({ vm }) => {
                         value={data.reason}
                         onChange={e => setData('reason', e.target.value)}
                     />
-                </DialogBody>
-                <DialogFooter className="justify-end gap-2">
+                </ModalBody>
+                <ModalFooter className="justify-end gap-2">
                     <Button variant="text" color="blue-gray" onClick={onClose} disabled={submitMutation.isPending}>Скасувати</Button>
                     {editingAbsence && (
                         <Button
                             variant="text"
                             color="red"
                             onClick={onOpenDelete}
-                            disabled={submitMutation.isPending}
-                        >
+                            disabled={submitMutation.isPending}>
                             Видалити
                         </Button>
                     )}
                     <Button type="submit" disabled={submitMutation.isPending}>
                         {submitMutation.isPending ? 'Зберігаю...' : 'Зберегти'}
                     </Button>
-                </DialogFooter>
+                </ModalFooter>
             </form>
-        </Dialog>
+        </Modal>
     );
 };
 

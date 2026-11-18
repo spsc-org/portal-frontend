@@ -16,7 +16,7 @@ export default {
             identifiers = originalData.computed_identifiers.split('; ').map(id => ({ text: id }));
         }
 
-        if (identifiers.length === 0) return <span className="text-gray-400 dark:text-slate-500">----</span>;
+        if (identifiers.length === 0) return <span className="text-gray-600 dark:text-gray-500">----</span>;
 
         return (
             <div className="flex flex-col gap-1 text-xs">
@@ -30,7 +30,7 @@ export default {
 
                     // Визначаємо іконку/колір за групою
                     let iconClass = "fa-regular fa-id-card";
-                    let colorClass = "text-gray-500 dark:text-slate-400";
+                    let colorClass = "text-gray-600 dark:text-gray-400";
 
                     if (item.group === 'tax') {
                         iconClass = "fa-solid fa-sack-dollar";
@@ -43,7 +43,7 @@ export default {
                     return (
                         <div key={index} className="flex items-start gap-1.5">
                             <i className={`${iconClass} mt-0.5 text-[10px] ${colorClass}`}></i>
-                            <span className="leading-tight text-gray-800 dark:text-slate-200">
+                            <span className="leading-tight text-gray-800 dark:text-gray-200">
                                 {highlightText(text, filters.search)}
                             </span>
                         </div>
@@ -68,7 +68,7 @@ export default {
         }
 
         if (!decree && proposals.length === 0) {
-            return <span className="text-gray-400 dark:text-slate-500">----</span>;
+            return <span className="text-gray-600 dark:text-gray-500">----</span>;
         }
 
         return (
@@ -82,7 +82,7 @@ export default {
                             filters={filters}
                         />
                         {decree.date && (
-                            <span className="text-gray-400 dark:text-slate-500 text-[10px] pl-0.5">
+                            <span className="text-gray-600 dark:text-gray-500 text-[10px] pl-0.5">
                                 {decree.date.substring(0, 10)}
                             </span>
                         )}
@@ -93,7 +93,7 @@ export default {
                 {proposals.map((prop, index) => (
                     <div key={index} className="flex items-start gap-1.5">
                         <i className="fa-solid fa-folder-open mt-0.5 text-[10px] text-blue-400 dark:text-blue-500"></i>
-                        <span className="font-medium text-gray-900 dark:text-slate-200 leading-tight">
+                        <span className="font-medium text-gray-900 dark:text-gray-200 leading-tight">
                             {highlightText(prop.caption || '', filters.search)}
                         </span>
                     </div>
@@ -128,8 +128,8 @@ export default {
                     <div className="flex flex-wrap gap-1.5 items-center">
                         {state_caption && (
                             <Tooltip content={state_caption}>
-                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700/30 text-gray-700 dark:text-slate-300">
-                                    {state_icon && <i className={`${state_icon} ${state_color || 'text-gray-500 dark:text-slate-400'}`}></i>}
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-neutral-600/30 text-gray-700 dark:text-gray-300">
+                                    {state_icon && <i className={`${state_icon} ${state_color || 'text-gray-600 dark:text-gray-400'}`}></i>}
                                     <span className="font-medium">{state_caption}</span>
                                 </span>
                             </Tooltip>
@@ -157,8 +157,8 @@ export default {
                             }
 
                             return (
-                                <div key={index} className="flex items-start gap-1.5 text-gray-800 dark:text-slate-300">
-                                    <i className="fa-regular fa-file-lines mt-0.5 text-gray-400 dark:text-slate-500 text-[10px]"></i>
+                                <div key={index} className="flex items-start gap-1.5 text-gray-800 dark:text-gray-300">
+                                    <i className="fa-regular fa-file-lines mt-0.5 text-gray-500 dark:text-gray-500 text-[10px]"></i>
                                     <span className="leading-tight">
                                         {highlightText(docText, filters.search)}
                                     </span>

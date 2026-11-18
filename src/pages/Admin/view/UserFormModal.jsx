@@ -1,5 +1,7 @@
 import { observer } from "mobx-react-lite";
-import { Button, Dialog, DialogBody, DialogFooter, DialogHeader, Tab, TabPanel, Tabs, TabsBody, TabsHeader } from "@material-tailwind/react";
+import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
+import Button from "../../../components/Buttons/Button.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { UserFormViewModel } from "../viewmodel/UserFormViewModel.js";
@@ -7,18 +9,18 @@ import UserProfileFields from "./components/UserProfileFields.jsx";
 import PermissionsGrid from "./components/PermissionsGrid.jsx";
 
 const ConfirmUnlockDialog = observer(({ vm }) => (
-    <Dialog open={vm.confirmUnlock} size="xs" handler={vm.cancelUnlockAdmin} className="border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
-        <DialogHeader className="border-b border-slate-200 text-slate-800 dark:border-slate-700 dark:text-slate-100">
+    <Modal open={vm.confirmUnlock} size="xs" handler={vm.cancelUnlockAdmin} className="border">
+        <ModalHeader className="border-b">
             <span>Увага!</span>
-        </DialogHeader>
-        <DialogBody className="bg-slate-50/80 dark:bg-slate-900">
+        </ModalHeader>
+        <ModalBody>
             <p className="font-normal dark:text-gray-200">Ви дійсно хочете змінити повноваження?</p>
-        </DialogBody>
-        <DialogFooter className="border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
-            <Button variant="text" color="red" onClick={vm.cancelUnlockAdmin} className="mr-1"><span>Ні</span></Button>
+        </ModalBody>
+        <ModalFooter className="border-t">
+            <Button color="secondary" onClick={vm.cancelUnlockAdmin} className="mr-1"><span>Ні</span></Button>
             <Button variant="gradient" color="green" onClick={vm.unlockAdmin}><span>Так</span></Button>
-        </DialogFooter>
-    </Dialog>
+        </ModalFooter>
+    </Modal>
 ));
 
 /** Створення — профіль і доступи одним списком; редагування — дві вкладки. */
@@ -49,30 +51,30 @@ const UserFormModal = ({ data, id = null, onClose }) => {
 
     return (
         <span data-i-doc={vm.isEdit ? "modal:admin-user-update-modal" : "modal:admin-user-modal"} style={{ display: "contents" }}>
-            <Dialog open size="lg" handler={onClose} className="border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
-                <DialogHeader className="border-b border-slate-200 text-slate-800 dark:border-slate-700 dark:text-slate-100">
+            <Modal open size="lg" handler={onClose} className="border">
+                <ModalHeader className="border-b">
                     <span>{vm.title}</span>
-                </DialogHeader>
+                </ModalHeader>
                 {vm.isEdit ? (
-                    <DialogBody className="flex h-[42rem] max-h-[calc(100vh-12rem)] flex-col overflow-hidden p-0 bg-slate-50/80 dark:bg-slate-900">
+                    <ModalBody className="flex h-[42rem] max-h-[calc(100vh-12rem)] flex-col overflow-hidden p-0">
                         <EditTabs vm={vm}/>
-                    </DialogBody>
+                    </ModalBody>
                 ) : (
-                    <DialogBody className="h-[42rem] overflow-y-auto bg-slate-50/80 dark:bg-slate-900">
+                    <ModalBody className="h-[42rem] overflow-y-auto">
                         <UserProfileFields vm={vm}/>
-                        <p className="mt-5 text-sm font-bold text-slate-700 dark:text-white">Доступи</p>
+                        <p className="mt-5 text-sm font-bold text-gray-700 dark:text-white">Доступи</p>
                         <div className="mt-5 mb-20">
                             <PermissionsGrid vm={vm}/>
                         </div>
-                    </DialogBody>
+                    </ModalBody>
                 )}
-                <DialogFooter className="border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
-                    <Button variant="text" color="red" onClick={onClose} className="mr-1"><span>Закрити</span></Button>
+                <ModalFooter className="border-t">
+                    <Button color="secondary" onClick={onClose} className="mr-1"><span>Закрити</span></Button>
                     <LoadingButton isLoading={vm.isSaving} variant="gradient" color="green" onClick={vm.submit}>
                         <span>{vm.isEdit ? "Редагувати" : "Створити"}</span>
                     </LoadingButton>
-                </DialogFooter>
-            </Dialog>
+                </ModalFooter>
+            </Modal>
             <ConfirmUnlockDialog vm={vm}/>
         </span>
     );

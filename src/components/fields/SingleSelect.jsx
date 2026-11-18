@@ -1,5 +1,7 @@
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
+import { selectMenuProps, useSelectMenuPortal } from "./selectMenuPortal.js";
+import { kitSelectClassNames } from "./selectClassNames.js";
 
 /**
  * isCreatable=true -> дозволяє створити нову опцію (react-select/creatable),
@@ -18,6 +20,7 @@ const SingleSelect = ({
                           isClearable = false,
                           closeMenuOnSelect = false,
                           size = "sm",
+                          surface = "card",
                           onBlur,
                           getOptionLabel = option => option.caption || option.label || option.name || option,
                           isOptionDisabled,
@@ -28,16 +31,20 @@ const SingleSelect = ({
                       }) => {
     const SelectComponent = isCreatable ? CreatableSelect : Select;
 
+    const { anchorRef, menuPortalTarget } = useSelectMenuPortal();
+
     return (
-        <div style={{width: width}}>
+        <div ref={anchorRef} style={{width: width}}>
+            {(label || isRequired) && (
             <label htmlFor={id}
-                   className={`block text-${size} text-gray-500 dark:text-gray-300`}>
+                   className={`mb-0.5 block truncate text-${size} text-gray-600 dark:text-gray-400`}>
                 {label}
                 {
                     isRequired &&
                     <i title="Обов'язкове поле" className="ml-1 fa-solid  fa-asterisk text-red-600 text-xs"></i>
                 }
             </label>
+            )}
             <SelectComponent
                 id={id}
                 value={value}
@@ -53,31 +60,18 @@ const SingleSelect = ({
                 closeMenuOnSelect={closeMenuOnSelect}
                 hideSelectedOptions={false}
                 placeholder="Оберіть"
-                menuPosition="fixed"
                 formatCreateLabel={isCreatable ? formatCreateLabel : undefined}
-                styles={{
-                    menuPortal: (base) => ({...base, zIndex: 9999}),
-                    menu: (base) => ({...base, zIndex: 9999}),
-                }}
+                {...selectMenuProps(menuPortalTarget)}
 
                 getOptionLabel={getOptionLabel}
                 getOptionValue={option => option.id || option.value || option}
                 noOptionsMessage={() => <span>Не знайдено</span>}
-                classNames={{
-                    container: () => `bg-grey-500 text-${size} z-1  dark:text-gray-300`,
-
-                    control: () => 'bg-grey-500  dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300',
-                    input: (props) => `dark:text-gray-300 leading-none p-0 ${props.isDisabled ? "cursor-default" : "cursor-pointer"}`,
-                    menuList: () => ' dark:text-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300',
-                    singleValue: () => 'dark:text-gray-300',
-                    dropdownIndicator: (props) => `${props.isDisabled && "opacity-0"}`,
-                    indicatorSeparator: (props) => `${props.isDisabled && "opacity-0"}`,
-                    option: (state,) => state.isFocused && 'dark:text-gray-300 dark:bg-gray-500',
-                }}
+                unstyled
+                classNames={kitSelectClassNames({ size, invalid: Boolean(error), surface })}
             />
             {
                 Boolean(info) &&
-                <p className=" font-normal text-xs text-slate-500 dark:text-slate-400">
+                <p className=" font-normal text-xs text-gray-600 dark:text-gray-400">
                     <i className="fa-solid fa-circle-info"></i>
                     <span className="ml-1">{info}</span>
                 </p>

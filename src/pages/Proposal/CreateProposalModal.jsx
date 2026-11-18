@@ -2,7 +2,9 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../shared/mvvm/useViewModel.js";
 import { ProposalFormViewModel } from "./viewmodel/ProposalViewModels.js";
 import { useProposalProps } from "./viewmodel/useProposalProps.js";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../components/Modal/Modal.jsx"
+import Button from "../../components/Buttons/Button.jsx"
 import SingleSelect from "../../components/fields/SingleSelect.jsx";
 import Input from "../../components/fields/Input.jsx";
 import DatePicker from "../../components/fields/DatePicker.jsx";
@@ -23,13 +25,13 @@ const CreateProposalModal = ({open, onClose}) => {
     const create = vm.saveCmd;
 
     return (
-        <Dialog open={open} handler={onClose} size="md" dismiss={{escapeKey: false}}>
-            <DialogHeader>
-                <Typography variant="h5" className="dark:text-slate-200">
+        <Modal open={open} handler={onClose} size="md" dismiss={{escapeKey: false}}>
+            <ModalHeader>
+                <Typography variant="h5" className="dark:text-gray-200">
                     Створити подання
                 </Typography>
-            </DialogHeader>
-            <DialogBody className="h-[32rem] overflow-y-auto">
+            </ModalHeader>
+            <ModalBody className="h-[32rem] overflow-y-auto">
                 <div className="grid grid-cols-2 gap-2">
                     <Input error={errors?.caption} placeholder="" label="Назва"
                            value={form.caption} name="caption"
@@ -59,22 +61,20 @@ const CreateProposalModal = ({open, onClose}) => {
                        value={form.comments} name="comments"
                        onChange={handleInput}/>
 
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
-                    className="mr-1"
-                >
+                    className="mr-1">
                     <span>Закрити</span>
                 </Button>
                 <LoadingButton isLoading={create.isPending} variant="gradient" color="green" onClick={onSubmit}
                         disabled={create.isPending}>
                     Створити
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

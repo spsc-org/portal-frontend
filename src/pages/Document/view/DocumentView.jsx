@@ -1,9 +1,11 @@
 import { useMemo } from "react";
 import { observer } from "mobx-react-lite";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Badge, Button, Tooltip } from "@material-tailwind/react";
+import { Badge, Tooltip } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import { convertDate } from "../../../lib/utils.js";
-import Table, { loadColumnSizes } from "../../../components/Table/Table.jsx";
+import Table from "../../../components/Table/Table.jsx";
+import { loadColumnSizes } from "../../../components/Table/columnSizes.js";
 import Page from "../../../components/Page.jsx";
 import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
 import SearchInput from "../../../components/fields/SearchInput.jsx";
@@ -30,7 +32,7 @@ const getColor = (id) => {
         case 7:
             return "bg-green-500 text-white";
         default:
-            return "bg-gray-950 dark:bg-gray-950 text-white";
+            return "bg-gray-950 dark:bg-neutral-900 text-white";
     }
 };
 
@@ -126,7 +128,7 @@ const DocumentView = ({ vm }) => {
                 <CollapsibleSection
                     title="Фільтри"
                     showHiddenAppliedBadge
-                    className="mb-3 rounded-xl border border-gray-200 bg-gray-50/80 p-3 shadow-md dark:border-gray-700 dark:bg-gray-900/60 sm:p-4"
+                    className="mb-3 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800"
                 >
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
                         <div className="min-w-0" data-filter-active={filters?.typeId?.length ? "true" : "false"}>
@@ -160,7 +162,7 @@ const DocumentView = ({ vm }) => {
                             <DateRangePicker size="xs" onChange={vm.changeDate} from={filters.from} to={filters.to}
                                              label="Дата реєстрації"/>
                         </div>
-                        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-gray-200 pt-2 dark:border-gray-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
+                        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-gray-200 pt-2 dark:border-neutral-700 sm:col-span-2 xl:col-span-4 2xl:col-span-5">
                             <Tooltip content="Скинути фільтри">
                                 <Button className="h-9 px-3" size="sm" disabled={!vm.hasActiveFilters} onClick={vm.clearFilters}>
                                     <i className="fa-regular fa-filter-slash mr-1"></i>

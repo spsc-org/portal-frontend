@@ -338,20 +338,20 @@ input[type="date"]{
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: #1e293b; /* slate-800 */
+  background: #262626; /* neutral-800 */
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #475569; /* slate-600 */
+  background: #525252; /* neutral-600 */
   border-radius: 5px;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #64748b; /* slate-500 */
+  background: #737373; /* neutral-500 */
 }
 
 .dark ::-webkit-scrollbar-corner {
-  background: #1e293b; /* slate-800 */
+  background: #262626; /* neutral-800 */
 }
 
 /* Compact scrollbar only for project reasons block */
@@ -380,19 +380,19 @@ input[type="date"]{
 }
 
 .dark .reason-scrollbar {
-  scrollbar-color: #475569 #1f2937; /* thumb / track */
+  scrollbar-color: #525252 #262626; /* thumb / track */
 }
 
 .dark .reason-scrollbar::-webkit-scrollbar-track {
-  background: #1f2937;
+  background: #262626;
 }
 
 .dark .reason-scrollbar::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #525252;
 }
 
 .dark .reason-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #737373;
 }
 
 /* Радіокнопки, чекбокси та селекти в темній темі */

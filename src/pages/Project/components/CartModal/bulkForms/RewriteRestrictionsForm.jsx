@@ -48,6 +48,7 @@ const RewriteRestrictionsForm = ({ projectIds, userId, onDone }) => {
             errorMessage={cartErrorMessage(mutation.error, "Не вдалося виконати операцію")}
         >
             <MultiSelect
+                surface="form"
                 label="Сформуйте новий перелік обмежень"
                 id="cart-rewrite-restrictions"
                 options={restrictions}

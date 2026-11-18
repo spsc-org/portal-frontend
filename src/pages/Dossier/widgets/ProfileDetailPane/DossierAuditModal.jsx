@@ -1,7 +1,9 @@
 import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { DossierAuditViewModel } from "../../viewmodel/DossierViewModels.js";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Spinner} from "@material-tailwind/react";
+import { Spinner } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
+import Button from "../../../../components/Buttons/Button.jsx"
 import {useState} from "react";
 
 // Історія змін досьє (повні знімки профілю зі звʼязками й тікетами + diff) — той самий
@@ -29,14 +31,14 @@ const ACTION_CONFIG = {
     unlink_profiles: {label: "Розʼязано профілі", color: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"},
     update_caption: {label: "Змінено назву", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"},
     upload_avatar: {label: "Завантажено фото", color: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300"},
-    delete_avatar: {label: "Видалено фото", color: "bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-slate-300"},
+    delete_avatar: {label: "Видалено фото", color: "bg-gray-100 text-gray-800 dark:bg-neutral-600 dark:text-gray-300"},
     delete: {label: "Видалено профіль", color: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"},
     ticket_create: {label: "Створено тікет", color: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-300"},
     ticket_resolve: {label: "Тікет вирішено", color: "bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300"},
 };
 
 const ActionBadge = ({action}) => {
-    const cfg = ACTION_CONFIG[action] || {label: action, color: "bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-slate-300"};
+    const cfg = ACTION_CONFIG[action] || {label: action, color: "bg-gray-100 text-gray-800 dark:bg-neutral-600 dark:text-gray-300"};
     return (
         <span data-i-doc="modal:dossier-audit" className={`text-xs font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}>
             {cfg.label}
@@ -75,7 +77,7 @@ const AuditEntry = ({entry, users}) => {
 
     const formatValue = (value) => {
         if (value === null || value === undefined || value === "") {
-            return <span className="text-gray-400 italic">—</span>;
+            return <span className="text-gray-600 italic">—</span>;
         }
         if (typeof value === "object") {
             return String(value.name ?? value.label ?? JSON.stringify(value));
@@ -84,31 +86,31 @@ const AuditEntry = ({entry, users}) => {
     };
 
     return (
-        <div className="mb-2 overflow-hidden rounded-lg border dark:border-slate-600">
+        <div className="mb-2 overflow-hidden rounded-lg border dark:border-gray-600">
             <button
                 type="button"
                 onClick={() => setOpen((o) => !o)}
-                className="flex w-full items-center justify-between bg-gray-50 px-3 py-2 text-left hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-700"
+                className="flex w-full items-center justify-between bg-gray-50 px-3 py-2 text-left hover:bg-gray-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
             >
                 <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
                     <ActionBadge action={entry.action}/>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">{entry.createdAt}</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">{entry.createdAt}</span>
                     <span className="text-xs dark:text-gray-300">{userName}</span>
                     {diffEntries.length > 0 && (
-                        <span className="text-xs text-gray-400">({diffEntries.length} зм.)</span>
+                        <span className="text-xs text-gray-600">({diffEntries.length} зм.)</span>
                     )}
                 </div>
-                <i className={`fa-regular fa-chevron-${open ? "up" : "down"} text-xs text-gray-400`}/>
+                <i className={`fa-regular fa-chevron-${open ? "up" : "down"} text-xs text-gray-600`}/>
             </button>
 
             {open && (
-                <div className="px-3 py-2 dark:bg-slate-900/60">
+                <div className="px-3 py-2 dark:bg-neutral-800/60">
                     {diffEntries.length === 0 ? (
-                        <p className="text-xs italic text-gray-400">Немає змін у відстежуваних полях</p>
+                        <p className="text-xs italic text-gray-600">Немає змін у відстежуваних полях</p>
                     ) : (
                         <table className="w-full text-xs">
                             <thead>
-                            <tr className="text-left text-gray-500 dark:text-gray-400">
+                            <tr className="text-left text-gray-600 dark:text-gray-400">
                                 <th className="w-1/4 pb-1">Поле</th>
                                 <th className="w-[37.5%] pb-1">Було</th>
                                 <th className="w-[37.5%] pb-1">Стало</th>
@@ -116,7 +118,7 @@ const AuditEntry = ({entry, users}) => {
                             </thead>
                             <tbody>
                             {diffEntries.map(([field, {from, to}]) => (
-                                <tr key={field} className="border-t dark:border-slate-700">
+                                <tr key={field} className="border-t dark:border-neutral-700">
                                     <td className="py-1 font-medium dark:text-gray-300">
                                         {fieldLabel(field)}
                                     </td>
@@ -147,16 +149,16 @@ const DossierAuditModal = ({profileId, users = [], onClose}) => {
     const pages = data?.meta?.pages ?? 1;
 
     return (
-        <Dialog open handler={onClose} size="md" className="dark:bg-gray-900">
-            <DialogHeader className="flex items-center justify-between text-base dark:text-slate-100">
+        <Modal open handler={onClose} size="md">
+            <ModalHeader className="flex items-center justify-between text-base">
                 <span>Історія змін{profileId ? ` · досьє #${profileId}` : ""}</span>
                 {total > 0 && (
-                    <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
+                    <span className="text-xs font-normal text-gray-600 dark:text-gray-400">
                         {total} запис.
                     </span>
                 )}
-            </DialogHeader>
-            <DialogBody className="max-h-[70vh] overflow-y-auto pt-0">
+            </ModalHeader>
+            <ModalBody className="max-h-[70vh] overflow-y-auto pt-0">
                 {isFetching && history.length === 0 ? (
                     <div className="flex justify-center py-10">
                         <Spinner className="h-8 w-8"/>
@@ -166,7 +168,7 @@ const DossierAuditModal = ({profileId, users = [], onClose}) => {
                         Не вдалося завантажити історію
                     </p>
                 ) : history.length === 0 ? (
-                    <p className="py-6 text-center text-sm text-gray-400">
+                    <p className="py-6 text-center text-sm text-gray-600">
                         Записів аудиту ще немає
                     </p>
                 ) : (
@@ -180,32 +182,30 @@ const DossierAuditModal = ({profileId, users = [], onClose}) => {
                                     size="sm"
                                     variant="outlined"
                                     disabled={page <= 1 || isFetching}
-                                    onClick={() => setPage((p) => p - 1)}
-                                >
+                                    onClick={() => setPage((p) => p - 1)}>
                                     Назад
                                 </Button>
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                <span className="text-xs text-gray-600 dark:text-gray-400">
                                     {page} / {pages}
                                 </span>
                                 <Button
                                     size="sm"
                                     variant="outlined"
                                     disabled={page >= pages || isFetching}
-                                    onClick={() => setPage((p) => p + 1)}
-                                >
+                                    onClick={() => setPage((p) => p + 1)}>
                                     Далі
                                 </Button>
                             </div>
                         )}
                     </>
                 )}
-            </DialogBody>
-            <DialogFooter>
-                <Button variant="text" onClick={onClose} className="dark:text-slate-200">
+            </ModalBody>
+            <ModalFooter>
+                <Button variant="text" onClick={onClose} className="dark:text-gray-200">
                     Закрити
                 </Button>
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

@@ -6,7 +6,7 @@ const fileIcon = (mimeType = "") => {
     if (mimeType.includes("image")) return "fa-file-image text-blue-500";
     if (mimeType.includes("word") || mimeType.includes("document")) return "fa-file-word text-blue-600";
     if (mimeType.includes("excel") || mimeType.includes("spreadsheet")) return "fa-file-excel text-green-600";
-    return "fa-file text-gray-500";
+    return "fa-file text-gray-600";
 };
 
 const PerformerCell = ({ row, precomputedData, users, onDownload }) => {

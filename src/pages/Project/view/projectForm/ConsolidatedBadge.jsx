@@ -10,7 +10,7 @@ const ConsolidatedBadge = ({ search, fieldKey }) => {
     const base = "inline-flex shrink-0 select-none items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold transition-colors";
     const tone = hasResult
         ? "cursor-pointer bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-800/60"
-        : "cursor-default bg-gray-100 text-gray-400 dark:bg-gray-700/60 dark:text-gray-500";
+        : "cursor-default bg-gray-100 text-gray-600 dark:bg-neutral-600/60 dark:text-gray-500";
     return (
         <button
             type="button"

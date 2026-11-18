@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import Page from "../../../components/Page.jsx";
 import { useMemo } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Button } from "@material-tailwind/react";
+import Button from "../../../components/Buttons/Button.jsx"
 import Table from "../../../components/Table/Table.jsx";
 const PROPOSAL_STATE = {
     1: "Проєкт", 2: "Готово", 3: "Проголосовано", 4: "Направлено",
@@ -70,7 +70,7 @@ const ValidationView = ({ vm }) => {
             <Page>
                 <div data-i-doc="page:report-validation" className="mt-2 mx-2">
                     {summary && (
-                        <div className="mb-4 text-xs text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded p-3">
+                        <div className="mb-4 text-xs text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-neutral-700 border border-gray-200 dark:border-neutral-700 rounded p-3">
                             Перевірено: {summary.totalChecked}, валідних: {summary.valid}, з помилками: {summary.invalid}
                             {summary.extra?.dateMismatch ? `, невідповідність дат: ${summary.extra.dateMismatch}` : ""}
                             {summary.extra?.invalidDateFormat ? `, невірний формат дати: ${summary.extra.invalidDateFormat}` : ""}

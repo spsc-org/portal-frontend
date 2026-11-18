@@ -1,7 +1,8 @@
-import {Button} from "@material-tailwind/react";
+import Button from "../../../components/Buttons/Button.jsx"
 import SearchInput from "../../../components/fields/SearchInput.jsx";
 import MultiSelectChip from "../../../components/fields/MultiSelectChip.jsx";
-import ChipToggle, {chipToggleClassName} from "../../../components/fields/ChipToggle.jsx";
+import ChipToggle from "../../../components/fields/ChipToggle.jsx";
+import { chipToggleClassName } from "../../../components/fields/chipToggleStyles.js";
 import ChipResetButton from "../../../components/fields/ChipResetButton.jsx";
 
 const MONTH_OPTIONS = [
@@ -18,7 +19,7 @@ const BirthdayFilters = ({q, onChangeQ, scope, onChangeScope, scopeOptions = [],
     const hasActive = Boolean(q || (scope && scope !== "all") || month);
 
     return (
-        <div data-i-doc="view:handbook-birthday-filters" className="sticky top-[50px] z-20 -mx-1 mb-3 flex flex-wrap items-center gap-1.5 border-b border-slate-200 bg-white px-1 py-2 dark:border-slate-700 dark:bg-neutral-900">
+        <div data-i-doc="view:handbook-birthday-filters" className="sticky top-[50px] z-20 mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800">
             <div className="w-56">
                 <SearchInput
                     size="xs"

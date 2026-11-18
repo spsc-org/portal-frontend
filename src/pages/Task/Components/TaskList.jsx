@@ -1,5 +1,6 @@
 import {useEffect, useMemo, useState} from "react";
-import {Button, Chip, Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip} from "@material-tailwind/react";
+import { Chip, Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip } from "@material-tailwind/react"
+import Button from "../../../components/Buttons/Button.jsx"
 import {differenceInCalendarDays, format, isPast, isToday} from "date-fns";
 import {uk} from "date-fns/locale";
 import {allowedStatusIds, TagPill, UserAvatars} from "../utils.jsx";
@@ -42,7 +43,7 @@ const PriorityIcon = ({caption}) => {
 
 const StatusDot = ({status}) => (
     <Tooltip content={status || "Без стану"}>
-        <span className={`h-2 w-2 shrink-0 rounded-full ${statusDotColorMap[status] || "bg-slate-300"}`}/>
+        <span className={`h-2 w-2 shrink-0 rounded-full ${statusDotColorMap[status] || "bg-gray-300"}`}/>
     </Tooltip>
 );
 
@@ -57,7 +58,7 @@ const AgeBadge = ({createdAt, statusName}) => {
         <Tooltip content={isClosed ? `Була відкрита ${days} дн.` : `Не закрита вже ${days} дн.`}>
             <span className={`hidden shrink-0 items-center gap-1 whitespace-nowrap text-[11px] md:inline-flex ${isStale
                 ? "font-semibold text-amber-500"
-                : "text-slate-400 dark:text-slate-500"}`}>
+                : "text-gray-600 dark:text-gray-500"}`}>
                 <i className="fa-regular fa-hourglass-half"></i>{days}д
             </span>
         </Tooltip>
@@ -71,7 +72,7 @@ const DueDate = ({dueDate, deleted}) => {
     return (
         <span className={`shrink-0 whitespace-nowrap text-[11px] ${overdue
             ? "font-semibold text-red-500"
-            : "text-slate-500 dark:text-slate-400"}`}>
+            : "text-gray-600 dark:text-gray-400"}`}>
             {overdue && <i className="fa-regular fa-alarm-exclamation mr-1"></i>}
             {format(date, "d MMM", {locale: uk})}
         </span>
@@ -173,7 +174,7 @@ const TaskList = ({
 
     if (loading && !tasks.length) {
         return (
-            <div className="flex items-center justify-center rounded-xl border border-slate-200 bg-white py-16 dark:border-slate-800 dark:bg-gray-900">
+            <div className="flex items-center justify-center rounded-xl border border-gray-200 bg-white py-16 dark:border-neutral-700 dark:bg-neutral-800">
                 <Spinner className="h-8 w-8"/>
             </div>
         );
@@ -181,7 +182,7 @@ const TaskList = ({
 
     if (!tasks.length) {
         return (
-            <div className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white py-16 text-slate-400 dark:border-slate-800 dark:bg-gray-900">
+            <div className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white py-16 text-gray-600 dark:border-neutral-700 dark:bg-neutral-800">
                 <i className="fa-regular fa-clipboard-check text-2xl"></i>
                 <span className="text-sm">Задач не знайдено</span>
             </div>
@@ -189,7 +190,7 @@ const TaskList = ({
     }
 
     return (
-        <div data-i-doc="view:task-list" className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-gray-900">
+        <div data-i-doc="view:task-list" className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
             {groups.map(group => {
                 const isDeletedGroup = group.key === DELETED_GROUP_KEY;
                 const groupKey = group.key || `${groupBy}:${group.name}`;
@@ -199,13 +200,13 @@ const TaskList = ({
                         {group.name !== UNGROUPED_KEY &&
                             <button type="button"
                                     onClick={() => toggleGroup(groupKey)}
-                                    className="flex w-full items-center gap-2 border-b border-slate-100 bg-slate-50/80 px-3 py-1.5 text-left transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:hover:bg-slate-800">
-                                <i className={`fa-solid fa-chevron-right text-[9px] text-slate-400 transition-transform ${isCollapsed ? "" : "rotate-90"}`}></i>
-                                {isDeletedGroup && <i className="fa-regular fa-trash-can w-2 text-center text-[10px] text-slate-400"></i>}
+                                    className="flex w-full items-center gap-2 border-b border-gray-100 bg-gray-50/80 px-3 py-1.5 text-left transition hover:bg-gray-100 dark:border-neutral-700 dark:bg-neutral-700/60 dark:hover:bg-neutral-700">
+                                <i className={`fa-solid fa-chevron-right text-[9px] text-gray-500 transition-transform ${isCollapsed ? "" : "rotate-90"}`}></i>
+                                {isDeletedGroup && <i className="fa-regular fa-trash-can w-2 text-center text-[10px] text-gray-500"></i>}
                                 {!isDeletedGroup && groupBy === "status" && <StatusDot status={group.name}/>}
                                 {!isDeletedGroup && groupBy === "priority" && <PriorityIcon caption={group.name}/>}
-                                <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{group.name}</span>
-                                <span className="text-[11px] text-slate-400">{group.tasks.length}</span>
+                                <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">{group.name}</span>
+                                <span className="text-[11px] text-gray-600">{group.tasks.length}</span>
                             </button>
                         }
                         {!isCollapsed && group.tasks.map(task => {
@@ -240,9 +241,9 @@ const TaskList = ({
                                          onMergeRequest(donorId, task.id);
                                      }}
                                      title={onMergeRequest && !isDeleted ? "Перетягніть на іншу задачу, щоб злити" : undefined}
-                                     className={`group flex cursor-pointer items-center gap-2.5 border-b border-slate-100 px-3 py-2 transition dark:border-slate-800 ${isSelected
+                                     className={`group flex cursor-pointer items-center gap-2.5 border-b border-gray-100 px-3 py-2 transition dark:border-neutral-700 ${isSelected
                                          ? "bg-blue-50 dark:bg-blue-900/25"
-                                         : "hover:bg-slate-50 dark:hover:bg-slate-800/50"} ${isDeleted ? "opacity-60" : ""} ${dragOverId === task.id ? "ring-2 ring-inset ring-blue-400" : ""}`}>
+                                         : "hover:bg-gray-50 dark:hover:bg-neutral-700/50"} ${isDeleted ? "opacity-60" : ""} ${dragOverId === task.id ? "ring-2 ring-inset ring-blue-400" : ""}`}>
                                     {Boolean(onToggleFavorite) &&
                                         <button type="button"
                                                 onClick={(e) => {
@@ -252,22 +253,22 @@ const TaskList = ({
                                                 title={task.isFavorite ? "Прибрати з обраного" : "Додати в обране"}
                                                 className={`shrink-0 transition ${task.isFavorite
                                                     ? "text-amber-400"
-                                                    : "text-slate-300 opacity-0 hover:text-amber-400 group-hover:opacity-100 dark:text-slate-600"}`}>
+                                                    : "text-gray-300 opacity-0 hover:text-amber-400 group-hover:opacity-100 dark:text-gray-600"}`}>
                                             <i className={`${task.isFavorite ? "fa-solid" : "fa-regular"} fa-star text-xs`}></i>
                                         </button>
                                     }
                                     <PriorityIcon caption={task.priority}/>
                                     {groupBy !== "status" && <StatusDot status={task.status}/>}
-                                    <span className="shrink-0 font-mono text-[11px] text-slate-400">#{task.id}</span>
+                                    <span className="shrink-0 font-mono text-[11px] text-gray-600">#{task.id}</span>
                                     {task.project &&
                                         <Tooltip content={`Проєкт: ${task.project}`}>
-                                            <span className="hidden shrink-0 max-w-[8rem] items-center gap-1 truncate text-[11px] text-slate-400 dark:text-slate-500 sm:inline-flex">
+                                            <span className="hidden shrink-0 max-w-[8rem] items-center gap-1 truncate text-[11px] text-gray-600 dark:text-gray-500 sm:inline-flex">
                                                 <i className="fa-regular fa-folder"></i>
                                                 <span className="truncate">{task.project}</span>
                                             </span>
                                         </Tooltip>
                                     }
-                                    <span className="min-w-0 flex-1 truncate text-sm text-slate-800 dark:text-slate-200">
+                                    <span className="min-w-0 flex-1 truncate text-sm text-gray-800 dark:text-gray-200">
                                         {task.title}
                                     </span>
                                     {isDeleted &&
@@ -279,34 +280,34 @@ const TaskList = ({
                                                 <TagPill key={tag.id} tag={tag}/>
                                             ))}
                                             {task.tags.length > 3 &&
-                                                <span className="text-[10px] text-slate-400">+{task.tags.length - 3}</span>
+                                                <span className="text-[10px] text-gray-600">+{task.tags.length - 3}</span>
                                             }
                                         </span>
                                     }
                                     {task.linkedProjectsCount > 0 &&
                                         <Tooltip content={`Проєктів у наборі: ${task.linkedProjectsCount}`}>
-                                            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500">
+                                            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-gray-600 dark:text-gray-500">
                                                 <i className="fa-regular fa-folder-tree"></i>{task.linkedProjectsCount}
                                             </span>
                                         </Tooltip>
                                     }
                                     {task.commentsCount > 0 &&
                                         <Tooltip content={`Коментарів: ${task.commentsCount}`}>
-                                            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500">
+                                            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-gray-600 dark:text-gray-500">
                                                 <i className="fa-regular fa-message"></i>{task.commentsCount}
                                             </span>
                                         </Tooltip>
                                     }
                                     {task.attachmentsCount > 0 &&
                                         <Tooltip content={`Вкладень: ${task.attachmentsCount}`}>
-                                            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500">
+                                            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-gray-600 dark:text-gray-500">
                                                 <i className="fa-regular fa-paperclip"></i>{task.attachmentsCount}
                                             </span>
                                         </Tooltip>
                                     }
                                     {task.createdUser &&
                                         <Tooltip content={`Автор: ${task.createdUser}`}>
-                                            <span className="hidden shrink-0 text-[10px] text-slate-400 dark:text-slate-500 xl:inline">
+                                            <span className="hidden shrink-0 text-[10px] text-gray-600 dark:text-gray-500 xl:inline">
                                                 {task.createdUser}
                                             </span>
                                         </Tooltip>
@@ -328,7 +329,7 @@ const TaskList = ({
                                                         <i className="fa-regular fa-circle-half-stroke"></i>
                                                     </Button>
                                                 </MenuHandler>
-                                                <MenuList className="min-w-[9rem] p-1 dark:border-slate-700 dark:bg-slate-800">
+                                                <MenuList className="min-w-[9rem] p-1 dark:border-neutral-700 dark:bg-neutral-700">
                                                     {/* Лише переходи, дозволені життєвим циклом для цього користувача */}
                                                     {statuses
                                                         .filter(status => allowedStatusIds(task, auth).includes(status.id))
@@ -338,7 +339,7 @@ const TaskList = ({
                                                                           e.stopPropagation();
                                                                           onChangeStatus(task.id, status.id);
                                                                       }}
-                                                                      className="text-xs dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-100 dark:focus:bg-slate-700">
+                                                                      className="text-xs dark:text-gray-300 dark:hover:bg-neutral-600 dark:hover:text-gray-100 dark:focus:bg-neutral-600">
                                                                 <span className="flex items-center gap-2">
                                                                     <StatusDot status={status.name}/>{status.name}
                                                                 </span>

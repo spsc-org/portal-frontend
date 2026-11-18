@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { observer } from "mobx-react-lite";
-import { Checkbox, Dialog, DialogBody, DialogFooter, DialogHeader, Switch, Tooltip, Typography } from "@material-tailwind/react";
+import { Checkbox, Switch, Tooltip, Typography } from "@material-tailwind/react"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal/Modal.jsx"
 import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { ImportViewModel } from "../viewmodel/ImportViewModel.js";
@@ -34,11 +35,11 @@ const ImportModal = ({ onClose, title, templateUrl, columns, previewSpec, commit
     };
 
     return (
-        <Dialog data-i-doc={iDoc} open handler={onClose} size={step === "preview" ? "lg" : "sm"} className="flex max-h-[90vh] flex-col">
-            <DialogHeader>
-                <Typography variant="h5" className="dark:text-slate-200">{title}</Typography>
-            </DialogHeader>
-            <DialogBody className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto">
+        <Modal data-i-doc={iDoc} open handler={onClose} size={step === "preview" ? "lg" : "sm"} className="flex max-h-[90vh] flex-col">
+            <ModalHeader>
+                <Typography variant="h5" className="dark:text-gray-200">{title}</Typography>
+            </ModalHeader>
+            <ModalBody className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto">
                 {step === "pick" ? (
                     <>
                         <a href={templateUrl}
@@ -47,22 +48,22 @@ const ImportModal = ({ onClose, title, templateUrl, columns, previewSpec, commit
                             Завантажити заготовку Excel
                         </a>
                         <div>
-                            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">Файл (.xlsx, .xls)</label>
+                            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">Файл (.xlsx, .xls)</label>
                             <input
                                 ref={fileInputRef}
                                 type="file"
                                 accept=".xlsx,.xls"
                                 onChange={(e) => vm.pickFile(e.target.files?.[0])}
-                                className="w-full rounded-md border border-slate-200 bg-white p-2 text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-slate-100 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-slate-600 focus:border-blue-300 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:file:bg-slate-700 dark:file:text-slate-300"
+                                className="w-full rounded-md border border-gray-200 bg-white p-2 text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-gray-600 focus:border-blue-300 focus:outline-none dark:border-neutral-700 dark:bg-neutral-700 dark:text-gray-300 dark:file:bg-neutral-600 dark:file:text-gray-300"
                             />
                         </div>
                         {vm.preview.isPending &&
-                            <p className="text-xs text-slate-400 dark:text-slate-500">Розпізнаю файл…</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-500">Розпізнаю файл…</p>
                         }
                     </>
                 ) : (
                     <>
-                        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
                             <span>
                                 <i className="fa-regular fa-file-excel mr-1.5"></i>{fileName} — знайдено {rows.length},
                                 коректних {vm.validCount}
@@ -73,26 +74,26 @@ const ImportModal = ({ onClose, title, templateUrl, columns, previewSpec, commit
                                     Обрати всі коректні
                                 </button>
                                 <button type="button" onClick={vm.clearAll}
-                                        className="font-medium text-slate-400 transition hover:underline">
+                                        className="font-medium text-gray-600 transition hover:underline">
                                     Зняти всі
                                 </button>
                             </div>
                         </div>
                         {rows.length === 0 &&
-                            <p className="rounded-lg border border-dashed border-slate-300 py-6 text-center text-xs text-slate-400 dark:border-slate-700 dark:text-slate-500">
+                            <p className="rounded-lg border border-dashed border-gray-300 py-6 text-center text-xs text-gray-600 dark:border-neutral-700 dark:text-gray-500">
                                 Файл не містить жодного рядка з даними.
                             </p>
                         }
                         {rows.length > 0 &&
-                        <div className="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+                        <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-neutral-700">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-xs">
-                                    <thead className="bg-slate-50 dark:bg-slate-800">
+                                    <thead className="bg-gray-50 dark:bg-neutral-700">
                                         <tr>
                                             <th className="w-8 px-2 py-1.5"></th>
-                                            <th className="px-2 py-1.5 text-slate-500 dark:text-slate-400">Рядок</th>
+                                            <th className="px-2 py-1.5 text-gray-600 dark:text-gray-400">Рядок</th>
                                             {columns.map((col) => (
-                                                <th key={col.key} className="whitespace-nowrap px-2 py-1.5 text-slate-500 dark:text-slate-400">{col.label}</th>
+                                                <th key={col.key} className="whitespace-nowrap px-2 py-1.5 text-gray-600 dark:text-gray-400">{col.label}</th>
                                             ))}
                                             <th className="w-8 px-2 py-1.5"></th>
                                         </tr>
@@ -100,16 +101,16 @@ const ImportModal = ({ onClose, title, templateUrl, columns, previewSpec, commit
                                     <tbody>
                                         {rows.map((row, index) => (
                                             <tr key={index}
-                                                className={`border-t border-slate-100 dark:border-slate-800 ${!row.valid ? "bg-red-50/50 dark:bg-red-900/10" : ""}`}>
+                                                className={`border-t border-gray-100 dark:border-neutral-700 ${!row.valid ? "bg-red-50/50 dark:bg-red-900/10" : ""}`}>
                                                 <td className="px-2 py-1.5">
-                                                    <Checkbox checked={Boolean(selected[index])} onChange={() => vm.toggleRow(index)} className="dark:border-slate-600"/>
+                                                    <Checkbox checked={Boolean(selected[index])} onChange={() => vm.toggleRow(index)} className="dark:border-gray-600"/>
                                                 </td>
-                                                <td className="px-2 py-1.5 text-slate-400">{row.row}</td>
+                                                <td className="px-2 py-1.5 text-gray-600">{row.row}</td>
                                                 {columns.map((col) => (
-                                                    <td key={col.key} className="px-2 py-1.5 text-slate-700 dark:text-slate-300">
+                                                    <td key={col.key} className="px-2 py-1.5 text-gray-700 dark:text-gray-300">
                                                         {col.render
                                                             ? col.render(row)
-                                                            : (row[col.key] || <span className="text-slate-300 dark:text-slate-600">—</span>)}
+                                                            : (row[col.key] || <span className="text-gray-300 dark:text-gray-600">—</span>)}
                                                     </td>
                                                 ))}
                                                 <td className="px-2 py-1.5">
@@ -128,22 +129,22 @@ const ImportModal = ({ onClose, title, templateUrl, columns, previewSpec, commit
                         }
                         {canMarkDefault &&
                             <div className="flex w-fit items-center gap-2">
-                                <span className={`text-sm ${!isDefault ? "font-semibold text-slate-800 dark:text-slate-100" : "text-slate-400 dark:text-slate-500"}`}>
+                                <span className={`text-sm ${!isDefault ? "font-semibold text-gray-800 dark:text-gray-100" : "text-gray-600 dark:text-gray-500"}`}>
                                     Мій список
                                 </span>
                                 <Switch checked={isDefault} onChange={(e) => vm.setIsDefault(e.target.checked)} color="blue"/>
-                                <span className={`text-sm ${isDefault ? "font-semibold text-slate-800 dark:text-slate-100" : "text-slate-400 dark:text-slate-500"}`}>
+                                <span className={`text-sm ${isDefault ? "font-semibold text-gray-800 dark:text-gray-100" : "text-gray-600 dark:text-gray-500"}`}>
                                     Загальний список
                                 </span>
                             </div>
                         }
                     </>
                 )}
-            </DialogBody>
-            <DialogFooter className="gap-x-2">
+            </ModalBody>
+            <ModalFooter className="gap-x-2">
                 {step === "preview" &&
                     <button type="button" onClick={handleBack}
-                            className="mr-auto rounded px-3 py-2 text-xs font-medium text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800">
+                            className="mr-auto rounded px-3 py-2 text-xs font-medium text-gray-600 transition hover:bg-gray-100 dark:hover:bg-neutral-700">
                         <i className="fa-solid fa-arrow-left mr-1"></i>Інший файл
                     </button>
                 }
@@ -157,8 +158,8 @@ const ImportModal = ({ onClose, title, templateUrl, columns, previewSpec, commit
                         Імпортувати ({selectedRows.length})
                     </LoadingButton>
                 }
-            </DialogFooter>
-        </Dialog>
+            </ModalFooter>
+        </Modal>
     );
 };
 

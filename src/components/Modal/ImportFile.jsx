@@ -1,4 +1,6 @@
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "./Modal.jsx"
+import Button from "../Buttons/Button.jsx"
+
 import {useRef, useState} from "react";
 import LoadingButton from "../Buttons/LoadingButton.jsx";
 
@@ -6,7 +8,6 @@ const ImportFile = ({
     open,
     onClose,
     accept = '',
-    api = '',
     submitText = 'Імпортувати',
     formatText = '',
     handleSubmit,
@@ -39,34 +40,31 @@ const ImportFile = ({
 
 
     return (
-        <Dialog open={open} size="xs" handler={onClose}>
-            <DialogHeader
-                className="dark:text-gray-200">Імпорт файлу</DialogHeader>
-            <DialogBody>
+        <Modal open={open} size="xs" handler={onClose}>
+            <ModalHeader>Імпорт файлу</ModalHeader>
+            <ModalBody>
                 {extraContent}
                 <input ref={fileInput} type="file" onChange={handleFileInput}
                        accept={accept}
                        autoFocus={false}
-                       className="w-full bg-white text-slate-700 border-slate-200 rounded-md px-3 py-2 transition hover:border-blue-300 shadow-sm focus:shadow dark:bg-gray-900 dark:text-gray-300"
+                       className="w-full bg-white text-gray-700 border-gray-200 rounded-md px-3 py-2 transition hover:border-blue-300 shadow-sm focus:shadow dark:bg-neutral-800 dark:text-gray-300"
                 />
-                <p className="ml-1 text-sm font-medium dark:text-slate-400">{formatText}</p>
+                <p className="ml-1 text-sm font-medium dark:text-gray-400">{formatText}</p>
                 <p className="ml-1 text-sm font-medium text-red-500">{error}</p>
-            </DialogBody>
-            <DialogFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button
-                    variant="text"
-                    color="red"
+                    color="secondary"
                     onClick={onClose}
-                    className="mr-1"
-                >
+                    className="mr-1">
                     <span>Закрити</span>
                 </Button>
                 <LoadingButton isLoading={isLoading} color="green" onClick={onSubmit}
                         disabled={!file || isLoading}>
                     {submitText}
                 </LoadingButton>
-            </DialogFooter>
-        </Dialog>);
+            </ModalFooter>
+        </Modal>);
 };
 
 export default ImportFile;

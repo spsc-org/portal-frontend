@@ -12,14 +12,14 @@ import SecondaryNavPanel from "./SecondaryNavPanel.jsx";
 const FullHeightSecondaryNavLayout = ({title, items, active, children, "data-i-doc": dataIDoc}) => {
     if ((items?.length ?? 0) <= 1) {
         return (
-            <div className="h-full overflow-hidden bg-gray-100 p-3 dark:bg-gray-900">
+            <div className="h-full overflow-hidden bg-gray-100 p-3 dark:bg-neutral-800">
                 <div data-i-doc={dataIDoc} className="h-full overflow-hidden rounded-2xl">{children}</div>
             </div>
         );
     }
 
     return (
-        <div className="flex h-full items-stretch gap-3 overflow-hidden bg-gray-100 p-3 dark:bg-gray-900">
+        <div className="flex h-full items-stretch gap-3 overflow-hidden bg-gray-100 p-3 dark:bg-neutral-800">
             <div data-i-doc={dataIDoc} className="min-w-0 flex-1 overflow-hidden rounded-2xl">
                 {children}
             </div>
