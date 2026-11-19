@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 .env
 
+
+# Font Awesome metadata (~86 MB, SPA її не використовує)
+public/fontawesome/metadata
