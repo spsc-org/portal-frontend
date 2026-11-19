@@ -74,4 +74,32 @@ export async function apiFetch(path, { method = 'GET', body, headers = {}, ...re
   return payload
 }
 
+// axios-інстанс для коду, портованого з Inertia-застосунку, який очікує
+// глобальний `window.axios` (відносні URL `api/...`, кидає на non-2xx,
+// `response.data`). Той самий бекенд, CSRF-рукостискання і 401-хук, що й
+// apiFetch — тільки axios-інтерфейс.
+export const http = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+  headers: { Accept: 'application/json' },
+})
+
+http.interceptors.request.use(async (config) => {
+  if (MUTATING_METHODS.has((config.method ?? 'get').toUpperCase())) {
+    await ensureCsrfCookie()
+    config.headers.set('X-XSRF-TOKEN', readCookie('XSRF-TOKEN') ?? '')
+  }
+  return config
+})
+
+http.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      unauthorizedHandler?.()
+    }
+    return Promise.reject(error)
+  },
+)
+
 export { API_BASE_URL }

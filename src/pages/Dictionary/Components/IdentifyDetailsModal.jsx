@@ -1,3 +1,4 @@
+import {http as axios} from "../../../lib/api.js";
 import {
     Button,
     Dialog,
@@ -13,18 +14,18 @@ import {
     Tooltip
 } from "@material-tailwind/react";
 import React, {useMemo, useState} from "react";
-import {usePage} from "@inertiajs/react";
+import {useDictionaryPageProps} from "../useDictionaryPageProps.js";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {useDictionaryContext} from "@/ReactPages/Dictionary/DictionaryContext.jsx";
-import Table from "@/Components/Table/Table.jsx";
+import {useDictionaryContext} from "../DictionaryContext.jsx";
+import Table from "../../../components/Table/Table.jsx";
 import {createColumnHelper} from "@tanstack/react-table";
 import toast from "react-hot-toast";
-import {rollbackVersion} from "@/ReactPages/Dictionary/utils.js";
+import {rollbackVersion} from "../utils.js";
 
 const columnHelper = createColumnHelper();
 
 const IdentifyDetailsModal = ({open, id, onClose, dictionary}) => {
-    const {auth, countries = [], subjectTypes = []} = usePage().props;
+    const {auth, countries = [], subjectTypes = []} = useDictionaryPageProps();
 
     const [tab, setTab] = useState("info")
     const {state} = useDictionaryContext();

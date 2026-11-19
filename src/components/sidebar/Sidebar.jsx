@@ -148,6 +148,21 @@ function NavItem({item, open, pathname}) {
                     <div className="overflow-hidden border-l border-slate-300/80 pl-2 dark:border-slate-700">
                         {item.submenu.map((sub) => {
                             const subActive = isHrefActive(sub.href, pathname);
+                            if (sub.disabled) {
+                                // Вимкнений у config/sidebar.php — видимий, але не посилання.
+                                return (
+                                    <span
+                                        key={sub.href}
+                                        aria-disabled="true"
+                                        title="Недоступно"
+                                        className="mb-0.5 flex cursor-not-allowed items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium text-slate-400 opacity-60 dark:text-slate-500"
+                                    >
+                                        <i className="fa-solid fa-level-up-alt rotate-90 text-[10px] opacity-70"/>
+                                        <i className={`${sub.icon} text-[11px]`}/>
+                                        {sub.label}
+                                    </span>
+                                );
+                            }
                             return (
                                 <a
                                     key={sub.href}

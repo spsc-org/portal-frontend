@@ -1,10 +1,10 @@
 import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import Table, {loadColumnSizes} from "@/Components/Table/Table.jsx";
+import Table, {loadColumnSizes} from "../../../components/Table/Table.jsx";
 import {keepPreviousData, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {usePage} from "@inertiajs/react";
+import {useDictionaryPageProps} from "../useDictionaryPageProps.js";
 import {createColumnHelper} from "@tanstack/react-table";
-import {useDictionaryContext} from "@/ReactPages/Dictionary/DictionaryContext.jsx";
-import AdvancedSelect from "@/Components/fields/AdvancedSelect.jsx";
+import {useDictionaryContext} from "../DictionaryContext.jsx";
+import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
 import {Button, Switch, Tooltip} from "@material-tailwind/react";
 import {
     deleteIdentifyV2Mutation,
@@ -12,13 +12,13 @@ import {
     GROUPS,
     restoreIdentifyV2Mutation,
     transformIdentifyV2Response,
-} from "@/ReactPages/Dictionary/utils.js";
-import {convertDate} from "@/utils.js";
-import IdentifyV2DetailsModal from "@/ReactPages/Dictionary/Components/IdentifyV2DetailsModal.jsx";
+} from "../utils.js";
+import {convertDate} from "../../../lib/utils.js";
+import IdentifyV2DetailsModal from "./IdentifyV2DetailsModal.jsx";
 import toast from "react-hot-toast";
-import IdentifyV2Modal from "@/ReactPages/Dictionary/Components/IdentifyV2Modal.jsx";
-import SearchInput from "@/Components/fields/SearchInput.jsx";
-import DateRangePicker from "@/Components/fields/DateRangePicker.jsx";
+import IdentifyV2Modal from "./IdentifyV2Modal.jsx";
+import SearchInput from "../../../components/fields/SearchInput.jsx";
+import DateRangePicker from "../../../components/fields/DateRangePicker.jsx";
 import {format} from "date-fns";
 
 const columnHelper = createColumnHelper();
@@ -27,7 +27,7 @@ const LS_KEY_SORTING = `dictionary-v2-sorting`;
 
 const DictionaryIdentifyV2 = () => {
     const {state} = useDictionaryContext();
-    const {auth, countries = [], subjectTypes = []} = usePage().props;
+    const {auth, countries = [], subjectTypes = []} = useDictionaryPageProps();
     const addRef = useRef(null);
     const [selectedId, setSelectedId] = useState(null);
     const queryClient = useQueryClient();

@@ -12,9 +12,9 @@ import {
     TabsHeader,
 } from "@material-tailwind/react";
 import React, {useMemo, useState} from "react";
-import {usePage} from "@inertiajs/react";
+import {useDictionaryPageProps} from "../useDictionaryPageProps.js";
 import {useQuery} from "@tanstack/react-query";
-import axios from "axios";
+import {http as axios} from "../../../lib/api.js";
 
 const FIELD_LABELS = {
     code: 'Код',
@@ -121,7 +121,7 @@ const AuditEntry = ({entry, dictionary}) => {
 };
 
 const IdentifyV2DetailsModal = ({open, id, onClose, dictionary}) => {
-    const {auth, countries = [], subjectTypes = []} = usePage().props;
+    const {auth, countries = [], subjectTypes = []} = useDictionaryPageProps();
     const [tab, setTab] = useState("info");
 
     const {data, isFetching} = useQuery({

@@ -1,11 +1,11 @@
 import React, {useMemo, useState} from 'react';
 import {createColumnHelper} from "@tanstack/react-table";
-import Table, {loadColumnSizes} from "../../../Components/Table/Table.jsx";
+import Table, {loadColumnSizes} from "../../../components/Table/Table.jsx";
 import {keepPreviousData, useQuery} from "@tanstack/react-query";
-import {usePage} from "@inertiajs/react";
+import {useDictionaryPageProps} from "../useDictionaryPageProps.js";
 import {Button, Tooltip, Typography} from "@material-tailwind/react";
 import {fetchVesselCallSigns} from "../utils.js";
-import AdvancedSelect from "../../../Components/fields/AdvancedSelect.jsx";
+import AdvancedSelect from "../../../components/fields/AdvancedSelect.jsx";
 
 
 const columnHelper = createColumnHelper();
@@ -17,7 +17,7 @@ const INITIAL_FILTERS = {
 };
 
 const VesselCallSigns = () => {
-    const {auth, countries = []} = usePage().props;
+    const {auth, countries = []} = useDictionaryPageProps();
     const [filters, setFilters] = useState(INITIAL_FILTERS);
 
     const {data, isFetching} = useQuery({

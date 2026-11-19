@@ -1,5 +1,5 @@
-import axios from "axios";
-import {serializeParams} from "@/utils.js";
+import {http as axios} from "../../lib/api.js";
+import {serializeParams} from "../../lib/utils.js";
 
 export const fetchIdentifiers = async ({userId, ...filters}) => {
     const params = {

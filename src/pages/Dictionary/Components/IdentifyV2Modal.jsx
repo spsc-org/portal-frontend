@@ -1,13 +1,13 @@
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
 import React, {useEffect, useState} from "react";
-import SingleSelect from "@/Components/fields/SingleSelect.jsx";
-import Input from "@/Components/fields/Input.jsx";
-import {GROUPS} from "@/ReactPages/Dictionary/utils.js";
+import SingleSelect from "../../../components/fields/SingleSelect.jsx";
+import Input from "../../../components/fields/Input.jsx";
+import {GROUPS} from "../utils.js";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import {usePage} from "@inertiajs/react";
-import axios from "axios";
-import LoadingButton from "../../../Components/Buttons/LoadingButton.jsx";
+import {useDictionaryPageProps} from "../useDictionaryPageProps.js";
+import {http as axios} from "../../../lib/api.js";
+import LoadingButton from "../../../components/Buttons/LoadingButton.jsx";
 
 const initialState = {
     code: '',
@@ -24,7 +24,7 @@ const initialState = {
 }
 
 const IdentifyV2Modal = ({open, onClose, id}) => {
-    const {auth, countries = [], subjectTypes = []} = usePage().props;
+    const {auth, countries = [], subjectTypes = []} = useDictionaryPageProps();
     const queryClient = useQueryClient();
     const [errors, setErrors] = useState(null);
     const [form, setForm] = useState(initialState);

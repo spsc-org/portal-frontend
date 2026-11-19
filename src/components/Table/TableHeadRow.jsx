@@ -1,5 +1,5 @@
 import React from 'react';
-import TableHeadCell from "@/Components/Table/TableHeadCell.jsx";
+import TableHeadCell from "./TableHeadCell.jsx";
 
 const TableHeadRow = ({canSelect, onSelectAll = false, columns = [], data = [], ...props}) => {
     return (

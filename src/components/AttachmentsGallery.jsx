@@ -7,7 +7,7 @@ import {useMutation} from "@tanstack/react-query";
 import {Spinner, Tooltip} from "@material-tailwind/react";
 import toast from "react-hot-toast";
 import CustomToast from "./CustomToast.jsx";
-import {downloadFile} from "../utils.js";
+import {downloadFile} from "../lib/utils.js";
 
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
 

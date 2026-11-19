@@ -1,4 +1,4 @@
-import {DOTS, usePagination} from "@/hooks/usePagination.jsx";
+import {DOTS, usePagination} from "../../hooks/usePagination.jsx";
 import React from "react";
 
 const Pagination = ({

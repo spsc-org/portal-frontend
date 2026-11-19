@@ -4,7 +4,7 @@ import "react-day-picker/style.css";
 import {uk} from "react-day-picker/locale";
 import {addMonths, format} from "date-fns";
 import {Button, Popover, PopoverContent, PopoverHandler} from "@material-tailwind/react";
-import Input from "@/Components/fields/Input.jsx";
+import Input from "./Input.jsx";
 
 
 const DateRangePicker = ({

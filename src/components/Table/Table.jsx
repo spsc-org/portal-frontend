@@ -1,8 +1,8 @@
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable,} from "@tanstack/react-table";
 import "./index.css"
 import React, {Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import Pagination from "@/Components/Table/Pagination.jsx";
-import {IndeterminateCheckbox} from "@/Components/Table/IndeterminateCheckbox.jsx";
+import Pagination from "./Pagination.jsx";
+import {IndeterminateCheckbox} from "./IndeterminateCheckbox.jsx";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Spinner, Tooltip} from "@material-tailwind/react";
 import PinnedRow from "./PinnedRow.jsx";
 
