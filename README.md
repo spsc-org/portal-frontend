@@ -1,16 +1,45 @@
-# React + Vite
+# Portal — SPA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 18 + Vite 8 + react-router 7 (data mode) + MobX / TanStack Query. Фронтенд до Laravel API
+(Sanctum SPA cookie auth, Reverb). Архітектура й конвенції — у `CLAUDE.md`.
 
-Currently, two official plugins are available:
+## Розробка
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```sh
+cp .env.example .env   # адреси локального Laravel (8591) і Reverb (6001)
+npm install
+npm run dev            # http://localhost:3000, проксі на бекенд — vite.config.js
+npm run lint
+npm run build          # dist/
+```
 
-## React Compiler
+## Docker (тест / прод)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Образ: `npm run build` → `nginx:1.27-alpine`. Nginx віддає `dist/` з SPA-fallback і проксує
+backend-префікси (`/api`, `/sanctum`, `/broadcasting`, `/storage`, експорти, …) та WebSocket `/app`
+так само, як dev-сервер (`docker/nginx/default.conf.template`). Браузер бачить один origin, CORS не
+потрібен.
 
-## Expanding the ESLint configuration
+```sh
+cp docker/.env.example docker/.env      # SPA_PORT, API_UPSTREAM, REVERB_UPSTREAM
+docker compose --env-file docker/.env up -d --build
+# http://<host>:8090
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| Змінна | Коли | Опис |
+|---|---|---|
+| `API_UPSTREAM` | runtime | Laravel, напр. `http://host.docker.internal:8080` |
+| `REVERB_UPSTREAM` | runtime | Reverb, напр. `http://host.docker.internal:6001` |
+| `SPA_PORT` | runtime | порт на хості (default `8090`) |
+| `VITE_REVERB_APP_KEY` | build | `REVERB_APP_KEY` бекенду |
+| `VITE_API_URL` | build | порожньо = той самий origin (рекомендовано) |
+
+Зміна runtime-змінних → `docker compose up -d`; build-змінних → `--build`.
+
+### Що налаштувати на бекенді
+
+- `SANCTUM_STATEFUL_DOMAINS` — додати `host:port`, який бачить браузер (напр. `192.168.1.50:8090`).
+- `SESSION_SECURE_COOKIE=false`, якщо SPA відкривається по `http` (інакше cookie не ставиться
+  і логін мовчки не проходить); `SESSION_DOMAIN=` порожній.
+- Reverb запущений: `php artisan reverb:start --host=0.0.0.0 --port=6001`.
+- `TrustProxies` пропускає заголовки від nginx SPA (`X-Forwarded-*`).

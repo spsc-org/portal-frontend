@@ -3,7 +3,7 @@ import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { ProjectsSetViewModel } from "../../viewmodel/TaskViewModels.js";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
 import Button from "../../../../components/Buttons/Button.jsx"
-import SingleSelect from "../../../../Components/fields/SingleSelect.jsx";
+import SingleSelect from "../../../../components/fields/SingleSelect.jsx";
 
 // Модалка кураторства набору проєктів задачі (taskLink): таблиця з
 // пошуком по доданих, видалення рядків, додавання через фільтр-движок

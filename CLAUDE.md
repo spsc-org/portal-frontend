@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-React 18 (`react@^18`, resolved 18.3.1 — `ref` is NOT a plain prop: components that MT `Tooltip`/`PopoverHandler`/`MenuHandler` wrap must use `forwardRef`) + Vite + JavaScript (plain `.js`/`.jsx`, no TypeScript) + react-router v8 (data mode:
+React 18 (`react@^18`, resolved 18.3.1 — `ref` is NOT a plain prop: components that MT `Tooltip`/`PopoverHandler`/`MenuHandler` wrap must use `forwardRef`) + Vite + JavaScript (plain `.js`/`.jsx`, no TypeScript) + react-router v7 (`^7.9`, data mode:
 `createBrowserRouter`, client-side only, no SSR). This is the frontend for an internal "portal"
 backed by a Laravel API using Sanctum SPA cookie authentication. The app is early-stage: only login
 and a placeholder dashboard exist behind auth guards, but `package.json` already carries a large set
@@ -21,8 +21,16 @@ because they're installed.
 - `npm run lint` — ESLint (flat config in `eslint.config.js`)
 
 There is no `typecheck` script (no TypeScript/tsconfig in this repo), no `format` script (though
-`.prettierrc` exists — run Prettier directly), no test runner, and no `start`/Docker setup — the
-`Dockerfile`, `.dockerignore`, and custom `README.md` from the previous scaffold were removed.
+`.prettierrc` exists — run Prettier directly), no test runner.
+
+**Docker (test/prod):** `Dockerfile` (node build → `nginx:1.27-alpine`) + `docker-compose.yml`
+(SPA only, values from `docker/.env.example` → `docker compose --env-file docker/.env up -d --build`).
+`docker/nginx/default.conf.template` mirrors the dev `server.proxy`: SPA fallback, backend prefixes →
+`${API_UPSTREAM}`, `/app` WebSocket → `${REVERB_UPSTREAM}`, `/staff`/`/profile` split by
+`Accept: text/html`. **A new entry in `BACKEND_PREFIXES` / `SPA_OVERLAP` (`vite.config.js`) must be
+added to the nginx template too.** `VITE_*` are baked in at image build time. The image builds on
+Linux, so import paths are case-sensitive (`components/`, never `Components/`) — a Windows-only
+`npm run build` won't catch that. `public/` (incl. Font Awesome 6 Pro) is tracked in git.
 
 ## Architecture
 
@@ -176,13 +184,10 @@ There is no `typecheck` script (no TypeScript/tsconfig in this repo), no `format
   template is gone.
 - Plain JavaScript throughout — TypeScript, `tsconfig.json`, and the entire previous `app/` directory
   (routes, layouts, pages, hooks, `lib/utils.ts`) have been deleted in favor of the new `src/` tree.
-- shadcn/ui is gone: no `components.json`, no `app/components/ui`. Tailwind (`tailwindcss`,
-  `prettier-plugin-tailwindcss`) is still listed in devDependencies and pages use Tailwind-style
-  utility classNames, but **Tailwind is not actually wired in** — `vite.config.js` has no
-  `@tailwindcss/vite` plugin and no stylesheet has an `@import "tailwindcss"`, so those utility
-  classes currently render unstyled. `src/index.css` is empty; `src/assets/app.css` still holds the
-  leftover `npm create vite` demo styles (`.counter`, `.hero`, `#next-steps`, etc.) unrelated to the
-  actual pages.
+- shadcn/ui is gone: no `components.json`, no `app/components/ui`. Tailwind v4 is wired in via
+  `@tailwindcss/vite` (`vite.config.js`); `src/index.css` does `@import "tailwindcss"`,
+  `@import "./assets/app.css"` (legacy portal styles) and `@config "../tailwind.config.js"`
+  (`withMT`, `darkMode: 'class'`, kit keyframes).
 - ESLint: flat config in `eslint.config.js` (`js.configs.recommended` +
   `eslint-plugin-react-hooks` + `eslint-plugin-react-refresh`), globals set to browser. Run via
   `npm run lint`.

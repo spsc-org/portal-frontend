@@ -1,0 +1,21 @@
+# Тестовий запуск SPA окремо від бекенду:
+#   cp docker/.env.example docker/.env   # вписати адреси Laravel / Reverb
+#   docker compose --env-file docker/.env up -d --build
+services:
+  spa:
+    build:
+      context: .
+      args:
+        VITE_API_URL: ${VITE_API_URL:-}
+        VITE_REVERB_APP_KEY: ${VITE_REVERB_APP_KEY:-portal-key}
+        VITE_APP_DEBUG: ${VITE_APP_DEBUG:-}
+    image: portal-spa
+    container_name: portal_spa
+    restart: unless-stopped
+    ports:
+      - "${SPA_PORT:-8090}:80"
+    environment:
+      API_UPSTREAM: ${API_UPSTREAM:-http://host.docker.internal:8591}
+      REVERB_UPSTREAM: ${REVERB_UPSTREAM:-http://host.docker.internal:6001}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

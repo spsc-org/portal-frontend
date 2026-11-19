@@ -1,0 +1,90 @@
+# Prod/тест-дзеркало server.proxy з vite.config.js: браузер бачить один origin,
+# тож Sanctum-cookie і XSRF працюють без CORS. Новий префікс у BACKEND_PREFIXES /
+# SPA_OVERLAP (vite.config.js) треба додати і сюди.
+# ${API_UPSTREAM} / ${REVERB_UPSTREAM} підставляє entrypoint офіційного образу nginx.
+
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+
+    client_max_body_size 100m;
+
+    gzip on;
+    gzip_comp_level 5;
+    gzip_min_length 1024;
+    gzip_types text/css application/javascript application/json image/svg+xml text/plain;
+
+    # Спільні заголовки для всіх proxy_pass нижче (крім /app — там свої).
+    proxy_http_version 1.1;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $http_host;
+    proxy_set_header Connection "";
+    proxy_read_timeout 300s;
+
+    # ---- SPA ----
+    location / {
+        try_files $uri /index.html;
+    }
+
+    location = /index.html {
+        add_header Cache-Control "no-cache";
+    }
+
+    # Хешовані бандли Vite
+    location /assets/ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        try_files $uri =404;
+    }
+
+    # ---- Backend (BACKEND_PREFIXES) ----
+    location /api               { proxy_pass ${API_UPSTREAM}; }
+    location /sanctum           { proxy_pass ${API_UPSTREAM}; }
+    location /broadcasting      { proxy_pass ${API_UPSTREAM}; }
+    location /storage           { proxy_pass ${API_UPSTREAM}; }
+    location /consolidated-data { proxy_pass ${API_UPSTREAM}; }
+    location /files             { proxy_pass ${API_UPSTREAM}; }
+    location /public-file       { proxy_pass ${API_UPSTREAM}; }
+    location /flag-svg          { proxy_pass ${API_UPSTREAM}; }
+    location /telescope         { proxy_pass ${API_UPSTREAM}; }
+    location /vendor/telescope  { proxy_pass ${API_UPSTREAM}; }
+
+    location ~ ^/develop/dossier/                     { proxy_pass ${API_UPSTREAM}; }
+    location ~ ^/inventory/(\d+/)?export              { proxy_pass ${API_UPSTREAM}; }
+    location ~ ^/project/(export|projectExportToTable) { proxy_pass ${API_UPSTREAM}; }
+
+    # ---- SPA_OVERLAP: SPA-маршрути під backend-префіксами ----
+    # Навігація браузера (Accept: text/html) → SPA, XHR/fetch → бекенд.
+    location ~ ^/staff(/(contracts|responsible))?/?$ {
+        if ($http_accept ~* "text/html") { rewrite ^ /index.html last; }
+        proxy_pass ${API_UPSTREAM};
+    }
+    location ~ ^/profile/?$ {
+        if ($http_accept ~* "text/html") { rewrite ^ /index.html last; }
+        proxy_pass ${API_UPSTREAM};
+    }
+    # Решта (/staff/summary-print, /staff/vacation-schedule, /profile/avatar) — бекенд
+    location /staff   { proxy_pass ${API_UPSTREAM}; }
+    location /profile { proxy_pass ${API_UPSTREAM}; }
+
+    # ---- Reverb WebSocket (Pusher-протокол: ws://<host>/app/<key>) ----
+    location /app {
+        proxy_pass ${REVERB_UPSTREAM};
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 1h;
+        proxy_send_timeout 1h;
+    }
+}

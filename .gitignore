@@ -24,5 +24,3 @@ dist-ssr
 *.sw?
 .env
 
-# Static assets (e.g. fontawesome) served as-is, not tracked in git
-public

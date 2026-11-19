@@ -3,8 +3,8 @@ import { useViewModel } from "../../../../shared/mvvm/useViewModel.js";
 import { CreateTaskViewModel } from "../../viewmodel/TaskViewModels.js";
 import { Spinner, Switch } from "@material-tailwind/react"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal/Modal.jsx"
-import SingleSelect from "../../../../Components/fields/SingleSelect.jsx";
-import DatePicker from "../../../../Components/fields/DatePicker.jsx";
+import SingleSelect from "../../../../components/fields/SingleSelect.jsx";
+import DatePicker from "../../../../components/fields/DatePicker.jsx";
 import AttachmentsGallery from "../../../../components/AttachmentsGallery.jsx";
 import LoadingButton from "../../../../components/Buttons/LoadingButton.jsx";
 import {format} from "date-fns";
