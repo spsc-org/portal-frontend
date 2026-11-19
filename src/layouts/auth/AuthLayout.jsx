@@ -22,8 +22,7 @@ function BrandPanel() {
         <PortalLogo className="h-8 w-8 text-blue-400" />
         <span className="text-xl font-bold tracking-wide">Портал</span>
       </Link>
-
-          </section>
+      </section>
   )
 }
 
