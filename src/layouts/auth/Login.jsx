@@ -53,7 +53,7 @@ export default function Login() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           error={fieldError(errors, 'email')}
-          placeholder="name@company.ua"
+          placeholder="surname@spsc.local"
           required
           autoFocus
           autoComplete="username"
