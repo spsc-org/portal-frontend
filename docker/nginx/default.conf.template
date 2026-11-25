@@ -39,6 +39,14 @@ server {
         add_header Cache-Control "no-cache";
     }
 
+    # Runtime-конфіг (40-portal-config.sh) і версія релізу — завжди свіжі
+    location = /config.js {
+        add_header Cache-Control "no-store";
+    }
+    location = /version.json {
+        add_header Cache-Control "no-store";
+    }
+
     # Хешовані бандли Vite
     location /assets/ {
         add_header Cache-Control "public, max-age=31536000, immutable";

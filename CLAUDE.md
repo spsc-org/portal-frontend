@@ -28,7 +28,14 @@ There is no `typecheck` script (no TypeScript/tsconfig in this repo), no `format
 `docker/nginx/default.conf.template` mirrors the dev `server.proxy`: SPA fallback, backend prefixes →
 `${API_UPSTREAM}`, `/app` WebSocket → `${REVERB_UPSTREAM}`, `/staff`/`/profile` split by
 `Accept: text/html`. **A new entry in `BACKEND_PREFIXES` / `SPA_OVERLAP` (`vite.config.js`) must be
-added to the nginx template too.** `VITE_*` are baked in at image build time. The image builds on
+added to the nginx template too.** Images are environment-agnostic (one tag is promoted test → prod):
+env-specific values are runtime — `src/lib/runtimeConfig.js` reads `window.__PORTAL_CONFIG__` from
+`/config.js` (written at container start by `docker/nginx/40-portal-config.sh` from
+`PORTAL_REVERB_APP_KEY` / `PORTAL_APP_DEBUG`; dev stub `public/config.js`), falling back to
+`import.meta.env`. New per-environment settings go there, not into `VITE_*` (only `VITE_API_URL` is
+still build-time). `docker/Dockerfile.runtime` = nginx-only image from a prebuilt `dist/` (CI: Vite
+runs on Jenkins, `docker build` on the offline Docker host); CI/CD, releases and rollback live in the
+Portal repo (`deploy/docker/README.md`, `www/Jenkinsfile.ci|release|rollback`). The image builds on
 Linux, so import paths are case-sensitive (`components/`, never `Components/`) — a Windows-only
 `npm run build` won't catch that. `public/` (incl. Font Awesome 6 Pro) is tracked in git.
 

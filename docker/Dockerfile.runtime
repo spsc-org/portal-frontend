@@ -1,0 +1,28 @@
+# Рантайм-образ SPA з уже зібраного dist/ (для CI: Vite збирає Jenkins, де є
+# інтернет, а docker build іде на хості без інтернету). Контекст — корінь
+# portal-frontend з dist/ і docker/nginx/. Поведінка та сама, що у ../Dockerfile:
+# PORTAL_REVERB_APP_KEY / PORTAL_APP_DEBUG — env контейнера → /config.js.
+#
+#   docker build -f docker/Dockerfile.runtime \
+#     --build-arg BASE_REGISTRY=gitea.spsc.local/spsc-org/mirror/ \
+#     --build-arg APP_VERSION=1.4.0-57-a1b2c3d --build-arg GIT_SHA=a1b2c3d .
+ARG BASE_REGISTRY=
+FROM ${BASE_REGISTRY}nginx:1.27-alpine
+ARG APP_VERSION=dev
+ARG GIT_SHA=unknown
+LABEL org.opencontainers.image.title="portal-spa" \
+      org.opencontainers.image.version="$APP_VERSION" \
+      org.opencontainers.image.revision="$GIT_SHA"
+
+ENV API_UPSTREAM=http://app:80 \
+    REVERB_UPSTREAM=http://reverb:6001 \
+    PORTAL_REVERB_APP_KEY=portal-key \
+    PORTAL_APP_DEBUG= \
+    APP_VERSION=$APP_VERSION
+COPY docker/nginx/default.conf.template /etc/nginx/templates/default.conf.template
+COPY --chmod=755 docker/nginx/40-portal-config.sh /docker-entrypoint.d/40-portal-config.sh
+COPY dist/ /usr/share/nginx/html/
+RUN printf '{"version":"%s","sha":"%s"}\n' "$APP_VERSION" "$GIT_SHA" > /usr/share/nginx/html/version.json
+EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD wget -q -O /dev/null http://127.0.0.1/version.json || exit 1

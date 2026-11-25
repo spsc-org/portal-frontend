@@ -1,4 +1,5 @@
 import { makeViewModel } from '../../../shared/mvvm/makeViewModel.js'
+import { runtimeConfig } from '../../../lib/runtimeConfig.js'
 import {
   WELCOME_KEYS,
   fetchDashboard,
@@ -100,7 +101,7 @@ export class WelcomeViewModel {
   }
 
   get isDebug() {
-    return Boolean(import.meta.env.VITE_APP_DEBUG)
+    return runtimeConfig.appDebug
   }
 
   get dashboard() {

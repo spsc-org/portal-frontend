@@ -1,15 +1,15 @@
 # Тестовий запуск SPA окремо від бекенду:
 #   cp docker/.env.example docker/.env   # вписати адреси Laravel / Reverb
 #   docker compose --env-file docker/.env up -d --build
+# Повний стек test/prod з версіонованими образами — у репо Portal (deploy/docker).
 services:
   spa:
     build:
       context: .
       args:
         VITE_API_URL: ${VITE_API_URL:-}
-        VITE_REVERB_APP_KEY: ${VITE_REVERB_APP_KEY:-portal-key}
-        VITE_APP_DEBUG: ${VITE_APP_DEBUG:-}
-    image: portal-spa
+        APP_VERSION: ${APP_VERSION:-local}
+    image: portal-spa:local
     container_name: portal_spa
     restart: unless-stopped
     ports:
@@ -17,5 +17,7 @@ services:
     environment:
       API_UPSTREAM: ${API_UPSTREAM:-http://host.docker.internal:8591}
       REVERB_UPSTREAM: ${REVERB_UPSTREAM:-http://host.docker.internal:6001}
+      PORTAL_REVERB_APP_KEY: ${PORTAL_REVERB_APP_KEY:-portal-key}
+      PORTAL_APP_DEBUG: ${PORTAL_APP_DEBUG:-}
     extra_hosts:
       - "host.docker.internal:host-gateway"

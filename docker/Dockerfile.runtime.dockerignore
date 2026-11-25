@@ -1,0 +1,5 @@
+# Окремий ignore для Dockerfile.runtime (BuildKit): у контекст ідуть лише
+# готовий dist/ і nginx-файли (кореневий .dockerignore виключає dist).
+*
+!dist/**
+!docker/nginx/**

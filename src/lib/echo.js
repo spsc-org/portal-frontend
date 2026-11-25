@@ -1,6 +1,7 @@
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 import { apiFetch } from './api.js'
+import { runtimeConfig } from './runtimeConfig.js'
 
 // Laravel Reverb (Pusher-протокол). За замовчуванням підключаємось до того ж
 // origin, що й сторінка: у dev Vite проксує WebSocket /app/* на Reverb
@@ -39,7 +40,7 @@ function authorizer(channel) {
 // UserActivityManager) звертаються саме до window.Echo.
 export const echo = new Echo({
   broadcaster: 'reverb',
-  key: import.meta.env.VITE_REVERB_APP_KEY,
+  key: runtimeConfig.reverbAppKey,
   wsHost: host,
   wsPort: port,
   wssPort: port,
