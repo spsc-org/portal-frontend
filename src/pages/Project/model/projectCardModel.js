@@ -4,6 +4,7 @@
  */
 import axios from 'axios'
 import { rootStore } from '../../../stores/RootStore.js'
+import { resolveRestrictionColor } from '../shared/lib/restrictionColor.js'
 
 const headers = () => ({ userId: rootStore.session.userId })
 const unwrap = (data, fallback) => {
@@ -70,28 +71,37 @@ export const vocCaption = (list, id) => findById(list, id)?.caption ?? null
  * red (не для цього типу суб'єкта / громадянин UA), orange (особливе), green; яскравість — чи обрано.
  */
 export function cardRestrictions(project, vocRestrictions) {
-  const hasUkrainian = asList(project.countries).some((country) => country.caption === 'UA')
+  const countryCodes = asList(project.countries).map((country) => country.caption).filter(Boolean)
   return Object.entries(project)
     .filter(([key]) => /^r\d+(_\d+)?$/.test(key))
     .map(([key, value]) => {
       const code = key.replace(/^r/, '').replace('_', '-')
       const voc = asList(vocRestrictions).find((item) => item.code === code)
       const checked = Boolean(value) && value !== '0'
-      const special = voc?.isSpecial === 1 && code !== '25'
-      let prohibited = voc?.subjectTypeId === null || (voc?.subjectTypeId !== 0 && voc?.subjectTypeId !== project.subjectTypeId)
-      if (hasUkrainian && voc?.subjectTypeId === 1) prohibited = true
-      const color = prohibited ? 'red' : special ? 'orange' : 'green'
+      // Код "25" ("інші санкції") — вільний текст, ніколи не підсвічується як "особливе"
+      const effectiveVoc = code === '25' ? { ...voc, isSpecial: 0 } : voc
+      const color = resolveRestrictionColor(effectiveVoc, project.subjectTypeId, countryCodes)
       const r6Text = code === '6' && checked ? project.r6Text || null : null
       const text = code === '25' ? value || null : null
-      return { key, code, checked, color, caption: voc?.caption ?? '', r6Text, text, dashed: !checked && !special && !prohibited && code !== '25' }
+      return { key, code, checked, color, caption: voc?.caption ?? '', r6Text, text, dashed: !checked && color === 'green' && code !== '25' }
     })
 }
 
-/** Ідентифікатори з підписами типів і країн (прапор за iso2). */
+/**
+ * Ідентифікатори з підписами типів і країн (прапор за iso2). `notSpecified` — свідомо
+ * підтверджена відсутність ("Не задано"); без countryId (судна) країна — "—", а не "???".
+ */
 export function cardIdentifiers(project, voc) {
   return asList(project.identifiers).map((item) => {
-    const country = findById(voc.country, item.countryId)
-    return { id: item.id, value: item.value, caption: vocCaption(voc.identifierType, item.identifierId) ?? '???', country: country?.caption ?? '???', iso2: country?.iso2?.toLowerCase() ?? null }
+    const country = item.countryId ? findById(voc.country, item.countryId) : null
+    return {
+      id: item.id,
+      value: item.value,
+      notSpecified: Boolean(item.notSpecified),
+      caption: vocCaption(voc.identifierType, item.identifierId) ?? '???',
+      country: item.countryId ? country?.caption ?? '???' : '—',
+      iso2: country?.iso2?.toLowerCase() ?? null,
+    }
   })
 }
 

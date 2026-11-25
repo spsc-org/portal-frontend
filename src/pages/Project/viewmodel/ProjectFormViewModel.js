@@ -20,11 +20,13 @@ import { ConsolidatedSearchState } from './ConsolidatedSearchState.js'
 import {
   FORM_RESTRICTION_KEYS,
   UKRAINE_ID,
+  VESSEL_SUBJECT_TYPE_ID,
   announceEditingProject,
+  applyVesselDefaults,
   attributeTypeOptions,
   buildPayload,
   canonicalSnapshot,
-  defaultIdentifierType,
+  defaultIdentifierRows,
   deleteProjectAttachment,
   draftsEnabled,
   emptyAttribute,
@@ -36,6 +38,8 @@ import {
   formLayout,
   identifierTypeOptions,
   includedRowKeys,
+  isEmptyAttributeRow,
+  isEmptyIdentifierRow,
   lookupUnitByRegnum,
   parseValidation,
   readProjectSettings,
@@ -192,7 +196,7 @@ export class ProjectFormViewModel {
     return (this.form?.citizen ?? NONE).map(Number).includes(UKRAINE_ID)
   }
   get restrictionColors() {
-    return restrictionColors(this.voc, this.form?.subjectTypeId, this.hasUkrainian)
+    return restrictionColors(this.voc, this.form?.subjectTypeId, this.hasUkrainian ? ['UA'] : NONE)
   }
   get coEditors() {
     if (!this.isEdit) return NONE
@@ -414,9 +418,31 @@ export class ProjectFormViewModel {
     this.lastTypes = { ...this.lastTypes, actionType: id }
     this.setField('actionType', id)
   }
+  /**
+   * Тип суб'єкта (legacy handleSubjectTypeChange). Уся автоматика — лише при створенні:
+   * якщо тип справді змінився і жоден рядок ідентифікаторів/атрибутів не заповнений користувачем
+   * (лише авто-запропоновані рядки старого типу) — таблиці перекомпоновуються під новий тип
+   * (типові ідентифікатори за країною, IMO/MMSI + атрибути 25/26 + підстава 7 для судна).
+   */
   setSubjectType(id) {
-    if (!this.isEdit) this.lastTypes = { ...this.lastTypes, subjectTypeId: id }
-    this.form = { ...this.form, subjectTypeId: id }
+    if (this.isEdit) {
+      this.form = { ...this.form, subjectTypeId: id }
+      this.syncRowOptions()
+      return
+    }
+    const changed = this.form.subjectTypeId !== id
+    this.lastTypes = { ...this.lastTypes, subjectTypeId: id }
+    let { identifiers, attributes } = this.form
+    if (changed) {
+      if (identifiers.length > 0 && identifiers.every(isEmptyIdentifierRow)) identifiers = []
+      if (attributes.length > 0 && attributes.every(isEmptyAttributeRow)) attributes = []
+      const countries = this.countries
+      if (identifiers.length === 0 && countries.length === 1) identifiers = defaultIdentifierRows(id, countries[0])
+    }
+    let form = applyVesselDefaults({ ...this.form, subjectTypeId: id, identifiers, attributes })
+    // Атрибути не мають тригера від країни — повертаємо типовий порожній рядок, як при відкритті форми
+    if (changed && id !== VESSEL_SUBJECT_TYPE_ID && form.attributes.length === 0) form = { ...form, attributes: [emptyAttribute()] }
+    this.form = form
     this.syncRowOptions()
   }
 
@@ -425,12 +451,16 @@ export class ProjectFormViewModel {
     const ids = (options ?? NONE).map((option) => Number(option.id))
     const citizen = (this.form.citizen ?? NONE).filter((id) => ids.includes(Number(id)))
     let identifiers = this.form.identifiers
-    // Перша країна в порожній таблиці — одразу рядок з типовим ідентифікатором
-    if (identifiers.length === 0 && ids.length === 1) {
-      identifiers = [emptyIdentifier({ identifierCountryId: ids[0], identifierId: defaultIdentifierType(this.form.subjectTypeId, ids[0]) })]
-    }
+    // Перша країна в порожній таблиці — одразу рядки з типовими ідентифікаторами (лише особа/організація;
+    // у судна свої IMO/MMSI без країни)
+    if (identifiers.length === 0 && ids.length === 1) identifiers = defaultIdentifierRows(this.form.subjectTypeId, ids[0])
     this.form = { ...this.form, country: ids, citizen, identifiers }
     this.syncRowOptions()
+  }
+
+  /** "Не задано" — свідоме підтвердження відсутності ідентифікатора; вмикання очищує значення. */
+  setIdentifierNotSpecified(rowKey, checked) {
+    this.updateRow('identifiers', rowKey, checked ? { notSpecified: true, identifierValue: '' } : { notSpecified: false })
   }
 
   /** Значення рядків, яких більше немає серед опцій (тип суб'єкта/країни змінились), скидаємо. */
@@ -635,17 +665,23 @@ export class ProjectFormViewModel {
 
   // ---- збереження ----
   /**
-   * Задіяна країна без позначки "Громадянство / Країна реєстрації" мовчки не збереглась би
-   * (у projectToCountry пишуться лише позначені) — блокуємо збереження, як legacy.
+   * Задіяна країна без позначки "Громадянство / Країна реєстрації / Прапор" мовчки не збереглась би
+   * (у projectToCountry пишуться лише позначені) — без форсування блокуємо збереження, як legacy;
+   * чекбокс "Ігнорувати попередження" (той самий, що для серверних soft-помилок) пропускає її.
    */
-  validateCitizenship() {
+  validateCitizenship(forced = false) {
     if (!this.layout.citizen) return true
     const citizen = new Set((this.form.citizen ?? NONE).map(Number))
     const missing = this.countries.filter((id) => !citizen.has(id))
     if (missing.length === 0) return true
-    const message = 'Оберіть громадянство або приберіть його зі списку задіяних країн'
-    this.errors = { ...NO_ERRORS, fields: { citizen: { message, level: 'error', ids: missing } } }
+    const message = `Оберіть ${this.layout.citizenCaption.toLowerCase()} або приберіть його зі списку задіяних країн`
     const names = missing.map((id) => this.voc._country?.[id] ?? id).join(', ')
+    if (forced) {
+      toast(`${message} (збережено форсовано): ${names}`, { icon: '⚠️' })
+      return true
+    }
+    this.errors = { ...NO_ERRORS, fields: { citizen: { message, level: 'error', ids: missing } } }
+    this.showIgnore = true
     toast.error(`${message}: ${names}`)
     return false
   }
@@ -654,7 +690,7 @@ export class ProjectFormViewModel {
     event?.preventDefault?.()
     if (!this.canSubmit) return
     this.errors = NO_ERRORS
-    if (!this.validateCitizenship()) return
+    if (!this.validateCitizenship(this.force)) return
 
     const snapshot = this.snapshot
     const rowKeys = includedRowKeys(this.form)

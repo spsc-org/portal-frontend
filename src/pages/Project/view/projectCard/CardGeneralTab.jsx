@@ -506,7 +506,15 @@ const CardGeneralTab = () => {
                           {item.country}
                         </Box>
                         <Box>{item.caption}</Box>
-                        <Box>{item.value}</Box>
+                        <Box>
+                          {item.notSpecified ? (
+                            <span className="inline-flex items-center rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-neutral-900 dark:text-gray-400">
+                              Не задано
+                            </span>
+                          ) : (
+                            item.value
+                          )}
+                        </Box>
                       </div>
                       <AnalysisBadge
                         state={vm.analysis}

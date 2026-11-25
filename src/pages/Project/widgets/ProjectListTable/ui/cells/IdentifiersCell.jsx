@@ -39,10 +39,17 @@ const IdentifiersCell = ({ precomputedData, onOpenPhoto }) => {
     return (
         <>
             {Array.isArray(identifiers) && identifiers.length > 0 ? (
-                identifiers.map(({ group, caption, value, country }, i) => (
+                identifiers.map(({ group, caption, value, country, notSpecified }, i) => (
                     <div key={i}>
                         {IDENT_ICONS[group] && <i className={`${IDENT_ICONS[group]} mr-1`} />}
-                        {caption} <Highlight text={value} /> [{country}];
+                        {caption}{" "}
+                        {notSpecified ? (
+                            <span className="italic text-gray-600 dark:text-gray-400">Не задано</span>
+                        ) : (
+                            <Highlight text={value} />
+                        )}
+                        {/* Судна — ідентифікатор без країни взагалі, не NULL через помилку */}
+                        {country ? ` [${country}]` : ""};
                     </div>
                 ))
             ) : (

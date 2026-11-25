@@ -8,6 +8,7 @@
 import axios from 'axios'
 import { rootStore } from '../../../stores/RootStore.js'
 import { RESTRICTION_KEYS, normalizeSnapshot } from '../shared/lib/projectSnapshot.js'
+import { resolveRestrictionColor } from '../shared/lib/restrictionColor.js'
 
 const headers = () => ({ userId: rootStore.session.userId })
 
@@ -96,12 +97,17 @@ const toIds = (value) => (Array.isArray(value) ? value : value == null || value 
   .map(Number)
   .filter(Boolean)
 
-const cleanIdentifier = (row) => ({
-  id: toInt(row.id),
-  identifierId: toInt(row.identifierId),
-  identifierCountryId: toInt(row.identifierCountryId),
-  identifierValue: String(row.identifierValue ?? '').trim(),
-})
+const cleanIdentifier = (row) => {
+  const identifierValue = String(row.identifierValue ?? '').trim()
+  return {
+    id: toInt(row.id),
+    identifierId: toInt(row.identifierId),
+    identifierCountryId: toInt(row.identifierCountryId),
+    identifierValue,
+    // "Не задано" і знайдене значення взаємовиключні (бек так само форсить false при непорожньому value)
+    notSpecified: identifierValue === '' && Boolean(row.notSpecified),
+  }
+}
 const cleanAttribute = (row) => ({ id: toInt(row.id), attributeId: toInt(row.attributeId), attributeValue: String(row.attributeValue ?? '').trim() })
 const cleanDocument = (row) => ({
   id: toInt(row.id),
@@ -113,8 +119,9 @@ const cleanDocument = (row) => ({
   caption: toStr(row.caption),
   path: toStr(row.path),
 })
-// Ті самі правила, що legacy build*Payload: порожні рядки не відправляються
-const keepIdentifier = (row) => row.identifierValue !== ''
+// Ті самі правила, що legacy build*Payload: порожні рядки не відправляються.
+// "Не задано" — свідомо підтверджена відсутність, тож такий рядок лишається і з порожнім value.
+const keepIdentifier = (row) => row.identifierValue !== '' || row.notSpecified
 const keepAttribute = (row) => row.attributeValue !== ''
 const keepDocument = (row) => Boolean(row.regNum && row.typeId)
 
@@ -148,8 +155,8 @@ let keySeq = 0
 const nextKey = () => `row-${++keySeq}`
 export const withRowKey = (row) => ({ ...row, _key: row._key ?? nextKey() })
 
-export const emptyIdentifier = (patch = {}) => withRowKey({ id: null, identifierId: '', identifierCountryId: '', identifierValue: '', ...patch })
-export const emptyAttribute = () => withRowKey({ id: null, attributeId: '', attributeValue: '' })
+export const emptyIdentifier = (patch = {}) => withRowKey({ id: null, identifierId: '', identifierCountryId: '', identifierValue: '', notSpecified: false, ...patch })
+export const emptyAttribute = (patch = {}) => withRowKey({ id: null, attributeId: '', attributeValue: '', ...patch })
 export const emptyDocument = () => withRowKey({ id: null, typeId: 1, unitId: '', regNum: '', regDate: '', listItem: '', caption: '', path: '' })
 
 /** Знімок (сервер, злиття, чернетка) → стан форми: ті самі поля + `_key` у рядках таблиць. */
@@ -167,7 +174,43 @@ export const DEFAULT_REASON_ID = 1
 /** Порожня форма створення (legacy cleanFormFields + setDefaultValues: стан 1, термін 16, суб'єкт подання 4). */
 export function emptyForm({ actionType = 1, subjectTypeId = 1 } = {}) {
   const form = canonicalSnapshot({ actionType, subjectTypeId, stateId: 1, termId: 16, issuerId: 4, reasons: [DEFAULT_REASON_ID] })
-  return { ...formFromSnapshot(form), attributes: [emptyAttribute()], documents: [emptyDocument()] }
+  // Тип "Судно" лишився з минулого створення — рекомендовані рядки й підстава одразу (legacy showAddModal → ensureVessel*)
+  return applyVesselDefaults({ ...formFromSnapshot(form), attributes: [emptyAttribute()], documents: [emptyDocument()] })
+}
+
+// ---- судна (legacy ProjectModalManager.ensureVessel*) ----
+
+export const VESSEL_SUBJECT_TYPE_ID = 5
+/** reg:imo / reg:mmsi — мають бути заповнені або позначені "Не задано" (soft-помилка бекенда). */
+export const VESSEL_IDENTIFIER_TYPE_IDS = [103, 104]
+/** "Позивні сигнали судна" / "Найменування судновласників" — рекомендовані (попередження бекенда). */
+export const VESSEL_ATTRIBUTE_TYPE_IDS = [25, 26]
+/** "Встановлення факту використання суден..." — обов'язкова підстава, ?force=1 її не обходить. */
+export const VESSEL_MANDATORY_REASON_ID = 7
+
+const isFilled = (value) => String(value ?? '').trim() !== ''
+export const isEmptyIdentifierRow = (row) => !isFilled(row.identifierValue) && !row.notSpecified
+export const isEmptyAttributeRow = (row) => !isFilled(row.attributeValue)
+
+/**
+ * Судно: IMO/MMSI (лише якщо таблиця ідентифікаторів порожня), атрибути 25/26 (яких ще нема;
+ * порожній нетипізований рядок прибирається) і підстава id=7 до вже обраних. Інші типи — без змін.
+ */
+export function applyVesselDefaults(form) {
+  if (form.subjectTypeId !== VESSEL_SUBJECT_TYPE_ID) return form
+  const identifiers = form.identifiers.length > 0
+    ? form.identifiers
+    : VESSEL_IDENTIFIER_TYPE_IDS.map((identifierId) => emptyIdentifier({ identifierId }))
+  const kept = form.attributes.filter((row) => isFilled(row.attributeId) || isFilled(row.attributeValue))
+  const present = new Set(kept.map((row) => Number(row.attributeId)).filter(Boolean))
+  const attributes = [...kept, ...VESSEL_ATTRIBUTE_TYPE_IDS.filter((id) => !present.has(id)).map((attributeId) => emptyAttribute({ attributeId }))]
+  const reasons = (form.reasons ?? []).map(Number)
+  return {
+    ...form,
+    identifiers,
+    attributes,
+    reasons: reasons.includes(VESSEL_MANDATORY_REASON_ID) ? reasons : [...reasons, VESSEL_MANDATORY_REASON_ID],
+  }
 }
 
 /** Канонічний знімок → тіло POST/PATCH /api/project/json (legacy buildJsonPayload). */
@@ -205,7 +248,14 @@ export function buildPayload(snapshot, { userId, attachmentIds = [] }) {
     categories: { set1: snapshot.category1, set2: snapshot.category2, set3: snapshot.category3 },
     proposals: snapshot.proposal,
     restrictions,
-    identifiers: snapshot.identifiers.map((row) => ({ id: row.id, typeId: row.identifierId, value: row.identifierValue, countryId: row.identifierCountryId })),
+    // Судна — ідентифікатор без країни взагалі (legacy не дає селекту країни name)
+    identifiers: snapshot.identifiers.map((row) => ({
+      id: row.id,
+      typeId: row.identifierId,
+      value: row.identifierValue,
+      countryId: snapshot.subjectTypeId === VESSEL_SUBJECT_TYPE_ID ? null : row.identifierCountryId,
+      notSpecified: row.notSpecified,
+    })),
     attributes: snapshot.attributes.map((row) => ({ id: row.id, typeId: row.attributeId, value: row.attributeValue })),
     documents: snapshot.documents,
     attachmentIds,
@@ -221,6 +271,8 @@ const ROW_FIELDS = {
   documents: { typeId: 'typeId', regNum: 'regNum', regDate: 'regDate', listItem: 'listItem', unitId: 'unitId', caption: 'caption', path: 'path' },
 }
 const FIELD_ALIASES = { countries: 'citizen', proposals: 'proposal', categories: 'category1', reasonId: 'reasons' }
+// Помилки без поля у формі (судна: vesselImo/vesselMmsi/vesselAttr25/26) — у загальний список, як legacy _applyFieldError
+const isFormlessKey = (key) => key.startsWith('vessel')
 
 /**
  * Розбирає відповідь у { fields: {name: {message, level}}, rows: {identifiers: {rowKey: {field: {...}}}}, general: [] }.
@@ -235,7 +287,9 @@ export function parseValidation(messages = {}, rowKeys = {}) {
   }
   const apply = (bag, level) => {
     for (const [key, value] of Object.entries(bag ?? {})) {
-      if (typeof value === 'string') {
+      if (typeof value === 'string' && isFormlessKey(key)) {
+        result.general.push(`${level === 'warning' ? '⚠️' : '🛑️'} ${value}`)
+      } else if (typeof value === 'string') {
         put(FIELD_ALIASES[key] ?? key, value, level)
       } else if (Array.isArray(value) && ROW_FIELDS[key]) {
         value.forEach((rowErrors, index) => {
@@ -291,22 +345,26 @@ export function formLayout(actionType, subjectTypeId) {
     nameRu: subjectTypeId !== 5 && subjectTypeId !== 6,
     namesCaption: 'Найменування',
     citizenCaption: 'Країни реєстрації',
+    // судна — ідентифікатори без країни (колонка "Країна" — прочерк)
+    identifierCountry: subjectTypeId !== 5,
   }
   if (subjectTypeId === 1) Object.assign(layout, { namesCaption: 'Перелік імен українською мовою', citizenCaption: 'Громадянство' })
   if (subjectTypeId === 2) layout.namesCaption = 'Перелік назв українською мовою'
-  if (subjectTypeId === 5) layout.namesCaption = 'Перелік назв судна (декілька через ;)'
+  if (subjectTypeId === 5) Object.assign(layout, { namesCaption: 'Перелік назв судна (декілька через ;)', citizenCaption: 'Прапор' })
   if (subjectTypeId === 6) layout.namesCaption = 'Перелік назв повітряного судна (декілька через ;)'
   return layout
 }
 
 const asList = (value) => (Array.isArray(value) ? value : Object.values(value ?? {}))
 
-/** Типи ідентифікаторів для типу суб'єкта і задіяних країн (без країн — порожньо, як legacy). */
+/**
+ * Типи ідентифікаторів для типу суб'єкта і задіяних країн. Універсальні (belongCountryId=null —
+ * зокрема всі типи суден) доступні одразу, без вибору країни (legacy addIdentifierRow).
+ */
 export function identifierTypeOptions(voc, subjectTypeId, countries) {
-  if (!countries?.length) return []
   return asList(voc?.identifierType)
     .filter((item) => item.subjectTypeId === subjectTypeId || item.subjectTypeId === 0)
-    .filter((item) => item.belongCountryId === null || countries.includes(item.belongCountryId))
+    .filter((item) => item.belongCountryId === null || (countries ?? []).includes(item.belongCountryId))
     .map((item) => ({ id: item.id, caption: `${item.code} / ${item.caption}` }))
 }
 
@@ -316,24 +374,32 @@ export function attributeTypeOptions(voc, subjectTypeId) {
     .map((item) => ({ id: item.id, caption: `${item.code} / ${item.caption}` }))
 }
 
-/** Перший ідентифікатор при виборі першої країни (legacy updateIdentifierPanel). */
-export function defaultIdentifierType(subjectTypeId, countryId) {
-  if (subjectTypeId === 1) return 46
-  if (subjectTypeId === 2) return { 234: 5, 210: 6 }[countryId] ?? ''
-  return ''
+export const UKRAINE_ID = 234
+const UNZR_IDENTIFIER_ID = 10
+
+/**
+ * Рядки ідентифікаторів при виборі першої країни (legacy updateIdentifierPanel) — лише особа/організація:
+ * особа — податковий номер (46), для України ще й УНЗР (10); організація — за країною.
+ */
+export function defaultIdentifierRows(subjectTypeId, countryId) {
+  if (subjectTypeId === 1) {
+    const rows = [emptyIdentifier({ identifierCountryId: countryId, identifierId: 46 })]
+    if (countryId === UKRAINE_ID) rows.push(emptyIdentifier({ identifierCountryId: countryId, identifierId: UNZR_IDENTIFIER_ID }))
+    return rows
+  }
+  if (subjectTypeId === 2) return [emptyIdentifier({ identifierCountryId: countryId, identifierId: { 234: 5, 210: 6 }[countryId] ?? '' })]
+  return []
 }
 
-export const UKRAINE_ID = 234
-
-/** Колір прапорця обмеження: green | orange (особливе) | red (не для цього типу / громадянин України). */
-export function restrictionColors(voc, subjectTypeId, hasUkrainian) {
+/**
+ * Колір прапорця обмеження: green | orange (особливе) | red (не для цього типу) + override-правила
+ * довідника (voc.restriction[].overrides, напр. для громадян UA) — resolveRestrictionColor.
+ */
+export function restrictionColors(voc, subjectTypeId, countryCodes = []) {
   const colors = {}
   for (const item of asList(voc?.restriction)) {
     if (item.code === '25') continue
-    let color = item.isSpecial === 1 ? 'orange' : 'green'
-    if (item.subjectTypeId === null || (item.subjectTypeId !== 0 && item.subjectTypeId !== subjectTypeId)) color = 'red'
-    if (hasUkrainian && item.subjectTypeId === 1) color = 'red'
-    colors[`r${item.code}`] = { color, caption: item.caption }
+    colors[`r${item.code}`] = { color: resolveRestrictionColor(item, subjectTypeId, countryCodes), caption: item.caption }
   }
   return colors
 }
@@ -342,7 +408,8 @@ export function restrictionColors(voc, subjectTypeId, hasUkrainian) {
 
 const SETTINGS_KEY = 'project-settings'
 const HINT_KEYS = ['cat1', 'cat2', 'cat3', 'country', 'initiator', 'performer', 'validator', 'proposal', 'path', 'document', 'state', 'restrictions']
-const EMPTY_LAST_ADDS = { 1: { 1: null, 2: null }, 2: { 1: null, 2: null }, 3: { 1: null, 2: null } }
+const EMPTY_SUBJECTS = { 1: null, 2: null, 5: null, 6: null }
+const EMPTY_LAST_ADDS = { 1: EMPTY_SUBJECTS, 2: EMPTY_SUBJECTS, 3: EMPTY_SUBJECTS }
 
 export function readProjectSettings() {
   let settings

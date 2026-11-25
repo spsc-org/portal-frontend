@@ -363,16 +363,25 @@ const IdentifiersTable = observer(() => {
                 />
               </td>
               <td className="p-1">
-                <RowSelect
-                  value={row.identifierCountryId}
-                  options={vm.rowCountryOptions}
-                  issue={error(row, "identifierCountryId")}
-                  onChange={(value) =>
-                    vm.updateRow("identifiers", row._key, {
-                      identifierCountryId: value,
-                    })
-                  }
-                />
+                {vm.layout.identifierCountry ? (
+                  <RowSelect
+                    value={row.identifierCountryId}
+                    options={vm.rowCountryOptions}
+                    issue={error(row, "identifierCountryId")}
+                    onChange={(value) =>
+                      vm.updateRow("identifiers", row._key, {
+                        identifierCountryId: value,
+                      })
+                    }
+                  />
+                ) : (
+                  <span
+                    className="px-2 text-xs text-gray-600 dark:text-gray-400"
+                    title="Для суден країна ідентифікатора не застосовується"
+                  >
+                    —
+                  </span>
+                )}
               </td>
               <td className="p-1">
                 <RowSelect
@@ -394,6 +403,7 @@ const IdentifiersTable = observer(() => {
                     className={`${CELL} min-w-0 flex-1 ${borderFor(error(row, "identifierValue"))}`}
                     title={error(row, "identifierValue")?.message}
                     value={row.identifierValue ?? ""}
+                    disabled={Boolean(row.notSpecified)}
                     onChange={(event) =>
                       vm.updateRow("identifiers", row._key, {
                         identifierValue: event.target.value,
@@ -407,6 +417,20 @@ const IdentifiersTable = observer(() => {
                   />
                   <ConsolidatedBadge search={vm.consolidated} fieldKey={vm.consolidatedKey(row)} />
                 </div>
+                <label
+                  className="mt-1 flex cursor-pointer items-center gap-1 text-xs text-gray-600 select-none dark:text-gray-400"
+                  title="Свідомо підтверджено, що цей ідентифікатор відсутній (перевірили — не знайшли), а не просто ще не заповнений"
+                >
+                  <input
+                    type="checkbox"
+                    className="h-3.5 w-3.5"
+                    checked={Boolean(row.notSpecified)}
+                    onChange={(event) =>
+                      vm.setIdentifierNotSpecified(row._key, event.target.checked)
+                    }
+                  />
+                  Не задано
+                </label>
               </td>
             </tr>
           ))}

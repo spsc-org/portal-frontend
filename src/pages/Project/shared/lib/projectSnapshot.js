@@ -70,6 +70,7 @@ export function normalizeSnapshot(raw) {
         identifierId: i.identifierId ?? null,
         identifierCountryId: i.identifierCountryId ?? null,
         identifierValue: i.identifierValue ?? '',
+        notSpecified: Boolean(i.notSpecified),
     }));
     snap.attributes = (raw.attributes || []).map((a) => ({
         id: a.id ?? null,
