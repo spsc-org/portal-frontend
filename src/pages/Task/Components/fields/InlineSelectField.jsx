@@ -46,7 +46,7 @@ const InlineSelectField = ({
                         <button type="button"
                                 onClick={() => setIsEditing(true)}
                                 title={`Змінити: ${label}`}
-                                className="text-gray-600 transition hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400">
+                                className="text-gray-600 transition hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
                             <i className="fa-regular fa-pen text-[10px]"></i>
                         </button>
                     }

@@ -10,7 +10,7 @@ import { positionStyle } from './anchoredPosition.js';
 import { useDismissOnOutside } from './useDismissOnOutside.js';
 
 const DEFAULT_BUTTON_CLASS =
-    'relative flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-neutral-700';
+    'relative flex h-8 w-8 items-center justify-center rounded-lg text-gray-300 hover:bg-neutral-700';
 
 function NotificationBell({ className = DEFAULT_BUTTON_CLASS }) {
     const vm = useViewModel((deps) => new NotificationBellViewModel(deps));
@@ -44,7 +44,7 @@ function NotificationBell({ className = DEFAULT_BUTTON_CLASS }) {
             >
                 <i className="fas fa-bell text-sm" />
                 {vm.unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 rounded-fullbg-red-600 px-1.5 py-1 text-[10px] leading-none text-white">
+                    <span className="absolute -top-1 -right-1 rounded-full bg-red-600 px-1.5 py-1 text-[10px] leading-none text-white">
                         {vm.badgeLabel}
                     </span>
                 )}
@@ -56,17 +56,17 @@ function NotificationBell({ className = DEFAULT_BUTTON_CLASS }) {
                     <div
                         ref={panelRef}
                         style={positionStyle(vm.position)}
-                        className="pointer-events-auto absolute w-80 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg dark:border-neutral-700 dark:bg-neutral-800"
+                        className="pointer-events-auto absolute w-80 overflow-y-auto rounded-xl border shadow-lg border-neutral-700 bg-neutral-800"
                     >
-                        <div className="flex items-center justify-between gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-neutral-700">
-                            <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
+                        <div className="flex items-center justify-between gap-2 border-b px-4 py-2.5 border-neutral-700">
+                            <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
                                 Нотифікації
                             </p>
                             <div className="flex shrink-0 items-center gap-3">
                                 {vm.items.length > 0 && (
                                     <button
                                         type="button"
-                                        className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400"
+                                        className="text-xs font-medium hover:underline text-blue-400"
                                         onClick={vm.markAllRead}
                                     >
                                         Прочитати всі
@@ -75,7 +75,7 @@ function NotificationBell({ className = DEFAULT_BUTTON_CLASS }) {
                                 <Link
                                     to="/notifications"
                                     onClick={vm.close}
-                                    className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400"
+                                    className="text-xs font-medium hover:underline text-blue-400"
                                 >
                                     Усі
                                 </Link>
@@ -86,9 +86,9 @@ function NotificationBell({ className = DEFAULT_BUTTON_CLASS }) {
 
                         {groups.map((group) => (
                             <div key={group.key}>
-                                <div className="flex items-center gap-1.5 border-b border-gray-100 bg-gray-50/60 px-4 py-1.5 dark:border-neutral-700 dark:bg-neutral-700/30">
+                                <div className="flex items-center gap-1.5 border-b px-4 py-1.5 border-neutral-700 bg-neutral-700/30">
                                     <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${group.dotClass}`} />
-                                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
+                                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
                                         {group.label}
                                     </p>
                                 </div>

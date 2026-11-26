@@ -5,6 +5,7 @@ import MultiSelectChip from "../../../components/fields/MultiSelectChip.jsx";
 import ChipToggle from "../../../components/fields/ChipToggle.jsx";
 import { chipToggleClassName } from "../../../components/fields/chipToggleStyles.js";
 import ChipResetButton from "../../../components/fields/ChipResetButton.jsx";
+import {SEGMENTED, segmentClassName} from "../utils.jsx";
 
 const optionCaption = (option) => option?.caption || option?.name || option?.label || "";
 
@@ -28,7 +29,7 @@ const TaskFilters = ({
 
     return (
         // Стікі-панель: непрозорий фон (не /90) — інакше в dark просвічує світлий контент
-        <div data-i-doc="view:task-filters" className="sticky top-[50px] z-20 mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-gray-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800">
+        <div data-i-doc="view:task-filters" className="sticky top-[50px] z-20 mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-2.5 py-2 text-gray-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-300">
             <div className="w-56">
                 <SearchInput
                     size="xs"
@@ -77,14 +78,12 @@ const TaskFilters = ({
 
             {/* Правий блок: групування + сортування */}
             <div className="ml-auto flex items-center gap-1.5">
-                <div className="flex items-center gap-0.5 rounded-lg border border-gray-200 bg-white p-0.5 dark:border-gray-600 dark:bg-neutral-700"
-                     title="Групування списку">
+                <div role="group" aria-label="Групування списку" title="Групування списку" className={SEGMENTED}>
                     {[["status", "Статус"], ["project", "Проєкт"], ["priority", "Пріоритет"], ["none", "Без груп"]].map(([key, label]) => (
                         <button key={key} type="button"
                                 onClick={() => onGroupBy(key)}
-                                className={`rounded-md px-2 py-1 text-[11px] font-medium transition ${groupBy === key
-                                    ? "bg-blue-500 text-white"
-                                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-neutral-600"}`}>
+                                aria-pressed={groupBy === key}
+                                className={segmentClassName(groupBy === key)}>
                             {label}
                         </button>
                     ))}
@@ -98,11 +97,11 @@ const TaskFilters = ({
                             <i className="fa-solid fa-chevron-down text-[8px] opacity-50"></i>
                         </button>
                     </MenuHandler>
-                    <MenuList className="min-w-[10rem] border border-gray-200 bg-white p-1 text-gray-700 dark:border-gray-600 dark:!bg-neutral-700 dark:!text-gray-200">
+                    <MenuList className="min-w-[10rem] rounded-lg border border-gray-200 bg-white p-1 text-gray-700 shadow-lg dark:border-neutral-700 dark:!bg-neutral-800 dark:!text-gray-200">
                         {sortOptions.map(option => (
                             <MenuItem key={option.id}
                                       onClick={() => onSort(option)}
-                                      className={`text-xs dark:text-gray-300 dark:hover:bg-neutral-600 dark:hover:text-gray-100 dark:focus:bg-neutral-600 ${sortValue?.id === option.id ? "bg-blue-50 dark:bg-blue-900/30" : ""}`}>
+                                      className={`rounded-md text-xs text-gray-700 hover:bg-gray-100 focus:bg-gray-100 dark:text-gray-300 dark:hover:bg-neutral-700 dark:hover:text-gray-100 dark:focus:bg-neutral-700 ${sortValue?.id === option.id ? "!bg-blue-50 font-medium !text-blue-800 dark:!bg-blue-800/20 dark:!text-blue-300" : ""}`}>
                                 {option.caption}
                             </MenuItem>
                         ))}
@@ -111,6 +110,7 @@ const TaskFilters = ({
                 <button type="button"
                         onClick={onToggleDirection}
                         title={direction === 'asc' ? "За зростанням" : "За спаданням"}
+                        aria-label={direction === 'asc' ? "Сортування за зростанням" : "Сортування за спаданням"}
                         className={`${chipToggleClassName(false)} px-2`}>
                     <i className={`fa-solid ${direction === 'asc' ? "fa-arrow-up-short-wide" : "fa-arrow-down-wide-short"}`}></i>
                 </button>

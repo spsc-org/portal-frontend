@@ -32,13 +32,13 @@ const InlineDescriptionField = ({value, onSave, isPending = false, canEdit = tru
                             setDraft(null);
                         }
                     }}
-                    className="w-full resize-y rounded-md border border-blue-300 bg-white p-2 text-sm leading-relaxed text-gray-700 focus:outline-none dark:border-blue-700 dark:bg-neutral-900 dark:text-gray-300"
+                    className="w-full resize-y rounded-md border border-blue-500 bg-white p-2 text-sm leading-relaxed text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-300 dark:border-blue-400 dark:bg-neutral-900 dark:text-gray-200"
                 />
                 <div className="mt-1.5 flex gap-2">
-                    <Button size="sm" color="green" className="py-1.5 px-3" disabled={isPending} onClick={save}>
+                    <Button size="sm" color="primary" disabled={isPending} onClick={save}>
                         Зберегти
                     </Button>
-                    <Button size="sm" variant="text" color="blue-gray" className="py-1.5 px-3" onClick={() => setDraft(null)}>
+                    <Button size="sm" color="secondary" onClick={() => setDraft(null)}>
                         Скасувати
                     </Button>
                 </div>

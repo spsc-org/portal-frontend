@@ -2,11 +2,15 @@ import { observer } from "mobx-react-lite";
 import { useViewModel } from "../../../shared/mvvm/useViewModel.js";
 import { confirmToast } from "../../../components/confirmToast.jsx";
 import { TaskDetailsViewModel } from "../viewmodel/TaskViewModels.js";
-import { Chip, Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip } from "@material-tailwind/react"
+import { Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip } from "@material-tailwind/react"
 import IconButton from "../../../components/Buttons/IconButton.jsx"
 import {format} from "date-fns";
 import AttachmentsGallery from "../../../components/AttachmentsGallery.jsx";
-import {allowedStatusIds, getPriorityStyle, getStatusStyle, getTypeStyle} from "../utils.jsx";
+import {allowedStatusIds, Badge, getPriorityStyle, getStatusStyle, getTypeStyle, SECTION_LABEL} from "../utils.jsx";
+
+const HEAD_ACTION = "text-gray-600 dark:text-gray-400";
+// Блок полів картки — hairline-картка в картці (без заливки), розділювачі border-default.
+const META_BLOCK = "divide-y divide-gray-200 rounded-lg border border-gray-200 px-3 dark:divide-neutral-700 dark:border-neutral-700";
 import MergeTaskModal from "./Modals/MergeTaskModal.jsx";
 import CreateTaskModal from "./Modals/CreateTaskModal.jsx";
 import ProjectsSetModal from "./Modals/ProjectsSetModal.jsx";
@@ -71,34 +75,36 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
 
     return (
         <aside data-i-doc="view:task-view-panel"
-            className="w-[26rem] 2xl:w-[30rem] shrink-0 sticky top-14 self-start max-h-[calc(100vh-4.5rem)] flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+            aria-label={`Задача #${id}`}
+            className="w-[26rem] 2xl:w-[30rem] shrink-0 sticky top-[50px] self-start max-h-[calc(100vh-58px)] flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white text-gray-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-300">
             {/* Шапка: id, дії */}
-            <div className="flex items-center justify-between gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-neutral-700">
+            <div className="flex shrink-0 items-center justify-between gap-2 border-b border-gray-200 px-4 py-2 dark:border-neutral-700">
                 <div className="flex items-center gap-2 min-w-0">
-                    <span className="font-mono text-xs font-semibold text-gray-600 dark:text-gray-400">#{id}</span>
+                    <span className="font-mono text-xs font-semibold text-gray-700 dark:text-gray-300">#{id}</span>
                     {Boolean(task?.deleted_at) &&
-                        <Chip size="sm" color="blue" variant="ghost" className="py-0.5" value="Видалено"/>
+                        <Badge tone="outline">Видалено</Badge>
                     }
                     {Boolean(task) && (canEdit && allowedStatusIds(task, auth).length > 0 ? (
                         <Menu placement="bottom-start">
                             <MenuHandler>
                                 <button type="button" title="Змінити стан"
                                         disabled={updateStatusMutation.isPending}
-                                        className="inline-flex items-center gap-1 rounded transition hover:opacity-70">
+                                        aria-label={`Стан: ${task.status?.name || "—"}. Змінити`}
+                                        className="inline-flex items-center gap-1 rounded-md p-0.5 transition hover:bg-gray-100 dark:hover:bg-neutral-700">
                                     {getStatusStyle(task.status?.name)}
                                     {updateStatusMutation.isPending
                                         ? <Spinner className="h-3 w-3"/>
                                         : <i className="fa-solid fa-chevron-down text-[8px] text-gray-500"></i>}
                                 </button>
                             </MenuHandler>
-                            <MenuList className="min-w-[9rem] dark:border-neutral-700 dark:bg-neutral-700">
+                            <MenuList className="min-w-[10rem] rounded-lg border border-gray-200 p-1 shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
                                 {/* Лише переходи, дозволені життєвим циклом (TaskLifecycle) */}
                                 {statuses
                                     .filter(status => allowedStatusIds(task, auth).includes(status.id))
                                     .map(status => (
                                         <MenuItem key={status.id}
                                                   onClick={() => handleChangeStatus(status.id)}
-                                                  className="dark:hover:bg-neutral-600 dark:focus:bg-neutral-600">
+                                                  className="rounded-md px-2 py-1.5 hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700">
                                             {getStatusStyle(status.name)}
                                         </MenuItem>
                                     ))}
@@ -111,7 +117,8 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                     {Boolean(task) &&
                         <Tooltip content={data?.isFavorite ? "Прибрати з обраного" : "Додати в обране"}>
                             <IconButton size="sm" variant="text"
-                                        className={data?.isFavorite ? "text-amber-400" : "dark:text-gray-300"}
+                                        className={data?.isFavorite ? "text-amber-500" : HEAD_ACTION}
+                                        aria-label={data?.isFavorite ? "Прибрати з обраного" : "Додати в обране"}
                                         disabled={toggleFavoriteMutation.isPending}
                                         onClick={handleToggleFavorite}>
                                 <i className={`${data?.isFavorite ? "fa-solid" : "fa-regular"} fa-star`}></i>
@@ -120,14 +127,14 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                     }
                     {canEdit &&
                         <Tooltip content="Злити з іншою задачею">
-                            <IconButton size="sm" variant="text" className="dark:text-gray-300" onClick={() => setIsMergeModalOpen(true)}>
+                            <IconButton size="sm" variant="text" className={HEAD_ACTION} aria-label="Злити з іншою задачею" onClick={() => setIsMergeModalOpen(true)}>
                                 <i className="fa-solid fa-code-merge"></i>
                             </IconButton>
                         </Tooltip>
                     }
                     {Boolean(task) &&
                         <Tooltip content="Створити нову задачу на основі цієї">
-                            <IconButton size="sm" variant="text" className="dark:text-gray-300" onClick={() => setIsCloneModalOpen(true)}>
+                            <IconButton size="sm" variant="text" className={HEAD_ACTION} aria-label="Створити нову задачу на основі цієї" onClick={() => setIsCloneModalOpen(true)}>
                                 <i className="fa-regular fa-clone"></i>
                             </IconButton>
                         </Tooltip>
@@ -137,7 +144,8 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                             <IconButton
                                 size="sm"
                                 variant="text"
-                                className="dark:text-gray-300"
+                                className={HEAD_ACTION}
+                                aria-label="Історія змін"
                                 onClick={() => setIsAuditModalOpen(true)}
                             >
                                 <i className="fa-regular fa-clock-rotate-left"></i>
@@ -145,12 +153,12 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                         </Tooltip>
                     }
                     <Tooltip content="Скопіювати посилання">
-                        <IconButton size="sm" variant="text" className="dark:text-gray-300" onClick={handleCopyLink}>
+                        <IconButton size="sm" variant="text" className={HEAD_ACTION} aria-label="Скопіювати посилання" onClick={handleCopyLink}>
                             <i className="fa-regular fa-link"></i>
                         </IconButton>
                     </Tooltip>
                     <Tooltip content="Закрити (Esc)">
-                        <IconButton size="sm" variant="text" className="dark:text-gray-300" onClick={onClose}>
+                        <IconButton size="sm" variant="text" className={HEAD_ACTION} aria-label="Закрити (Esc)" onClick={onClose}>
                             <i className="fa-regular fa-xmark text-base"></i>
                         </IconButton>
                     </Tooltip>
@@ -158,13 +166,13 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
             </div>
 
             {/* Тіло */}
-            <div className="flex-1 overflow-y-auto px-4 py-3">
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
                 {isLoading && !task ? (
                     <div className="flex items-center justify-center py-16">
                         <Spinner className="h-8 w-8"/>
                     </div>
                 ) : !task ? (
-                    <div className="flex flex-col items-center justify-center gap-2 py-16 text-gray-600">
+                    <div className="flex flex-col items-center justify-center gap-2 py-16 text-gray-600 dark:text-gray-400">
                         <i className="fa-regular fa-circle-exclamation text-2xl"></i>
                         <span className="text-sm">Не вдалося завантажити задачу</span>
                     </div>
@@ -177,7 +185,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                             canEdit={canEdit}
                         />
 
-                        <div className="mt-3 divide-y divide-gray-100 rounded-lg border border-gray-200 bg-gray-50/60 px-3 dark:divide-neutral-700 dark:border-neutral-700 dark:bg-neutral-700/40">
+                        <div className={`mt-3 ${META_BLOCK}`}>
                             <InlineSelectField
                                 icon="fa-regular fa-shapes" label="Тип"
                                 options={types}
@@ -232,7 +240,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                                            target="_blank" rel="noreferrer"
                                            title="Відкрити набір у розділі проєктів"
                                            onClick={(e) => e.stopPropagation()}
-                                           className="text-blue-500 transition hover:text-blue-600">
+                                           className="text-blue-600 transition hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                                             <i className="fa-regular fa-arrow-up-right-from-square text-[10px]"></i>
                                         </a>
                                     }
@@ -240,7 +248,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                                         <button type="button"
                                                 onClick={() => setIsProjectsModalOpen(true)}
                                                 title="Керувати набором проєктів"
-                                                className="text-gray-600 transition hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400">
+                                                className="text-gray-600 transition hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
                                             <i className="fa-regular fa-pen text-[10px]"></i>
                                         </button>
                                     }
@@ -274,8 +282,8 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                             </MetaRow>
                         </div>
 
-                        <div className="mt-3">
-                            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
+                        <div className="mt-4">
+                            <p className={SECTION_LABEL}>
                                 Опис
                             </p>
                             <InlineDescriptionField
@@ -288,7 +296,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
 
                         {(attachments.length > 0 || canEdit) &&
                             <div className="mt-4">
-                                <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
+                                <p className={SECTION_LABEL}>
                                     Вкладення{attachments.length > 0 ? ` (${attachments.length})` : ""}
                                 </p>
                                 <AttachmentsGallery data={attachments}
@@ -300,8 +308,8 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                         }
 
                         {(task.result || resultAttachments.length > 0 || canEdit) &&
-                            <div className="mt-4 rounded-md border border-gray-200 bg-gray-50/60 p-2.5 dark:border-neutral-700 dark:bg-neutral-700/40">
-                                <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
+                            <div className="mt-4 rounded-lg border border-gray-200 p-3 dark:border-neutral-700">
+                                <p className={SECTION_LABEL}>
                                     Результат
                                 </p>
                                 <InlineDescriptionField
@@ -313,7 +321,7 @@ const TaskViewPanel = ({selectedId: id, onClose}) => {
                                 />
                                 {(resultAttachments.length > 0 || canEdit) &&
                                     <div className="mt-2.5">
-                                        <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
+                                        <p className={SECTION_LABEL}>
                                             Файли результату{resultAttachments.length > 0 ? ` (${resultAttachments.length})` : ""}
                                         </p>
                                         <AttachmentsGallery data={resultAttachments}

@@ -7,8 +7,9 @@ import SingleSelect from "../../../../components/fields/SingleSelect.jsx";
 import DatePicker from "../../../../components/fields/DatePicker.jsx";
 import AttachmentsGallery from "../../../../components/AttachmentsGallery.jsx";
 import LoadingButton from "../../../../components/Buttons/LoadingButton.jsx";
+import Button from "../../../../components/Buttons/Button.jsx";
 import {format} from "date-fns";
-import {getPriorityStyle, getTypeStyle} from "../../utils.jsx";
+import {FIELD, getPriorityStyle, getTypeStyle, SECTION_LABEL} from "../../utils.jsx";
 import MetaRow from "../../../../components/MetaRow.jsx";
 import TagsEditor from "../TagsEditor.jsx";
 import AssigneesEditor from "../AssigneesEditor.jsx";
@@ -59,23 +60,21 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
 
     return (
         <Modal open={open} handler={handleCancel} size="md">
-            <ModalHeader className="flex flex-row justify-between items-center">
-                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">
-                    Створити задачу
-                </h4>
-                <div className="flex items-center gap-2 bg-gray-100 dark:bg-neutral-700 px-2 py-1 rounded-lg border dark:border-neutral-700">
-                    <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+            <ModalHeader title="Створити задачу">
+                <label htmlFor="advanced-mode"
+                       className="ml-auto flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-1 dark:border-neutral-700 dark:bg-neutral-900">
+                    <span className="text-xs font-medium normal-case text-gray-700 dark:text-gray-300">
                         Розширений режим
-                    </div>
+                    </span>
                     <Switch
                         id="advanced-mode"
                         ripple={false}
-                        color="green"
+                        color="blue"
                         checked={isAdvanced}
                         onChange={toggleAdvanced}
                         className="dark:bg-neutral-600"
                     />
-                </div>
+                </label>
             </ModalHeader>
             <ModalBody className={`${isAdvanced ? 'h-[36rem]' : 'h-fit'} overflow-y-auto px-4`}>
                 {!isReady ? (
@@ -93,12 +92,13 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                                 placeholder="Назва задачі…"
                                 onChange={(e) => setTitleDraft(e.target.value)}
                                 onBlur={saveTitle}
-                                className="w-full resize-none rounded-md border border-gray-200 bg-white p-1.5 text-base font-semibold leading-snug text-gray-900 focus:border-blue-300 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-100"
+                                aria-label="Назва задачі"
+                                className={`${FIELD} resize-none p-2 text-base font-semibold leading-snug !text-gray-900 dark:!text-gray-100`}
                             />
                             {updateTitleMutation.isPending && <Spinner className="h-3.5 w-3.5 shrink-0"/>}
                         </div>
 
-                        <div className="mt-3 divide-y divide-gray-100 rounded-lg border border-gray-200 bg-gray-50/60 px-3 dark:divide-neutral-700 dark:border-neutral-700 dark:bg-neutral-700/40">
+                        <div className="mt-3 divide-y divide-gray-200 rounded-lg border border-gray-200 px-3 dark:divide-neutral-700 dark:border-neutral-700">
                             {isAdvanced &&
                                 <>
                                     <MetaRow icon="fa-regular fa-shapes" label="Тип">
@@ -174,7 +174,8 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                                         <button type="button"
                                                 onClick={() => updateDueDateMutation.mutate(null)}
                                                 title="Прибрати термін"
-                                                className="text-gray-600 transition hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400">
+                                                aria-label="Прибрати термін"
+                                                className="text-gray-600 transition hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400">
                                             <i className="fa-regular fa-calendar-xmark text-xs"></i>
                                         </button>
                                     }
@@ -184,7 +185,7 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
 
                         {isAdvanced && (
                             <div className="mt-3">
-                                <p className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">Опис</p>
+                                <p className={SECTION_LABEL}>Опис</p>
                                 <div className="flex items-start gap-1.5">
                                     <textarea
                                         rows={4}
@@ -192,15 +193,16 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                                         placeholder="Додати опис…"
                                         onChange={(e) => setDescriptionDraft(e.target.value)}
                                         onBlur={saveDescription}
-                                        className="w-full resize-y rounded-md border border-gray-200 bg-white p-2 text-sm leading-relaxed text-gray-700 focus:border-blue-300 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-300"
+                                        aria-label="Опис задачі"
+                                        className={`${FIELD} resize-y p-2 text-sm leading-relaxed`}
                                     />
                                     {updateDescriptionMutation.isPending && <Spinner className="h-3.5 w-3.5 shrink-0"/>}
                                 </div>
                             </div>
                         )}
 
-                        <div className="mt-3">
-                            <p className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
+                        <div className="mt-4">
+                            <p className={SECTION_LABEL}>
                                 Вкладення{draftAttachments.length > 0 ? ` (${draftAttachments.length})` : ""}
                             </p>
                             <AttachmentsGallery data={draftAttachments}
@@ -211,15 +213,14 @@ const CreateTaskModal = ({open, onClose, onCreated, view = "task", cloneFromTask
                     </>
                 )}
             </ModalBody>
-            <ModalFooter className="gap-x-2">
-                <button type="button" onClick={handleCancel}
-                        className="rounded px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-900/20">
+            <ModalFooter>
+                <Button color="secondary" onClick={handleCancel} title="Закрити без створення — чернетку буде видалено">
                     Закрити
-                </button>
+                </Button>
                 <LoadingButton
                     isLoading={finalizeMutation.isPending}
                     disabled={!isReady}
-                    color="green"
+                    color="primary"
                     onClick={handleFinalize}>
                     Створити
                 </LoadingButton>

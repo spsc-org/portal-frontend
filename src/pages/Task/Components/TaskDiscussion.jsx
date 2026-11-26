@@ -5,6 +5,7 @@ import { Spinner } from "@material-tailwind/react"
 import IconButton from "../../../components/Buttons/IconButton.jsx"
 import {useEffect, useRef} from "react";
 import {format} from "date-fns";
+import {FIELD, SECTION_LABEL} from "../utils.jsx";
 
 // Обговорення задачі (чат учасників): власник + пов'язані особи можуть
 // писати незалежно від того, чи власник у списку учасників. М'яке
@@ -27,12 +28,12 @@ const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth}) => {
 
     return (
         <div className="mt-4 border-t border-gray-200 pt-3 dark:border-neutral-700">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-500">
+            <p className={SECTION_LABEL}>
                 Обговорення{comments.length > 0 ? ` (${comments.length})` : ""}
             </p>
             <div className="flex max-h-72 flex-col gap-1.5 overflow-y-auto pr-1">
                 {comments.length === 0 &&
-                    <p className="py-2 text-center text-xs text-gray-600 dark:text-gray-500">
+                    <p className="rounded-lg border border-dashed border-gray-200 py-3 text-center text-xs text-gray-600 dark:border-neutral-700 dark:text-gray-400">
                         Ще немає повідомлень
                     </p>
                 }
@@ -41,7 +42,7 @@ const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth}) => {
                     return (
                         <div key={comment.id}
                              className={`max-w-[85%] rounded-lg px-2.5 py-1.5 ${isOwn
-                                 ? "self-end bg-blue-50 dark:bg-blue-900/30"
+                                 ? "self-end bg-blue-50 dark:bg-blue-800/20"
                                  : "self-start bg-gray-100 dark:bg-neutral-700"}`}>
                             <div className="flex items-center gap-1.5">
                                 {Boolean(comment.userAvatar) &&
@@ -51,7 +52,7 @@ const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth}) => {
                                 <span className="text-[11px] font-semibold text-gray-700 dark:text-gray-200">
                                     {isOwn ? "Ви" : comment.userName}
                                 </span>
-                                <span className="text-[9px] text-gray-600 dark:text-gray-500">
+                                <span className="text-[10px] text-gray-600 dark:text-gray-400">
                                     {comment.created_at ? format(comment.created_at, "yyyy-MM-dd HH:mm") : ""}
                                 </span>
                             </div>
@@ -80,9 +81,9 @@ const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth}) => {
                                 e.stopPropagation();
                             }
                         }}
-                        className="flex-1 resize-none rounded-md border border-gray-200 bg-white p-2 text-xs leading-relaxed text-gray-700 focus:border-blue-300 focus:outline-none dark:border-neutral-600 dark:bg-neutral-900 dark:text-gray-300"
+                        className={`${FIELD} flex-1 resize-none p-2 text-xs leading-relaxed`}
                     />
-                    <IconButton size="sm" color="blue"
+                    <IconButton size="md" color="primary"
                                 disabled={addCommentMutation.isPending || !commentDraft.trim()}
                                 onClick={sendComment}
                                 title="Надіслати (Ctrl+Enter)">
@@ -92,7 +93,7 @@ const TaskDiscussion = ({taskId, createdUserId, assignedUsers = [], auth}) => {
                     </IconButton>
                 </div>
             ) : (
-                <p className="mt-1 text-[10px] text-gray-600 dark:text-gray-500">
+                <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
                     Писати можуть власник задачі та учасники
                 </p>
             )}

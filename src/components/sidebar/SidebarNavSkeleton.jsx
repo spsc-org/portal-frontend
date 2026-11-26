@@ -15,8 +15,8 @@ export default function SidebarNavSkeleton({ open }) {
           key={index}
           className={open ? 'flex h-7 items-center gap-2 px-2' : 'mx-auto flex h-8 w-8 items-center justify-center'}
         >
-          <span className="h-3.5 w-3.5 shrink-0 rounded bg-gray-200 dark:bg-neutral-700" />
-          {open && <span className={`h-3 ${width} rounded-full bg-gray-200 dark:bg-neutral-700`} />}
+          <span className="h-3.5 w-3.5 shrink-0 rounded bg-neutral-700" />
+          {open && <span className={`h-3 ${width} rounded-full bg-neutral-700`} />}
         </div>
       ))}
     </div>

@@ -1,7 +1,7 @@
 import {Typography} from "@material-tailwind/react";
 
 const SectionSkeleton = () => (
-    <div className="rounded-xl border border-gray-300 bg-white p-4 shadow-md shadow-gray-200/70 ring-1 ring-gray-200/60 dark:border-neutral-700 dark:bg-neutral-800/70 dark:shadow-black/20 dark:ring-0">
+    <div className="min-w-0 flex-[1_1_280px] rounded-xl border border-gray-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
         <div className="animate-pulse">
             <Typography as="div" variant="small" className="mb-3 h-4 w-36 rounded-full bg-gray-300 dark:bg-neutral-600">
                 &nbsp;

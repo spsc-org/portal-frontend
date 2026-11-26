@@ -1,48 +1,51 @@
 import { observer } from "mobx-react-lite";
 import { Link } from "react-router";
-import { format } from "date-fns";
-import { uk } from "date-fns/locale";
 import { useVM } from "../../../../shared/mvvm/viewModelHooks.js";
+import { formatUpdated } from "../../model/welcomeModel.js";
+import { CARD, CARD_HEAD, LINK, MUTED, SECTION_TITLE } from "../styles.js";
 
-/** Останні непрочитані оголошення (5 штук) на дашборді. */
+/** Останні непрочитані оголошення (5 штук); найновіше виділене. */
 const AnnouncementsSection = () => {
     const vm = useVM();
     const { isLoading } = vm.announcementsQuery;
+    const items = vm.announcements;
 
     return (
-        <section data-i-doc="widget:welcome-announcements-section" className="rounded-2xl border border-gray-300 bg-white p-4 shadow-md shadow-gray-200/70 ring-1 ring-gray-200/60 dark:border-neutral-700 dark:bg-neutral-800/70 dark:shadow-black/20 dark:ring-0">
-            <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100">Останні оголошення</h3>
-                <Link to="/announcement" className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400">
-                    Усі оголошення
-                </Link>
+        <section data-i-doc="widget:welcome-announcements-section" aria-labelledby="w-alerts" className={`${CARD} min-w-0 flex-[1_1_280px] overflow-hidden`}>
+            <div className={CARD_HEAD}>
+                <h2 id="w-alerts" className={SECTION_TITLE}>Оголошення</h2>
+                <Link to="/announcement" className={LINK}>Усі</Link>
             </div>
-
-            {!isLoading && vm.announcements.length === 0 &&
-                <p className="text-[11px] text-gray-600 dark:text-gray-400">Немає нового</p>
-            }
-
-            <ul className="p-0 m-0 list-none">
-                {isLoading &&
-                    <li className="p-0 m-0 text-[11px] text-gray-600 dark:text-gray-400">Завантаження…</li>
-                }
-                {vm.announcements.map((announcement) => (
-                    <li key={announcement.id} className="p-0 m-0">
-                        <Link to={`/announcement?view=${announcement.id}`}
-                              className="flex items-center justify-between gap-2 rounded px-1.5 py-1 text-xs transition hover:bg-gray-100 dark:hover:bg-neutral-700">
-                            <div className="flex min-w-0 items-center gap-1.5">
-                                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span>
-                                <p className="truncate text-[11px] font-medium text-gray-800 dark:text-gray-200">
-                                    {announcement.title}
-                                </p>
-                            </div>
-                            <span className="shrink-0 text-[10px] font-semibold text-gray-600 dark:text-gray-400">
-                                {announcement.created_at ? format(new Date(announcement.created_at), "d MMM", {locale: uk}) : ""}
+            <div className="flex flex-col gap-3 px-4 py-3">
+                {isLoading && <p className={`m-0 ${MUTED}`}>Завантаження…</p>}
+                {!isLoading && items.length === 0 && <p className={`m-0 ${MUTED}`}>Нових оголошень немає</p>}
+                {items.map((announcement, index) => {
+                    const first = index === 0;
+                    return (
+                        <Link
+                            key={announcement.id}
+                            to={`/announcement?view=${announcement.id}`}
+                            className={`flex flex-col gap-1 rounded-lg p-3 no-underline transition-colors ${
+                                first
+                                    ? "bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50"
+                                    : "border border-gray-200 hover:border-blue-300 dark:border-neutral-700 dark:hover:border-blue-500"
+                            }`}
+                        >
+                            <span className={`text-sm font-bold ${first ? "text-blue-800 dark:text-blue-200" : "text-gray-800 dark:text-gray-100"}`}>
+                                {announcement.title}
+                            </span>
+                            {announcement.details && (
+                                <span className={`line-clamp-2 text-[13px] leading-[18px] ${first ? "text-blue-800 dark:text-blue-200" : "text-gray-600 dark:text-gray-400"}`}>
+                                    {announcement.details}
+                                </span>
+                            )}
+                            <span className="text-xs text-gray-600 dark:text-gray-400">
+                                {[announcement.author?.name, announcement.created_at && formatUpdated(announcement.created_at)].filter(Boolean).join(" · ")}
                             </span>
                         </Link>
-                    </li>
-                ))}
-            </ul>
+                    );
+                })}
+            </div>
         </section>
     );
 };

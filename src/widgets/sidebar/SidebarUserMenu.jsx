@@ -5,7 +5,7 @@ import NotificationBell from '../notifications/NotificationBell.jsx';
 import { avatarInitials } from '../../lib/avatarInitials.js';
 
 const ICON_BTN =
-    'inline-flex shrink-0 items-center justify-center rounded-lg text-gray-600 transition hover:bg-gray-200 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-neutral-700 dark:hover:text-white';
+    'inline-flex shrink-0 items-center justify-center rounded-lg transition text-gray-400 hover:bg-neutral-700 hover:text-white';
 
 function Avatar({ me, initials, size }) {
     return (
@@ -61,7 +61,7 @@ function SidebarUserMenu({ collapsed = false }) {
     }
 
     return (
-        <div className="flex min-w-0 items-center gap-2.5 rounded-xl bg-gray-100 p-2 dark:bg-neutral-800">
+        <div className="flex min-w-0 items-center gap-2.5 rounded-xl p-2 bg-neutral-800">
             <Link
                 to="/profile"
                 className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg"
@@ -70,8 +70,8 @@ function SidebarUserMenu({ collapsed = false }) {
             >
                 <Avatar me={me} initials={initials} size="h-9 w-9 text-[13px]" />
                 <span className="flex min-w-0 flex-col">
-                    <span className="truncate text-sm font-medium text-gray-900 dark:text-white">{name}</span>
-                    {email && <span className="truncate text-xs text-gray-600 dark:text-gray-400">{email}</span>}
+                    <span className="truncate text-sm font-medium text-white">{name}</span>
+                    {email && <span className="truncate text-xs text-gray-400">{email}</span>}
                 </span>
             </Link>
             <div className="flex shrink-0 items-center gap-0.5">

@@ -6,7 +6,7 @@ import PortalLogo from '../../components/PortalLogo.jsx'
 const FEATURES = [
   { label: 'Проєкти', dot: 'bg-blue-400' },
   { label: 'Редагування', dot: 'bg-neutral-400' },
-  { label: 'Експорт у подання', dot: 'bg-red-500' },
+  { label: 'Подання', dot: 'bg-red-500' },
 ]
 
 function BrandPanel() {

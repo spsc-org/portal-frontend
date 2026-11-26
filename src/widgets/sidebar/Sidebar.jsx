@@ -12,11 +12,11 @@ import PortalLogo from '../../components/PortalLogo.jsx';
 import SidebarUserMenu from './SidebarUserMenu.jsx';
 
 // Дизайн "Portal — Login" › Sidebar: 280px / 72px, пункти 40px (44px у згорнутому), rounded-lg.
-const ITEM_ACTIVE = 'bg-blue-50 font-medium text-blue-700 dark:bg-neutral-800 dark:text-white';
+const ITEM_ACTIVE = 'font-medium bg-neutral-800 text-white';
 const ITEM_IDLE =
-    'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-neutral-800 dark:hover:text-white';
+    'text-gray-300 hover:bg-neutral-800 hover:text-white';
 const ICON_BTN =
-    'inline-flex items-center justify-center rounded-lg text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-neutral-700 dark:hover:text-white';
+    'inline-flex items-center justify-center rounded-lg transition text-gray-400 hover:bg-neutral-700 hover:text-white';
 
 const NavItem = observer(function NavItem({ vm, item, pathname }) {
     const { open } = vm;
@@ -37,7 +37,7 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
     const itemClass = `relative flex items-center rounded-lg transition ${active ? ITEM_ACTIVE : ITEM_IDLE} ${
         open ? 'h-7 min-w-0 flex-1 gap-2 px-2' : 'h-8 w-8 justify-center'
     }`;
-    const iconClass = active ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400';
+    const iconClass = active ? 'text-blue-400' : 'text-gray-400';
     const toggleSubmenu = () => setSubmenuOpen((prev) => !prev);
 
     const label = (
@@ -88,7 +88,7 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
                                 className={`flex h-[1.1rem] min-w-[1.1rem] cursor-pointer items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white transition hover:bg-red-600 ${
                                     open
                                         ? 'shrink-0'
-                                        : 'absolute -right-0.5 -top-0.5 ring-2 ring-white dark:ring-neutral-900'
+                                        : 'absolute -right-0.5 -top-0.5 ring-2 ring-neutral-900'
                                 }`}
                             >
                                 {vm.badgeLabel(item.key)}
@@ -126,7 +126,7 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
                         submenuShown ? 'mt-0.5 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                     }`}
                 >
-                    <div className="flex flex-col gap-px overflow-hidden border-l border-gray-200 pl-2 dark:border-neutral-700">
+                    <div className="flex flex-col gap-px overflow-hidden border-l pl-2 border-neutral-700">
                         {item.submenu.map((sub) => {
                             const subActive = isHrefActive(sub.href, pathname);
                             return (
@@ -141,13 +141,13 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
                                 >
                                     <i
                                         className={`${sub.icon} w-3.5 shrink-0 text-center text-[11px] ${
-                                            subActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'
+                                            subActive ? 'text-blue-400' : 'text-gray-400'
                                         }`}
                                         aria-hidden="true"
                                     />
                                     <span className="min-w-0 truncate">{sub.label}</span>
                                     {sub.legacy && (
-                                        <span className="ml-auto inline-flex shrink-0 items-center gap-0.5 rounded bg-gray-200 px-1 text-[9px] font-semibold uppercase text-gray-600 dark:bg-neutral-700 dark:text-gray-400">
+                                        <span className="ml-auto inline-flex shrink-0 items-center gap-0.5 rounded px-1 text-[9px] font-semibold uppercase bg-neutral-700 text-gray-400">
                                             <i className="fa-solid fa-lock text-[8px]" aria-hidden="true" />
                                             легасі
                                         </span>
@@ -160,7 +160,7 @@ const NavItem = observer(function NavItem({ vm, item, pathname }) {
             )}
 
             {!open && (
-                <div className="pointer-events-none invisible absolute left-[calc(100%+0.75rem)] top-1/2 z-[1300] -translate-y-1/2 whitespace-nowrap rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:opacity-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-200">
+                <div className="pointer-events-none invisible absolute left-[calc(100%+0.75rem)] top-1/2 z-[1300] -translate-y-1/2 whitespace-nowrap rounded-lg border px-2.5 py-1.5 text-xs font-medium opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:opacity-100 border-neutral-700 bg-neutral-800 text-gray-200">
                     {item.label}
                 </div>
             )}
@@ -193,13 +193,13 @@ function Sidebar() {
             aria-label="Головне меню"
             // Висота — рівно екран (не за вмістом сторінки): sticky лишає сайдбар на місці, поки
             // скролиться вікно, а довге меню прокручується всередині (flex-1 + overflow-y-auto).
-            className={`sticky top-0 flex h-screen shrink-0 flex-col self-start overflow-hidden border-r border-gray-200 bg-white text-gray-700 transition-[width] duration-300 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-300 ${
+            className={`sticky top-0 flex h-screen shrink-0 flex-col self-start overflow-hidden border-r transition-[width] duration-300 border-neutral-700 bg-neutral-900 text-gray-300 ${
                 open ? 'w-[280px]' : 'w-[72px]'
             }`}
         >
             {/* Висота шапки = глобальний Header (50px), щоб нижні межі йшли однією лінією. */}
             <div
-                className={`flex h-[50px] shrink-0 items-center border-b border-gray-200 dark:border-neutral-700 ${
+                className={`flex h-[50px] shrink-0 items-center border-b border-neutral-700 ${
                     open ? 'justify-between pl-5 pr-3' : 'justify-center'
                 }`}
             >
@@ -209,9 +209,9 @@ function Sidebar() {
                     aria-label={open ? undefined : 'Портал'}
                     className="flex items-center gap-2.5 rounded-lg"
                 >
-                    <PortalLogo className="h-[30px] w-[30px] shrink-0 text-blue-500 dark:text-blue-400" />
+                    <PortalLogo className="h-[30px] w-[30px] shrink-0 text-blue-400" />
                     {open && (
-                        <span className="text-lg font-bold tracking-wide text-gray-900 dark:text-white">Портал</span>
+                        <span className="text-lg font-bold tracking-wide text-white">Портал</span>
                     )}
                 </Link>
                 {open && toggleButton}
@@ -220,7 +220,7 @@ function Sidebar() {
             {!open && <div className="mt-3 flex shrink-0 justify-center">{toggleButton}</div>}
 
             <div
-                className={`flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden [scrollbar-color:#94a3b8_transparent] dark:[scrollbar-color:#525252_transparent] ${
+                className={`flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden [scrollbar-color:#525252_transparent] ${
                     // У 72px-колонці смуга прокрутки перекриває іконки — ховаємо її (колесо працює).
                     open ? 'px-2 py-2 [scrollbar-width:thin]' : 'py-1.5 [scrollbar-width:none]'
                 }`}
@@ -245,7 +245,7 @@ function Sidebar() {
             </div>
 
             <div
-                className={`flex shrink-0 flex-col gap-3 border-t border-gray-200 py-3 dark:border-neutral-700 ${
+                className={`flex shrink-0 flex-col gap-3 border-t py-3 border-neutral-700 ${
                     open ? 'px-3' : 'items-center'
                 }`}
             >
@@ -254,7 +254,7 @@ function Sidebar() {
                     onClick={ui.openFeedback}
                     title={`${SIDEBAR_UI.feedback} (Alt+B)`}
                     aria-label={open ? undefined : SIDEBAR_UI.feedback}
-                    className={`flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 text-sm font-medium text-blue-700 transition hover:bg-blue-100 dark:border-blue-400/40 dark:bg-blue-800/20 dark:text-blue-300 dark:hover:bg-blue-800/35 ${
+                    className={`flex items-center justify-center gap-2 rounded-lg border text-sm font-medium transition border-blue-400/40 bg-blue-800/20 text-blue-300 hover:bg-blue-800/35 ${
                         open ? 'h-10 w-full' : 'h-11 w-11'
                     }`}
                 >
@@ -267,7 +267,7 @@ function Sidebar() {
                 {vm.version && (
                     <Link
                         to="/developer-posts"
-                        className={`text-center text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white ${
+                        className={`text-center transition text-gray-400 hover:text-white ${
                             open ? 'text-xs' : 'text-[11px]'
                         }`}
                         title="Що нового"
@@ -279,7 +279,7 @@ function Sidebar() {
                 {open && (
                     <Link
                         to="/welcome"
-                        className="-mt-2 truncate text-center text-[11px] text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                        className="-mt-2 truncate text-center text-[11px] text-gray-400 hover:text-white"
                     >
                         © {new Date().getFullYear()} Sanctions policy support centre
                     </Link>

@@ -164,9 +164,15 @@ export class ProjectListPageViewModel {
     this.savedFilters = new SavedFiltersViewModel({ page: this })
     if (initial.source === 'url') this.savedFilters.detach()
     else if (initial.source === 'defaults') this.savedFilters.resetToDefault()
-    // Deep link ?edit={id} (форма) / ?card={id} (картка), як legacy project.js — після словників
+    // Deep link ?edit={id} (форма) / ?card={id} (картка), як legacy project.js — після словників;
+    // ?create=1 — форма створення (кнопка "Створити проєкт" на головній)
     const params = new URLSearchParams(search)
-    this.initialOpen = { edit: Number(params.get('edit')) || null, card: Number(params.get('card')) || null, chain: params.has('chain') }
+    this.initialOpen = {
+      edit: Number(params.get('edit')) || null,
+      card: Number(params.get('card')) || null,
+      chain: params.has('chain'),
+      create: params.has('create'),
+    }
 
     this.lastId = null
     this.rowsToRefresh = new Set()
@@ -206,9 +212,16 @@ export class ProjectListPageViewModel {
       () => this.ready && !(this.initialOpen?.chain && this.pageIds.length === 0),
       (ready) => {
         if (!ready || !this.initialOpen) return
-        const { edit, card, chain } = this.initialOpen
+        const { edit, card, chain, create } = this.initialOpen
         this.initialOpen = null
+        if (create) {
+          // одноразовий параметр: F5 не має відкривати форму знову
+          const url = new URL(window.location.href)
+          url.searchParams.delete('create')
+          window.history.replaceState(window.history.state, '', url)
+        }
         if (edit) this.projectForm.openEdit(edit)
+        else if (create) this.createProject()
         // ?chain=1 — ланцюжок по рядках сторінки, коли вони завантажаться
         else if (card) this.openCard(card, chain ? this.pageIds : [card])
       },

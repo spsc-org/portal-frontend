@@ -2,70 +2,82 @@ import { observer } from "mobx-react-lite";
 import { formatDate } from "date-fns";
 import { useVM } from "../../../shared/mvvm/viewModelHooks.js";
 import StatCard from "./components/StatCard.jsx";
-import BirthdaySection from "./components/BrithdaySection.jsx";
 import StatCardSkeleton from "./components/StatCardSkeleton.jsx";
-import SectionSkeleton from "./components/SectionSkeleton.jsx";
+import BirthdaySection from "./components/BrithdaySection.jsx";
 import ActivityChart from "./components/ActivityChart.jsx";
 import AnnouncementsSection from "./components/AnnouncementsSection.jsx";
 import MyTasksSection from "./components/MyTasksSection.jsx";
+import RecentProjectsSection from "./components/RecentProjectsSection.jsx";
+import WelcomeHero from "./components/WelcomeHero.jsx";
 import PageHeader from "../../../layouts/app/PageHeader.jsx";
-import { HeaderIconButton } from "../../../layouts/app/HeaderButtons.jsx";
+import { HeaderButton, HeaderIconButton } from "../../../layouts/app/HeaderButtons.jsx";
 
 const KPI_CARDS = [
-    { key: "projects", icon: "fa-solid fa-diagram-project", label: "Проєкти ", href: "/project" },
+    { key: "projects", icon: "fa-solid fa-diagram-project", label: "Проєкти", href: "/project" },
     { key: "proposals", icon: "fa-solid fa-folder-tree", label: "Подання", href: "/proposal" },
     { key: "documents", icon: "fa-solid fa-file-lines", label: "Документи", href: "/document" },
     { key: "decrees", icon: "fa-solid fa-gavel", label: "Укази", href: "/decree" },
     { key: "inventoryMine", icon: "fa-solid fa-box-archive", label: "Мій інвентар", href: "/inventory" },
 ];
 
-const WelcomeView = () => {
-    const vm = useVM();
+const KpiStats = observer(({ vm }) => {
     const { period } = vm;
-
     return (
-        <div data-i-doc="page:welcome" className=" px-3 pb-6 pt-3 sm:px-4">
-            <PageHeader title="Головна" actions={<HeaderIconButton icon="fa-solid fa-refresh" title="Оновити" onClick={vm.refresh} />} />
-            <div className="mb-5 rounded-2xl border border-gray-300 bg-gradient-to-r from-white to-blue-50 p-5 shadow-md shadow-gray-200/70 ring-1 ring-gray-200/60 dark:border-neutral-700 dark:from-neutral-800 dark:to-neutral-700 dark:shadow-black/20 dark:ring-0">
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">Вітаємо в системі, {vm.userName}</p>
-
-                {vm.isDebug && (
-                    <span className="mt-3 inline-flex rounded-md bg-blue-600 px-3 py-1 text-xs font-semibold text-white dark:bg-blue-700">
-                        Режим розробки
+        <section data-i-doc="widget:welcome-kpi-stats" aria-label="Статистика" className="flex flex-col gap-2">
+            {period && (
+                <p className="m-0 text-sm text-gray-800 dark:text-gray-100">
+                    Статистика за період: {period.label || "Останні 7 днів"}{" "}
+                    <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">
+                        з {formatDate(period.from, "dd.MM.yyyy HH:mm:ss")} по {formatDate(period.to, "dd.MM.yyyy HH:mm:ss")}
                     </span>
+                </p>
+            )}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                {KPI_CARDS.map((card) =>
+                    vm.isDashboardLoading ? (
+                        <StatCardSkeleton key={card.key} />
+                    ) : (
+                        <StatCard key={card.key} icon={card.icon} label={card.label} value={vm.summary[card.key] ?? 0} href={card.href} />
+                    ),
                 )}
             </div>
+        </section>
+    );
+});
 
-            <ActivityChart />
+const WelcomeView = () => {
+    const vm = useVM();
 
-            {vm.showKPI && (
-                <div data-i-doc="widget:welcome-kpi-stats">
-                    {period && (
-                        <h5 className="mt-1  text-gray-900 dark:text-white">
-                            Статистика за період: {period.label || "Останні 7 днів"}{" "}
-                            <span className="text-xs ml-1">
-                                з {formatDate(period.from, "dd.MM.yyyy HH:mm:ss")} по {formatDate(period.to, "dd.MM.yyyy HH:mm:ss")}
-                            </span>
-                        </h5>
-                    )}
-                    <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
-                        {KPI_CARDS.map((card) =>
-                            vm.isDashboardLoading
-                                ? <StatCardSkeleton key={card.key}/>
-                                : <StatCard key={card.key} icon={card.icon} label={card.label}
-                                            value={vm.summary[card.key] ?? 0} href={card.href}/>
+    return (
+        <div data-i-doc="page:welcome" className="px-3 pb-6 pt-4 sm:px-6 sm:pt-6">
+            <PageHeader
+                title="Головна"
+                actions={
+                    <>
+                        {vm.canCreateProject && (
+                            <HeaderButton to="/project?create=1" icon="fa-solid fa-plus">Створити проєкт</HeaderButton>
                         )}
-                    </div>
+                        <HeaderIconButton icon="fa-solid fa-refresh" title="Оновити" onClick={vm.refresh} />
+                    </>
+                }
+            />
+
+            <div className="mx-auto flex max-w-[1120px] flex-col gap-6">
+                <WelcomeHero />
+
+                {vm.showKPI && <KpiStats vm={vm} />}
+
+                <ActivityChart />
+
+                <div className="flex flex-wrap items-start gap-4">
+                    {vm.canSeeProjects && <RecentProjectsSection />}
+                    <AnnouncementsSection />
                 </div>
-            )}
 
-            <div className="grid grid-cols-1 gap-4">
-                {vm.isDashboardLoading ? <SectionSkeleton/> : <BirthdaySection birthdays={vm.birthdays}/>}
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
-                <MyTasksSection/>
-                <AnnouncementsSection/>
+                <div className="flex flex-wrap items-start gap-4">
+                    <MyTasksSection />
+                    <BirthdaySection />
+                </div>
             </div>
         </div>
     );

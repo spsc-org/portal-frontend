@@ -4,7 +4,7 @@ import { OnlineUsersViewModel } from './OnlineUsersViewModel.js';
 import { avatarInitials } from '../../lib/avatarInitials.js';
 
 const AVATAR =
-    'flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[11px] font-bold leading-none text-gray-800 dark:bg-neutral-700 dark:text-white';
+    'flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full text-[11px] font-bold leading-none bg-neutral-700 text-white';
 
 function StatusDot({ active, className = 'h-2 w-2' }) {
     return (
@@ -22,9 +22,9 @@ function UserRow({ user }) {
                 {avatarInitials(user.initials, user.name)}
             </span>
             <div className="flex min-w-0 flex-1 flex-col">
-                <span className="truncate text-[13px] leading-[18px] text-gray-800 dark:text-gray-300">{user.name}</span>
+                <span className="truncate text-[13px] leading-[18px] text-gray-300">{user.name}</span>
                 {user.current_page && (
-                    <span className="truncate text-xs text-gray-600 dark:text-gray-400">{user.current_page}</span>
+                    <span className="truncate text-xs text-gray-400">{user.current_page}</span>
                 )}
             </div>
             <StatusDot active={Boolean(user.isActive)} />
@@ -45,16 +45,16 @@ const CollapsedOnline = observer(function CollapsedOnline({ vm, ui }) {
             title={`${ui.onlineUsers}: ${names}`}
             className="flex flex-col items-center"
         >
-            <span className="mx-auto mb-3 h-px w-8 bg-gray-200 dark:bg-neutral-700" />
+            <span className="mx-auto mb-3 h-px w-8 bg-neutral-700" />
             {users.map((user, index) => (
                 <span
                     key={user.id}
-                    className={`${AVATAR} border-2 border-white text-[10px] dark:border-neutral-900 ${index > 0 ? '-mt-2' : ''}`}
+                    className={`${AVATAR} border-2 text-[10px] border-neutral-900 ${index > 0 ? '-mt-2' : ''}`}
                 >
                     {avatarInitials(user.initials, user.name)}
                 </span>
             ))}
-            <span className="mt-1.5 inline-flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
+            <span className="mt-1.5 inline-flex items-center gap-1 text-xs text-gray-400">
                 <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
                 {vm.total}
             </span>
@@ -69,7 +69,7 @@ function OnlineUsersBlock({ sidebarOpen, expanded, onToggleExpanded, ui }) {
     if (!sidebarOpen) return <CollapsedOnline vm={vm} ui={ui} />;
 
     return (
-        <section className="flex shrink-0 flex-col gap-2.5 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-neutral-700 dark:bg-neutral-800">
+        <section className="flex shrink-0 flex-col gap-2.5 rounded-xl border p-3 border-neutral-700 bg-neutral-800">
             <button
                 type="button"
                 onClick={onToggleExpanded}
@@ -77,8 +77,8 @@ function OnlineUsersBlock({ sidebarOpen, expanded, onToggleExpanded, ui }) {
                 title={expanded ? ui.collapse : ui.expand}
                 aria-expanded={expanded}
             >
-                <h2 className="text-sm font-bold text-gray-800 dark:text-gray-300">{ui.onlineUsers}</h2>
-                <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                <h2 className="text-sm font-bold text-gray-300">{ui.onlineUsers}</h2>
+                <span className="inline-flex items-center gap-1.5 text-xs text-gray-400">
                     <span className="h-2 w-2 rounded-full bg-green-500" />
                     {vm.total}
                     <i
@@ -100,7 +100,7 @@ function OnlineUsersBlock({ sidebarOpen, expanded, onToggleExpanded, ui }) {
                 <button
                     type="button"
                     onClick={vm.toggleShowAll}
-                    className="w-fit text-xs font-medium text-blue-700 hover:underline dark:text-blue-300"
+                    className="w-fit text-xs font-medium hover:underline text-blue-300"
                 >
                     {vm.showAll ? 'Приховати' : 'Показати всіх'}
                 </button>

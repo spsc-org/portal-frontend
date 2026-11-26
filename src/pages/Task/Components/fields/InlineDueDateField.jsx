@@ -26,12 +26,12 @@ const InlineDueDateField = ({value, onSave, onClear, isPending = false, canEdit 
     };
 
     return (
-        <MetaRow icon="fa-regular fa-calendar" label="Термін" valueClassName={isOverdue ? "!text-red-500 font-semibold" : ""}>
+        <MetaRow icon="fa-regular fa-calendar" label="Термін" valueClassName={isOverdue ? "!text-red-700 dark:!text-red-400 font-semibold" : ""}>
             {isEditing ? (
                 <div className="flex items-center gap-1">
                     <DatePicker value={dueDate || undefined} onChange={handleChange}/>
                     <button type="button" onClick={() => setIsEditing(false)} title="Скасувати"
-                            className="text-gray-600 transition hover:text-red-500">
+                            className="text-gray-600 transition hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400">
                         <i className="fa-regular fa-xmark text-xs"></i>
                     </button>
                 </div>
@@ -46,12 +46,12 @@ const InlineDueDateField = ({value, onSave, onClear, isPending = false, canEdit 
                     {canEdit && !isPending &&
                         <>
                             <button type="button" onClick={() => setIsEditing(true)} title="Змінити термін"
-                                    className="text-gray-600 transition hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400">
+                                    className="text-gray-600 transition hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
                                 <i className="fa-regular fa-pen text-[10px]"></i>
                             </button>
                             {Boolean(dueDate) &&
                                 <button type="button" onClick={handleClear} title="Прибрати термін"
-                                        className="text-gray-600 transition hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400">
+                                        className="text-gray-600 transition hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400">
                                     <i className="fa-regular fa-calendar-xmark text-[10px]"></i>
                                 </button>
                             }

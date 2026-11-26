@@ -81,6 +81,10 @@ const TaskPage = () => {
                     </>
                 }
             />
+            {/* Фільтри — над колонкою списку, а не над усім рядком: панель перегляду
+                праворуч стартує на рівні фільтрів і не ховається під їхню липку смугу. */}
+            <div className="flex items-start gap-3">
+                <div className="flex-1 min-w-0">
             <TaskFilters
                 filters={filters}
                 onChangeOption={handleChangeOptions}
@@ -103,8 +107,6 @@ const TaskPage = () => {
                 showOnlyMineToggle={showOnlyMineToggle}
                 onToggleOnlyMine={handleToggleOnlyMine}
             />
-            <div className="flex items-start gap-3">
-                <div className="flex-1 min-w-0">
                     <TaskList
                         tasks={listTasks}
                         loading={isListLoading}
@@ -123,10 +125,10 @@ const TaskPage = () => {
                     />
                     {/* Потік із довантаженням: замість сторінок — "Показати ще" */}
                     {Boolean(listTotal) &&
-                        <div className="mt-2 flex items-center justify-between px-1 text-xs text-gray-600 dark:text-gray-400">
+                        <div className="mt-3 flex items-center justify-between px-1 text-xs text-gray-600 dark:text-gray-400">
                             <span>Показано {listTasks.length} із {listTotal}</span>
                             {hasNextPage &&
-                                <Button size="sm" variant="text" color="blue"
+                                <Button size="sm" color="secondary"
                                         disabled={isFetchingNextPage}
                                         onClick={() => fetchNextPage()}>
                                     {isFetchingNextPage

@@ -35,7 +35,7 @@ const InlineTitleField = ({value, onSave, isPending = false, canEdit = true, pla
                         setDraft(null);
                     }
                 }}
-                className="mt-2 w-full resize-none rounded-md border border-blue-300 bg-white p-1.5 text-base font-semibold leading-snug text-gray-900 focus:outline-none dark:border-blue-700 dark:bg-neutral-900 dark:text-gray-100"
+                className="mt-2 w-full resize-none rounded-md border border-blue-500 bg-white p-1.5 text-base font-semibold leading-snug text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-300 dark:border-blue-400 dark:bg-neutral-900 dark:text-gray-100"
             />
         );
     }

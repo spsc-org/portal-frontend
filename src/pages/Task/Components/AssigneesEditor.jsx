@@ -1,5 +1,6 @@
 import {useState} from "react";
-import {Chip, Spinner} from "@material-tailwind/react";
+import {Spinner} from "@material-tailwind/react";
+import {PersonPill} from "../utils.jsx";
 import MultiSelect from "../../../components/fields/MultiSelect.jsx";
 
 /**
@@ -18,16 +19,15 @@ const AssigneesEditor = ({assignedUsers = [], options = [], onAdd, onRemove, isP
         <div>
             <div className="flex flex-wrap items-center gap-1">
                 {assignedUsers.map(user => (
-                    <Chip key={user.id} size="sm" value={user.name} variant="ghost" color="blue-gray"
-                          className="rounded-full text-[10px] py-0.5 px-2"
-                          onClose={canEdit && !isPending ? () => onRemove(user.id) : undefined}/>
+                    <PersonPill key={user.id} name={user.name}
+                                onRemove={canEdit && !isPending ? () => onRemove(user.id) : undefined}/>
                 ))}
-                {assignedUsers.length === 0 && !canEdit && <span className="text-xs text-gray-600 dark:text-gray-500">—</span>}
+                {assignedUsers.length === 0 && !canEdit && <span className="text-xs text-gray-600 dark:text-gray-400">—</span>}
                 {canEdit && !isAdding &&
                     <button type="button"
                             onClick={() => setIsAdding(true)}
                             disabled={isPending}
-                            className="rounded-full border border-dashed border-gray-300 px-2 py-0.5 text-[10px] text-gray-600 transition hover:border-blue-400 hover:text-blue-600 dark:border-gray-600 dark:text-gray-400 dark:hover:border-blue-500 dark:hover:text-blue-400">
+                            className="rounded-full border border-dashed border-gray-300 px-2 py-0.5 text-[11px] font-medium text-gray-600 transition hover:border-blue-500 hover:text-blue-600 dark:border-neutral-600 dark:text-gray-400 dark:hover:border-blue-400 dark:hover:text-blue-400">
                         <i className="fa-regular fa-plus mr-1"></i>Учасник
                     </button>
                 }

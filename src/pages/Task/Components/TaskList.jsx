@@ -1,26 +1,10 @@
 import {useEffect, useMemo, useState} from "react";
-import { Chip, Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip } from "@material-tailwind/react"
-import Button from "../../../components/Buttons/Button.jsx"
+import { Menu, MenuHandler, MenuItem, MenuList, Spinner, Tooltip } from "@material-tailwind/react"
+import IconButton from "../../../components/Buttons/IconButton.jsx"
 import {differenceInCalendarDays, format, isPast, isToday} from "date-fns";
 import {uk} from "date-fns/locale";
-import {allowedStatusIds, TagPill, UserAvatars} from "../utils.jsx";
+import {allowedStatusIds, Badge, PRIORITY_ICON, StatusBadge, statusDotClassName, TagPill, UserAvatars} from "../utils.jsx";
 import {canDeleteRow, canRestore, canUpdateRow} from "../utils.js";
-
-// Компактна іконка пріоритету (без тексту — назва в тултіпі)
-const priorityIconMap = {
-    "Терміновий": {icon: "fa-solid fa-angles-up", color: "text-red-500"},
-    "Високий": {icon: "fa-solid fa-angle-up", color: "text-amber-500"},
-    "Середній": {icon: "fa-solid fa-grip-lines", color: "text-cyan-600"},
-    "Низький": {icon: "fa-solid fa-angle-down", color: "text-indigo-400"},
-};
-
-const statusDotColorMap = {
-    "Нова": "bg-cyan-400",
-    "В роботі": "bg-blue-500",
-    "Виконано": "bg-green-500",
-    "Повернуто": "bg-red-500",
-    "Закрито": "bg-gray-400",
-};
 
 // Групи цих статусів згорнуті за замовчуванням — фокус на активній роботі
 const COLLAPSED_BY_DEFAULT = ["Виконано", "Закрито"];
@@ -31,21 +15,24 @@ const UNGROUPED_KEY = "__all__";
 // скидався при перемиканні групування
 const DELETED_GROUP_KEY = "__deleted__";
 
+// Portal UI kit — картка списку (як «Мої задачі» у макеті Welcome / таблиця /project):
+// surface-card + border-default, radius-xl, рядки з межею border-default.
+const CARD = "overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-800";
+const META = "inline-flex shrink-0 items-center gap-1 text-xs text-gray-600 dark:text-gray-400";
+const ROW_ACTION = "text-gray-600 dark:text-gray-400";
+
+// Компактна іконка пріоритету (без тексту — назва в тултіпі)
 const PriorityIcon = ({caption}) => {
-    const config = priorityIconMap[caption];
-    if (!config) return <span className="w-4"/>;
+    const config = PRIORITY_ICON[caption];
+    if (!config) return <span className="w-4 shrink-0"/>;
     return (
-        <Tooltip content={caption}>
-            <i className={`${config.icon} ${config.color} w-4 text-center text-xs`}></i>
+        <Tooltip content={`Пріоритет: ${caption}`}>
+            <i className={`${config.icon} ${config.color} w-4 shrink-0 text-center text-xs`} aria-label={caption}></i>
         </Tooltip>
     );
 };
 
-const StatusDot = ({status}) => (
-    <Tooltip content={status || "Без стану"}>
-        <span className={`h-2 w-2 shrink-0 rounded-full ${statusDotColorMap[status] || "bg-gray-300"}`}/>
-    </Tooltip>
-);
+const StatusDot = ({status}) => <span className={statusDotClassName(status)} aria-hidden="true"/>;
 
 // Скільки днів задача вже незакрита (від дати створення) — щоб помітити
 // задачі, що зависли. Для закритих — показуємо тьмяно, без акценту.
@@ -56,33 +43,37 @@ const AgeBadge = ({createdAt, statusName}) => {
     const isStale = !isClosed && days >= 7;
     return (
         <Tooltip content={isClosed ? `Була відкрита ${days} дн.` : `Не закрита вже ${days} дн.`}>
-            <span className={`hidden shrink-0 items-center gap-1 whitespace-nowrap text-[11px] md:inline-flex ${isStale
-                ? "font-semibold text-amber-500"
-                : "text-gray-600 dark:text-gray-500"}`}>
-                <i className="fa-regular fa-hourglass-half"></i>{days}д
+            <span className={`hidden shrink-0 items-center gap-1 whitespace-nowrap text-xs md:inline-flex ${isStale
+                ? "font-medium text-amber-700 dark:text-amber-400"
+                : "text-gray-600 dark:text-gray-400"}`}>
+                <i className="fa-regular fa-hourglass-half text-[11px]" aria-hidden="true"></i>{days} дн.
             </span>
         </Tooltip>
     );
 };
 
+// Термін — як у макеті: 12px ink-muted, прострочений — red-700 medium.
 const DueDate = ({dueDate, deleted}) => {
-    if (!dueDate) return null;
+    if (!dueDate) return <span className="hidden w-20 shrink-0 sm:block"/>;
     const date = new Date(dueDate);
     const overdue = !deleted && isPast(date) && !isToday(date);
+    const today = !deleted && isToday(date);
     return (
-        <span className={`shrink-0 whitespace-nowrap text-[11px] ${overdue
-            ? "font-semibold text-red-500"
-            : "text-gray-600 dark:text-gray-400"}`}>
-            {overdue && <i className="fa-regular fa-alarm-exclamation mr-1"></i>}
-            {format(date, "d MMM", {locale: uk})}
+        <span title={overdue ? "Термін минув" : "Термін"}
+              className={`w-20 shrink-0 whitespace-nowrap text-right text-xs ${overdue
+                  ? "font-medium text-red-700 dark:text-red-400"
+                  : "text-gray-600 dark:text-gray-400"}`}>
+            {overdue && <i className="fa-regular fa-alarm-exclamation mr-1" aria-hidden="true"></i>}
+            {today ? "сьогодні" : format(date, "d MMM", {locale: uk})}
         </span>
     );
 };
 
-// Сучасне подання списку задач (Linear-style): групування зі згортанням,
-// рядок однією лінією (пріоритет / #id / назва / теги / термін / учасники),
-// дії при ховері. Заміна спредшит-таблиці на /task (стара Table збережена
-// за прапорцем USE_LEGACY_TABLE у TaskPage).
+const Dot = () => <span className="text-gray-500 dark:text-neutral-500" aria-hidden="true">·</span>;
+
+// Сучасне подання списку задач: групування зі згортанням, рядок у дві лінії
+// (стан / назва + мета: #id, проєкт, автор, теги, лічильники / термін / учасники),
+// дії при ховері.
 const TaskList = ({
                       tasks = [],
                       loading = false,
@@ -174,7 +165,7 @@ const TaskList = ({
 
     if (loading && !tasks.length) {
         return (
-            <div className="flex items-center justify-center rounded-xl border border-gray-200 bg-white py-16 dark:border-neutral-700 dark:bg-neutral-800">
+            <div className={`${CARD} flex items-center justify-center py-16`}>
                 <Spinner className="h-8 w-8"/>
             </div>
         );
@@ -182,210 +173,228 @@ const TaskList = ({
 
     if (!tasks.length) {
         return (
-            <div className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white py-16 text-gray-600 dark:border-neutral-700 dark:bg-neutral-800">
-                <i className="fa-regular fa-clipboard-check text-2xl"></i>
-                <span className="text-sm">Задач не знайдено</span>
+            <div className={`${CARD} flex flex-col items-center gap-2 py-16 text-gray-600 dark:text-gray-400`}>
+                <i className="fa-regular fa-clipboard-check text-2xl text-gray-500" aria-hidden="true"></i>
+                <span className="text-sm font-medium text-gray-800 dark:text-gray-200">Задач не знайдено</span>
+                <span className="text-xs">Змініть фільтри або створіть нову задачу</span>
             </div>
         );
     }
 
     return (
-        <div data-i-doc="view:task-list" className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
-            {groups.map(group => {
+        <div data-i-doc="view:task-list" className={CARD}>
+            {groups.map((group, groupIndex) => {
                 const isDeletedGroup = group.key === DELETED_GROUP_KEY;
                 const groupKey = group.key || `${groupBy}:${group.name}`;
                 const isCollapsed = group.name !== UNGROUPED_KEY && collapsed.includes(groupKey);
                 return (
-                    <div key={groupKey}>
+                    <section key={groupKey} aria-label={group.name === UNGROUPED_KEY ? "Задачі" : group.name}>
                         {group.name !== UNGROUPED_KEY &&
                             <button type="button"
                                     onClick={() => toggleGroup(groupKey)}
-                                    className="flex w-full items-center gap-2 border-b border-gray-100 bg-gray-50/80 px-3 py-1.5 text-left transition hover:bg-gray-100 dark:border-neutral-700 dark:bg-neutral-700/60 dark:hover:bg-neutral-700">
-                                <i className={`fa-solid fa-chevron-right text-[9px] text-gray-500 transition-transform ${isCollapsed ? "" : "rotate-90"}`}></i>
-                                {isDeletedGroup && <i className="fa-regular fa-trash-can w-2 text-center text-[10px] text-gray-500"></i>}
+                                    aria-expanded={!isCollapsed}
+                                    className={`flex w-full items-center gap-2 bg-gray-50 px-4 py-2 text-left transition hover:bg-gray-100 dark:bg-neutral-900/60 dark:hover:bg-neutral-700/60 ${groupIndex > 0 ? "border-t border-gray-200 dark:border-neutral-700" : ""} ${isCollapsed ? "" : "border-b border-gray-200 dark:border-neutral-700"}`}>
+                                <i className={`fa-solid fa-chevron-right w-2.5 text-[10px] text-gray-500 transition-transform ${isCollapsed ? "" : "rotate-90"}`} aria-hidden="true"></i>
+                                {isDeletedGroup && <i className="fa-regular fa-trash-can w-3 text-center text-[11px] text-gray-500" aria-hidden="true"></i>}
                                 {!isDeletedGroup && groupBy === "status" && <StatusDot status={group.name}/>}
                                 {!isDeletedGroup && groupBy === "priority" && <PriorityIcon caption={group.name}/>}
-                                <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">{group.name}</span>
-                                <span className="text-[11px] text-gray-600">{group.tasks.length}</span>
+                                {!isDeletedGroup && groupBy === "project" && <i className="fa-regular fa-folder w-3 text-center text-[11px] text-gray-500" aria-hidden="true"></i>}
+                                <span className="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-300">{group.name}</span>
+                                <span className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-gray-200 px-1.5 text-[11px] font-bold text-gray-700 dark:bg-neutral-700 dark:text-gray-300">
+                                    {group.tasks.length}
+                                </span>
                             </button>
                         }
-                        {!isCollapsed && group.tasks.map(task => {
-                            const isSelected = task.id === selectedId;
-                            const isDeleted = Boolean(task.deleted_at);
-                            return (
-                                <div key={task.id}
-                                     onClick={() => onSelect(task.id)}
-                                     draggable={!isDeleted && Boolean(onMergeRequest)}
-                                     onDragStart={(e) => {
-                                         e.dataTransfer.setData('text/plain', String(task.id));
-                                         e.dataTransfer.effectAllowed = 'move';
-                                     }}
-                                     onDragOver={(e) => {
-                                         if (isDeleted || !onMergeRequest) return;
-                                         e.preventDefault();
-                                         e.dataTransfer.dropEffect = 'move';
-                                     }}
-                                     onDragEnter={(e) => {
-                                         if (isDeleted || !onMergeRequest) return;
-                                         e.preventDefault();
-                                         setDragOverId(task.id);
-                                     }}
-                                     onDragLeave={() => setDragOverId(prev => prev === task.id ? null : prev)}
-                                     onDrop={(e) => {
-                                         if (isDeleted || !onMergeRequest) return;
-                                         e.preventDefault();
-                                         e.stopPropagation();
-                                         setDragOverId(null);
-                                         const donorId = Number(e.dataTransfer.getData('text/plain'));
-                                         if (!donorId || donorId === task.id) return;
-                                         onMergeRequest(donorId, task.id);
-                                     }}
-                                     title={onMergeRequest && !isDeleted ? "Перетягніть на іншу задачу, щоб злити" : undefined}
-                                     className={`group flex cursor-pointer items-center gap-2.5 border-b border-gray-100 px-3 py-2 transition dark:border-neutral-700 ${isSelected
-                                         ? "bg-blue-50 dark:bg-blue-900/25"
-                                         : "hover:bg-gray-50 dark:hover:bg-neutral-700/50"} ${isDeleted ? "opacity-60" : ""} ${dragOverId === task.id ? "ring-2 ring-inset ring-blue-400" : ""}`}>
-                                    {Boolean(onToggleFavorite) &&
-                                        <button type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    onToggleFavorite(task.id);
-                                                }}
-                                                title={task.isFavorite ? "Прибрати з обраного" : "Додати в обране"}
-                                                className={`shrink-0 transition ${task.isFavorite
-                                                    ? "text-amber-400"
-                                                    : "text-gray-300 opacity-0 hover:text-amber-400 group-hover:opacity-100 dark:text-gray-600"}`}>
-                                            <i className={`${task.isFavorite ? "fa-solid" : "fa-regular"} fa-star text-xs`}></i>
-                                        </button>
-                                    }
-                                    <PriorityIcon caption={task.priority}/>
-                                    {groupBy !== "status" && <StatusDot status={task.status}/>}
-                                    <span className="shrink-0 font-mono text-[11px] text-gray-600">#{task.id}</span>
-                                    {task.project &&
-                                        <Tooltip content={`Проєкт: ${task.project}`}>
-                                            <span className="hidden shrink-0 max-w-[8rem] items-center gap-1 truncate text-[11px] text-gray-600 dark:text-gray-500 sm:inline-flex">
-                                                <i className="fa-regular fa-folder"></i>
-                                                <span className="truncate">{task.project}</span>
-                                            </span>
-                                        </Tooltip>
-                                    }
-                                    <span className="min-w-0 flex-1 truncate text-sm text-gray-800 dark:text-gray-200">
-                                        {task.title}
-                                    </span>
-                                    {isDeleted &&
-                                        <Chip size="sm" color="blue" variant="ghost" className="shrink-0 py-0.5 text-[9px]" value="Видалено"/>
-                                    }
-                                    {task.tags?.length > 0 &&
-                                        <span className="hidden shrink-0 items-center gap-1 lg:flex">
-                                            {task.tags.slice(0, 3).map(tag => (
-                                                <TagPill key={tag.id} tag={tag}/>
-                                            ))}
-                                            {task.tags.length > 3 &&
-                                                <span className="text-[10px] text-gray-600">+{task.tags.length - 3}</span>
+                        {!isCollapsed &&
+                            <ul className="m-0 list-none divide-y divide-gray-200 p-0 dark:divide-neutral-700">
+                                {group.tasks.map(task => {
+                                    const isSelected = task.id === selectedId;
+                                    const isDeleted = Boolean(task.deleted_at);
+                                    const canChangeStatus = Boolean(onChangeStatus) && canUpdateRow({original: task}, auth)
+                                        && allowedStatusIds(task, auth).length > 0;
+                                    return (
+                                        <li key={task.id}
+                                            onClick={() => onSelect(task.id)}
+                                            onKeyDown={(e) => {
+                                                if (e.target !== e.currentTarget) return;
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    e.preventDefault();
+                                                    onSelect(task.id);
+                                                }
+                                            }}
+                                            tabIndex={0}
+                                            aria-current={isSelected ? "true" : undefined}
+                                            draggable={!isDeleted && Boolean(onMergeRequest)}
+                                            onDragStart={(e) => {
+                                                e.dataTransfer.setData('text/plain', String(task.id));
+                                                e.dataTransfer.effectAllowed = 'move';
+                                            }}
+                                            onDragOver={(e) => {
+                                                if (isDeleted || !onMergeRequest) return;
+                                                e.preventDefault();
+                                                e.dataTransfer.dropEffect = 'move';
+                                            }}
+                                            onDragEnter={(e) => {
+                                                if (isDeleted || !onMergeRequest) return;
+                                                e.preventDefault();
+                                                setDragOverId(task.id);
+                                            }}
+                                            onDragLeave={() => setDragOverId(prev => prev === task.id ? null : prev)}
+                                            onDrop={(e) => {
+                                                if (isDeleted || !onMergeRequest) return;
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                setDragOverId(null);
+                                                const donorId = Number(e.dataTransfer.getData('text/plain'));
+                                                if (!donorId || donorId === task.id) return;
+                                                onMergeRequest(donorId, task.id);
+                                            }}
+                                            title={onMergeRequest && !isDeleted ? "Перетягніть на іншу задачу, щоб злити" : undefined}
+                                            className={`group relative flex cursor-pointer items-center gap-3 px-4 py-2.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-300 ${isSelected
+                                                ? "bg-blue-50 dark:bg-blue-800/20"
+                                                : "hover:bg-gray-50 dark:hover:bg-neutral-700/60"} ${isDeleted ? "opacity-60" : ""} ${dragOverId === task.id ? "ring-2 ring-inset ring-blue-500" : ""}`}>
+                                            {/* Вибраний рядок — смужка primary зліва, як активний пункт меню */}
+                                            {isSelected && <span className="absolute inset-y-0 left-0 w-0.5 bg-blue-600" aria-hidden="true"/>}
+
+                                            {Boolean(onToggleFavorite) &&
+                                                <button type="button"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onToggleFavorite(task.id);
+                                                        }}
+                                                        title={task.isFavorite ? "Прибрати з обраного" : "Додати в обране"}
+                                                        aria-label={task.isFavorite ? "Прибрати з обраного" : "Додати в обране"}
+                                                        aria-pressed={Boolean(task.isFavorite)}
+                                                        className={`-mx-1 shrink-0 rounded p-1 transition focus-visible:opacity-100 ${task.isFavorite
+                                                            ? "text-amber-500"
+                                                            : "text-gray-500 opacity-0 hover:text-amber-500 group-hover:opacity-100 dark:text-gray-400"}`}>
+                                                    <i className={`${task.isFavorite ? "fa-solid" : "fa-regular"} fa-star text-xs`}></i>
+                                                </button>
                                             }
-                                        </span>
-                                    }
-                                    {task.linkedProjectsCount > 0 &&
-                                        <Tooltip content={`Проєктів у наборі: ${task.linkedProjectsCount}`}>
-                                            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-gray-600 dark:text-gray-500">
-                                                <i className="fa-regular fa-folder-tree"></i>{task.linkedProjectsCount}
+                                            <PriorityIcon caption={task.priority}/>
+                                            {groupBy !== "status" && !isDeleted && <StatusBadge status={task.status}/>}
+                                            {isDeleted && <Badge tone="outline">Видалено</Badge>}
+
+                                            {/* Назва + мета-рядок */}
+                                            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                                                <span className="truncate text-sm font-medium leading-5 text-gray-800 dark:text-gray-200">
+                                                    {task.title || "Без назви"}
+                                                </span>
+                                                <span className="flex min-w-0 items-center gap-1.5 overflow-hidden text-xs leading-4 text-gray-600 dark:text-gray-400">
+                                                    <span className="shrink-0 font-mono">#{task.id}</span>
+                                                    {task.project && groupBy !== "project" &&
+                                                        <>
+                                                            <Dot/>
+                                                            <span className="inline-flex min-w-0 max-w-[14rem] items-center gap-1" title={`Проєкт: ${task.project}`}>
+                                                                <i className="fa-regular fa-folder text-[10px]" aria-hidden="true"></i>
+                                                                <span className="truncate">{task.project}</span>
+                                                            </span>
+                                                        </>
+                                                    }
+                                                    {task.createdUser &&
+                                                        <span className="hidden min-w-0 items-center gap-1.5 xl:inline-flex" title={`Автор: ${task.createdUser}`}>
+                                                            <Dot/><span className="truncate">{task.createdUser}</span>
+                                                        </span>
+                                                    }
+                                                    {task.linkedProjectsCount > 0 &&
+                                                        <span className={META} title={`Проєктів у наборі: ${task.linkedProjectsCount}`}>
+                                                            <Dot/><i className="fa-regular fa-folder-tree text-[10px]" aria-hidden="true"></i>{task.linkedProjectsCount}
+                                                        </span>
+                                                    }
+                                                    {task.commentsCount > 0 &&
+                                                        <span className={META} title={`Коментарів: ${task.commentsCount}`}>
+                                                            <Dot/><i className="fa-regular fa-message text-[10px]" aria-hidden="true"></i>{task.commentsCount}
+                                                        </span>
+                                                    }
+                                                    {task.attachmentsCount > 0 &&
+                                                        <span className={META} title={`Вкладень: ${task.attachmentsCount}`}>
+                                                            <Dot/><i className="fa-regular fa-paperclip text-[10px]" aria-hidden="true"></i>{task.attachmentsCount}
+                                                        </span>
+                                                    }
+                                                    {task.tags?.length > 0 &&
+                                                        <span className="ml-1 hidden shrink-0 items-center gap-1 lg:inline-flex">
+                                                            {task.tags.slice(0, 3).map(tag => (
+                                                                <TagPill key={tag.id} tag={tag}/>
+                                                            ))}
+                                                            {task.tags.length > 3 &&
+                                                                <span className="text-[11px] text-gray-600 dark:text-gray-400">+{task.tags.length - 3}</span>
+                                                            }
+                                                        </span>
+                                                    }
+                                                </span>
+                                            </div>
+
+                                            <AgeBadge createdAt={task.created_at} statusName={task.status}/>
+                                            <DueDate dueDate={task.dueDate} deleted={isDeleted}/>
+                                            <span className="flex w-20 shrink-0 justify-end">
+                                                <UserAvatars users={task.assignedUsers || []} max={3}/>
                                             </span>
-                                        </Tooltip>
-                                    }
-                                    {task.commentsCount > 0 &&
-                                        <Tooltip content={`Коментарів: ${task.commentsCount}`}>
-                                            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-gray-600 dark:text-gray-500">
-                                                <i className="fa-regular fa-message"></i>{task.commentsCount}
+
+                                            {/* Дії — з'являються при ховері / фокусі рядка */}
+                                            <span className="flex shrink-0 items-center gap-0.5 opacity-0 transition group-focus-within:opacity-100 group-hover:opacity-100">
+                                                {canChangeStatus &&
+                                                    <Menu placement="bottom-end">
+                                                        <MenuHandler>
+                                                            <IconButton size="xs" variant="text" className={ROW_ACTION}
+                                                                        title="Змінити стан"
+                                                                        onClick={(e) => e.stopPropagation()}>
+                                                                <i className="fa-regular fa-circle-half-stroke"></i>
+                                                            </IconButton>
+                                                        </MenuHandler>
+                                                        <MenuList className="min-w-[10rem] rounded-lg border border-gray-200 p-1 shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+                                                            {/* Лише переходи, дозволені життєвим циклом для цього користувача */}
+                                                            {statuses
+                                                                .filter(status => allowedStatusIds(task, auth).includes(status.id))
+                                                                .map(status => (
+                                                                    <MenuItem key={status.id}
+                                                                              onClick={(e) => {
+                                                                                  e.stopPropagation();
+                                                                                  onChangeStatus(task.id, status.id);
+                                                                              }}
+                                                                              className="rounded-md px-2 py-1.5 text-xs text-gray-700 hover:bg-gray-100 focus:bg-gray-100 dark:text-gray-300 dark:hover:bg-neutral-700 dark:hover:text-gray-100 dark:focus:bg-neutral-700">
+                                                                        <StatusBadge status={status.name}/>
+                                                                    </MenuItem>
+                                                                ))}
+                                                        </MenuList>
+                                                    </Menu>
+                                                }
+                                                {Boolean(onCloneRequest) &&
+                                                    <IconButton size="xs" variant="text" className={ROW_ACTION}
+                                                                title="Створити нову задачу на основі цієї"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    onCloneRequest(task.id);
+                                                                }}>
+                                                        <i className="fa-regular fa-clone"></i>
+                                                    </IconButton>
+                                                }
+                                                {canDeleteRow({original: task}, auth) &&
+                                                    <IconButton size="xs" variant="text" color="error"
+                                                                title="Видалити (можна відновити)"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    onDelete(task.id);
+                                                                }}>
+                                                        <i className="fa-regular fa-trash-can"></i>
+                                                    </IconButton>
+                                                }
+                                                {canRestore({original: task}, auth) &&
+                                                    <IconButton size="xs" variant="text" color="primary"
+                                                                title="Відновити"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    onRestore(task.id);
+                                                                }}>
+                                                        <i className="fa-solid fa-trash-arrow-up"></i>
+                                                    </IconButton>
+                                                }
                                             </span>
-                                        </Tooltip>
-                                    }
-                                    {task.attachmentsCount > 0 &&
-                                        <Tooltip content={`Вкладень: ${task.attachmentsCount}`}>
-                                            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-gray-600 dark:text-gray-500">
-                                                <i className="fa-regular fa-paperclip"></i>{task.attachmentsCount}
-                                            </span>
-                                        </Tooltip>
-                                    }
-                                    {task.createdUser &&
-                                        <Tooltip content={`Автор: ${task.createdUser}`}>
-                                            <span className="hidden shrink-0 text-[10px] text-gray-600 dark:text-gray-500 xl:inline">
-                                                {task.createdUser}
-                                            </span>
-                                        </Tooltip>
-                                    }
-                                    <AgeBadge createdAt={task.created_at} statusName={task.status}/>
-                                    <DueDate dueDate={task.dueDate} deleted={isDeleted}/>
-                                    <span className="w-20 shrink-0">
-                                        <UserAvatars users={task.assignedUsers || []} max={3}/>
-                                    </span>
-                                    {/* Дії — з'являються при ховері */}
-                                    <span className="flex shrink-0 justify-end opacity-0 transition group-hover:opacity-100">
-                                        {Boolean(onChangeStatus) && canUpdateRow({original: task}, auth)
-                                            && allowedStatusIds(task, auth).length > 0 &&
-                                            <Menu placement="bottom-end">
-                                                <MenuHandler>
-                                                    <Button size="sm" variant="text" color="blue-gray" className="px-2 py-1"
-                                                            title="Змінити стан"
-                                                            onClick={(e) => e.stopPropagation()}>
-                                                        <i className="fa-regular fa-circle-half-stroke"></i>
-                                                    </Button>
-                                                </MenuHandler>
-                                                <MenuList className="min-w-[9rem] p-1 dark:border-neutral-700 dark:bg-neutral-700">
-                                                    {/* Лише переходи, дозволені життєвим циклом для цього користувача */}
-                                                    {statuses
-                                                        .filter(status => allowedStatusIds(task, auth).includes(status.id))
-                                                        .map(status => (
-                                                            <MenuItem key={status.id}
-                                                                      onClick={(e) => {
-                                                                          e.stopPropagation();
-                                                                          onChangeStatus(task.id, status.id);
-                                                                      }}
-                                                                      className="text-xs dark:text-gray-300 dark:hover:bg-neutral-600 dark:hover:text-gray-100 dark:focus:bg-neutral-600">
-                                                                <span className="flex items-center gap-2">
-                                                                    <StatusDot status={status.name}/>{status.name}
-                                                                </span>
-                                                            </MenuItem>
-                                                        ))}
-                                                </MenuList>
-                                            </Menu>
-                                        }
-                                        {Boolean(onCloneRequest) &&
-                                            <Tooltip content="Створити нову задачу на основі цієї">
-                                                <Button size="sm" variant="text" color="blue-gray" className="px-2 py-1"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            onCloneRequest(task.id);
-                                                        }}>
-                                                    <i className="fa-regular fa-clone"></i>
-                                                </Button>
-                                            </Tooltip>
-                                        }
-                                        {canDeleteRow({original: task}, auth) &&
-                                            <Tooltip content="Видалити (можна відновити)">
-                                                <Button size="sm" variant="text" color="red" className="px-2 py-1"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            onDelete(task.id);
-                                                        }}>
-                                                    <i className="fa-regular fa-trash-can"></i>
-                                                </Button>
-                                            </Tooltip>
-                                        }
-                                        {canRestore({original: task}, auth) &&
-                                            <Tooltip content="Відновити">
-                                                <Button size="sm" variant="text" color="blue" className="px-2 py-1"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            onRestore(task.id);
-                                                        }}>
-                                                    <i className="fa-solid fa-trash-arrow-up"></i>
-                                                </Button>
-                                            </Tooltip>
-                                        }
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        }
+                    </section>
                 );
             })}
         </div>
